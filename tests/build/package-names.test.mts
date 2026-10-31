@@ -105,14 +105,15 @@ test('every tracked manifest names its package by the polyspec convention', () =
 });
 
 // The forms of the names before the convention. A C identifier of the extension (crudui_validator_ce) is not a
-// package name.
+// package name, and neither is the product of a package in config/release.json, which the label of its release asset
+// names (P39).
 const OLD_NAMES: [string, RegExp][] = [
   ['npm scope @crudui', /@crudui\//g],
   ['PHP namespace CRUDUI', /\bCRUDUI\\/g],
   // phpDocumentor writes the page of a class as its namespace joined by hyphens: classes/CRUDUI-Generator.html.
   ['PHP API page CRUDUI-', /\bCRUDUI-(?:\$\{|Generator\b|Validator\b|Form)/g],
   ['Composer package crudui/', /(?<![@\w/])crudui\\?\/(?:validator|generator)\b/g],
-  ['Rust crate crudui-', /(?<![\w/-])crudui-(?:validator|generator)\b/g],
+  ['Rust crate crudui-', /(?<![\w/-])(?<!"product": ")crudui-(?:validator|generator)\b/g],
   ['Rust library crudui_', /(?<!\w)crudui_(?:validator|generator)(?!_ce)\b/g],
 ];
 const RECORDS = new Set(['CHANGELOG.md', 'CHANGELOG.ko.md', 'docs/plans/execution-checklist/checklist.md', 'docs/plans/execution-checklist/checklist.ko.md', 'docs/plans/execution-checklist/plan.md', 'docs/plans/execution-checklist/plan.ko.md']);

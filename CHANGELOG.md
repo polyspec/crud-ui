@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — Adopt kit 0.0.86 and ordered-json 0.0.16 (C17.108)
+
+- crudui is on kit 0.0.86 and ordered-json 0.0.16, whose release assets carry the packer's file name (P39); `config/release.json` declares the product and the runtime of every package, `ci.yml` is named `ci` for the release workflow of kit, and the package-name test no longer reads a product of `release.json` as an old crate name.
+
 ### 2026-10-31 — Test only the workflows of crudui (C17.107)
 
 - The workflow tests read only `ci.yml` and `pages.yml`; the copies of kit, `ci-pipeline.yml` and `release.yml`, which kit-check holds equal to the installed kit, are left out through `isVendored`, so a kit release no longer changes a crudui test. The release-input test is removed.

@@ -9,57 +9,79 @@
     {
       "kind": "npm",
       "directory": "packages/form-binding",
-      "name": "@polyspec/crudui-form-binding"
+      "name": "@polyspec/crudui-form-binding",
+      "product": "crudui-form-binding",
+      "runtime": "ts"
     },
     {
       "kind": "npm",
       "directory": "packages/generator/ts",
-      "name": "@polyspec/crudui-generator-core"
+      "name": "@polyspec/crudui-generator-core",
+      "product": "crudui-generator-core",
+      "runtime": "ts"
     },
     {
       "kind": "npm",
       "directory": "packages/html",
-      "name": "@polyspec/crudui-generator-html"
+      "name": "@polyspec/crudui-generator-html",
+      "product": "crudui-generator-html",
+      "runtime": "ts"
     },
     {
       "kind": "npm",
       "directory": "packages/react",
-      "name": "@polyspec/crudui-generator-react"
+      "name": "@polyspec/crudui-generator-react",
+      "product": "crudui-generator-react",
+      "runtime": "ts"
     },
     {
       "kind": "npm",
       "directory": "packages/svelte",
-      "name": "@polyspec/crudui-generator-svelte"
+      "name": "@polyspec/crudui-generator-svelte",
+      "product": "crudui-generator-svelte",
+      "runtime": "ts"
     },
     {
       "kind": "npm",
       "directory": "packages/vue",
-      "name": "@polyspec/crudui-generator-vue"
+      "name": "@polyspec/crudui-generator-vue",
+      "product": "crudui-generator-vue",
+      "runtime": "ts"
     },
     {
       "kind": "npm",
       "directory": "packages/validator/ts",
-      "name": "@polyspec/crudui-validator"
+      "name": "@polyspec/crudui-validator",
+      "product": "crudui-validator",
+      "runtime": "ts"
     },
     {
       "kind": "composer",
       "directory": "packages/generator/php",
-      "name": "polyspec/crudui-generator"
+      "name": "polyspec/crudui-generator",
+      "product": "crudui-generator",
+      "runtime": "php"
     },
     {
       "kind": "composer",
       "directory": "packages/validator/php",
-      "name": "polyspec/crudui-validator"
+      "name": "polyspec/crudui-validator",
+      "product": "crudui-validator",
+      "runtime": "php"
     },
     {
       "kind": "wheel",
       "directory": "packages/validator/python",
-      "name": "polyspec-crudui-validator"
+      "name": "polyspec-crudui-validator",
+      "product": "crudui-validator",
+      "runtime": "python"
     },
     {
       "kind": "wheel",
       "directory": "packages/generator/python",
-      "name": "polyspec-crudui-generator"
+      "name": "polyspec-crudui-generator",
+      "product": "crudui-generator",
+      "runtime": "python"
     }
   ],
   "manifests": {

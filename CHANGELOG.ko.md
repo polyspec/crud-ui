@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — kit 0.0.86과 ordered-json 0.0.16 채택 (C17.108)
+
+- crudui는 릴리스 파일에 패커의 파일 이름을 쓰는(P39) kit 0.0.86과 ordered-json 0.0.16를 쓴다. `config/release.json`은 모든 패키지의 product와 runtime을 선언하고, `ci.yml`의 이름은 kit 릴리스 workflow를 위해 `ci`이며, 패키지 이름 테스트는 `release.json`의 product를 옛 crate 이름으로 읽지 않는다.
+
 ### 2026-10-31 — crudui의 workflow만 테스트한다 (C17.107)
 
 - workflow 테스트는 `ci.yml`과 `pages.yml`만 읽는다. kit-check가 설치된 kit과 같음을 보장하는 kit 복사본 `ci-pipeline.yml`과 `release.yml`은 `isVendored`로 뺀다. 그래서 kit 릴리스가 crudui 테스트를 더 바꾸지 않는다. 릴리스 입력 테스트는 지운다.

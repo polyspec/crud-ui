@@ -3,7 +3,7 @@
 # succeeded for the tagged commit (docs/operations/repository.md). The documentation web of main is deployed by
 # .github/workflows/pages.yml.
 
-name: CI
+name: ci
 
 on:
   push:

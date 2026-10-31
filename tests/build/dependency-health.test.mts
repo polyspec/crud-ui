@@ -332,8 +332,8 @@ test('root example imports are declared by the root package', async () => {
 // The shared tools are the release asset of a tag of polyspec/kit, and the OrderedJSON package is the release asset of a
 // tag of polyspec/ordered-json; the root package.json names each by its URL and package-lock.json pins it with its integrity.
 // make install-packages allows the URLs of the root package.json alone.
-const KIT_ASSET = /^https:\/\/github\.com\/polyspec\/kit\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-kit-npm-\1\.tgz$/;
-const ORDERED_JSON_ASSET = /^https:\/\/github\.com\/polyspec\/ordered-json\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-ordered-json-npm-\1\.tgz$/;
+const KIT_ASSET = /^https:\/\/github\.com\/polyspec\/kit\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-kit-\1\.tgz$/;
+const ORDERED_JSON_ASSET = /^https:\/\/github\.com\/polyspec\/ordered-json\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-ordered-json-\1\.tgz$/;
 
 test('npm installs only registry packages, linked directories and the kit and OrderedJSON release assets, and fetches no other URL or Git source', () => {
   // A package comes from the npm registry, from a workspace or from a checkout that a make target installed; npm fetches
