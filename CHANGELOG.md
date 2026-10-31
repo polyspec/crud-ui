@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## 0.0.10
+
+- C18.14: every manifest and lock of a crudui package carries 0.0.10, with kit 0.0.86 and ordered-json 0.0.16 (C18.14)
+
 ### 2026-11-01 — Adopt kit 0.0.86 and ordered-json 0.0.16 (C17.108)
 
 - crudui is on kit 0.0.86 and ordered-json 0.0.16, whose release assets carry the packer's file name (P39); `config/release.json` declares the product and the runtime of every package, `ci.yml` is named `ci` for the release workflow of kit, and the package-name test no longer reads a product of `release.json` as an old crate name.

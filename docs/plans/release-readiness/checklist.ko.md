@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: 56eabce0c32a29c94db21595429895d64e5a08a0f7595b295abe90c4c9b9df13 -->
+<!-- source-sha256: e011df0622b9fdd8ac0e1e9cbe7f0c0b4180c656193f2834d9ba971da392fb9d -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -66,3 +66,4 @@
 | C18.13-5 | 공개 전에 runtime 범위 source 연결의 정식 Kit 수정을 반영한다 (priority: high). | published Kit fix for issue14 and fresh runtime gates without unrelated language installation | `node scripts/run-tests.mts node -- tests/build/ci-local.test.mts tests/build/runtime-version-policy.test.mts tests/build/form-comparison-ci.test.mts`; final isolated CI and release proof remain required by C18.13 | [o] |
 | C18.13-6 | Candidate CI 전에 Kit 0.0.63으로 0.0.9 archive와 consumer proof를 확정한다 (priority: high). | current candidate archives, native consumer records and final release metadata | `make release-candidate-assets VERSION=0.0.9`; `make release-consumer-lock TAG=v0.0.9`; `make release-consumer TAG=v0.0.9`; `make release-versions TAG=v0.0.9` | [o] |
 | C18.13-7 | Candidate archive 전에 native Go module 실행 파일 생성물을 ignore한다 (priority: high). | exact generated executable ignore entries for native Go modules | `git check-ignore benchmarks/validators/go/go examples/cross-check-console/validators/go/go examples/form-comparison/servers/go/go tests/native-generators/programs/go/go`; native candidate source guard | [o] |
+| C18.14 | 릴리스된 crudui 버전은 kit 0.0.86과 ordered-json 0.0.16을 담는다: crudui 패키지의 모든 manifest와 lock은 CHANGELOG 맨 위 절의 버전을 적고, Unreleased 항목은 두 언어 모두 그 절 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |

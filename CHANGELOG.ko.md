@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.0.10
+
+- C18.14: crudui 패키지의 모든 manifest와 lock은 kit 0.0.86, ordered-json 0.0.16과 함께 0.0.10을 적는다 (C18.14)
+
 ### 2026-11-01 — kit 0.0.86과 ordered-json 0.0.16 채택 (C17.108)
 
 - crudui는 릴리스 파일에 패커의 파일 이름을 쓰는(P39) kit 0.0.86과 ordered-json 0.0.16를 쓴다. `config/release.json`은 모든 패키지의 product와 runtime을 선언하고, `ci.yml`의 이름은 kit 릴리스 workflow를 위해 `ci`이며, 패키지 이름 테스트는 `release.json`의 product를 옛 crate 이름으로 읽지 않는다.
