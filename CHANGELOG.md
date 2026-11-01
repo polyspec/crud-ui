@@ -6,6 +6,7 @@
 ## 0.0.12
 
 - C18.16: every manifest and lock of a crudui package carries 0.0.12, with kit 0.0.88 and ordered-json 0.0.18 (C18.16)
+- C18.16-1: uv.lock carries the 0.0.12 versions of the crudui Python packages, so uv sync --locked passes (C18.16-1)
 
 ### 2026-11-01 — Close the tracked Go tables as delivered (C17.99)
 

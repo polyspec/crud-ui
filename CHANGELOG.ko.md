@@ -7,6 +7,7 @@
 ## 0.0.12
 
 - C18.16: crudui 패키지의 모든 manifest와 lock은 kit 0.0.88, ordered-json 0.0.18과 함께 0.0.12를 적는다 (C18.16)
+- C18.16-1: uv.lock은 crudui Python package의 0.0.12 버전을 적어 uv sync --locked가 통과한다 (C18.16-1)
 
 ### 2026-11-01 — 추적하는 Go 표를 전달된 것으로 닫는다 (C17.99)
 
