@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+## 0.0.13
+
+- C18.23: every manifest and lock of a crudui package carries 0.0.13, with kit 0.0.92 and ordered-json 0.0.20 (C18.23)
 - The PIE test of ordered-json-ext checks the repository and version that the recipe reads from composer.json and composer.lock (C18.22-1)
 - make ordered-json-ext builds the OrderedJSON php-ext of the release that composer.lock installs (0.0.18), not the stale 0.0.14 copy that the Makefile held (C18.22)
 - CRUDUI runs on kit 0.0.92; crudui-install-crates fetches the crates of every tracked Cargo.lock with cargo fetch --locked, since kit no longer fetches them (C18.21)

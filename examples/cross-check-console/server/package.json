@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-cross-check-console",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "private": true,
   "type": "module",
   "description": "Cross-check gateway: 4-language CRUDUI validation processes + HTML/React/Svelte/Vue rendering + static console",

@@ -7,8 +7,8 @@
         "php": ">=8.4",
         "php-64bit": "^8.2",
         "ext-mbstring": "*",
-        "polyspec/crudui-validator": "0.0.12",
-        "polyspec/crudui-generator": "0.0.12",
+        "polyspec/crudui-validator": "0.0.13",
+        "polyspec/crudui-generator": "0.0.13",
         "polyspec/ordered-json": "0.0.*"
     },
     "require-dev": {
@@ -49,7 +49,7 @@
         },
         {
             "type": "composer",
-            "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.18/packages.json"
+            "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.20/packages.json"
         }
     ],
     "config": {

@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: f09dcda8076e76eca0a6b0c98f7cc0d38783cb40cc28580610cdbdcb3f128c15 -->
+<!-- source-sha256: 6397d8751e456bec2fdcc71b6435e3281ad7d4008d29d5ba795d2c9ab957fa4b -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -77,3 +77,4 @@
 | C18.21 | CRUDUI는 kit 0.0.92로 동작하고, kit에 cargo-downloads-fetch가 없으므로 crudui-install-crates가 추적하는 모든 Cargo.lock의 crate를 cargo fetch --locked로 받는다. | package.json, package-lock.json, PRINCIPLES.md, PRINCIPLES.ko.md, Makefile, tests/build/offline-checks.test.mts, tests/build/form-comparison-ci.test.mts, CHANGELOG.md, CHANGELOG.ko.md | `make -n crudui-install-crates` | [o] |
 | C18.22 | make ordered-json-ext는 composer.lock이 설치한 OrderedJSON release의 php-ext를 composer.json의 packages.json 저장소에서 빌드하며, Makefile은 그 version이나 URL의 사본을 두지 않는다. | Makefile, tests/build/ci-local.test.mts, docs/operations/package-build.md and its Korean twin, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.22 tests/build/ci-local.test.mts` | [o] |
 | C18.22-1 | C17.96의 PIE 테스트는 ordered-json-ext가 recipe가 composer.json과 composer.lock에서 읽은 packages.json 저장소와 version으로 빌드하는지 확인하며, C18.22가 지운 0.0.14 literal을 확인하지 않는다. | tests/build/ordered-json-pie.test.mts, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- tests/build/ordered-json-pie.test.mts` | [~] |
+| C18.23 | crudui 릴리스 version은 kit 0.0.92와 ordered-json 0.0.20을 담는다. crudui package의 모든 manifest와 lock은 CHANGELOG 맨 위 section의 version을 적고, Unreleased 항목은 두 언어 모두 그 section 아래로 옮긴다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- tests/build/package-names.test.mts` | [o] |
