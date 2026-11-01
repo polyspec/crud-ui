@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: e8e0fb2ef0731f6389ca77a418ccde6206c844f75628429380d7defb59fcac05 -->
+<!-- source-sha256: 3a2724e1696c154abdf0ab4d149d8cf105caa82985484a68d3fb1fda14463ad1 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -69,3 +69,4 @@
 | C18.14 | 릴리스된 crudui 버전은 kit 0.0.86과 ordered-json 0.0.16을 담는다: crudui 패키지의 모든 manifest와 lock은 CHANGELOG 맨 위 절의 버전을 적고, Unreleased 항목은 두 언어 모두 그 절 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
 | C18.15 | 릴리스된 crudui 버전은 kit 0.0.87과 ordered-json 0.0.17을 담는다: crudui 패키지의 모든 manifest와 lock은 CHANGELOG 맨 위 절의 버전을 적고, Unreleased 항목은 두 언어 모두 그 절 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
 | C18.16 | crudui의 release 버전은 kit 0.0.88과 ordered-json 0.0.18을 담는다: crudui package의 모든 manifest와 lock은 최상위 CHANGELOG section의 버전을 적고, Unreleased 항목은 두 언어 모두 그 section 아래로 옮긴다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
+| C18.16-1 | uv.lock은 crudui Python package의 0.0.12 버전을 적어, release commit의 uv sync --locked가 통과한다 (C18.16에 이어) | uv.lock, CHANGELOG.md, CHANGELOG.ko.md | `var/tools/mise/shims/uv lock --check` | [ ] |
