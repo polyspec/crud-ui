@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — Adopt kit 0.0.88 (C17.112)
+
+- crudui pins kit 0.0.88 and commits its PRINCIPLES copies (C17.112)
+
 ### 2026-11-01 — Make the form comparison summary job follow the job kit (C17.111)
 
 - The job form-comparison-checks of ci.yml needs the job kit as well as the browser jobs, as kit 0.0.88's S12 check requires of every job (C17.111)

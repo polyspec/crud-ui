@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — kit 0.0.88을 채택한다 (C17.112)
+
+- crudui는 kit 0.0.88을 pin하고 그 PRINCIPLES 사본을 commit한다 (C17.112)
+
 ### 2026-11-01 — form comparison 요약 job이 job kit을 따르게 한다 (C17.111)
 
 - ci.yml의 job form-comparison-checks는 kit 0.0.88의 S12 검사가 모든 job에 요구하는 대로 browser job과 함께 job kit을 needs로 둔다 (C17.111)
