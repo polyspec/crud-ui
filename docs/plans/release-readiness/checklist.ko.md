@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: 73f2ddc47336b5bcf1ab804fab3818eeac7ea2543abfded294d5f2dd922db822 -->
+<!-- source-sha256: e8e0fb2ef0731f6389ca77a418ccde6206c844f75628429380d7defb59fcac05 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -68,4 +68,4 @@
 | C18.13-7 | Candidate archive 전에 native Go module 실행 파일 생성물을 ignore한다 (priority: high). | exact generated executable ignore entries for native Go modules | `git check-ignore benchmarks/validators/go/go examples/cross-check-console/validators/go/go examples/form-comparison/servers/go/go tests/native-generators/programs/go/go`; native candidate source guard | [o] |
 | C18.14 | 릴리스된 crudui 버전은 kit 0.0.86과 ordered-json 0.0.16을 담는다: crudui 패키지의 모든 manifest와 lock은 CHANGELOG 맨 위 절의 버전을 적고, Unreleased 항목은 두 언어 모두 그 절 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
 | C18.15 | 릴리스된 crudui 버전은 kit 0.0.87과 ordered-json 0.0.17을 담는다: crudui 패키지의 모든 manifest와 lock은 CHANGELOG 맨 위 절의 버전을 적고, Unreleased 항목은 두 언어 모두 그 절 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
-| C18.16 | crudui의 release 버전은 kit 0.0.88과 ordered-json 0.0.18을 담는다: crudui package의 모든 manifest와 lock은 최상위 CHANGELOG section의 버전을 적고, Unreleased 항목은 두 언어 모두 그 section 아래로 옮긴다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [ ] |
+| C18.16 | crudui의 release 버전은 kit 0.0.88과 ordered-json 0.0.18을 담는다: crudui package의 모든 manifest와 lock은 최상위 CHANGELOG section의 버전을 적고, Unreleased 항목은 두 언어 모두 그 section 아래로 옮긴다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |

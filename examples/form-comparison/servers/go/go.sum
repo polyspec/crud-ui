@@ -2,5 +2,5 @@ github.com/polyspec/crudui/packages/generator/go v0.0.10 h1:me+PVhv+7HBPB+ujtd3u
 github.com/polyspec/crudui/packages/generator/go v0.0.10/go.mod h1:EEknGwMxwaLvTh25z0h+CNhTUckv4Lk3UXeSgueNEcg=
 github.com/polyspec/crudui/packages/validator/go v0.0.10 h1:N1zDHi85kE2lzL2bc5SZuJngTv1Hg4eV4pFZphnMigc=
 github.com/polyspec/crudui/packages/validator/go v0.0.10/go.mod h1:vxbdKIF5OlB0ci4WI8TZzcJIjx2Z4mXRQJdkhNKesJA=
-github.com/polyspec/ordered-json/packages/go v0.0.17 h1:rMZVZpCCFw0tRTGloDq6Fu9g1Du1j11Iy7b94Buw3fU=
-github.com/polyspec/ordered-json/packages/go v0.0.17/go.mod h1:Qhp4Xd4WQ4dzf36bCA8dfylrX07y66pK0439h0qcvzs=
+github.com/polyspec/ordered-json/packages/go v0.0.18 h1:CRtZmcd1kYj3jaS+qXomEEeF++suVlfK+UqL3m3L+is=
+github.com/polyspec/ordered-json/packages/go v0.0.18/go.mod h1:Qhp4Xd4WQ4dzf36bCA8dfylrX07y66pK0439h0qcvzs=

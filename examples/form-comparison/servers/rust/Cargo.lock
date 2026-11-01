@@ -516,7 +516,7 @@ checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
 name = "polyspec-crudui-form-comparison"
-version = "0.0.11"
+version = "0.0.12"
 dependencies = [
  "axum",
  "form_urlencoded",
@@ -532,7 +532,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crudui-generator"
-version = "0.0.11"
+version = "0.0.12"
 dependencies = [
  "chrono",
  "getrandom",
@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crudui-validator"
-version = "0.0.11"
+version = "0.0.12"
 dependencies = [
  "serde",
  "serde_json",
@@ -555,8 +555,8 @@ dependencies = [
 
 [[package]]
 name = "polyspec-ordered-json"
-version = "0.0.17"
-source = "git+https://github.com/polyspec/ordered-json?tag=v0.0.17#0b885e563bf77a0e09cff4fc925f9e3bfdf62975"
+version = "0.0.18"
+source = "git+https://github.com/polyspec/ordered-json?tag=v0.0.18#beee7f4de0b0abec25508dd78945e531552bc761"
 dependencies = [
  "serde",
  "serde_json",

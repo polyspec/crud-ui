@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## 0.0.12
+
+- C18.16: every manifest and lock of a crudui package carries 0.0.12, with kit 0.0.88 and ordered-json 0.0.18 (C18.16)
+
 ### 2026-11-01 — Close the tracked Go tables as delivered (C17.99)
 
 - The two tracked Go tables are declared in config/generated.json with their generators and hold no duplication.json entry, as C17.105 delivered (C17.99)

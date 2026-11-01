@@ -1,6 +1,6 @@
 {
     "name": "polyspec/crudui-generator",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "description": "Form templates, editable data and HTML rendering for CRUDUI",
     "type": "library",
     "license": "MIT",
@@ -8,7 +8,7 @@
         "php": ">=8.4",
         "php-64bit": "^8.2",
         "ext-mbstring": "*",
-        "polyspec/crudui-validator": "0.0.11"
+        "polyspec/crudui-validator": "0.0.12"
     },
     "require-dev": {
         "phpunit/phpunit": "^13.4.1"

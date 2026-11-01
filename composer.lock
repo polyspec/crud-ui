@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f7ffd2fd15a2f989108613f01b353c1",
+    "content-hash": "2729103c49b56d86b09b3fb79bddd51b",
     "packages": [
         {
             "name": "polyspec/crudui-generator",
-            "version": "0.0.11",
+            "version": "0.0.12",
             "dist": {
                 "type": "path",
                 "url": "packages/generator/php",
-                "reference": "a99fa12598e6708154869818af539aca35734e1d"
+                "reference": "8f3bae36f04b60da86b3dff124366caded94ffb5"
             },
             "require": {
                 "ext-mbstring": "*",
                 "php": ">=8.4",
                 "php-64bit": "^8.2",
-                "polyspec/crudui-validator": "0.0.11"
+                "polyspec/crudui-validator": "0.0.12"
             },
             "require-dev": {
                 "phpunit/phpunit": "^13.4.1"
@@ -51,11 +51,11 @@
         },
         {
             "name": "polyspec/crudui-validator",
-            "version": "0.0.11",
+            "version": "0.0.12",
             "dist": {
                 "type": "path",
                 "url": "packages/validator/php",
-                "reference": "66285a5c22c3e7298e91ae280cbc4228dbf31479"
+                "reference": "a65702890d89f7938a84c8491ca11be09d579469"
             },
             "require": {
                 "php": ">=8.4"
@@ -96,11 +96,11 @@
         },
         {
             "name": "polyspec/ordered-json",
-            "version": "0.0.17",
+            "version": "0.0.18",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.17/polyspec-ordered-json-php-0.0.17.zip",
-                "shasum": "c16328aa397b034206c1a94aecc7537b3f2bd811"
+                "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.18/polyspec-ordered-json-php-0.0.18.zip",
+                "shasum": "9f7f027ef13c5a610b036aeb75c611ae69d89374"
             },
             "require": {
                 "ext-json": "*",

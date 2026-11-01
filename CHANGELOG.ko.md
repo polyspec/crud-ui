@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.0.12
+
+- C18.16: crudui 패키지의 모든 manifest와 lock은 kit 0.0.88, ordered-json 0.0.18과 함께 0.0.12를 적는다 (C18.16)
+
 ### 2026-11-01 — 추적하는 Go 표를 전달된 것으로 닫는다 (C17.99)
 
 - 추적하는 Go 표 두 개는 C17.105가 전달한 대로 config/generated.json에 생성기와 함께 선언되고 duplication.json 항목이 없다 (C17.99)
