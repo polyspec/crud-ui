@@ -18,7 +18,10 @@ const strings = (value: unknown, what: string): string[] => checkedShape(STRINGS
 import { checked, parseJson, type JTDSchemaType } from '../json.mts';
 import { kitToolPath, makeDryRun, makeEnvironment } from './make-dry-run.mts';
 import { isVendored } from '../../scripts/repository-files.mts';
-import { NATIVE_NPM_BOOTSTRAP, nativeNpmBootstrap } from './npm-release.mts';
+// The bootstrap action that kit-sync vendors (kit K992): it sets the Node.js of mise.toml up, installs the locked kit package
+// with the npm of devEngines.packageManager, then the npm of var/tools and the packages of package-lock.json.
+const KIT_BOOTSTRAP = './.github/actions/kit-bootstrap';
+const kitBootstrap = (step: Step): boolean => step.uses === KIT_BOOTSTRAP;
 
 const read = (file: string): Promise<string> => readFile(new URL(`../../${file}`, import.meta.url), 'utf8');
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
@@ -84,45 +87,46 @@ function field(value: unknown, key: string): unknown {
 }
 
 
-/** Jobs that invoke make before an unconditional install with the declared npm release. */
-export function nativeBootstrapViolations(workflow: Workflow): string[] {
+/** Jobs that invoke make before one unconditional run of the kit bootstrap action. */
+export function kitBootstrapViolations(workflow: Workflow): string[] {
   const findings: string[] = [];
   for (const [id, job] of Object.entries(workflow.jobs)) {
     const steps = job.steps ?? [];
     const firstMake = steps.findIndex(step => /(?:^|\n)\s*make(?:\s|$)/.test(step.run ?? ''));
     if (firstMake < 0) continue;
-    const installs = steps.map((step, index) => ({ step, index })).filter(({ step }) => nativeNpmBootstrap(step.run));
+    const installs = steps.map((step, index) => ({ step, index })).filter(({ step }) => kitBootstrap(step));
     const install = installs[0];
-    if (installs.length !== 1 || !install) findings.push(`${id}: expected one native npm bootstrap reading devEngines.packageManager`);
-    else if (install.step.if !== undefined) findings.push(`${id}: native npm bootstrap must be unconditional`);
-    else if (install.index >= firstMake) findings.push(`${id}: native npm bootstrap must precede the first make`);
+    if (installs.length !== 1 || !install) findings.push(`${id}: expected one step that uses ${KIT_BOOTSTRAP}`);
+    else if (install.step.if !== undefined) findings.push(`${id}: the kit bootstrap must be unconditional`);
+    else if (install.index >= firstMake) findings.push(`${id}: the kit bootstrap must precede the first make`);
   }
   return findings;
 }
 
-test('each make job bootstraps the installed kit with the declared npm before make', async () => {
-  assert.deepEqual(nativeBootstrapViolations({ jobs: {
+test('each make job runs the kit bootstrap action before make (K992)', async () => {
+  const bootstrap = { uses: KIT_BOOTSTRAP };
+  assert.deepEqual(kitBootstrapViolations({ jobs: {
     missing: { steps: [{ run: 'make install-tools' }] },
-    late: { steps: [{ run: 'make install-tools' }, { run: NATIVE_NPM_BOOTSTRAP }] },
-    hardcoded: { steps: [{ run: NATIVE_NPM_BOOTSTRAP.replace('$(node -p \'require("./package.json").devEngines.packageManager.version\')', '1.0.0') }, { run: 'make install-tools' }] },
-    conditional: { steps: [{ run: NATIVE_NPM_BOOTSTRAP, if: '${{ success() }}' }, { run: 'make install-tools' }] },
-    duplicate: { steps: [{ run: NATIVE_NPM_BOOTSTRAP }, { run: NATIVE_NPM_BOOTSTRAP }, { run: 'make install-tools' }] },
-    valid: { steps: [{ run: NATIVE_NPM_BOOTSTRAP }, { run: 'make install-tools' }] },
+    late: { steps: [{ run: 'make install-tools' }, bootstrap] },
+    other: { steps: [{ uses: './.github/actions/other' }, { run: 'make install-tools' }] },
+    conditional: { steps: [{ ...bootstrap, if: '${{ success() }}' }, { run: 'make install-tools' }] },
+    duplicate: { steps: [bootstrap, bootstrap, { run: 'make install-tools' }] },
+    valid: { steps: [bootstrap, { run: 'make install-tools' }] },
     deployment: { steps: [{ uses: 'actions/deploy-pages@x' }] },
   } }), [
-    'missing: expected one native npm bootstrap reading devEngines.packageManager',
-    'late: native npm bootstrap must precede the first make',
-    'hardcoded: expected one native npm bootstrap reading devEngines.packageManager',
-    'conditional: native npm bootstrap must be unconditional',
-    'duplicate: expected one native npm bootstrap reading devEngines.packageManager',
+    `missing: expected one step that uses ${KIT_BOOTSTRAP}`,
+    'late: the kit bootstrap must precede the first make',
+    `other: expected one step that uses ${KIT_BOOTSTRAP}`,
+    'conditional: the kit bootstrap must be unconditional',
+    `duplicate: expected one step that uses ${KIT_BOOTSTRAP}`,
   ]);
   let jobs = 0;
   for (const file of ['ci.yml', 'pages.yml']) {
     const workflow = await workflowFile(file);
     jobs += Object.values(workflow.jobs).filter(job => job.steps?.some(step => /(?:^|\n)\s*make(?:\s|$)/.test(step.run ?? ''))).length;
-    assert.deepEqual(nativeBootstrapViolations(workflow), [], file);
+    assert.deepEqual(kitBootstrapViolations(workflow), [], file);
   }
-  assert.ok(jobs > 0, 'the native bootstrap selection checks at least one make job');
+  assert.ok(jobs > 0, 'the kit bootstrap selection checks at least one make job');
 });
 
 // Steps that prepare a runner rather than check the repository.
@@ -144,7 +148,6 @@ export function workflowCommands(workflow: Workflow): string[] {
     for (const step of job.steps ?? []) {
       if (typeof step.run !== 'string') continue;
       for (const line of step.run.split('\n').map((text) => text.trim()).filter(Boolean)) {
-        if (nativeNpmBootstrap(line)) continue;
         for (const command of line.split(' && ')) {
           // make ci-targets runs each target of TARGETS as make -k <target> (ci-targets of @polyspec/kit).
           const targets = /^make ci-targets TARGETS="([^"]+)"$/.exec(command);
@@ -175,7 +178,7 @@ test('the last CI job ci-passed needs every other job and runs always', async ()
   assert.equal(job.if, '${{ always() }}');
   assert.deepEqual(job.needs, ids.slice(0, -1));
   assert.equal(job['runs-on'], 'ubuntu-24.04');
-  assert.deepEqual((job.steps ?? []).filter((step) => step.run !== undefined && !nativeNpmBootstrap(step.run) && !/^make (?:install-tools|install-packages)\b/.test(step.run)).map((step) => step.run),
+  assert.deepEqual((job.steps ?? []).filter((step) => step.run !== undefined && !/^make (?:install-tools|install-packages)\b/.test(step.run)).map((step) => step.run),
     ["make ci-passed RESULTS='${{ toJSON(needs) }}'"]);
 });
 
@@ -224,10 +227,10 @@ test('the runtime script passes native Node sharding only when requested (C18.9)
 
 // Native unit suites run separately from the cross-language comparison job.
 const NATIVE_JOBS: Record<string, { targets: string; tools: string[]; php?: string[] }> = {
-  'php-engine': { targets: 'crudui-test-php-engine', tools: ['actions/checkout', 'actions/setup-node'] },
-  'native-generators': { targets: 'crudui-test-generator-js', tools: ['actions/checkout', 'actions/setup-node'] },
-  'cross-language-equivalence': { targets: 'crudui-test-cross-language-equivalence', tools: ['actions/checkout', 'actions/setup-node', 'shivammathur/setup-php', 'Swatinem/rust-cache'] },
-  'php-api': { targets: 'crudui-test-php-api', tools: ['actions/checkout', 'actions/setup-node', 'shivammathur/setup-php'] },
+  'php-engine': { targets: 'crudui-test-php-engine', tools: ['actions/checkout', KIT_BOOTSTRAP] },
+  'native-generators': { targets: 'crudui-test-generator-js', tools: ['actions/checkout', KIT_BOOTSTRAP] },
+  'cross-language-equivalence': { targets: 'crudui-test-cross-language-equivalence', tools: ['actions/checkout', KIT_BOOTSTRAP, 'shivammathur/setup-php', 'Swatinem/rust-cache'] },
+  'php-api': { targets: 'crudui-test-php-api', tools: ['actions/checkout', KIT_BOOTSTRAP, 'shivammathur/setup-php'] },
 };
 
 test('native unit suites and cross-language comparisons each run once', async () => {
@@ -283,7 +286,8 @@ export function npmCacheViolations(workflow: Workflow): string[] {
     const uses = (prefix: string): Step[] => steps.filter((step) => String(step.uses ?? '').startsWith(prefix));
     for (const step of uses('actions/setup-node@')) if (step.with?.cache !== undefined) violations.push(`${id}: setup-node caches ${step.with.cache}`);
     const caches = uses('actions/cache@').filter((step) => step.with?.path === NPM_CACHE.path);
-    const installs = steps.some((step) => /^make (?:[\w-]+ )*install-packages\b/.test(String(step.run ?? '')));
+    // The kit bootstrap action installs the npm of var/tools and the packages of package-lock.json (kit K992).
+    const installs = steps.some((step) => kitBootstrap(step) || /^make (?:[\w-]+ )*install-packages\b/.test(String(step.run ?? '')));
     if (!installs) {
       if (caches.length) violations.push(`${id}: caches ~/.npm without installing the npm packages`);
       continue;
@@ -291,7 +295,7 @@ export function npmCacheViolations(workflow: Workflow): string[] {
     const [cache] = caches;
     if (caches.length !== 1 || cache === undefined) { violations.push(`${id}: installs the npm packages without one cache of ~/.npm`); continue; }
     if (cache.with?.key !== NPM_CACHE.key) violations.push(`${id}: the npm cache key is ${cache.with?.key}`);
-    const npm = steps.findIndex((step) => /^make (?:[\w-]+ )*install-tools\b/.test(String(step.run ?? '')) || /^make (?:[\w-]+ )*install-packages\b/.test(String(step.run ?? '')));
+    const npm = steps.findIndex((step) => kitBootstrap(step) || /^make (?:[\w-]+ )*install-tools\b/.test(String(step.run ?? '')) || /^make (?:[\w-]+ )*install-packages\b/.test(String(step.run ?? '')));
     if (steps.indexOf(cache) > npm) violations.push(`${id}: the npm cache is restored after npm installs`);
   }
   return violations;
@@ -306,12 +310,15 @@ test('a job that installs the npm packages caches ~/.npm by package-lock.json, a
     d: { steps: [cache, { run: 'make crudui-install-composer' }] },
     e: { steps: [{ uses: 'actions/cache@x', with: { ...NPM_CACHE, key: 'npm' } }, { run: 'make install-packages' }] },
     f: { steps: [cache, { run: 'make install-tools' }, { run: 'make install-packages' }] },
+    g: { steps: [{ uses: KIT_BOOTSTRAP }, cache] },
+    h: { steps: [cache, { uses: KIT_BOOTSTRAP }] },
   } }), [
     'a: setup-node caches npm',
     'b: installs the npm packages without one cache of ~/.npm',
     'c: the npm cache is restored after npm installs',
     'd: caches ~/.npm without installing the npm packages',
     'e: the npm cache key is npm',
+    'g: the npm cache is restored after npm installs',
   ]);
   const violations: string[] = [];
   // release.yml is the copy of kit, which follows the rules of kit.
@@ -412,7 +419,7 @@ export function stepsOutsideMake(workflow: Workflow): string[] {
   const violations: string[] = [];
   for (const [id, job] of Object.entries(workflow.jobs)) {
     for (const step of job.steps ?? []) {
-      if (typeof step.run !== 'string' || nativeNpmBootstrap(step.run)) continue;
+      if (typeof step.run !== 'string') continue;
       for (const command of step.run.split(/\n|&&|\|\||;|\|/).map(text => text.trim()).filter(Boolean)) {
         const words = command.split(/\s+/).filter(word => !/^[A-Z_][A-Z0-9_]*=/.test(word));
         while (['sudo', 'env', 'xvfb-run', 'time'].includes(words[0] ?? '')) words.shift();

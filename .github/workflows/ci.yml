@@ -43,23 +43,13 @@ jobs:
     needs: kit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -89,23 +79,13 @@ jobs:
     needs: kit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -141,23 +121,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Run the checks and write their report
@@ -186,23 +156,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -238,23 +198,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node go"
       - name: Download the modules that the Go workspace requires
@@ -285,23 +235,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node rust"
       - name: Cargo cache
@@ -336,23 +276,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node python uv"
       # The suites and programs import the Python packages installed in var/python (S3).
@@ -385,23 +315,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -446,23 +366,13 @@ jobs:
     needs: kit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Run the checks and write their report
@@ -486,23 +396,13 @@ jobs:
       CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Install the browsers that Puppeteer and Playwright pin
@@ -537,23 +437,13 @@ jobs:
       CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -587,23 +477,13 @@ jobs:
       CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -658,23 +538,13 @@ jobs:
       FORM_SERVERS: ${{ matrix.server }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -732,23 +602,13 @@ jobs:
       CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -802,23 +662,13 @@ jobs:
       CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Install the browsers that Puppeteer pins
@@ -846,23 +696,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Run the checks and write their report
@@ -893,23 +733,13 @@ jobs:
       CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Install the browsers that Puppeteer pins
@@ -935,23 +765,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -987,23 +807,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Setup PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
@@ -1079,23 +889,13 @@ jobs:
       CRUDUI_CONFORMANCE_EVIDENCE: conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       # Each artifact goes into conformance-evidence/<artifact name>, so no evidence file of one job replaces a file of
@@ -1121,23 +921,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup the Node.js of mise.toml, which starts the bootstrap
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: 'mise.toml'
-          package-manager-cache: false
       - name: Cache the npm packages of package-lock.json
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
-      - name: Bootstrap the installed kit package
-        run: |
-          root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"; (cd "${RUNNER_TEMP:?RUNNER_TEMP is not set}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts --allow-remote=root)
-      - name: Install the npm of devEngines.packageManager into var/tools
-        run: make install-tools TOOLS="npm"
-      - name: Install the packages of package-lock.json, @polyspec/kit included
-        run: make install-packages
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Fail unless every other job succeeded

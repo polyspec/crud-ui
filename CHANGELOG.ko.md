@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — kit 0.0.87과 ordered-json 0.0.17 채택 (C17.109)
+
+- crudui는 kit 0.0.87과 ordered-json 0.0.17을 쓴다. `ci.yml`과 `pages.yml`의 모든 job은 setup-node, kit bootstrap, npm, 패키지 단계의 자기 복사본 대신 kit이 넣어 주는 bootstrap action `.github/actions/kit-bootstrap`을 돌리고(kit K992), CI 테스트는 그 action 단계를 읽는다.
+
 ## 0.0.10
 
 - C18.14: crudui 패키지의 모든 manifest와 lock은 kit 0.0.86, ordered-json 0.0.16과 함께 0.0.10을 적는다 (C18.14)

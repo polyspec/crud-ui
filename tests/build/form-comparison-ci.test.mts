@@ -57,12 +57,10 @@ test('CI runs the complete form comparison regression suite', async () => {
 
   assert.match(job, /runs-on:\s*ubuntu-24\.04/);
   assert.match(job, /uses: actions\/checkout@/);
-  assert.match(job, /uses: actions\/setup-node@/);
-  assert.match(job, /node-version-file:\s*['"]?mise\.toml['"]?/);
+  // The kit bootstrap action sets the Node.js of mise.toml up and installs the npm and the packages (kit K992).
+  assert.match(job, /uses: \.\/\.github\/actions\/kit-bootstrap\n/);
   assert.match(job, /uses: shivammathur\/setup-php@/);
   assert.match(job, /php-version-file:\s*\.php-version\n/);
-  assert.match(job, /run: make install-tools TOOLS="npm"\n/);
-  assert.match(job, /run: make install-packages\n/);
   assert.match(job, /run: make crudui-install-composer\n/);
   assert.match(job, /run: make ci-targets TARGETS="crudui-test-form-comparison"\n/);
 });
@@ -81,7 +79,7 @@ test('CI builds and runs the five record stores and the canonical flow', async (
   // The Rust record server builds from the OrderedJSON checkout, which make crudui-install-crates installs before the crates.
   assert.match(job, /run: make crudui-install-crates\n/);
   assert.match(job, /workspaces: examples\/form-comparison\/servers\/rust/);
-  assert.match(job, /run: make install-packages\n/);
+  assert.match(job, /uses: \.\/\.github\/actions\/kit-bootstrap\n/);
   assert.match(job, /run: make crudui-install-composer\n/);
   assert.match(job, /run: make ci-targets TARGETS="crudui-test-form-comparison-pipeline"\n/);
   const pipeline = script(readManifest(path.join(repository, 'package.json')), 'test:form-comparison:pipeline');

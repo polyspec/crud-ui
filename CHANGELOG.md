@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — Adopt kit 0.0.87 and ordered-json 0.0.17 (C17.109)
+
+- crudui is on kit 0.0.87 and ordered-json 0.0.17: every job of `ci.yml` and `pages.yml` runs the bootstrap action that kit vendors, `.github/actions/kit-bootstrap`, in place of its own copy of the setup-node, kit bootstrap, npm and package steps (kit K992), and the CI tests read that action step.
+
 ## 0.0.10
 
 - C18.14: every manifest and lock of a crudui package carries 0.0.10, with kit 0.0.86 and ordered-json 0.0.16 (C18.14)
