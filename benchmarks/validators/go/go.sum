@@ -1,2 +1,2 @@
-github.com/polyspec/crudui/packages/validator/go v0.0.0-20261014172735-4e1f5b993870 h1:Wr+97kp7VcUl2LzqWyCWE8tuch0x3WgOKsS0Fzdofuw=
-github.com/polyspec/crudui/packages/validator/go v0.0.0-20261014172735-4e1f5b993870/go.mod h1:vxbdKIF5OlB0ci4WI8TZzcJIjx2Z4mXRQJdkhNKesJA=
+github.com/polyspec/crudui/packages/validator/go v0.0.12 h1:iWwD41IirU/iLFic4PZcu9mvd1tirzsbtPlNJUU7aeY=
+github.com/polyspec/crudui/packages/validator/go v0.0.12/go.mod h1:vxbdKIF5OlB0ci4WI8TZzcJIjx2Z4mXRQJdkhNKesJA=

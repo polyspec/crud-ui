@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- crudui Go package를 요구하는 Go module 다섯 개의 go.sum은 go.mod가 요구하는 version을 적어 go mod tidy가 아무것도 바꾸지 않는다 (C18.20)
 - packages/php-ext/composer.lock은 0.0.12 composer.json의 content-hash를 적어 composer validate가 통과한다 (C18.19)
 - LOCAL=1은 kit link providers가 .links checkout에서 찾은 OrderedJSON php-ext folder를 release처럼 빌드하고 Rust는 kit link cargo로 실행한다. config/local-providers.json이 없어진다 (C18.18)
 - CI는 OrderedJSON을 packages.json, npm, Cargo release로만 설치한다. 그 checkout의 git clone과 npm link가 없어지고 root composer.json에 source 경로의 S5 예외가 없다 (C18.17)
