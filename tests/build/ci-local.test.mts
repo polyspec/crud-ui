@@ -387,6 +387,27 @@ test('a CI install takes OrderedJSON only from its installed packages: no clone 
   assert.doesNotMatch(readFileSync(path.join(ROOT, 'config/layout.yml'), 'utf8'), /\.\.\/ordered-json/);
 });
 
+test('PIE builds the OrderedJSON php-ext of the release that composer.lock installs, from its packages.json (C18.22)', () => {
+  const run = makeDryRun(ROOT, 'ordered-json-ext');
+  assert.equal(run.status, 0, run.stderr);
+  // The recipe reads the version from composer.lock and the repository from composer.json, so it holds no copy of either.
+  const value = (name: string): string => {
+    const line = new RegExp(`${name}="\\$\\(\\S*node -p '(.*)'\\)"`).exec(run.stdout);
+    assert.ok(line, `the recipe reads ${name} with node: ${run.stdout}`);
+    const result = spawnSync('node', ['-p', line[1] ?? ''], { cwd: ROOT, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+    return result.stdout.trim();
+  };
+  const lock = parseJson<{ packages: { name: string; version: string }[] }>(readFileSync(path.join(ROOT, 'composer.lock'), 'utf8'),
+    { properties: { packages: { elements: { properties: { name: { type: 'string' }, version: { type: 'string' } }, additionalProperties: true } } }, additionalProperties: true }, 'composer.lock');
+  assert.equal(value('version'), lock.packages.find(item => item.name === 'polyspec/ordered-json')?.version);
+  const manifest = parseJson<{ repositories: { type: string; url: string }[] }>(readFileSync(path.join(ROOT, 'composer.json'), 'utf8'),
+    { properties: { repositories: { elements: { properties: { type: { type: 'string' }, url: { type: 'string' } }, additionalProperties: true } } }, additionalProperties: true }, 'composer.json');
+  assert.equal(value('packages'), manifest.repositories.find(item => item.type === 'composer')?.url);
+  assert.match(run.stdout, /repository:add composer "\$packages"/);
+  assert.match(run.stdout, /build "polyspec\/ordered-json-php-ext:\$version"/);
+});
+
 test('a CI job runs no kit task that repeats the shared gates: build-lint runs the Svelte lint, and kit\'s lint task runs in no job (K870, C17.91)', async () => {
   const workflow = workflowCommands(await workflowFile('ci.yml'));
   const runs = (target: string): boolean => workflow.some(command => new RegExp(`TARGETS="[^"]*\\b${target}\\b`).test(command) || command === `make ${target}`);

@@ -275,8 +275,10 @@ release를 그 옆에 추가하므로 npm 갱신 뒤에 `npm dedupe`를 실행�
 `install-tools`, `dependency-review`와, lock이 고정한 제3자
 package를 내려받는 release archive의 사용자 project lock `release-consumer-lock`만 `$(ONLINE)`으로 이를 풉니다.
 `release-consumer`는 script가 스스로 풉니다. `make crudui-install-crates`는 모든 Cargo.lock의 crate를
-download하고, `make install`이 이를 실행합니다. crate는 install-kit이 받습니다(K864). 따라서 어떤 대상도 따로 검사하지 않습니다. comparison pipeline은 OrderedJSON v0.0.14의 packages.json 저장소에서 가져온 OrderedJSON PHP 확장 소스를 읽고(K865),
-없으면 실패하며, 아무것도 download하지 않습니다. comparison의 Go module은 OrderedJSON module `v0.0.9`를 요구하고,
+`cargo fetch --locked`로 download하고, `make install`이 이를 실행하므로 어떤 대상도 따로 검사하지 않습니다.
+`make ordered-json-ext`는 `composer.lock`이 설치한 OrderedJSON release의 PHP 확장을 `composer.json`의 packages.json 저장소에서
+빌드하며, comparison pipeline은 그 빌드를 읽고
+없으면 실패하며, 아무것도 download하지 않습니다. comparison의 Go module은 OrderedJSON module `v0.0.18`을 요구하고,
 `GOPROXY=off`가 module cache에서 이를 읽습니다.
 
 ## 문서 웹

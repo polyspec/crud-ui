@@ -62,8 +62,6 @@ UV := $(KIT_TOOLS)/mise/shims/uv
 # from the PATH that make started with (kit K171).
 GO := $(KIT_TOOLS)/mise/shims/go
 COMPOSER_BIN := $(KIT_TOOLS)/mise/shims/composer
-ORDERED_JSON_VERSION := 0.0.14
-ORDERED_JSON_PACKAGES := https://github.com/polyspec/ordered-json/releases/download/v$(ORDERED_JSON_VERSION)/packages.json
 # The folder that make ordered-json-ext records for the local record servers (examples/form-comparison/src/local-servers.mjs).
 ORDERED_JSON_PACKAGE_FILE := $(CURDIR)/var/ordered-json-package
 # PIE is the shim of the http:pie of mise.toml, which install-pie installs (C17.93). Each build starts in an empty working
@@ -75,7 +73,8 @@ PIE_WORK := $(CURDIR)/var/pie/polyspec/ordered-json-php-ext
 install-pie: ## Install the PIE of mise.toml (http:pie) that the OrderedJSON build runs; ONLINE
 	$(MAKE) --no-print-directory install-tools TOOLS=pie
 
-# The OrderedJSON php-ext package of the release packages.json, built with PIE directly (C17.96): PIE adds the repository and
+# The OrderedJSON php-ext package of the release that composer.lock installs, from the packages.json repository of
+# composer.json, built with PIE directly (C17.96, C18.22): PIE adds the repository and
 # builds the package in an empty working directory, and the one installed.json entry of that build names the package folder,
 # which the record servers read from ORDERED_JSON_PACKAGE_FILE. kit's pie-build is not used, since kit main removes it (K931), to be released in 0.0.81.
 .PHONY: ordered-json-ext
@@ -83,8 +82,11 @@ ordered-json-ext: install-pie ## Build the OrderedJSON php-ext package of the re
 	@mkdir -p $(CURDIR)/var
 	rm -rf $(PIE_WORK)
 	mkdir -p $(PIE_WORK)
-	PIE_WORKING_DIRECTORY=$(PIE_WORK) $(ONLINE) $(PIE) repository:add composer $(ORDERED_JSON_PACKAGES) --no-interaction
-	PIE_WORKING_DIRECTORY=$(PIE_WORK) $(ONLINE) $(PIE) build polyspec/ordered-json-php-ext:$(ORDERED_JSON_VERSION) --no-interaction
+	@set -e; \
+	version="$$($(NODE) -p 'JSON.parse(require("fs").readFileSync("composer.lock", "utf8")).packages.find(item => item.name === "polyspec/ordered-json").version')"; \
+	packages="$$($(NODE) -p 'require("./composer.json").repositories.find(item => item.type === "composer").url')"; \
+	PIE_WORKING_DIRECTORY=$(PIE_WORK) $(ONLINE) $(PIE) repository:add composer "$$packages" --no-interaction; \
+	PIE_WORKING_DIRECTORY=$(PIE_WORK) $(ONLINE) $(PIE) build "polyspec/ordered-json-php-ext:$$version" --no-interaction
 	@$(NODE) scripts/ordered-json-package.mts $(PIE_WORK) $(ORDERED_JSON_PACKAGE_FILE)
 export CRUDUI_PYTHON := $(PYTHON_VENV)/bin/python
 help: ## 타겟 설명

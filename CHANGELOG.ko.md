@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- make ordered-json-ext는 Makefile이 두던 오래된 0.0.14 사본이 아니라 composer.lock이 설치한 OrderedJSON release(0.0.18)의 php-ext를 빌드한다 (C18.22)
 - CRUDUI는 kit 0.0.92로 동작한다. kit이 더 이상 crate를 받지 않으므로 crudui-install-crates가 추적하는 모든 Cargo.lock의 crate를 cargo fetch --locked로 받는다 (C18.21)
 - crudui Go package를 요구하는 Go module 다섯 개의 go.sum은 go.mod가 요구하는 version을 적어 go mod tidy가 아무것도 바꾸지 않는다 (C18.20)
 - packages/php-ext/composer.lock은 0.0.12 composer.json의 content-hash를 적어 composer validate가 통과한다 (C18.19)

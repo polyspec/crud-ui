@@ -314,9 +314,10 @@ recipe and the commands that it starts; only the download targets `install`, `in
 `dependency-review`, and the lock of the consumer projects of the release archives
 `release-consumer-lock`, which downloads the
 third-party packages that their locks pin, lift them with `$(ONLINE)`; `release-consumer` lifts the settings itself. `make crudui-install-crates` downloads the
-crates of every Cargo.lock, and `make install` runs it. The crates are fetched by install-kit (K864), so no target runs a separate check of them. The comparison pipeline reads the PHP extension source of
-OrderedJSON from the packages.json repository of OrderedJSON v0.0.14 (K865) and fails when it is missing;
-it downloads nothing. The Go module of the comparison servers requires the OrderedJSON module at `v0.0.9`, which `GOPROXY=off`
+crates of every Cargo.lock with `cargo fetch --locked`, and `make install` runs it, so no target runs a separate check of
+them. `make ordered-json-ext` builds the PHP extension of the OrderedJSON release that `composer.lock` installs, from the
+packages.json repository of `composer.json`; the comparison pipeline reads that build and fails when it is missing;
+it downloads nothing. The Go module of the comparison servers requires the OrderedJSON module at `v0.0.18`, which `GOPROXY=off`
 reads from the module cache.
 
 ## Documentation web
