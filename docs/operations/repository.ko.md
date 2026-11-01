@@ -16,7 +16,6 @@ Source 또는 packed 명령은 sibling kit checkout 없이 실행할 수 있습�
 
 ## main 게시
 
-CI는 `composer.json`의 packages.json 저장소가 선언한 OrderedJSON source tag를 `config/local-providers.json`의 경로에 준비합니다.
 Runtime policy test는 GitHub Actions의 네 개 독립 shard에서 실행하고 각각의 결과를 기록합니다.
 
 각 개발 작업은 소유 unit test가 통과하면 changelog 항목과 함께 commit하고 row를 `[o]`로 바꿉니다. 거절한 원래 작업은 기록한
@@ -125,12 +124,12 @@ polyspec archive는 이름과 version으로만(npm은 `integrity` 없이, Compos
 
 - root `package.json`(`@polyspec/crudui-workspace`, private)은 `workspaces`에 `packages/*`를 적습니다. npm은 다른
   package가 요구하는 정확한 version을 만족하는 workspace package를 link하고, `package-lock.json`이 link를 기록합니다.
-  다른 polyspec 저장소의 package는 이 root에서만 공급합니다. `@polyspec/ordered-json`은 tag `v0.0.10`의 release asset
-  `polyspec-ordered-json-npm-0.0.10.tgz`를 root devDependency로 두며, `@polyspec/kit`처럼 URL과 integrity로 고정하고,
-  `kit link`가 sibling checkout에 연결합니다.
-- private root `composer.json`은 `packages/validator/php`, `packages/generator/php`, `../ordered-json/packages/php`를
-  native symlink와 configuration reference를 사용하는 path repository로 선언합니다. CRUDUI package는 checkout의
-  정확한 version을 사용하며 OrderedJSON 제약은 현재 0.0.x sibling source를 허용합니다. `composer.lock`은 선택한
+  다른 polyspec 저장소의 package는 이 root에서만 공급합니다. `@polyspec/ordered-json`은 tag `v0.0.18`의 release asset
+  `polyspec-ordered-json-0.0.18.tgz`를 root devDependency로 두며, `@polyspec/kit`처럼 URL과 integrity로 고정하고,
+  `make link`가 `.links`가 선언한 checkout에 연결합니다.
+- private root `composer.json`은 `packages/validator/php`와 `packages/generator/php`를 native symlink와 configuration
+  reference를 사용하는 path repository로, OrderedJSON release의 packages.json 저장소와 함께 선언합니다. CRUDUI
+  package는 checkout의 정확한 version을 사용하며 OrderedJSON 제약은 0.0.x release를 허용합니다. `composer.lock`은 선택한
   source version, 요구와 autoload를 기록합니다. PHPUnit, PHP check와 PHP server는 설치한 package를
   `vendor/autoload.php`로 load합니다.
 

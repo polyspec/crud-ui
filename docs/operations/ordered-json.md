@@ -6,11 +6,10 @@ defines the required data shapes and order. [Feature status](../features.md)
 records verification separately from runtime deployment.
 
 The record servers of the [form comparison](form-comparison.md) read and write JSON with the installed
-[OrderedJSON](https://github.com/polyspec/ordered-json) packages. Development uses native source links. The private
-root Composer project declares `../ordered-json/packages/php`, records the actual 0.0.x source version in `composer.lock`
-and loads it through `vendor/autoload.php`. `make crudui-install-composer` refreshes source resolution without fetching
-published archives. Native PHP extension sources resolve from the declared development inputs. Published archive
-inputs from the packages.json repository of OrderedJSON v0.0.14 are independent of the default Composer source install.
+[OrderedJSON](https://github.com/polyspec/ordered-json) packages. The private root Composer project installs OrderedJSON
+from the packages.json repository of its release, records it in `composer.lock` and loads it through
+`vendor/autoload.php`. In development, `make link` links the installed package folders to a checkout that `.links` declares;
+CRUDUI never reads another repository's source tree by path.
 OrderedJSON tests its processor; CRUDUI tests package integration through `examples/form-comparison/src/json.test.mjs`,
 `FormJsonTest.php` of `servers/php`, `json_test.go` of the Go server and the Rust server's JSON tests. These check member
 order, numeric keys, keyed rows, empty types and rejection of numbers outside the form data range.

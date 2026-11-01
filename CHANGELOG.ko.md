@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- CI는 OrderedJSON을 packages.json, npm, Cargo release로만 설치한다. 그 checkout의 git clone과 npm link가 없어지고 root composer.json에 source 경로의 S5 예외가 없다 (C18.17)
+
 ## 0.0.12
 
 - C18.16: crudui 패키지의 모든 manifest와 lock은 kit 0.0.88, ordered-json 0.0.18과 함께 0.0.12를 적는다 (C18.16)

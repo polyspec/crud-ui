@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: ab60e47450e967aada780d2b77a78e7dd12a59671c2df36048a2cbd7de00bd0a -->
+<!-- source-sha256: 58cae69105190a8cae8cb13aa989f67861b3645f0e20999d4d70c83809a207d9 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -70,3 +70,4 @@
 | C18.15 | 릴리스된 crudui 버전은 kit 0.0.87과 ordered-json 0.0.17을 담는다: crudui 패키지의 모든 manifest와 lock은 CHANGELOG 맨 위 절의 버전을 적고, Unreleased 항목은 두 언어 모두 그 절 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
 | C18.16 | crudui의 release 버전은 kit 0.0.88과 ordered-json 0.0.18을 담는다: crudui package의 모든 manifest와 lock은 최상위 CHANGELOG section의 버전을 적고, Unreleased 항목은 두 언어 모두 그 section 아래로 옮긴다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
 | C18.16-1 | uv.lock은 crudui Python package의 0.0.12 버전을 적어, release commit의 uv sync --locked가 통과한다 (C18.16에 이어) | uv.lock, CHANGELOG.md, CHANGELOG.ko.md | `var/tools/mise/shims/uv lock --check` | [o] |
+| C18.17 | CRUDUI는 CI에서 OrderedJSON을 설치한 package로만 받는다. 그 저장소의 clone, checkout의 npm link, source 경로의 S5 예외가 없다. | Makefile, config/layout.yml, tests/build/ci-local.test.mts, docs/operations/ordered-json.md, docs/operations/package-build.md, docs/operations/repository.md and their Korean twins, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.17 tests/build/ci-local.test.mts` | [o] |

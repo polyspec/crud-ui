@@ -317,8 +317,8 @@ GitHub Pages는 `main`의 CI 문서 작업이 성공한 뒤 검사한 웹를
 ## PHP 의존성
 
 각 PHP package는 runtime과 test 의존성을 선언합니다. Canonical private project는 `composer.json`과 `composer.lock`을
-사용합니다. `make crudui-install-composer`는 이 checkout의 path package와 현재 `../ordered-json/packages/php` sibling
-source를 해석합니다. Composer는 `vendor/`, native 링크, 설치 metadata와 autoload를 관리하며 별도 manifest selector는
+사용합니다. `make crudui-install-composer`는 이 checkout의 path package와 release의 packages.json 저장소에 있는 OrderedJSON을
+해석하고, `make link`가 그것을 `.links`가 선언한 checkout에 연결합니다. Composer는 `vendor/`, native 링크, 설치 metadata와 autoload를 관리하며 별도 manifest selector는
 필요하지 않습니다. `make crudui-local-composer-check`는 이 project와 PHP platform을 검증합니다. 생성 vendor 디렉터리는
 Git에서 제외합니다. PHP 검증, test와 문서 검사 전에 source 의존성을 설치합니다. Release archive consumer project는
 이 개발 project와 독립적입니다.

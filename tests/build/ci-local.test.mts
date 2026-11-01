@@ -375,15 +375,16 @@ test('every tool of kit that the Makefile starts is in the installed @polyspec/k
 // The CI build-lint job runs crudui-lint, the ESLint of the Svelte components (C17.91-1); make lint also runs kit's lint task,
 // which runs lint-<runtime> of every runtime, and no CI job runs it (K870).
 
-test('the CI provider step reads the OrderedJSON version of the packages.json URL (C17.80)', () => {
-  const makefile = readFileSync(path.join(ROOT, 'Makefile'), 'utf8');
-  const line = /^\t\tversion="\$\$\(\$\(NODE\) -p '(.*)'\)"; \\$/m.exec(makefile);
-  assert.ok(line, 'the CI provider step reads the version with node');
-  // Make expands $$ to $ and the recipe runs in sh; the expression is the same one that the recipe runs.
-  const expression = (line[1] ?? '').replace(/\$\$/g, '$');
-  const version = spawnSync('node', ['-p', expression], { cwd: ROOT, encoding: 'utf8' });
-  assert.equal(version.status, 0, version.stderr);
-  assert.match(version.stdout.trim(), /^\d+\.\d+\.\d+$/);
+test('a CI install takes OrderedJSON only from its installed packages: no clone and no link of its checkout (C18.17)', () => {
+  // S15: CRUDUI knows OrderedJSON through the packages that composer.json, package.json, go.mod and Cargo.toml install, never
+  // through a source tree of the other repository; a local checkout is linked only by make link from .links.
+  for (const target of ['install-packages', 'crudui-install-composer', 'release-prepare']) {
+    const run = makeDryRun(ROOT, target, { env: { ...process.env, GITHUB_ACTIONS: 'true' } });
+    assert.equal(run.status, 0, run.stderr);
+    assert.doesNotMatch(run.stdout, /git clone|npm link|\$\(NPM\) link| link --no-save|local-providers/, target);
+  }
+  // The S5 rule of the path repositories of composer.json names no checkout of another repository as an exception.
+  assert.doesNotMatch(readFileSync(path.join(ROOT, 'config/layout.yml'), 'utf8'), /\.\.\/ordered-json/);
 });
 
 test('a CI job runs no kit task that repeats the shared gates: build-lint runs the Svelte lint, and kit\'s lint task runs in no job (K870, C17.91)', async () => {

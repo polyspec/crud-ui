@@ -150,19 +150,7 @@ crudui-install: install-kit crudui-install-python crudui-install-composer instal
 # The extra lock projects that install-packages installs after its npm ci (K428): the tools of packages/svelte.
 INSTALL_PACKAGES_EXTRA := crudui-install-svelte-tools
 
-# CI prepares the release source declared by the application before native path dependencies are installed.
-.PHONY: crudui-prepare-ci-providers
-install-packages: crudui-prepare-ci-providers hooks
-release-prepare:: crudui-prepare-ci-providers
-crudui-prepare-ci-providers: ## Prepare the declared OrderedJSON release source in CI; ONLINE
-	@if [ "$${GITHUB_ACTIONS:-}" = true ]; then \
-		provider="$$($(NODE) -p 'require("./config/local-providers.json").orderedJsonRoot')"; \
-		version="$$($(NODE) -p 'require("./composer.json").repositories.find(r => r.type === "composer" && r.url.endsWith("/packages.json")).url.match(/v(\d+\.\d+\.\d+)\/packages\.json$$/)[1]')"; \
-		if [ ! -d "$$provider" ]; then \
-			echo "[crudui-prepare-ci-providers] cloning OrderedJSON v$$version into $$provider"; \
-			$(ONLINE) git clone --depth 1 --branch "v$$version" https://github.com/polyspec/ordered-json.git "$$provider" || exit $$?; \
-		fi; \
-	fi
+install-packages: hooks
 
 # The tools of packages/svelte that need the TypeScript 6 API (svelte-check, @sveltejs/package and the Svelte lint)
 # are a project of their own outside the npm workspaces, so that no package that npm hoists to the root reaches the
@@ -170,20 +158,15 @@ crudui-prepare-ci-providers: ## Prepare the declared OrderedJSON release source 
 crudui-install-svelte-tools: ## Install the tools project of packages/svelte from its package-lock.json; ONLINE
 	$(ONLINE) $(NPM) ci --prefix packages/svelte/tools --no-audit --no-fund
 
-# The private root Composer project resolves this checkout's PHP packages and the current OrderedJSON sibling source.
+# The private root Composer project resolves this checkout's PHP packages and OrderedJSON from its packages.json repository.
 # Composer owns the path links, autoload files and installed metadata. Updating the path packages refreshes their native
-# metadata when a source manifest changes; no release archive is downloaded by the default development install.
+# metadata when a source manifest changes; make link replaces the installed OrderedJSON with a checkout that .links declares.
 crudui-install-composer: ## Resolve and install the current local PHP source packages with Composer
 ifeq ($(GITHUB_ACTIONS),true)
 	$(ONLINE) $(COMPOSER_BIN) install --no-interaction --prefer-dist
 else
 	$(ONLINE) $(COMPOSER_BIN) update 'polyspec/*' --with-dependencies --no-interaction
 endif
-	@if [ "$${GITHUB_ACTIONS:-}" = true ]; then \
-		provider="$$($(NODE) -p 'require("./config/local-providers.json").orderedJsonRoot')"; \
-		mkdir -p "$(CURDIR)/var/link/npm/lib/node_modules"; \
-		$(ONLINE) npm_config_allow_remote=root npm_config_prefix="$(CURDIR)/var/link/npm" $(NPM) link --no-save --no-audit --no-fund "$$provider/packages/js"; \
-	fi
 
 crudui-local-composer-check: ## Validate the canonical Composer manifest, lock and PHP platform requirements
 	@status=0; \

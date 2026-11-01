@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- CI installs OrderedJSON only from its packages.json, npm and Cargo releases: the git clone and the npm link of its checkout are gone, and the root composer.json has no S5 exception for its source path (C18.17)
+
 ## 0.0.12
 
 - C18.16: every manifest and lock of a crudui package carries 0.0.12, with kit 0.0.88 and ordered-json 0.0.18 (C18.16)

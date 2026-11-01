@@ -75,24 +75,6 @@ rules:
   - id: layout-config-paths
     paths: ["config/*.json", "!config/local-providers.json"]
 
-  # S5: the root development Composer project declares the external OrderedJSON provider as a native path repository.
-  # Other Composer projects and all other root path repositories retain the repository-local resolution check.
-  - id: layout-composer-path
-    select: ["**/composer.json", "!tests/kit/fixture/**", "!composer.json"]
-
-  - id: layout-root-composer-path
-    kind: for_each_file
-    level: error
-    select: ["composer.json"]
-    require:
-      - kind: cross_file
-        relation: resolves
-        source:
-          file: "{path}"
-          extract:
-            json: "$.repositories[?@.type == 'path' && @.url != '../ordered-json/packages/php'].url"
-    message: "S5: root path repositories other than the declared OrderedJSON provider resolve inside the repository"
-
   # S9: the infrastructure of scripts/ and tests/ is TypeScript. The exceptions each drive or serve one language:
   # - scripts/php-doc-coverage.php and tests/docs/php/DocCoverage.php: the documentation check of the classes of the PHP
   #   packages, which PHP itself runs (DocCoverageTest of each package);
