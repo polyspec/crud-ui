@@ -76,7 +76,7 @@ test('CI builds and runs the five record stores and the canonical flow', async (
   // make install-tools installs the Rust toolchain of rust-toolchain.toml too (kit K151).
   assert.match(job, /run: make install-tools TOOLS="node go rust php composer"\n/);
   assert.doesNotMatch(job, /install-rust/);
-  // The Rust record server builds from the OrderedJSON checkout, which make crudui-install-crates installs before the crates.
+  // The Rust record server builds from the crates that make crudui-install-crates fetches.
   assert.match(job, /run: make crudui-install-crates\n/);
   assert.match(job, /workspaces: examples\/form-comparison\/servers\/rust/);
   assert.match(job, /uses: \.\/\.github\/actions\/kit-bootstrap\n/);

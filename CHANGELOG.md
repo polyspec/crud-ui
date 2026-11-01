@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- CRUDUI runs on kit 0.0.92; crudui-install-crates fetches the crates of every tracked Cargo.lock with cargo fetch --locked, since kit no longer fetches them (C18.21)
 - The go.sum of the five Go modules that require a crudui Go package records the versions their go.mod requires, so go mod tidy changes nothing (C18.20)
 - packages/php-ext/composer.lock carries the content-hash of its 0.0.12 composer.json, so composer validate passes (C18.19)
 - LOCAL=1 takes the OrderedJSON php-ext folder that kit link providers names for a checkout of .links and builds it like the release, and Rust runs through kit link cargo; config/local-providers.json is gone (C18.18)

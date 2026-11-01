@@ -1,7 +1,7 @@
 // The checks run offline, and only the install targets download (docs/operations/package-build.md, "Offline checks"): the
 // Makefile exports the offline settings of cargo, go, npm and Composer, and `$(ONLINE)` lifts them for the recipe lines
 // of the install targets, dependency-review and the consumer installs of the release archives alone. cargo answers a missing crate offline with "retry
-// without --offline"; the crates of every Cargo.lock are fetched by install-kit (K864, fetch-cargo-downloads of @polyspec/kit),
+// without --offline"; crudui-install-crates fetches the crates of every Cargo.lock with cargo fetch --locked (C18.21),
 // so no target depends on a check of them.
 // A target runs cargo when a recipe line runs `run-tests.mts cargo` or `run-suite.mts cargo` or `run-rust-command.mts` with a command other than
 // fmt, or starts a file, an npm script or a package test that does, directly or through the files that it imports or
@@ -23,10 +23,10 @@ interface MakeRule {
 const ROOT = path.resolve(import.meta.dirname, '../..');
 
 // The targets of the kit.mk and bootstrap of @polyspec/kit that download: the tools, the packages, the
-// crates, the dependency review, the Python locks, the release tools and backend, the locks of the consumer projects and
+// dependency review, the Python locks, the release tools and backend, the locks of the consumer projects and
 // the proof of a release, and the release archives of other repositories (kit K140, K865). The tool lifts the
 // offline settings itself.
-const KIT_DOWNLOADS = ['install-tools', 'install-packages', 'cargo-downloads-fetch', 'toolchain-lock'];
+const KIT_DOWNLOADS = ['install-tools', 'install-packages', 'toolchain-lock'];
 const read = (file: string): string => readFileSync(path.join(ROOT, file), 'utf8');
 const makefile = read('Makefile');
 // The evaluated database contains the commands and prerequisites of the checkout and its installed kit. KIT_WORKTREE is empty,

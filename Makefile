@@ -91,7 +91,7 @@ help: ## 타겟 설명
 	@echo "CRUDUI docs — make targets:"
 	@echo ""
 	@echo "  make install               Install the recorded npm, the npm, Composer and Cargo dependencies, the Rust toolchain and phpDocumentor"
-	@echo "  make crudui-install-crates        Download the crates of every Cargo.lock and the OrderedJSON checkout that one reads"
+	@echo "  make crudui-install-crates        Download the crates of every Cargo.lock"
 	@echo "  make install-tools         Install the npm, Go and cargo-audit releases that the checkout declares into var/tools"
 	@echo "  make owner-check           Run the owner checks of the changed paths (config/owner-checks.json); PATHS or BASE select the paths"
 	@echo "  make docs                  전체 문서 생성 (API doc 멀티언어 + JSON schema 검사 + 정적 웹)"
@@ -189,8 +189,10 @@ crudui-install-browsers: ## Install the pinned browsers of BROWSERS (chrome fire
 check-ci-browser: ## Check that the pinned Chrome runs sandboxed
 	$(NODE) scripts/check-ci-browser.mts
 
-# The crates of every Cargo.lock are fetched by install-kit (K864); a target that runs cargo needs no check of them.
-crudui-install-crates: cargo-downloads-fetch ## Download the crates of every Cargo.lock
+# The cargo of rust-toolchain.toml (rustup) fetches the crates of every tracked Cargo.lock here, the one recipe of cargo that is
+# online; every other recipe runs cargo offline (CARGO_NET_OFFLINE) and reads only these crates.
+crudui-install-crates: ## Download the crates of every Cargo.lock; ONLINE
+	@set -e; for lock in $$(git ls-files -- '*Cargo.lock'); do $(ONLINE) cargo fetch --locked --manifest-path "$${lock%.lock}.toml"; done
 
 # The modules that the Go workspace of go.work requires, downloaded into the module cache with go mod download at its
 # root: the Go checks run with GOPROXY=off and read only that cache (C14.18). A CI job that runs Go runs it after make
