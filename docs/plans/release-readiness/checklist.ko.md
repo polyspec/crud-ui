@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: b39f70bb36c738c4f6a9a4dc88496b47a185984180bf1d9bd22d0bf012e03d5c -->
+<!-- source-sha256: f09dcda8076e76eca0a6b0c98f7cc0d38783cb40cc28580610cdbdcb3f128c15 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -76,3 +76,4 @@
 | C18.20 | crudui Go package를 요구하는 모든 Go module의 go.sum은 go.mod가 요구하는 version을 적어 go mod tidy가 아무것도 바꾸지 않는다. | go.sum of benchmarks/validators/go, examples/cross-check-console/validators/go, examples/form-comparison/servers/go, packages/generator/go and tests/native-generators/programs/go, CHANGELOG.md, CHANGELOG.ko.md | `env GOPROXY=off GOTOOLCHAIN=local var/tools/mise/shims/go -C benchmarks/validators/go mod tidy -diff`; `env GOPROXY=off GOTOOLCHAIN=local var/tools/mise/shims/go -C examples/cross-check-console/validators/go mod tidy -diff`; `env GOPROXY=off GOTOOLCHAIN=local var/tools/mise/shims/go -C examples/form-comparison/servers/go mod tidy -diff`; `env GOPROXY=off GOTOOLCHAIN=local var/tools/mise/shims/go -C packages/generator/go mod tidy -diff`; `env GOPROXY=off GOTOOLCHAIN=local var/tools/mise/shims/go -C tests/native-generators/programs/go mod tidy -diff` | [o] |
 | C18.21 | CRUDUI는 kit 0.0.92로 동작하고, kit에 cargo-downloads-fetch가 없으므로 crudui-install-crates가 추적하는 모든 Cargo.lock의 crate를 cargo fetch --locked로 받는다. | package.json, package-lock.json, PRINCIPLES.md, PRINCIPLES.ko.md, Makefile, tests/build/offline-checks.test.mts, tests/build/form-comparison-ci.test.mts, CHANGELOG.md, CHANGELOG.ko.md | `make -n crudui-install-crates` | [o] |
 | C18.22 | make ordered-json-ext는 composer.lock이 설치한 OrderedJSON release의 php-ext를 composer.json의 packages.json 저장소에서 빌드하며, Makefile은 그 version이나 URL의 사본을 두지 않는다. | Makefile, tests/build/ci-local.test.mts, docs/operations/package-build.md and its Korean twin, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.22 tests/build/ci-local.test.mts` | [o] |
+| C18.22-1 | C17.96의 PIE 테스트는 ordered-json-ext가 recipe가 composer.json과 composer.lock에서 읽은 packages.json 저장소와 version으로 빌드하는지 확인하며, C18.22가 지운 0.0.14 literal을 확인하지 않는다. | tests/build/ordered-json-pie.test.mts, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- tests/build/ordered-json-pie.test.mts` | [~] |
