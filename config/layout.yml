@@ -70,11 +70,6 @@ rules:
     id: layout-generator-ports
     vars: { component: generator }
 
-  # S5: local-providers.json is the authoritative declaration of the external OrderedJSON source checkout.
-  # Runtime source resolution reads that declaration; native package managers own links to the declared provider.
-  - id: layout-config-paths
-    paths: ["config/*.json", "!config/local-providers.json"]
-
   # S9: the infrastructure of scripts/ and tests/ is TypeScript. The exceptions each drive or serve one language:
   # - scripts/php-doc-coverage.php and tests/docs/php/DocCoverage.php: the documentation check of the classes of the PHP
   #   packages, which PHP itself runs (DocCoverageTest of each package);

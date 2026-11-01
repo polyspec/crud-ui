@@ -53,15 +53,23 @@ export function orderedJsonCopyArguments(extension, destination, buildPath) {
   return ['-R', `${path.join(extension, buildPath)}${path.sep}.`, destination];
 }
 
+/**
+ * The folder of the Composer package `name` that a checkout of the link declaration (.links) provides: kit's link providers
+ * prints each Composer provider as the name, a tab and the folder (K1008), so no path of another repository is written here.
+ */
+async function linkedComposerFolder(name, { root, providers }) {
+  const { stdout } = await providers(process.execPath, [fileURLToPath(import.meta.resolve('@polyspec/kit/link')), 'providers', '--ecosystem', 'composer'], { cwd: root });
+  const line = stdout.split('\n').find(item => item.startsWith(`${name}\t`));
+  assert.ok(line, `no checkout of .links provides ${name}, which LOCAL=1 builds; declare its checkout in .links`);
+  return line.slice(name.length + 1);
+}
+
 /** Select the explicitly requested native provider and read its own extension identity. */
-export async function orderedJsonProvider({ root = repositoryRoot, mode }) {
+export async function orderedJsonProvider({ root = repositoryRoot, mode, providers = execFileAsync }) {
   assert.ok(mode === 'local' || mode === 'release', `Unknown native dependency mode: ${mode}`);
   let directory;
   if (mode === 'local') {
-    const declared = JSON.parse(await readFile(path.join(root, 'config/local-providers.json'), 'utf8'));
-    assert.equal(typeof declared.orderedJsonRoot, 'string', 'config/local-providers.json declares orderedJsonRoot');
-    assert.notEqual(declared.orderedJsonRoot, '', 'orderedJsonRoot is not empty');
-    directory = path.join(path.resolve(root, declared.orderedJsonRoot), 'packages/php-ext');
+    directory = await linkedComposerFolder('polyspec/ordered-json-php-ext', { root, providers });
   } else {
     directory = await pieOrderedJsonDirectory(root);
     assert.ok(directory, `${orderedJsonPackageFile} names no OrderedJSON php-ext package; run make ordered-json-ext, which PIE builds (C17.84, C17.90)`);
@@ -95,6 +103,23 @@ async function prepareNativePhpAutoload({ directory, root = repositoryRoot, writ
 }
 
 /**
+ * The stages that build the OrderedJSON PHP extension of the package folder `provider.directory` in `copied`: its build
+ * path is copied and built with phpize, configure and make, whether the folder is the release that PIE unpacked or a
+ * checkout of .links. Only the package folder is read, never the repository around it (C18.18).
+ */
+export function orderedJsonBuildStages(provider, copied) {
+  const build = path.join(copied, provider.buildPath);
+  return [
+    [{ id: 'ordered-json-php-directory', command: 'mkdir', args: ['-p', build], cwd: repositoryRoot }],
+    [{ id: 'ordered-json-php-copy', command: 'cp', args: orderedJsonCopyArguments(provider.directory, build, provider.buildPath), cwd: repositoryRoot },
+      { id: 'ordered-json-manifest-copy', command: 'cp', args: [path.join(provider.directory, 'composer.json'), path.join(copied, 'composer.json')], cwd: repositoryRoot }],
+    [{ id: 'ordered-json-phpize', command: 'phpize', args: [], cwd: build }],
+    [{ id: 'ordered-json-configure', command: './configure', args: [`--enable-${provider.extensionName.replaceAll('_', '-')}`], cwd: build }],
+    [{ id: 'ordered-json-make', command: 'make', args: [], cwd: build }],
+  ];
+}
+
+/**
  * Build what the five record servers run: the OrderedJSON PHP extension source, both PHP extensions and the
  * Go and Rust server binaries. Every build is one step that
  * runs to its end without a time limit and prints its output and progress.
@@ -109,17 +134,7 @@ export async function prepareRecordServers({ buildDirectory, write = text => pro
     ({ id, command, args, cwd, environment });
   const copied = path.join(buildDirectory, 'ordered-json-php-ext');
   const build = path.join(copied, provider.buildPath);
-  const providerRoot = path.resolve(provider.directory, '../..');
-  const nativeSteps = mode === 'local'
-    ? [[step('ordered-json-native', 'make', ['build-php-ext'], providerRoot)]]
-    : [
-      [step('ordered-json-php-directory', 'mkdir', ['-p', build])],
-      [step('ordered-json-php-copy', 'cp', orderedJsonCopyArguments(provider.directory, build, provider.buildPath)),
-        step('ordered-json-manifest-copy', 'cp', [path.join(provider.directory, 'composer.json'), path.join(copied, 'composer.json')])],
-      [step('ordered-json-phpize', 'phpize', [], build)],
-      [step('ordered-json-configure', './configure', [`--enable-${provider.extensionName.replaceAll('_', '-')}`], build)],
-      [step('ordered-json-make', 'make', [], build)],
-    ];
+  const nativeSteps = orderedJsonBuildStages(provider, copied).map(stage => stage.map(item => step(item.id, item.command, item.args, item.cwd)));
   const results = await runStages([[
     step('crudui-php-extension', 'make', ['build-php-ext']),
     step('go-server', 'go', ['build', '-trimpath', '-o', goBinary, '.'],
@@ -131,9 +146,7 @@ export async function prepareRecordServers({ buildDirectory, write = text => pro
   assert.equal(failed, undefined, `Building ${failed?.id} ${failed?.status}`);
   return {
     cruduiModule: path.join(repositoryRoot, 'var/php-ext/polyspec_crudui.so'),
-    orderedJsonModule: mode === 'local'
-      ? path.join(providerRoot, 'var/php-ext', `${provider.extensionName}.so`)
-      : path.join(build, 'modules', `${provider.extensionName}.so`),
+    orderedJsonModule: path.join(build, 'modules', `${provider.extensionName}.so`),
     orderedJsonExtensionName: provider.extensionName,
     nativePhpAutoload: nativeComposer.autoload,
     nativeComposerManifest: nativeComposer.manifest,

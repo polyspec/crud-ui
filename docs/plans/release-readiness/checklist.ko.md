@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: 58cae69105190a8cae8cb13aa989f67861b3645f0e20999d4d70c83809a207d9 -->
+<!-- source-sha256: 99a7f51f9bd877620dadaa473888920afc84cd3b9fb3d1006c67ba8f59e57666 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -71,3 +71,4 @@
 | C18.16 | crudui의 release 버전은 kit 0.0.88과 ordered-json 0.0.18을 담는다: crudui package의 모든 manifest와 lock은 최상위 CHANGELOG section의 버전을 적고, Unreleased 항목은 두 언어 모두 그 section 아래로 옮긴다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `make kit-check rules-check docs-check`, `node --test tests/build/dependency-health.test.mts tests/build/package-names.test.mts` | [o] |
 | C18.16-1 | uv.lock은 crudui Python package의 0.0.12 버전을 적어, release commit의 uv sync --locked가 통과한다 (C18.16에 이어) | uv.lock, CHANGELOG.md, CHANGELOG.ko.md | `var/tools/mise/shims/uv lock --check` | [o] |
 | C18.17 | CRUDUI는 CI에서 OrderedJSON을 설치한 package로만 받는다. 그 저장소의 clone, checkout의 npm link, source 경로의 S5 예외가 없다. | Makefile, config/layout.yml, tests/build/ci-local.test.mts, docs/operations/ordered-json.md, docs/operations/package-build.md, docs/operations/repository.md and their Korean twins, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.17 tests/build/ci-local.test.mts` | [o] |
+| C18.18 | LOCAL=1은 OrderedJSON을 kit link providers와 link cargo를 통해 .links checkout이 제공하는 package folder로만 안다. config/local-providers.json과 다른 저장소 Makefile 실행이 없어진다. | examples/form-comparison/src/local-servers.mjs and its tests, scripts/run-rust-command.mts, tests/build/rust-node-entry-points.test.mts, config/local-providers.json, config/layout.yml, config/owner-checks.json, docs/operations/form-comparison.md and its Korean twin, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.18 examples/form-comparison/src/local-servers.test.mjs tests/build/rust-node-entry-points.test.mts` | [o] |

@@ -258,7 +258,7 @@ test('a Cargo command refuses a CARGO_TARGET_DIR outside its checkout', async t 
 });
 
 
-test('local Rust commands use the declared provider through the public native link command', async () => {
+test('local Rust commands run cargo through kit link, which reads the link declaration itself (C18.18)', async () => {
   const { runRustCommand } = await import('../../scripts/run-rust-command.mts');
   const cwd = path.join(repository, 'examples/form-comparison/servers/rust');
   const calls: { executable: string; args: string[]; cwd: string | undefined }[] = [];
@@ -272,7 +272,6 @@ test('local Rust commands use the declared provider through the public native li
   });
   assert.equal(calls.length, 4);
   assert.equal(calls[3]?.executable, process.execPath);
-  assert.deepEqual(calls[3]?.args.slice(1), ['cargo', '--checkout', path.resolve(repository, '../ordered-json'),
-    cwd, 'metadata', '--offline', '--format-version=1']);
+  assert.deepEqual(calls[3]?.args.slice(1), ['cargo', cwd, 'metadata', '--offline', '--format-version=1']);
   assert.equal(calls[3]?.args[0], fileURLToPath(import.meta.resolve('@polyspec/kit/link')));
 });

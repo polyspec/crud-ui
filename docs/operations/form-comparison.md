@@ -237,10 +237,11 @@ The combinations run against a local stack built from the checkout
 of `src/record-contract.mjs` against all five servers started from the checkout, each case with
 its own timeout. Both local checks first build the server programs, each as a step without a time
 limit that prints its progress: both PHP extensions, the Go binary and the Rust debug binary.
-`LOCAL=1` selects the OrderedJSON checkout declared by `config/local-providers.json`; its native extension is built by
-that provider's `make build-php-ext`, and Rust commands resolve that provider through the public native Cargo link command.
+`LOCAL=1` selects the folder of `polyspec/ordered-json-php-ext` that a checkout of `.links` provides, as kit's
+`link providers --ecosystem composer` prints it; its extension is built from that package folder as the release one is, and
+Rust commands run through kit's `link cargo`, which patches the checkouts of `.links`.
 Without `LOCAL=1`, the explicit release source is the OrderedJSON php-ext package that `make ordered-json-ext` built with PIE from the packages.json repository of OrderedJSON, and recorded in `var/ordered-json-package` (C17.84, C17.90).
-A missing local declaration or source fails; it does not select the release archive. The local stack then starts its five processes at the same time and its browser.
+A missing `.links` provider or source fails; it does not select the release archive. The local stack then starts its five processes at the same time and its browser.
 A process start and the browser start are long operations without a limit: each ends at its
 readiness event or its launch and prints a line with its elapsed time every 15 seconds while it
 waits. The test hooks that run these operations are setups without a limit. A test process that

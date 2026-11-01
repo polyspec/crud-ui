@@ -11,9 +11,9 @@ import net from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import { anyLoopbackPort, orderedJsonCopyArguments, publicServerDefinition, startProcess } from './local-servers.mjs';
+import { anyLoopbackPort, orderedJsonBuildStages, orderedJsonCopyArguments, publicServerDefinition, startProcess } from './local-servers.mjs';
 
 const { orderedJsonProvider } = await import('./local-servers.mjs');
 
@@ -184,32 +184,42 @@ test('the copy of the unpacked OrderedJSON extension source puts config.m4 at th
 });
 
 
-test('local OrderedJSON native sources come from the declared provider package', async t => {
+test('local OrderedJSON native sources come from the Composer provider of the link declaration (C18.18)', async t => {
   const root = await mkdtemp(path.join(tmpdir(), 'crudui-ordered-json-provider-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const provider = path.join(root, 'provider');
-  await mkdir(path.join(root, 'config'), { recursive: true });
-  await mkdir(path.join(provider, 'packages/php-ext/src'), { recursive: true });
-  await writeFile(path.join(root, 'config/local-providers.json'), JSON.stringify({ orderedJsonRoot: 'provider' }));
-  await writeFile(path.join(provider, 'packages/php-ext/composer.json'), JSON.stringify({
+  const provider = path.join(root, 'checkout/packages/php-ext');
+  await mkdir(path.join(provider, 'src'), { recursive: true });
+  await writeFile(path.join(provider, 'composer.json'), JSON.stringify({
     name: 'polyspec/ordered-json-php-ext', version: '0.0.10',
     'php-ext': { 'extension-name': 'polyspec_ordered_json', 'build-path': 'src' },
   }));
-  await writeFile(path.join(provider, 'packages/php-ext/src/config.m4'), 'PHP_ARG_ENABLE([polyspec-ordered-json])\n');
-  const selected = await orderedJsonProvider({ root, mode: 'local' });
+  await writeFile(path.join(provider, 'src/config.m4'), 'PHP_ARG_ENABLE([polyspec-ordered-json])\n');
+  // kit's link providers prints each Composer provider of .links as the name, a tab and the folder (K1008).
+  const calls = [];
+  const providers = async (executable, args, options) => {
+    calls.push({ executable, args, cwd: options?.cwd });
+    return { stdout: `polyspec/other-php\t/elsewhere\npolyspec/ordered-json-php-ext\t${provider}\n` };
+  };
+  const selected = await orderedJsonProvider({ root, mode: 'local', providers });
   assert.deepEqual(selected, {
-    directory: path.join(provider, 'packages/php-ext'), extensionName: 'polyspec_ordered_json',
-    buildPath: 'src', version: '0.0.10', mode: 'local',
+    directory: provider, extensionName: 'polyspec_ordered_json', buildPath: 'src', version: '0.0.10', mode: 'local',
   });
-  const release = path.join(root, 'pie/vendor/polyspec/ordered-json-php-ext');
-  await mkdir(path.join(root, 'var'), { recursive: true });
-  await writeFile(path.join(root, 'var/ordered-json-package'), `${release}\n`);
-  await mkdir(path.join(release, 'src'), { recursive: true });
-  await writeFile(path.join(release, 'composer.json'), JSON.stringify({ version: '0.0.9',
-    'php-ext': { 'extension-name': 'ordered_json', 'build-path': 'src' } }));
-  await writeFile(path.join(release, 'src/config.m4'), 'PHP_ARG_ENABLE([ordered-json])\n');
-  await rm(provider, { recursive: true });
-  await assert.rejects(orderedJsonProvider({ root, mode: 'local' }), /ordered-json.*composer\.json|ENOENT/);
+  assert.deepEqual(calls, [{ executable: process.execPath,
+    args: [fileURLToPath(import.meta.resolve('@polyspec/kit/link')), 'providers', '--ecosystem', 'composer'], cwd: root }]);
+  // Without a provider of the package in .links, LOCAL=1 has no source and fails by name.
+  await assert.rejects(orderedJsonProvider({ root, mode: 'local', providers: async () => ({ stdout: '' }) }),
+    /polyspec\/ordered-json-php-ext/);
+});
+
+test('a local and a release OrderedJSON extension build only from their package folder (C18.18)', () => {
+  const provider = { directory: '/links/ordered-json/packages/php-ext', extensionName: 'polyspec_ordered_json', buildPath: 'src', version: '0.0.19' };
+  const local = orderedJsonBuildStages({ ...provider, mode: 'local' }, '/build/ordered-json-php-ext');
+  assert.deepEqual(local, orderedJsonBuildStages({ ...provider, mode: 'release' }, '/build/ordered-json-php-ext'));
+  for (const item of local.flat()) {
+    assert.ok(!item.cwd.startsWith('/links/ordered-json/') || item.cwd.startsWith(provider.directory), `${item.id} runs in the package folder or the build`);
+    for (const argument of item.args) assert.ok(!argument.startsWith('/links/') || argument.startsWith(provider.directory), `${item.id} reads only the package folder`);
+  }
+  assert.deepEqual(local.at(-1), [{ id: 'ordered-json-make', command: 'make', args: [], cwd: '/build/ordered-json-php-ext/src' }]);
 });
 
 test('the release native source is the OrderedJSON php-ext package that make ordered-json-ext recorded (C17.84, C17.90)', async t => {

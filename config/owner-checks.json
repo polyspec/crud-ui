@@ -845,7 +845,6 @@
     },
     {
       "paths": [
-        "config/local-providers.json",
         "tests/php/bootstrap.php",
         "examples/form-comparison/servers/php/native/composer.json",
         "examples/form-comparison/servers/php/native/composer.lock"

@@ -213,10 +213,11 @@ Enter)는 폼의 네이티브 필드를 `multipart/form-data`로 `/api/{server}/
 체크아웃에서 시작한 다섯 서버 모두에 `src/record-contract.mjs`의 HTTP 계약 사례를 사례마다 자기
 제한 시간으로 실행합니다. 두 로컬 검사는 먼저 서버 프로그램을 빌드하며 각각 시간 한도 없이
 진행을 출력하는 단계입니다. 두 PHP 확장, Go 바이너리, Rust 디버그 바이너리를 빌드합니다.
-`LOCAL=1`은 `config/local-providers.json`에 선언한 OrderedJSON checkout을 선택합니다. Native extension은
-해당 provider의 `make build-php-ext`로 빌드하고 Rust 명령은 공개 native Cargo link 명령으로 해당 provider를 해석합니다.
+`LOCAL=1`은 kit의 `link providers --ecosystem composer`가 출력하는, `.links`의 checkout이 제공하는
+`polyspec/ordered-json-php-ext` folder를 선택합니다. Extension은 release와 같이 그 package folder에서 빌드하고 Rust 명령은
+`.links`의 checkout을 patch하는 kit의 `link cargo`로 실행합니다.
 `LOCAL=1`이 없으면 `make ordered-json-ext`가 PIE로 packages.json 저장소에서 빌드하고 `var/ordered-json-package`에 기록한 OrderedJSON php-ext 패키지를 명시적 release source로 선택합니다(C17.84).
-Local 선언이나 source가 없으면 실패하며 release archive를 대신 선택하지 않습니다. 그다음 로컬 구성은 다섯 프로세스를 동시에 시작하고 브라우저를 시작합니다.
+`.links` provider나 source가 없으면 실패하며 release archive를 대신 선택하지 않습니다. 그다음 로컬 구성은 다섯 프로세스를 동시에 시작하고 브라우저를 시작합니다.
 프로세스 시작과 브라우저 시작은 제한 시간이 없는 장기 작업입니다. 각각 준비 이벤트나 launch에서
 끝나고, 기다리는 동안 15초마다 경과 시간 줄을 출력합니다. 이 작업들을 실행하는 테스트 훅은
 제한 시간이 없는 setup입니다. 시작한 서버를 멈추지 않고 끝나는 테스트 프로세스는, 예를 들어 실패한 훅과
