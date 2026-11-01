@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — 추적하는 Go 표를 전달된 것으로 닫는다 (C17.99)
+
+- 추적하는 Go 표 두 개는 C17.105가 전달한 대로 config/generated.json에 생성기와 함께 선언되고 duplication.json 항목이 없다 (C17.99)
+
 ### 2026-11-01 — kit 0.0.88을 채택한다 (C17.112)
 
 - crudui는 kit 0.0.88을 pin하고 그 PRINCIPLES 사본을 commit한다 (C17.112)

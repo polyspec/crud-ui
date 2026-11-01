@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — Close the tracked Go tables as delivered (C17.99)
+
+- The two tracked Go tables are declared in config/generated.json with their generators and hold no duplication.json entry, as C17.105 delivered (C17.99)
+
 ### 2026-11-01 — Adopt kit 0.0.88 (C17.112)
 
 - crudui pins kit 0.0.88 and commits its PRINCIPLES copies (C17.112)
