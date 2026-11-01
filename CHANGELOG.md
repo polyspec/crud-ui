@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## 0.0.11
+
+- C18.15: every manifest and lock of a crudui package carries 0.0.11, with kit 0.0.87 and ordered-json 0.0.17 (C18.15)
+
 ### 2026-11-01 — Pin ordered-json 0.0.17 in the form servers (C17.110)
 
 - The Go and Rust form-comparison servers require ordered-json 0.0.17, the version the root `package.json` pins, in place of the 0.0.10 Go module and the 0.0.14 Rust tag, and a dependency test checks that every Go module and Rust crate requires that version.

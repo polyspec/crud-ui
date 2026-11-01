@@ -10,6 +10,6 @@ use (
 	./tests/native-generators/programs/go
 )
 
-replace github.com/polyspec/crudui/packages/validator/go v0.0.10 => ./packages/validator/go
+replace github.com/polyspec/crudui/packages/validator/go v0.0.11 => ./packages/validator/go
 
-replace github.com/polyspec/crudui/packages/generator/go v0.0.10 => ./packages/generator/go
+replace github.com/polyspec/crudui/packages/generator/go v0.0.11 => ./packages/generator/go

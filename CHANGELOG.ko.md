@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.0.11
+
+- C18.15: crudui 패키지의 모든 manifest와 lock은 kit 0.0.87, ordered-json 0.0.17과 함께 0.0.11을 적는다 (C18.15)
+
 ### 2026-11-01 — form 서버의 ordered-json 0.0.17 고정 (C17.110)
 
 - Go와 Rust form-comparison 서버는 0.0.10 Go 모듈과 0.0.14 Rust 태그 대신 루트 `package.json`이 고정한 ordered-json 0.0.17을 요구하고, 의존성 테스트는 모든 Go 모듈과 Rust crate가 그 버전을 요구하는지 확인한다.

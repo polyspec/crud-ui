@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be79aa0b0a3f13e3d7521a1ee23a9858",
+    "content-hash": "0f7ffd2fd15a2f989108613f01b353c1",
     "packages": [
         {
             "name": "polyspec/crudui-generator",
-            "version": "0.0.10",
+            "version": "0.0.11",
             "dist": {
                 "type": "path",
                 "url": "packages/generator/php",
-                "reference": "610b60240a6f6e0189ff09c147d4e6ae0d9a6544"
+                "reference": "a99fa12598e6708154869818af539aca35734e1d"
             },
             "require": {
                 "ext-mbstring": "*",
                 "php": ">=8.4",
                 "php-64bit": "^8.2",
-                "polyspec/crudui-validator": "0.0.10"
+                "polyspec/crudui-validator": "0.0.11"
             },
             "require-dev": {
                 "phpunit/phpunit": "^13.4.1"
@@ -51,11 +51,11 @@
         },
         {
             "name": "polyspec/crudui-validator",
-            "version": "0.0.10",
+            "version": "0.0.11",
             "dist": {
                 "type": "path",
                 "url": "packages/validator/php",
-                "reference": "878f4c388328f024e4dd6e1a5e0d409e7a9dc9dd"
+                "reference": "66285a5c22c3e7298e91ae280cbc4228dbf31479"
             },
             "require": {
                 "php": ">=8.4"
