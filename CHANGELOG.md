@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — Pin ordered-json 0.0.17 in the form servers (C17.110)
+
+- The Go and Rust form-comparison servers require ordered-json 0.0.17, the version the root `package.json` pins, in place of the 0.0.10 Go module and the 0.0.14 Rust tag, and a dependency test checks that every Go module and Rust crate requires that version.
+
 ### 2026-11-01 — Adopt kit 0.0.87 and ordered-json 0.0.17 (C17.109)
 
 - crudui is on kit 0.0.87 and ordered-json 0.0.17: every job of `ci.yml` and `pages.yml` runs the bootstrap action that kit vendors, `.github/actions/kit-bootstrap`, in place of its own copy of the setup-node, kit bootstrap, npm and package steps (kit K992), and the CI tests read that action step.
