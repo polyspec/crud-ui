@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- packages/php-ext/composer.lock은 0.0.12 composer.json의 content-hash를 적어 composer validate가 통과한다 (C18.19)
 - LOCAL=1은 kit link providers가 .links checkout에서 찾은 OrderedJSON php-ext folder를 release처럼 빌드하고 Rust는 kit link cargo로 실행한다. config/local-providers.json이 없어진다 (C18.18)
 - CI는 OrderedJSON을 packages.json, npm, Cargo release로만 설치한다. 그 checkout의 git clone과 npm link가 없어지고 root composer.json에 source 경로의 S5 예외가 없다 (C18.17)
 

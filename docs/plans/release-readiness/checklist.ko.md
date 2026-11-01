@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: 99a7f51f9bd877620dadaa473888920afc84cd3b9fb3d1006c67ba8f59e57666 -->
+<!-- source-sha256: 11e2123f5373900cca7c114fb73cb60103c5dcec33d7d77a1fa7bb4ca853c5d9 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -72,3 +72,4 @@
 | C18.16-1 | uv.lock은 crudui Python package의 0.0.12 버전을 적어, release commit의 uv sync --locked가 통과한다 (C18.16에 이어) | uv.lock, CHANGELOG.md, CHANGELOG.ko.md | `var/tools/mise/shims/uv lock --check` | [o] |
 | C18.17 | CRUDUI는 CI에서 OrderedJSON을 설치한 package로만 받는다. 그 저장소의 clone, checkout의 npm link, source 경로의 S5 예외가 없다. | Makefile, config/layout.yml, tests/build/ci-local.test.mts, docs/operations/ordered-json.md, docs/operations/package-build.md, docs/operations/repository.md and their Korean twins, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.17 tests/build/ci-local.test.mts` | [o] |
 | C18.18 | LOCAL=1은 OrderedJSON을 kit link providers와 link cargo를 통해 .links checkout이 제공하는 package folder로만 안다. config/local-providers.json과 다른 저장소 Makefile 실행이 없어진다. | examples/form-comparison/src/local-servers.mjs and its tests, scripts/run-rust-command.mts, tests/build/rust-node-entry-points.test.mts, config/local-providers.json, config/layout.yml, config/owner-checks.json, docs/operations/form-comparison.md and its Korean twin, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- --test-name-pattern=C18.18 examples/form-comparison/src/local-servers.test.mjs tests/build/rust-node-entry-points.test.mts` | [o] |
+| C18.19 | packages/php-ext/composer.lock은 0.0.12 composer.json의 content-hash를 적어 composer validate가 통과한다. | packages/php-ext/composer.lock, CHANGELOG.md, CHANGELOG.ko.md | `var/tools/mise/shims/composer validate --working-dir=packages/php-ext --no-check-publish --no-check-all` | [o] |
