@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — Make the form comparison summary job follow the job kit (C17.111)
+
+- The job form-comparison-checks of ci.yml needs the job kit as well as the browser jobs, as kit 0.0.88's S12 check requires of every job (C17.111)
+
 ## 0.0.11
 
 - C18.15: every manifest and lock of a crudui package carries 0.0.11, with kit 0.0.87 and ordered-json 0.0.17 (C18.15)

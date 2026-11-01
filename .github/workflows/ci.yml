@@ -594,7 +594,7 @@ jobs:
   # typing and the evidence of all reports.
   form-comparison-checks:
     name: Form comparison checks against a local stack
-    needs: form-comparison-browser
+    needs: [kit, form-comparison-browser]
     runs-on: ubuntu-24.04
     env:
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).

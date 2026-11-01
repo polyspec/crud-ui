@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### 2026-11-01 — form comparison 요약 job이 job kit을 따르게 한다 (C17.111)
+
+- ci.yml의 job form-comparison-checks는 kit 0.0.88의 S12 검사가 모든 job에 요구하는 대로 browser job과 함께 job kit을 needs로 둔다 (C17.111)
+
 ## 0.0.11
 
 - C18.15: crudui 패키지의 모든 manifest와 lock은 kit 0.0.87, ordered-json 0.0.17과 함께 0.0.11을 적는다 (C18.15)

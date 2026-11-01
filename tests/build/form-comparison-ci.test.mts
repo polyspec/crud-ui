@@ -110,8 +110,8 @@ test('CI runs the browser checks of each form server in a job of its own and eve
   assert.ok(upload, 'the browser job uploads var/form-comparison/browser');
   assert.deepEqual({ if: upload.if, name: upload.with?.name, missing: upload.with?.['if-no-files-found'] },
     { if: '${{ !cancelled() }}', name: 'form-comparison-browser-${{ matrix.server }}', missing: 'error' });
-  // The summary job runs after all four, reads their reports and runs every other check of the verification.
-  assert.equal(summary.needs, 'form-comparison-browser');
+  // The summary job follows the job kit (S12) and all four, reads their reports and runs every other check of the verification.
+  assert.deepEqual(summary.needs, ['kit', 'form-comparison-browser']);
   assert.equal(summary.strategy, undefined);
   const download = summary.steps.find(step => String(step.uses ?? '').startsWith('actions/download-artifact@'));
   assert.ok(download, 'the summary job downloads the browser reports');
