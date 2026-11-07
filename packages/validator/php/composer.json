@@ -1,6 +1,6 @@
 {
     "name": "polyspec/crudui-validator",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "PHP validator for crudui system - validates form data against YAML specifications",
     "type": "library",
     "license": "MIT",

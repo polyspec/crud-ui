@@ -1,9 +1,12 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 7e9e9f982ed53ca8101c50c76eb94da44b5890f7cd8b535a3fe84022616a4e19 -->
+<!-- source-sha256: 8dd06dc618512d56625b74ed1ce008d3f4ec86ebcbfdca4636ffd5e890cb191a -->
 
 ## Unreleased
 
+## 0.0.14
+
+- C18.25: crudui package의 모든 manifest와 lock은 0.0.14를 적고 kit 0.0.98을 쓴다 (C18.25)
 - CRUDUI는 kit 0.0.98을 지원한다: Makefile은 kit-bootstrap.mk의 include 대신 kit utility의 자기 recipe를 담고, .npmrc는 root manifest의 release URL을 허용하며(allow-remote=root), mise.toml은 mise와 uv의 설정을 적고, ruff.toml, phpcs.xml.dist, phpstan.dist.neon, .golangci.yml, clippy.toml, .oxlintrc.json, knip.json과 각 Cargo.toml의 [workspace.lints]가 lint 규칙을 담는다. CI workflow, bootstrap action, config/layout.kit.yml은 이 저장소의 파일이고, kit hook, Claude Code hook 설정, config/knip-entries.json은 지운다. PRINCIPLES.md와 그 twin은 kit 원칙의 이 저장소 사본이며, 그 Enforced by 줄은 crudui의 검사를 적고 rules-check가 AGENTS.md와 함께 읽는다. CI pipeline의 runtime job은 crudui의 runtime을 나열하고 kit-gates-static은 gate를 make 호출 하나로 실행하므로, rules-check는 규칙이 적는 각 gate에 닿는다 (C18.24)
 
 ## 0.0.13

@@ -1,6 +1,6 @@
 {
   "format": "crudui/features-manifest",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "packages": [
     {
       "name": "@polyspec/crudui-generator-core",

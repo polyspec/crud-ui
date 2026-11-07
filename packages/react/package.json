@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-generator-react",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "React form builder component library based on crudui YAML definitions",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -44,10 +44,10 @@
     "react-dom": ">=17.0.0"
   },
   "dependencies": {
-    "@polyspec/crudui-generator-core": "0.0.13"
+    "@polyspec/crudui-generator-core": "0.0.14"
   },
   "devDependencies": {
-    "@polyspec/crudui-generator-html": "0.0.13",
+    "@polyspec/crudui-generator-html": "0.0.14",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.1",
     "@types/node": "^26.6.5",
