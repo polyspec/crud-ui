@@ -363,7 +363,7 @@ checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
 name = "polyspec-crudui-generator"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "chrono",
  "getrandom",
@@ -379,7 +379,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crudui-validator"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "serde",
  "serde_json",

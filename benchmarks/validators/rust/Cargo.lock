@@ -38,7 +38,7 @@ checksum = "88904434abc2901f197fe8cc55f0445e7ded921dba5911dad2e2b39b48e663c4"
 
 [[package]]
 name = "polyspec-crudui-bench"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "polyspec-crudui-validator",
  "serde_json",
@@ -46,7 +46,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crudui-validator"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "serde",
  "serde_json",
