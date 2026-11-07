@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 
-import { isVendored, ownedFiles } from '../../scripts/repository-files.mts';
+import { checkedFiles } from '@polyspec/kit/tracked-files';
 import { checked, parseJson, type JTDSchemaType, type PackageManagerEngine } from '../json.mts';
 import { kitToolPath, makeDryRun } from './make-dry-run.mts';
 import { DEVENGINES_NPM_VERSION, recordedNpmRelease } from './npm-release.mts';
@@ -114,7 +114,7 @@ async function recordedToolchain(root: string): Promise<RecordedToolchain> {
 
 /** The container definitions of the checkout: Dockerfile and *Containerfile among its tracked files. */
 async function findContainerDefinitions(): Promise<string[]> {
-  return ownedFiles(repository).filter(file => /(?:^|\/)(?:Dockerfile|[^/]*Containerfile)$/.test(file)).map(file => path.join(repository, file));
+  return checkedFiles(repository).filter(file => /(?:^|\/)(?:Dockerfile|[^/]*Containerfile)$/.test(file)).map(file => path.join(repository, file));
 }
 
 /** The exact npm release that devEngines.packageManager of package.json records. */
@@ -163,7 +163,7 @@ const read = (file: string): Promise<string> => readFile(path.join(repository, f
 /** Every workflow file of this repository with its parsed content; the copy of kit, release.yml, follows the rules of kit. */
 async function workflows(): Promise<{ file: string; text: string; workflow: Workflow }[]> {
   const directory = path.join(repository, '.github/workflows');
-  return Promise.all((await readdir(directory)).filter(name => /\.ya?ml$/.test(name) && !isVendored(`.github/workflows/${name}`)).map(async file => ({ file, text: await read(`.github/workflows/${file}`), workflow: workflowOf(await read(`.github/workflows/${file}`), file) })));
+  return Promise.all((await readdir(directory)).filter(name => /\.ya?ml$/.test(name)).map(async file => ({ file, text: await read(`.github/workflows/${file}`), workflow: workflowOf(await read(`.github/workflows/${file}`), file) })));
 }
 
 test('the checkout records one exact version of every tool', async () => {

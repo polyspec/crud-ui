@@ -8,7 +8,6 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 
-import { isVendored } from '../../scripts/repository-files.mts';
 import { makeTargets } from '../../scripts/test-commands.mts';
 import { checked, readManifest, type JTDSchemaType } from '../json.mts';
 import { recordedNpmRelease } from './npm-release.mts';
@@ -28,7 +27,7 @@ const workflowSchema: JTDSchemaType<Workflow> = {
 // A container image is a machine of its own, so its definition may install npm globally; the scripts, make and CI run
 // on the machine of the checkout.
 test('no script, make target or CI step installs npm into the machine', () => {
-  const files = spawnSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', 'scripts', 'Makefile', '.github'], { cwd: ROOT, encoding: 'utf8' }).stdout.split('\n').filter(file => file && !isVendored(file));
+  const files = spawnSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', 'scripts', 'Makefile', '.github'], { cwd: ROOT, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
   const violations: string[] = [];
   for (const file of files) {
     if (!existsSync(path.join(ROOT, file))) continue;

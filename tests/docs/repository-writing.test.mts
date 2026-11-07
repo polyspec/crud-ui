@@ -4,7 +4,6 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 
-import { isVendored } from '../../scripts/repository-files.mts';
 
 const repository = path.resolve(import.meta.dirname, '../..');
 const excludedPrefixes = [
@@ -33,8 +32,6 @@ function trackedFiles(): string[] {
   assert.equal(result.status, 0, result.stderr);
   return result.stdout.split('\0').filter(Boolean)
     .filter(file => !excludedPrefixes.some(prefix => file.startsWith(prefix)))
-    // The vendored copy of polyspec/kit is written and checked in polyspec/kit.
-    .filter(file => !isVendored(file))
     .filter(file => existsSync(path.join(repository, file)));
 }
 
@@ -72,7 +69,8 @@ function jsonDescriptions(source: string): string {
 
 function maintainedProse(file: string, source: string): string {
   if (file.endsWith('.md')) return markdownProse(source);
-  if (file.endsWith('.json')) return jsonDescriptions(source);
+  // A JSON file with comments, which oxlint and knip read (.oxlintrc.json, knip.json), holds its prose in its comments.
+  if (file.endsWith('.json')) return source.trimStart().startsWith('//') ? sourceComments(source) : jsonDescriptions(source);
   if (sourceExtensions.has(path.extname(file))) return sourceComments(source);
   return '';
 }

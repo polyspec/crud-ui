@@ -1,8 +1,9 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: f546d6626587ad7ce2223df0758aeec062b27b27acbb4d36df6c93c3d6211ccc -->
+<!-- source-sha256: c7a177fc7a79ece55a00031bc4a14166c8c41748d7f421e1419145fc404d8f0c -->
 
-모든 polyspec 저장소의 작업 원칙은 kit의 copy인 [PRINCIPLES.ko.md](PRINCIPLES.ko.md)이며, 이 file은 crudui의 규칙만 적습니다.
+모든 polyspec 저장소의 작업 원칙은 설치된 `@polyspec/kit`의 `PRINCIPLES.md`(`node_modules/@polyspec/kit/PRINCIPLES.md`)이며,
+이 file은 crudui의 규칙만 적습니다.
 
 ## 테스트와 실행
 
@@ -17,7 +18,6 @@
   보고합니다. 실패는 다른 결함과 같이 작업으로 올립니다.
   Enforced by: none, commit 전에 어떤 unit test를 실행하는지는 어떤 검사도 읽지 않는 절차입니다.
 - Own: push는 push되는 commit에도 working tree에도 checklist의 `[~]` 작업이 없을 때만 합니다.
-  모든 `make` 실행은 `core.hooksPath`를 `.githooks`로 설정하며, hook이 설치되지 않았으면 `make hooks-check`가 실패합니다.
   Enforced by: none, K804 이후 어떤 hook이나 CI job도 push를 검사하지 않습니다.
 - Own: version이 0.x인 동안에는 pull request, merge queue, GitHub ruleset이 없습니다. 작업은 로컬에서 commit하며 commit마다
   checklist 행 하나를 담고, 소유한 unit test가 통과해야 그 행이 `[o]`가 됩니다. 개발 작업과 로컬 candidate 준비를 완료하고 활성 작업이 없을 때 `main`을 한 번 push합니다.
@@ -32,14 +32,14 @@
   Enforced by: none, 지원하는 PHP 범위는 저장소 규칙입니다.
 
 - Own: 공유 도구는 root manifest와 lock이 고정한 설치 package `@polyspec/kit`입니다. 첫 make 실행 전에 native npm이
-  `packageManager`에서 정확한 npm release를 읽고 잠긴 설치를 실행합니다(`docs/operations/package-build.md`). Makefile은
-  `node_modules/@polyspec/kit/scripts/kit/kit-bootstrap.mk`를 include합니다. 설치 package가 bootstrap 파일을 제공하고
-  source 또는 packed 명령을 선택합니다. Sibling kit checkout은 선택 사항이며 bootstrap 파일은 `kit.copies`가 아닙니다.
-  설치 뒤 `make install-tools TOOLS=npm`과 `make install-packages`가 checkout 도구와 package를 준비합니다. 설치 package가
-  실제 `kit.copies`에 적은 release 및 gates workflow, `PRINCIPLES.md`, `.editorconfig`, layout과 manifest schema 등은
-  `make kit-sync`가 쓰고 `make kit-check`가 비교합니다. 이 파일들은 polyspec/kit에서만 바꾸며 여기서 편집하지 않습니다.
-  코드는 package export를 통해 kit module을 import합니다.
-  Enforced by: `make kit-check`
+  `packageManager`에서 정확한 npm release를 읽고 잠긴 설치를 실행합니다(`docs/operations/package-build.md`). `Makefile`은
+  이 저장소가 실행하는 recipe를 모두 담으며, kit utility의 recipe는 그 utility를 설치 package(`node_modules/@polyspec/kit`)에서
+  명시적인 인자로 시작합니다. 설치 뒤 `make install-tools TOOLS=npm`과 `make install-packages`가 checkout 도구와 package를
+  준비합니다. 도구의 설정은 각 도구가 읽는 이 저장소의 파일입니다: `.npmrc`, `mise.toml`의 `[settings]`와 `[env]`,
+  `ruff.toml`, `phpcs.xml.dist`, `phpstan.dist.neon`, `.golangci.yml`, `clippy.toml`과 각 `Cargo.toml`의
+  `[workspace.lints]`, `.oxlintrc.json`, `knip.json`. CI workflow, bootstrap action, `config/layout.kit.yml`도 kit의 예제에서
+  가져온 이 저장소의 파일입니다. 코드는 package export를 통해 kit module을 import합니다.
+  Enforced by: none, 저장소가 어떤 recipe와 도구 설정을 두는지는 저장소의 설계입니다.
 - Own: 모든 도구는 checkout이 기록한 정확한 release로 실행합니다(`mise.toml`과 `mise.lock`, `rust-toolchain.toml`,
   `config/toolchain.json`, `package.json`의 `packageManager`). image는 digest로, Debian package는 snapshot 날짜로, action은
   commit SHA로, browser는 잠근 package가 고정한 build로 지정합니다. 어떤 실행도 최신 release나 channel을 registry에
@@ -141,7 +141,7 @@
   저장소 package에 대한 모든 의존성의 version을 X.Y.Z로 설정하고, `CHANGELOG.md`와 `CHANGELOG.ko.md`의 `## Unreleased`를
   `## X.Y.Z`로 바꾸며 그 아래에 빈 `## Unreleased`를 새로 둡니다.
   Enforced by: `make release-tag`
-- Own: 로컬 준비와 해당 commit의 CI 검사가 성공한 뒤 maintainer가 그 commit에 tag를 달아 push합니다. kit의 copy인 `.github/workflows/release.yml`은 `make release-tools`,
+- Own: 로컬 준비와 해당 commit의 CI 검사가 성공한 뒤 maintainer가 그 commit에 tag를 달아 push합니다. `.github/workflows/release.yml`은 `make release-tools`,
   `make release-tag`, `make release-versions`, `make release-assets`, `make release-publish`, `make release-proof`,
   `make release-undraft`(`@polyspec/kit`의 release 도구)를 실행합니다. 이 workflow는 `main`에서 성공한 `ci.yml` run의 id,
   모든 manifest의 tag version, `## X.Y.Z` section이 있음을 요구합니다. GitHub

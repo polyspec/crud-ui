@@ -383,7 +383,7 @@ test('npm installs only registry packages, linked directories and the kit and Or
     const match = line.match(/^\s*(allow-remote|allow-git)\s*=\s*([^#;\s]+)\s*(?:[#;].*)?$/);
     return match ? [[captured(match, 1), captured(match, 2)]] : [];
   }));
-  assert.deepEqual(settings, { 'allow-remote': 'none', 'allow-git': 'none' });
+  assert.deepEqual(settings, { 'allow-remote': 'root', 'allow-git': 'none' });
 });
 
 test('form comparison commands use the root npm dependency graph', () => {

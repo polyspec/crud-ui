@@ -619,41 +619,70 @@
     },
     {
       "paths": [
-        ".github/workflows/release.yml",
-        "PRINCIPLES.md",
-        "PRINCIPLES.ko.md",
         "config/layout.kit.yml",
         ".editorconfig",
-        "config/pyproject.schema.json",
         "config/composer.schema.json",
         "config/cargo.schema.json"
       ],
       "targets": [
-        "kit-check"
+        "layout-check"
       ]
     },
     {
       "paths": [
-        ".claude/settings.json"
+        "knip.json",
+        ".oxlintrc.json"
       ],
       "targets": [
-        "kit-check"
+        "lint-ts"
       ]
     },
     {
       "paths": [
-        "config/knip-entries.json"
+        "ruff.toml"
       ],
       "targets": [
-        "kit-check",
-        "lint"
+        "lint-python"
+      ]
+    },
+    {
+      "paths": [
+        "phpcs.xml.dist",
+        "phpstan.dist.neon"
+      ],
+      "targets": [
+        "lint-php"
+      ]
+    },
+    {
+      "paths": [
+        ".golangci.yml"
+      ],
+      "targets": [
+        "lint-go"
+      ]
+    },
+    {
+      "paths": [
+        "clippy.toml"
+      ],
+      "targets": [
+        "lint-rust"
+      ]
+    },
+    {
+      "paths": [
+        ".github/actions/**"
+      ],
+      "tests": [
+        "tests/build/ci-local.test.mts",
+        "tests/build/form-comparison-ci.test.mts"
       ]
     },
     {
       "paths": [
         "config/checklist.json",
-        "config/generated.json",
-        ".githooks/**"
+        "config/generated.json"
       ],
       "targets": [
         "hooks-check",
@@ -716,20 +745,6 @@
         "tests/build/contract-manifest.test.mts",
         "scripts/json-schema.test.mts",
         "tests/build/install-lock.test.mts"
-      ]
-    },
-    {
-      "paths": [
-        "scripts/repository-files.mts"
-      ],
-      "tests": [
-        "tests/build/repository-files.test.mts",
-        "tests/build/tool-path.test.mts",
-        "tests/build/test-commands.test.mts",
-        "tests/build/package-names.test.mts",
-        "tests/build/runtime-version-policy.test.mts",
-        "tests/build/make-dry-run.test.mts",
-        "tests/docs/repository-writing.test.mts"
       ]
     },
     {

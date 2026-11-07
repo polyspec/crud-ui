@@ -562,10 +562,6 @@
       "kind": "record",
       "record": "docs/rebuild/build-stamp.md"
     },
-    "scripts/repository-files.mts": {
-      "kind": "ecosystem",
-      "tool": "checkedFiles of @polyspec/kit/tracked-files"
-    },
     "scripts/require-current-build.mts": {
       "kind": "record",
       "record": "docs/rebuild/build-stamp.md"

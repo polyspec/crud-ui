@@ -8,9 +8,11 @@
 # machine-absolute paths). `make docs` run twice yields identical output.
 
 .DEFAULT_GOAL := help
-# The tools of this checkout: `make install-tools TOOLS=npm` installs the npm of devEngines.packageManager and mise into var/tools/bin,
-# and `make install-tools` installs the tools of mise.lock into var/tools/mise, whose shims kit.mk puts first on PATH with
-# var/tools/bin, so every command of make finds them. The tools of the machine are never changed.
+# The tools of this checkout: `make install-tools TOOLS=npm` installs mise and the node and npm of mise.toml into var/tools/bin,
+# and `make install-tools` installs the tools of mise.lock into var/tools/mise. var/tools/bin and the shims of mise come first
+# on PATH, so every command of make finds them. The tools of the machine are never changed.
+TOOLS_DIR := $(CURDIR)/var/tools
+export PATH := $(CURDIR)/var/tools/mise/shims:$(PATH)
 export PATH := $(CURDIR)/var/tools/bin:$(PATH)
 # GNU Make 3.81 looks up the program of a recipe line without shell syntax on the PATH that make started with, not on the
 # exported one, so every recipe starts npm by its path (tests/build/tool-path.test.mts).
@@ -25,8 +27,8 @@ build-go crudui-install-go-modules: export GOWORK := $(CURDIR)/go.work
 # A check reads no network (docs/operations/package-build.md, "Offline checks"): every recipe and the scripts that it starts
 # run cargo, go, npm and Composer offline, so a missing download fails at once instead of reaching a registry in one run
 # and not in another. The targets that download, install-tools, crudui-install-crates
-# and the downloads of install run their commands with $(ONLINE); the crates are fetched by install-kit (K864)
-# (the kit.mk of @polyspec/kit) names make install for a missing crate.
+# and the downloads of install run their commands with $(ONLINE); a missing crate fails cargo, which make
+# crudui-install-crates fetches.
 export CARGO_NET_OFFLINE := true
 export GOPROXY := off
 export npm_config_offline := true
@@ -35,10 +37,321 @@ ONLINE := env -u CARGO_NET_OFFLINE -u GOPROXY -u npm_config_offline -u COMPOSER_
 .PHONY: crudui-test-generator-go crudui-test-generator-rust crudui-test-generator-js crudui-test-cross-language-equivalence help release-assets form-template-validator form-template-validator-check install crudui-install crudui-install-go-modules crudui-install-composer crudui-install-python crudui-install-phpdocumentor crudui-install-browsers check-ci-browser crudui-test-runtimes crudui-test-dependencies crudui-build crudui-lint crudui-docs-check build lint typecheck crudui-test-validator-js crudui-test-validator-php crudui-test-validator-go crudui-test-validator-rust crudui-test-validator-python crudui-test-generator-python crudui-test-cross-check manifest-test require-build crudui-test-cli manifest-check manifest-docs-check crudui-test-forms crudui-test-form-comparison crudui-test-form-comparison-pipeline crudui-test-form-comparison-checks crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-packages crudui-test-build crudui-test-build-repeat crudui-test-inspector crudui-test-bench check-conformance crudui-install-crates crudui-install-svelte-tools docs docs-api docs-schema docs-web docs-dev docs-preview docs-clean docs-check docs-check-documents docs-check-libs docs-verify-idempotent bench bench-fixtures bench-js bench-php bench-go bench-rust crudui-test-php-engine crudui-test-native-generators crudui-test-php-api crudui-test-native crudui-test-validators crudui-test-form-binding conformance format-check records-check
 .NOTPARALLEL: docs docs-web docs-dev docs-preview docs-check docs-verify-idempotent release-assets release-candidate-assets
 
-# Shared commands come from the installed @polyspec/kit package. Native npm links may connect that package to local
-# development sources; the bootstrap selects the installed source or packed commands.
-include node_modules/@polyspec/kit/scripts/kit/kit-bootstrap.mk
+# ---- The recipes of the kit utilities ------------------------------------------------------------------------------------
+# The utilities of the installed @polyspec/kit (docs/operations/package-build.md): the packed release holds them in dist, and a
+# kit checkout that .links links holds their sources, which Node runs with its type stripping outside node_modules. This
+# Makefile holds the recipes that run them; kit includes none (docs/spec/utilities-and-recipes.md of kit).
+KIT_PACKAGE := $(CURDIR)/node_modules/@polyspec/kit
+ifneq ($(wildcard $(KIT_PACKAGE)/scripts/kit/run-tests.mts),)
+KIT := $(realpath $(KIT_PACKAGE))/scripts/kit
+KIT_EXT := mts
+else
+KIT := $(KIT_PACKAGE)/dist
+KIT_EXT := mjs
+endif
+# The mise of var/tools keeps its data, cache, state and configuration there and reads the mise.toml of the checkout as its global
+# configuration, whose [settings] and [env] set how mise and uv behave; the shims of var/tools/mise/shims need these to find the
+# tools of this checkout from any folder.
+export MISE_DATA_DIR := $(TOOLS_DIR)/mise
+export MISE_CACHE_DIR := $(TOOLS_DIR)/mise/cache
+export MISE_STATE_DIR := $(TOOLS_DIR)/mise/state
+export MISE_CONFIG_DIR := $(TOOLS_DIR)/mise/config
+export MISE_GLOBAL_CONFIG_FILE := $(CURDIR)/mise.toml
+export MISE_GLOBAL_CONFIG_ROOT := $(CURDIR)
+MISE_ENVIRONMENT := MISE_DATA_DIR MISE_CACHE_DIR MISE_STATE_DIR MISE_CONFIG_DIR MISE_GLOBAL_CONFIG_FILE MISE_GLOBAL_CONFIG_ROOT
+NODE := $(TOOLS_DIR)/bin/node
+ALINT := $(TOOLS_DIR)/mise/shims/alint
+# The first install of a checkout runs the bootstrap of kit with the Node.js of the machine, before var/tools holds one.
+BOOTSTRAP_NODE := node
 
+.PHONY: install install-kit install-tools install-packages install-link kit-install-symbols kit-install-declared toolchain-lock
+# install: the mise, node and npm of mise.toml, package-lock.json, the tools of mise.lock and the declared symbol extractors
+# (install-kit), then the steps of this repository (crudui-install), then the links of .links.
+install: crudui-install ## Install the declared tools, the npm, Composer, Python and Cargo dependencies and phpDocumentor, then link; ONLINE
+	$(MAKE) --no-print-directory install-link
+
+install-kit: ## Install the mise, node and npm of mise.toml, package-lock.json, the tools of mise.lock and the symbol extractors of config/toolchain.json into var/tools; ONLINE
+	$(MAKE) --no-print-directory install-tools TOOLS=npm
+	$(MAKE) --no-print-directory install-packages
+	$(MAKE) --no-print-directory install-tools
+	$(MAKE) --no-print-directory kit-install-declared
+
+# TOOLS=npm is the first step of a checkout: the bootstrap of kit imports only Node.js built-ins.
+install-tools: ## Install all locked tools of mise.lock, or the tool names of TOOLS; TOOLS=npm runs the bootstrap; ONLINE
+ifeq ($(TOOLS),npm)
+	$(ONLINE) $(BOOTSTRAP_NODE) $(KIT)/bootstrap/bootstrap.$(KIT_EXT)
+else
+	$(ONLINE) $(NODE) $(KIT)/install-tools.$(KIT_EXT) $(TOOLS)
+endif
+
+# npm ci reads allow-remote and strict-allow-scripts from .npmrc. The tools project of packages/svelte has its own lock.
+install-packages: hooks ## Install package-lock.json with the npm of var/tools, then the tools project of packages/svelte; ONLINE
+	$(ONLINE) $(NPM) ci
+	$(MAKE) --no-print-directory crudui-install-svelte-tools
+
+install-link: ## Link the packages to the checkouts of .links after every install of make install; PROJECT and RUNTIME select
+	$(NODE) $(KIT)/link.$(KIT_EXT) link$(if $(PROJECT), --project $(PROJECT))$(if $(RUNTIME), --runtime $(RUNTIME))
+
+kit-install-symbols: ## Install the symbol extractors of EXTRACTORS="go php"; their tools are installed first; ONLINE
+	$(ONLINE) $(NODE) $(KIT)/install-symbols.$(KIT_EXT) $(EXTRACTORS)
+
+kit-install-declared: ## Install the symbol extractors that config/toolchain.json declares; ONLINE
+	$(ONLINE) $(NODE) $(KIT)/install-symbols.$(KIT_EXT) --declared
+
+# mise lock with the mise of var/tools/bin: uv and python first, whose Python then locks the pypi: tools (UV_PYTHON).
+TOOLCHAIN_LOCK_PLATFORMS := linux-x64,linux-arm64,macos-arm64,macos-x64,windows-x64,windows-arm64
+toolchain-lock: ## Write mise.lock with mise lock for each platform of TOOLCHAIN_LOCK_PLATFORMS; ONLINE
+	@test -x $(TOOLS_DIR)/bin/mise || { echo "[toolchain-lock] $(TOOLS_DIR)/bin/mise is missing; run make install-tools TOOLS=npm" >&2; exit 1; }
+	$(ONLINE) $(TOOLS_DIR)/bin/mise lock uv python --global --platform $(TOOLCHAIN_LOCK_PLATFORMS)
+	$(ONLINE) $(TOOLS_DIR)/bin/mise install --locked uv python
+	UV_PYTHON="$$($(TOOLS_DIR)/bin/mise which python3)" $(ONLINE) $(TOOLS_DIR)/bin/mise lock --global --platform $(TOOLCHAIN_LOCK_PLATFORMS)
+
+.PHONY: hooks hooks-check twin-merge
+# make hooks declares the merge drivers of the changelogs and checklists, which run make twin-merge; config/checklist.json lists
+# no Git hook of this repository.
+hooks: ## Declare the merge drivers of the changelogs and checklists
+	$(NODE) $(KIT)/git-hooks.$(KIT_EXT) install
+
+hooks-check: ## Fail while a merge driver of make hooks is not declared
+	$(NODE) $(KIT)/git-hooks.$(KIT_EXT) check
+
+twin-merge: ## The merge driver of a changelog, a checklist and their Korean twins; git runs it with MERGE="<base> <ours> <theirs> <path>"
+	@$(NODE) $(KIT)/twin-merge.$(KIT_EXT) $(MERGE)
+
+.PHONY: kit-check layout-check docs-check rules-check owner-check owner-validate rebuild-check language-check test-markers-check duplication-check suppression-check divergence-check parity-check parity-declarations-check
+kit-check: ## Check config/*.json against the schemas of the kit utilities; offline
+	$(NODE) $(KIT)/kit-check.$(KIT_EXT)
+
+layout-check: ## Check the folder layout against config/layout.yml with the alint of mise.toml, the ignored install folders and the tracked generated files; offline
+	@test -x $(ALINT) || { echo "layout-check: $(ALINT) is missing; run make install-tools"; exit 1; }
+	$(ALINT) check --config config/layout.yml --color never --compact .
+	$(NODE) $(KIT)/generated-files.$(KIT_EXT) installs
+	$(NODE) $(KIT)/generated-files.$(KIT_EXT) tracked
+
+# The document check of kit (config/documents.json, config/checklist.json) and crudui-docs-check run each whatever the other's status.
+docs-check: ## Check the documents of config/documents.json and the checklists, then crudui-docs-check; offline
+	@status=0; \
+	$(NODE) $(KIT)/check-documents.$(KIT_EXT) || status=1; \
+	$(MAKE) --no-print-directory crudui-docs-check || status=1; \
+	exit $$status
+
+# The rules of this repository are those of AGENTS.md; the principles are the PRINCIPLES.md of the installed @polyspec/kit.
+rules-check: ## Check that every rule of AGENTS.md names a check that a CI workflow runs; offline
+	$(NODE) $(KIT)/check-rules.$(KIT_EXT) AGENTS.md
+
+# The owner checks run the checks of the changed paths (config/owner-checks.json), some of which run cargo; make -k skips
+# them while a crate is missing.
+owner-check: ## Run the checks of the changed paths (config/owner-checks.json); PATHS="a b" or BASE=<revision> selects the paths
+	$(NODE) $(KIT)/owner-check.$(KIT_EXT) $(if $(PATHS),--paths "$(PATHS)") $(if $(BASE),--base $(BASE))
+
+owner-validate: ## Check that config/owner-checks.json owns every tracked path and names only existing checks; offline
+	$(NODE) $(KIT)/owner-check.$(KIT_EXT) --validate
+
+rebuild-check: ## Check that every tool of config/rebuild.json has its class; offline
+	$(NODE) $(KIT)/rebuild-check.$(KIT_EXT)
+
+language-check: ## Fail on Hangul in a comment, an identifier, a message or a test name of the code; offline
+	$(NODE) $(KIT)/language-check.$(KIT_EXT)
+
+test-markers-check: ## Fail on a test that a marker skips or narrows; offline
+	$(NODE) $(KIT)/test-markers.$(KIT_EXT)
+
+duplication-check: ## Fail on a piece of 6 lines or more of code that exists twice outside the folders of config/duplication.json; offline
+	$(NODE) $(KIT)/duplication-check.$(KIT_EXT)
+
+suppression-check: ## Fail on a suppression of a lint finding that states no reason; offline
+	$(NODE) $(KIT)/suppression-check.$(KIT_EXT)
+
+divergence-check: ## Fail on an implementation that diverges by its runtime without a kind of reason; offline
+	$(NODE) $(KIT)/divergence-check.$(KIT_EXT)
+
+# Extension parity loads the native module built from the current source.
+parity-check: build-php-ext ## Run the parity bindings of config/parity.json and check its rules; UNITS="<id>..." and IMPLEMENTATIONS="<name>..." select; offline
+	$(NODE) $(KIT)/parity.$(KIT_EXT) $(foreach unit,$(UNITS),--unit $(unit)) $(foreach implementation,$(IMPLEMENTATIONS),--implementation $(implementation))
+
+parity-declarations-check: ## Check the parity rules of config/parity.json that need no run; UNITS, RULES and IDS select the findings; offline
+	$(NODE) $(KIT)/parity.$(KIT_EXT) --declarations $(foreach unit,$(UNITS),--unit $(unit)) $(foreach rule,$(RULES),--rule $(rule)) $(foreach id,$(IDS),--id $(id))
+
+.PHONY: lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
+# build, test and lint run the target <task>-<runtime> of each runtime that packages/ holds (go, php, php-ext, python, rust, ts),
+# after the steps of this repository that are their prerequisites.
+build test lint: ## Run build-<runtime>, test-<runtime> or lint-<runtime> for every runtime that packages/ holds; offline
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) task $@
+
+build-go build-php build-python build-rust build-ts: ## Build each package of the runtime with the build of its ecosystem; offline
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build $(@:build-%=%)
+
+# The unit tests of a runtime with CASES=<pattern>, the name filter of its runner.
+test-go test-php test-python test-rust test-ts: ## Run the unit tests of each package of the runtime with CASES=<pattern>; offline
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) $(@:test-%=%)
+
+lint-python: ## Lint the Python: ruff with ruff.toml, and vulture on each package; offline
+	$(NODE) $(KIT)/lint-python.$(KIT_EXT)
+
+lint-php: ## Lint the PHP: phpcs with phpcs.xml.dist, and PHPStan with phpstan.dist.neon on each Composer package; offline
+	$(NODE) $(KIT)/lint-php.$(KIT_EXT)
+
+lint-rust: ## Lint the Rust: cargo clippy in each Cargo workspace with the [workspace.lints] of its Cargo.toml and clippy.toml
+	$(NODE) $(KIT)/lint-rust.$(KIT_EXT)
+
+lint-go: ## Lint the Go: golangci-lint with .golangci.yml, and deadcode -test, in each Go module; offline once the modules are downloaded
+	$(NODE) $(KIT)/lint-go.$(KIT_EXT)
+
+# Production imports are resolved from each package's own runtime dependencies.
+# catch-check refuses a catch without a statement, which no-empty of oxlint passes when the block holds a comment.
+lint-ts: production-dependencies-check ## Lint the TypeScript: oxlint with .oxlintrc.json, knip with knip.json, API Extractor in each package with an api-extractor.json, and catch-check; offline
+	@status=0; \
+	$(NODE) $(KIT)/lint-ts.$(KIT_EXT) || status=1; \
+	$(NODE) $(KIT)/catch-check.$(KIT_EXT) || status=1; \
+	exit $$status
+production-dependencies-check:
+	$(NODE) node_modules/knip/bin/knip.js --config config/knip-production.json --production --strict --include unlisted --no-progress --no-config-hints
+
+# The PHP extension of packages/php-ext: one build with phpize, the check of its names and stub, and its declaration and unit tests.
+build-php-ext: ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
+	$(ONLINE) $(NODE) $(KIT)/php-extension.$(KIT_EXT) build
+
+lint-php-ext: ## Check the names, the one stub and the stub hash of the arginfo header of packages/php-ext; offline
+	$(NODE) $(KIT)/php-extension.$(KIT_EXT) check
+
+test-php-ext: build-php-ext ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
+	$(NODE) $(KIT)/php-extension.$(KIT_EXT) test
+
+.PHONY: kit-gates-static kit-gates-parity kit-gates-runtime-ts kit-gates-runtime-php kit-gates-runtime-python kit-gates-runtime-go kit-gates-runtime-rust kit-gates-runtime-php-ext
+# The gates of this repository, in the partitions that the jobs of .github/workflows/ci-pipeline.yml run. A partition runs each
+# of its gates whatever the status of the others, so one run names every gate that fails.
+STATIC_GATES := kit-check layout-check docs-check rules-check owner-validate rebuild-check language-check test-markers-check duplication-check parity-declarations-check suppression-check divergence-check
+kit-gates-static: ## Run the shared gates, each past the failures of the others
+	@status=0; failed=; \
+	for gate in $(STATIC_GATES); do $(MAKE) --no-print-directory $$gate || { status=1; failed="$$failed $$gate"; }; done; \
+	if [ $$status -eq 0 ]; then echo "[kit-gates-static] every shared gate passed"; else echo "[kit-gates-static] failed:$$failed" >&2; fi; \
+	exit $$status
+kit-gates-parity: parity-check ## Run the full parity gate
+kit-gates-runtime-ts: lint-ts ## Run the TypeScript gate
+kit-gates-runtime-php: lint-php ## Run the PHP gate
+kit-gates-runtime-python: lint-python ## Run the Python gate
+kit-gates-runtime-go: lint-go ## Run the Go gate
+kit-gates-runtime-rust: lint-rust ## Run the Rust gate
+kit-gates-runtime-php-ext: ## Run the PHP extension gates, each past the failure of the other
+	@status=0; \
+	$(MAKE) --no-print-directory lint-php-ext || status=1; \
+	$(MAKE) --no-print-directory test-php-ext || status=1; \
+	exit $$status
+
+.PHONY: ci-targets ci-passed kit-ci-plan kit-ci-setup kit-ci-context-prepare kit-ci-context-cleanup
+CI_REPORT ?= var/report/ci-targets
+ci-targets: ## Run TARGETS past failures and write CI_REPORT (logs, record.json, summary.md)
+	$(NODE) $(KIT)/ci-targets.$(KIT_EXT) $(CI_REPORT) $(TARGETS)
+
+ci-passed: ## Fail unless every job of RESULTS, the JSON of toJSON(needs), has the result success
+	$(NODE) $(KIT)/ci-passed.$(KIT_EXT)
+
+kit-ci-plan: ## Write the runtime, tool and target plan of config/ci.json to GITHUB_OUTPUT for .github/workflows/ci-pipeline.yml
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --plan
+
+kit-ci-setup: ## Run the setup targets of config/ci.json for GROUP=shared|parity|runtime and RUNTIME=<runtime>
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --setup $(GROUP) $(RUNTIME)
+
+kit-ci-context-prepare: ## Run the context preparation target of config/ci.json for GROUP and RUNTIME, when it declares one
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-prepare $(GROUP) $(RUNTIME)
+
+kit-ci-context-cleanup: ## Run the context cleanup target of config/ci.json for GROUP and RUNTIME, when it declares one
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-cleanup $(GROUP) $(RUNTIME)
+
+.PHONY: item-new item-edit item-state commit documents-stamp text-absent land worktree-setup link link-check unlink python-venv uv-install
+# The texts of a row reach the plan utility unexpanded: each text that is set is passed as its raw value in single quotes.
+raw_text = $(foreach v,$(1),$(if $(filter undefined,$(origin $(v))),,$(v)='$(subst ','\'',$(value $(v)))'))
+
+item-new: ## Add the item ID to the checklist of PLAN and its Korean twin with TASK, TASK_KO, DELIVERABLES and VERIFICATION; offline
+	$(call raw_text,TASK TASK_KO DELIVERABLES VERIFICATION) $(NODE) $(KIT)/plan.$(KIT_EXT) item-new
+
+item-edit: ## Replace the cells of the item ID with TASK, TASK_KO, DELIVERABLES or VERIFICATION, or its cause and retry with CAUSE, RETRY, CAUSE_KO and RETRY_KO; offline
+	$(call raw_text,TASK TASK_KO DELIVERABLES VERIFICATION CAUSE RETRY CAUSE_KO RETRY_KO) $(NODE) $(KIT)/plan.$(KIT_EXT) item-edit
+
+item-state: ## Move the item ID to STATE in both languages; offline
+	$(NODE) $(KIT)/plan.$(KIT_EXT) item-state
+
+commit: ## Commit the index for the item ID as TYPE(SCOPE): SUBJECT (#ID) with the body of BODY_FILE; offline
+	$(NODE) $(KIT)/plan.$(KIT_EXT) commit
+
+documents-stamp: ## Write the source-sha256 of each English document into the Korean twins of PATHS, or of the twins whose source moved; offline
+	$(NODE) $(KIT)/documents-stamp.$(KIT_EXT) $(PATHS)
+
+# FILE and TEXT reach the utility through its environment unexpanded, so a text may hold a backquote, a $ or a quote.
+unexport TEXT
+text-absent: export KIT_TEXT_ABSENT_FILE = $(value FILE)
+text-absent: export KIT_TEXT_ABSENT_TEXT = $(value TEXT)
+text-absent: ## Fail while the tracked file FILE holds the text TEXT, naming each line; offline
+	$(NODE) $(KIT)/text-absent.$(KIT_EXT)
+
+land: ## Land the branch BRANCH on main fast-forward and remove its worktree; offline
+	$(NODE) $(KIT)/land.$(KIT_EXT) $(BRANCH)
+
+worktree-setup: ## Create or reuse the row worktree NAME of the item ID from main, run make install in it, then make link-check; ONLINE
+	$(ONLINE) $(NODE) $(KIT)/worktree-setup.$(KIT_EXT) $(NAME) $(ID) $(or $(TYPE),fix)
+
+link: ## Connect the development sources of .links through the native package managers; PROJECT and RUNTIME select; offline
+	$(NODE) $(KIT)/link.$(KIT_EXT) link $(strip $(if $(PROJECT),--project $(PROJECT)) $(if $(RUNTIME),--runtime $(RUNTIME)))
+
+link-check: ## Fail while the links differ from the link declaration .links; offline
+	$(NODE) $(KIT)/link-check.$(KIT_EXT) $(if $(PROJECT),--project $(PROJECT))
+
+unlink: ## Remove the links of PROJECT and the go.work files that link wrote; make install restores the locked installs; offline
+	$(NODE) $(KIT)/link.$(KIT_EXT) unlink$(if $(PROJECT), --project $(PROJECT))$(if $(RUNTIME), --runtime $(RUNTIME))
+
+python-venv: ## Make the virtual environment DIR from the python3 of mise.toml with its uv venv; offline
+	@test -n "$(DIR)" || { echo "python-venv: DIR is required, for example make python-venv DIR=pkg/.venv"; exit 1; }
+	$(NODE) $(KIT)/python-venv.$(KIT_EXT) $(DIR)
+
+uv-install: ## Install the Python sources of DIR with one uv sync --locked and check the installed distributions; SYNC passes its flags
+	UV_SYNC="$(SYNC)" $(ONLINE) $(NODE) $(KIT)/uv-install.$(KIT_EXT) $(DIR)
+
+# The release steps (config/release.json), which .github/workflows/release.yml runs in this order: release-tag, release-prepare,
+# release-tools, release-tools-path, release-assets, release-publish, release-undraft.
+.PHONY: release-prepare release-tools release-tools-path release-tag release-candidate release-assets release-candidate-assets release-publish release-undraft release-coverage
+release-prepare:: ## Prepare what the release needs before release-tools; none
+	@:
+
+release-tools: ## Install the tools that config/release.json needs for the release; ONLINE
+	$(ONLINE) $(NODE) $(KIT)/release-tools.$(KIT_EXT)
+
+release-tools-path: ## Append var/tools/bin and the shims of mise to GITHUB_PATH and the environment of mise to GITHUB_ENV
+	@test -n "$$GITHUB_PATH" || { echo 'release-tools-path: GITHUB_PATH is not set; run it in the release workflow between steps'; exit 1; }
+	@test -n "$$GITHUB_ENV" || { echo 'release-tools-path: GITHUB_ENV is not set; run it in the release workflow between steps'; exit 1; }
+	@echo "$(TOOLS_DIR)/mise/shims" >> "$$GITHUB_PATH"
+	@echo "$(TOOLS_DIR)/bin" >> "$$GITHUB_PATH"
+	@for name in $(MISE_ENVIRONMENT); do echo "$$name=$$(printenv $$name)"; done >> "$$GITHUB_ENV"
+
+release-tag: ## Tag the commit of the successful CI run RUN with vX.Y.Z of its change log and the Go module tags; AUTO for the workflow_run start
+	@test -n "$$RUN" || { echo "release-tag: RUN is required, for example make release-tag RUN=123"; exit 1; }
+	$(NODE) $(KIT)/release-run.$(KIT_EXT) tag "$$RUN"$(if $(AUTO), --auto)
+
+release-candidate: ## Prepare the VERSION archives of the committed candidate before CI
+	$(NODE) $(KIT)/release-run.$(KIT_EXT) prepare "$(VERSION)"
+
+release-assets: ## Build the archive of every package of TAG and packages.json into var/release/assets; ONLINE
+	@test -n "$$TAG" || { echo "release-assets: TAG is required, for example make release-assets TAG=v0.0.1"; exit 1; }
+	$(ONLINE) $(NODE) $(KIT)/release.$(KIT_EXT) assets "$$TAG"
+
+release-candidate-assets: ## Build the archive of every package from committed HEAD for VERSION into var/release/assets; ONLINE
+	@test -n "$$VERSION" || { echo "release-candidate-assets: VERSION is required, for example make release-candidate-assets VERSION=0.0.1"; exit 1; }
+	$(ONLINE) $(NODE) $(KIT)/release.$(KIT_EXT) candidate-assets "$$VERSION"
+
+release-publish: ## Create the GitHub Release of TAG as a draft with the notes and the files of release-assets
+	@test -n "$$TAG" || { echo "release-publish: TAG is required, for example make release-publish TAG=v0.0.1"; exit 1; }
+	$(NODE) $(KIT)/release.$(KIT_EXT) publish "$$TAG"
+
+release-undraft: ## Make the draft release of TAG public
+	@test -n "$$TAG" || { echo "release-undraft: TAG is required, for example make release-undraft TAG=v0.0.1"; exit 1; }
+	$(NODE) $(KIT)/release.$(KIT_EXT) undraft "$$TAG"
+
+release-coverage: ## Require every package file of the checkout to be classified in config/release.json; offline
+	$(NODE) $(KIT)/release.$(KIT_EXT) coverage
+
+# The release builds the released versions, so its Go runs without the go.work of the links; the archive builds build the tree
+# with the tracked go.work of this repository.
+release-prepare release-tools release-tag release-publish release-undraft release-coverage: export GOWORK := off
+release-assets release-candidate-assets: export GOWORK := $(CURDIR)/go.work
 
 # Validator benchmark iteration counts (override on the command line, e.g.
 # `make bench BENCH_ITERS=100000`).
@@ -57,16 +370,16 @@ PYTHON_VENV := $(CURDIR)/var/python
 # install-link (kit) links the Python packages in the environment that crudui-install-python makes: kit's link reads
 # UV_PROJECT_ENVIRONMENT, and without it the link finds no environment of the repository and fails (K360-2).
 install-link link: export UV_PROJECT_ENVIRONMENT := $(PYTHON_VENV)
-UV := $(KIT_TOOLS)/mise/shims/uv
+UV := $(TOOLS_DIR)/mise/shims/uv
 # The go and Composer of mise.toml, by the absolute paths of their shims: make 3.81 runs a recipe line without shell syntax
 # from the PATH that make started with (kit K171).
-GO := $(KIT_TOOLS)/mise/shims/go
-COMPOSER_BIN := $(KIT_TOOLS)/mise/shims/composer
+GO := $(TOOLS_DIR)/mise/shims/go
+COMPOSER_BIN := $(TOOLS_DIR)/mise/shims/composer
 # The folder that make ordered-json-ext records for the local record servers (examples/form-comparison/src/local-servers.mjs).
 ORDERED_JSON_PACKAGE_FILE := $(CURDIR)/var/ordered-json-package
 # PIE is the shim of the http:pie of mise.toml, which install-pie installs (C17.93). Each build starts in an empty working
 # directory of the package under var/pie (C17.96).
-PIE := $(KIT_TOOLS)/mise/shims/pie
+PIE := $(TOOLS_DIR)/mise/shims/pie
 PIE_WORK := $(CURDIR)/var/pie/polyspec/ordered-json-php-ext
 
 .PHONY: install-pie
@@ -130,29 +443,16 @@ help: ## 타겟 설명
 	@echo ""
 
 # The npm, Go and cargo-audit releases that the checkout declares into var/tools and the Rust toolchain of rust-toolchain.toml
-# (install-tools of the kit.mk of @polyspec/kit), the dependencies of the lock files, the crates of every Cargo.lock, the OrderedJSON
+# (install-tools), the dependencies of the lock files, the crates of every Cargo.lock, the OrderedJSON
 # checkout of the comparison and the phpDocumentor release that scripts/install-phpdocumentor.mts checks by its SHA-256.
 # PHP is installed at the minor of config/toolchain.json by the machine's package manager; Node.js, Python, Go and
-# Composer are the tools of mise.toml in var/tools. The tools of the checkout are checked by the install of kit.
-install: crudui-install ## Install the declared tools with the Rust toolchain, the npm, Composer, Python and Cargo dependencies and phpDocumentor
+# Composer are the tools of mise.toml in var/tools.
 
-# crudui-install is the repository step of install: it runs after install-kit, the bootstrap of kit (K246-2). composer install
+# crudui-install is the repository step of install: it runs after install-kit, the bootstrap of the tools and packages. composer install
 # writes vendor/composer/platform_check.php from the tracked composer.lock, which demands the PHP of the released polyspec
 # packages; install-link, which install runs again at its end, points them at the sibling checkouts and writes the check for the
 # PHP of .php-version, so it runs before phpDocumentor, the first step that runs PHP, and after the Python install it needs.
 crudui-install: install-kit crudui-install-python crudui-install-composer install-link crudui-install-crates crudui-install-go-modules crudui-install-phpdocumentor crudui-install-browsers
-
-# The parts of make install, which the CI jobs run for what they check: every CI step runs a make target, so the recipes
-# start every tool with the offline settings, $(NPM) and the toolchains of the checkout. install-packages of
-# kit-bootstrap.mk installs package-lock.json with the npm of var/tools (make install-tools TOOLS=npm).
-# .npmrc sets strict-allow-scripts, so an install script that allowScripts of package.json does not approve fails the install.
-# install-packages runs crudui-install-svelte-tools after its npm ci (INSTALL_PACKAGES_EXTRA, K428); make install links
-# after install-packages through install-link.
-
-# The extra lock projects that install-packages installs after its npm ci (K428): the tools of packages/svelte.
-INSTALL_PACKAGES_EXTRA := crudui-install-svelte-tools
-
-install-packages: hooks
 
 # The tools of packages/svelte that need the TypeScript 6 API (svelte-check, @sveltejs/package and the Svelte lint)
 # are a project of their own outside the npm workspaces, so that no package that npm hoists to the root reaches the
@@ -296,10 +596,6 @@ crudui-test-bench: ## The benchmark drivers
 check-conformance: ## The conformance evidence against contracts/features.json
 	$(NODE) scripts/check-conformance.mts
 
-# The owner checks run the checks of the changed paths (config/owner-checks.json), some of which run cargo; make -k skips
-# them while a crate is missing.
-owner-check:
-
 docs: docs-clean docs-web ## 전체 문서 생성 (clean-then-generate)
 	@echo "[make] docs: complete -> docs/.web/dist"
 
@@ -318,9 +614,8 @@ docs-dev: ## 문서 개발 서버
 docs-preview: ## 문서 빌드 결과 미리보기 서버
 	$(NPM) run docs:preview
 
-# crudui-docs-check is the repository's doc-coverage gate (documents AND library packages; either arm RED → non-zero exit).
-# kit's docs-check runs it through the DOCS_CHECKS hook, with check-documents and every other DOCS_CHECKS target, each regardless of the others.
-DOCS_CHECKS += crudui-docs-check
+# crudui-docs-check is the repository's doc-coverage gate (documents AND library packages; either arm RED → non-zero exit);
+# make docs-check runs it after the document check of kit.
 crudui-docs-check: ## doc-coverage 게이트 (문서 + 라이브러리, 미문서화 → 비0 exit)
 	@status=0; \
 	$(MAKE) --no-print-directory docs-check-documents || status=1; \
@@ -492,8 +787,8 @@ records-check: ## Check the document pairs, links, changelog, writing and checkl
 	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node --timeout 10 -- scripts/documentation-links.test.mts tests/docs/changelog.test.mts tests/docs/repository-writing.test.mts tests/docs/example-readmes.test.mts tests/docs/fixture-readmes.test.mts || status=1; \
 	exit $$status
 
-# The release steps are the targets of the kit.mk of @polyspec/kit, run by .github/workflows/release.yml in this order: release-tag,
-# release-assets, release-publish (docs/operations/repository.md, "Releases"). The
+# The release steps above run the release utilities of @polyspec/kit, in the order of .github/workflows/release.yml
+# (docs/operations/repository.md, "Releases"). The
 # archives of the npm packages hold their dist directories, so the packages are built before the archives are written.
 release-assets release-candidate-assets: crudui-prepare-release-build build
 .PHONY: crudui-prepare-release-build
@@ -538,36 +833,6 @@ CI_TARGETS = \
 	crudui-test-php-api \
 	crudui-test-cross-language-equivalence \
 	check-conformance
-
-# The gates of kit that this checkout runs (kit-gates of kit.mk); kit-check fails for a gate that this list leaves out.
-CHECK_TARGETS = \
-	kit-check \
-	layout-check \
-	rules-check \
-	owner-validate \
-	rebuild-check \
-	language-check \
-	test-markers-check \
-	duplication-check \
-	parity-declarations-check \
-	parity-check \
-	link-check \
-	link-metadata-check \
-	divergence-check \
-	bypass-check \
-	suppression-check \
-	lint-ts \
-	lint-php-ext \
-	test-php-ext
-
-# Extension parity loads the native module built from the current source.
-parity-check: build-php-ext
-
-# Production imports are resolved from each package's own runtime dependencies.
-.PHONY: production-dependencies-check
-lint-ts: production-dependencies-check
-production-dependencies-check:
-	$(NODE) node_modules/knip/bin/knip.js --config config/knip-production.json --production --strict --include unlisted --no-progress --no-config-hints
 
 # PHP source runs include public and implementation units; extension defaults remain public. Named apart from kit's test-php,
 # which runs the PHP tests of config/parity.json with the runtime targets (C17.86).

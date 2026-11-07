@@ -11,7 +11,6 @@ import { fileURLToPath } from 'node:url';
 
 import { parse } from 'yaml';
 
-import { isVendored } from '../../scripts/repository-files.mts';
 import { checked, parseJson, manifestSchema, script, type JTDSchemaType, type Manifest } from '../json.mts';
 import {
   directTestTools, isTestCommand, makeHooks, makeTargets, matchesArgument, nodeScripts, nodeTestArguments, projectCommands, runsTests,
@@ -64,7 +63,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const tracked = [
   // A tracked file deleted in the working tree is no longer a project command source.
   ...execFileSync('git', ['ls-files', '*package.json', '*composer.json', '*Makefile', '.github/workflows/*.yml'], { cwd: ROOT, encoding: 'utf8' })
-    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)) && !isVendored(file)),
+    .split('\n').filter(file => file && existsSync(path.join(ROOT, file))),
   'contracts/features.json',
 ];
 const read = (file: string): string => readFileSync(path.join(ROOT, file), 'utf8');
@@ -108,7 +107,7 @@ test('a script a test command starts prints through the shared progress lines', 
     for (const { name, command } of projectCommands(file, read(file))) {
       if (!isTestCommand(file, name)) continue;
       // The tools of @polyspec/kit and its copies follow the rules of kit.
-      for (const script of nodeScripts(command).filter(name => !isVendored(name) && !/^\$\(KIT\)\/|node_modules\/@polyspec\/kit\//.test(name))) {
+      for (const script of nodeScripts(command).filter(name => !/^\$\(KIT\)\/|node_modules\/@polyspec\/kit\//.test(name))) {
         const source = [path.join(ROOT, directory, script), path.join(ROOT, script)].find(candidate => existsSync(candidate));
         if (!source) violations.push(`${file} ${name}: ${script} does not exist`);
         else if (!/'@polyspec\/kit\/test-progress'/.test(readFileSync(source, 'utf8'))) violations.push(`${file} ${name}: ${script} does not print through @polyspec/kit/test-progress`);
@@ -126,7 +125,7 @@ test('every node:test file runs in a project command', () => {
   // Vitest runs every test file of a package that declares a Vitest test script.
   const vitest = tracked.filter(file => file.endsWith('package.json') && /vitest/.test(manifestOf(file).scripts?.['test'] ?? '')).map(path.dirname);
   const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '*.test.mts', '*.test.mjs', '*.test.cjs', '*.test.js', '*.browser.mjs'], { cwd: ROOT, encoding: 'utf8' })
-    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)) && !isVendored(file) && !vitest.some(directory => file.startsWith(`${directory}/`)));
+    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)) && !vitest.some(directory => file.startsWith(`${directory}/`)));
   assert.deepEqual(files.filter(file => !arguments_.some(argument => matchesArgument(file, argument))), []);
 });
 
@@ -360,7 +359,7 @@ test('no test asserts a bound on an elapsed time', () => {
   assert.equal(CLOCK_BOUND.test(`${call}(result.durationMs > 3 * limit);`), true);
   assert.equal(CLOCK_BOUND.test(`${call}(Number.isFinite(run.durationMs) && run.durationMs >= 0);`), false);
   const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '*.mts', '*.mjs', '*.js', '*.cjs', '*.ts'], { cwd: ROOT, encoding: 'utf8' })
-    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)) && !isVendored(file));
+    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)));
   const bounds = files.flatMap(file => read(file).split('\n').flatMap((line, index) => CLOCK_BOUND.test(line) ? [`${file}:${index + 1}`] : []));
   assert.deepEqual(bounds, []);
 });
@@ -381,7 +380,7 @@ test('the reproducible build check compares its own builds and its test reads no
 test('no program waits in an interval loop', () => {
   const sleep = /new Promise\(\(?resolve\)? => setTimeout\(resolve, (?!0\))/;
   const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '*.mts', '*.mjs', '*.js', '*.cjs', '*.ts'], { cwd: ROOT, encoding: 'utf8' })
-    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)) && !isVendored(file))
+    .split('\n').filter(file => file && existsSync(path.join(ROOT, file)))
     .filter(file => !/(?:\.test\.[cm]?[jt]s|\.browser\.mjs)$|(?:^|\/)tests?\//.test(file));
   const loops: string[] = [];
   for (const file of files) {

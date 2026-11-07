@@ -1,0 +1,140 @@
+// The knip configuration of crudui (make lint-ts), from the knip.json of kit (docs/examples/native-settings of @polyspec/kit).
+// knip reads the comments of this file. Each entry, binary and dependency beyond the defaults of knip states its reason.
+{
+  "node": {
+    "entry": [
+      "**/*.test.{ts,mts,cts,mjs,cjs,js}",
+      "scripts/**/*.{ts,mts,cts,mjs,cjs,js}",
+      "benchmarks/**/*.{ts,mts,cts,mjs,cjs,js}",
+      // client/index.html loads it as its module script; the gateway (server/server.mjs) serves client/
+      "examples/cross-check-console/client/app.js",
+      // client/index.html links it as its stylesheet
+      "examples/cross-check-console/client/styles.css",
+      // server/validate-runner.mjs spawns it by path as the JavaScript validator process
+      "examples/cross-check-console/validators/js/validate.mjs",
+      // examples/form-structure/index.html loads it as its module script
+      "examples/form-structure/main.js",
+      // writes src/messages/interface_messages.rs; the crate test embedded_messages_match_the_contract names `node tools/generate-interface-messages.mjs` as its fix
+      "packages/generator/rust/tools/generate-interface-messages.mjs",
+      // the README of packages/generator/rust runs it by path (`node packages/generator/rust/verify-fixtures.mjs`); tests/build/rust-node-entry-points.test.mts checks it
+      "packages/generator/rust/verify-fixtures.mjs",
+      // scripts/docs-web/build.mts copies it to assets/docs.css of the documentation site
+      "scripts/docs-web/docs.css",
+      // tests/build/public-packages.test.mts compiles them with tsc by path
+      "tests/build/public-types.{mts,cts}",
+      // tests/build/public-packages.test.mts compiles it with tsc by path
+      "tests/build/public-types-svelte.mts",
+      // tests/build/public-packages.test.mts compiles it with tsc by path
+      "tests/build/module-only-require.cts",
+      // writes the cases.json of its fixture directory; its header names the command (`node tests/fixtures/<name>/generate.mts`)
+      "tests/fixtures/{detail-render,form-outline,list-render}/generate.mts",
+      // writes the cases.json of the five form state fixture directories; its header names the command (`node tests/fixtures/form-state/generate.mts`)
+      "tests/fixtures/form-state/generate.mts",
+      // writes tests/fixtures/form-complete/cases.json; its header names the command (`node tests/fixtures/form-complete/generate.mts`)
+      "tests/fixtures/form-complete/generate.mts",
+      // make crudui-test-native-generators and make crudui-test-php-api run it, and scripts/check-conformance.mts runs it as the native generators suite
+      "tests/native-generators/run.mts",
+      // writes number-text.json, which NumberTextTest.php reads; its header names the command (`node number-text.generate.mjs > number-text.json`) and NumberTextTest.php names it
+      "packages/validator/php/tests/Values/number-text.generate.mjs",
+      // writes tests/data/number-text.tsv, which the crate test numbers_match_the_ecmascript_table (src/validate/canonical.rs) reads and names as its writer
+      "packages/validator/rust/tools/generate-number-text.mjs",
+      // writes src/validate/unicode/data.rs; the crate test embedded_data_matches_the_contract names `node tools/generate-unicode-properties.mjs` as its fix
+      "packages/validator/rust/tools/generate-unicode-properties.mjs",
+      // writes tests/fixtures/validate/cases.json; its README names the command (`node tests/fixtures/validate/generate.mts > tests/fixtures/validate/cases.json`)
+      "tests/fixtures/validate/generate.mts",
+      // writes tests/fixtures/buttons/cases.json; its README names the command (`node tests/fixtures/buttons/generate.mts`)
+      "tests/fixtures/buttons/generate.mts",
+      // writes tests/fixtures/template-shape/cases.json; its README names the command (`node tests/fixtures/template-shape/generate.mts`)
+      "tests/fixtures/template-shape/generate.mts",
+      // examples/form-comparison/benchmark/index.html links it as its stylesheet; build.mjs copies benchmark/ into the public directory
+      "examples/form-comparison/benchmark/benchmark.css",
+      // src/local-servers.mjs runs it by path (`node build.mjs <public directory>`) to build the public directory of the local stack
+      "examples/form-comparison/build.mjs",
+      // local-verification.mjs (npm run test:form-comparison:checks) runs it by path as its persistence check
+      "examples/form-comparison/check-servers.mjs",
+      // src/local-servers.mjs spawns them by path as the JavaScript and PHP record servers
+      "examples/form-comparison/servers/{javascript,php}/main.mjs",
+      // npm run test:form-comparison:browser runs it by path
+      "examples/form-comparison/src/browser-job.browser.mjs"
+    ]
+  },
+  "ignoreBinaries": [
+    // the Go of mise.toml: the build:go script of examples/cross-check-console/server builds the Go validator process with it
+    "go",
+    // the PHP of the machine (config/toolchain.json): the cross-check console tests run the PHP validator processes with it, and scripts/install-phpdocumentor.mts checks the phpDocumentor phar with it
+    "php",
+    // GNU Make: tests/build/make-dry-run.mts and tests/build/tool-path.test.mts run the recipes of the Makefile with it
+    "make"
+  ],
+  "ignoreDependencies": [
+    // make lint-ts runs oxlint of node_modules/.bin through lint-ts of @polyspec/kit; no import or script names the package
+    "oxlint",
+    // the type-aware backend of oxlint, which oxlint starts for options.typeAware of .oxlintrc.json; no import names the package
+    "oxlint-tsgolint",
+    // make docs-api (npm run docs:api) runs scripts/gen-api-docs.mts, which runs node_modules/.bin/api-extractor in each package to write its API model; no import names the package
+    "@microsoft/api-extractor",
+    // make docs-api (npm run docs:api) runs scripts/gen-api-docs.mts, which runs node_modules/.bin/api-documenter markdown on each API model; no import names the package
+    "@microsoft/api-documenter",
+    // tests/tailwind-styles.test.mts compiles '@import "tailwindcss/theme.css"' and '@import "tailwindcss/utilities.css"' with @tailwindcss/node, which resolves them from the root; knip reads no import in that CSS text
+    "tailwindcss"
+  ],
+  "workspaces": {
+    // the cross-check gateway, a project of its own outside the npm workspaces: make crudui-test-cross-check runs `npm test --prefix examples/cross-check-console/server`
+    "examples/cross-check-console/server": {
+    },
+    // the tools of packages/svelte that need the TypeScript 6 API, a project of its own outside the npm workspaces (its package.json description); packages/svelte runs them with `npm exec --prefix tools`
+    "packages/svelte/tools": {
+      "ignoreDependencies": [
+        // the build script of packages/svelte runs its svelte-package with `npm exec --prefix tools`
+        "@sveltejs/package",
+        // the typecheck script of packages/svelte runs it with `npm exec --prefix tools`
+        "svelte-check",
+        // the lint script of packages/svelte runs it with `npm exec --prefix tools`
+        "eslint"
+      ]
+    },
+    // an npm workspace whose test script runs a second vitest configuration by path, which knip reads only from vitest.config.ts; its entries replace the default entries of knip, so they name src/index.ts too
+    "packages/svelte": {
+      "entry": [
+        // the package entry: the build script runs svelte-package -i src, which writes dist/index.js of package.json exports "." from src/index.ts
+        "src/index.ts",
+        // the test script runs `vitest --cwd packages/svelte --config vitest.client.config.ts` (through tests/conformance/run-suite.mts)
+        "vitest.client.config.ts",
+        // the test files of vitest.client.config.ts (its test.include)
+        "tests/*.client.mjs"
+      ]
+    },
+    // an npm workspace whose Vitest configuration enables the typecheck mode (test.typecheck), whose test files the Vitest plugin of knip does not read: the plugin reads test.include and not typecheck.include
+    "packages/validator/ts": {
+      "entry": [
+        // the type test files that the typecheck mode of Vitest checks (the default typecheck.include of Vitest)
+        "src/**/*.test-d.ts"
+      ]
+    },
+    // an npm workspace whose build script runs tsup inside the command that scripts/package-dist.mts receives as one quoted argument, which knip does not parse
+    "packages/form-binding": {
+      "ignoreDependencies": [
+        // the build script runs `tsup src/index.ts --format esm` through scripts/package-dist.mts
+        "tsup"
+      ]
+    },
+    // an npm workspace whose package.json exports "." and "./server" are dist files that tsup builds from src/index.ts and src/server.ts; the type RenderListOptions that src/server.ts re-exports is the option type of the public renderList of ./server, as the svelte and vue entries re-export it
+    "packages/react": {
+      "entry": [
+        // the package entry: package.json exports "." is dist/index.mjs and dist/index.js, which tsup builds from src/index.ts
+        "src/index.ts",
+        // the server entry: package.json exports "./server" is dist/server.mjs and dist/server.js, which tsup builds from src/server.ts
+        "src/server.ts"
+      ]
+    },
+    // an npm workspace whose tsconfig.json checks the sources and the tests and emits nothing: it has no rootDir or outDir, as its tests import the shared scenario of tests/fixtures/form-session from outside the package (C14.40), so knip cannot map the dist files of package.json exports to src; tsconfig.build.json emits the declarations from src. Its entries replace the default entries of knip
+    "packages/generator/ts": {
+      "entry": [
+        // the package entry: package.json exports "." is dist/index.mjs and dist/index.js, which tsup builds from src/index.ts
+        "src/index.ts",
+        // the internal entry: package.json exports "./internal" is dist/internal.mjs and dist/internal.js, which tsup builds from src/internal.ts
+        "src/internal.ts"
+      ]
+    }
+  }
+}

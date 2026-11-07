@@ -1,8 +1,8 @@
 # Development
 <!-- doc-id: agents -->
 
-The working principles of every polyspec repository are [PRINCIPLES.md](PRINCIPLES.md), a copy of kit; this file states
-only the rules of crudui.
+The working principles of every polyspec repository are the `PRINCIPLES.md` of the installed `@polyspec/kit`
+(`node_modules/@polyspec/kit/PRINCIPLES.md`); this file states only the rules of crudui.
 
 ## Tests and runs
 
@@ -17,7 +17,6 @@ only the rules of crudui.
   background and report their progress. A failure gets a task like any other defect.
   Enforced by: none, which unit tests a developer runs before a commit is a procedure that no check reads.
 - Own: A push happens only when no task of the checklist is `[~]`, neither in a pushed commit nor in the working tree.
-  Every `make` run sets `core.hooksPath` to `.githooks`, and `make hooks-check` fails while the hook is not installed.
   Enforced by: none, no hook or CI job checks a push since K804.
 - Own: While the version is 0.x there is no pull request, merge queue or GitHub ruleset. Work is committed locally, one
   checklist row per commit, and the owning unit tests pass before the row becomes `[o]`. `main` is pushed once, when
@@ -34,14 +33,14 @@ only the rules of crudui.
 
 - Own: The shared tools are the installed package `@polyspec/kit`, pinned by the root manifest and lock. Before the
   first make invocation, native npm reads the exact npm release from `packageManager` and runs the locked install
-  (`docs/operations/package-build.md`). The Makefile includes
-  `node_modules/@polyspec/kit/scripts/kit/kit-bootstrap.mk`; the installed package provides its bootstrap files and
-  selects its source or packed commands. A sibling kit checkout is optional, and bootstrap files are not `kit.copies`.
-  After installation, `make install-tools TOOLS=npm` and `make install-packages` prepare the checkout tools and packages.
-  Files that the installed package actually lists in `kit.copies`, including the release and gates workflows,
-  `PRINCIPLES.md`, `.editorconfig`, layout and manifest schemas, are written by `make kit-sync` and compared by
-  `make kit-check`. They are changed only in polyspec/kit, never edited here. Code imports kit modules through package exports.
-  Enforced by: `make kit-check`
+  (`docs/operations/package-build.md`). The `Makefile` holds every recipe that this repository runs; each recipe of a kit
+  utility starts it from the installed package (`node_modules/@polyspec/kit`) with explicit arguments. After installation,
+  `make install-tools TOOLS=npm` and `make install-packages` prepare the checkout tools and packages. The settings of the
+  tools are the files of this repository that each tool reads: `.npmrc`, the `[settings]` and `[env]` of `mise.toml`,
+  `ruff.toml`, `phpcs.xml.dist`, `phpstan.dist.neon`, `.golangci.yml`, `clippy.toml` with the `[workspace.lints]` of each
+  `Cargo.toml`, `.oxlintrc.json` and `knip.json`. The CI workflows, the bootstrap action and `config/layout.kit.yml` are
+  files of this repository too, taken from the examples of kit. Code imports kit modules through package exports.
+  Enforced by: none, which recipes and tool settings the repository holds is its own design.
 - Own: Every tool runs at the exact release that the checkout records (`mise.toml` with `mise.lock`, `rust-toolchain.toml`,
   `config/toolchain.json`, `packageManager` of `package.json`). An image is named by its digest, its Debian packages by a
   snapshot date, an action by its commit SHA and a browser by the build that the locked package pins. No run queries a
@@ -150,7 +149,7 @@ The same tree gives the same result on every date and machine, and a failed run 
   `pyproject.toml`, the `composer.json` of `packages/`), and of every dependency on a package of the repository, to X.Y.Z,
   and renames `## Unreleased` of `CHANGELOG.md` and `CHANGELOG.ko.md` to `## X.Y.Z` below a new empty `## Unreleased`.
   Enforced by: `make release-tag`
-- Own: After local preparation and successful CI checks for that commit, the maintainer tags it and pushes the tag. `.github/workflows/release.yml`, the copy of kit, runs
+- Own: After local preparation and successful CI checks for that commit, the maintainer tags it and pushes the tag. `.github/workflows/release.yml` runs
   `make release-tools`, `make release-tag`, `make release-versions`, `make release-assets`, `make release-publish`,
   `make release-proof` and `make release-undraft` (the release tool of `@polyspec/kit`). It takes the run id of a successful
   `ci.yml` run on `main`, the version in every manifest of the tag and the section

@@ -165,13 +165,13 @@ latest release of a channel, and no tool installs another version on its own.
 Before the first `make`, install the root lock with native npm at the release declared in `packageManager`:
 
 ```sh
-npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts --allow-remote=root
+npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts
 ```
 
-This command installs `@polyspec/kit` before Makefile parsing includes
-`node_modules/@polyspec/kit/scripts/kit/kit-bootstrap.mk`. The package supplies its bootstrap files; they are not
-repository copies managed by `kit-sync`. The installed package supports source and packed commands, so a sibling kit
-checkout is optional. CI runs this bootstrap after setup-node and before its first make command. The bootstrap npm cache
+This command installs `@polyspec/kit`, whose utilities the recipes of the Makefile run: from
+`node_modules/@polyspec/kit/dist` of the packed release, or from the sources of a kit checkout that `.links` links. The
+Makefile holds every recipe that it runs; kit includes none and writes no file of this
+repository. CI runs this bootstrap after setup-node and before its first make command. The bootstrap npm cache
 belongs to the checkout at `var/bootstrap/npm-cache`.
 
 - `node` of `mise.toml` records the exact Node.js release, which `make install-tools TOOLS=npm` installs into
@@ -248,11 +248,11 @@ range that the packages loading either copy declare, each package loading the co
 the nearest `node_modules` upward from its location. `npm ci --dry-run --strict-allow-scripts` must succeed
 for each graph.
 npm installs a package from the npm registry, from a workspace or from a checkout
-directory that a make target installs, such as the OrderedJSON tag checkout that the
-root manifest links with `file:`. No manifest declares a URL or Git dependency, every
-registry package of the lock file records its SHA-512 integrity, and the project npm
-configuration sets `allow-remote=none` and `allow-git=none`, so npm rejects a URL or
-Git source that a dependency introduces.
+directory that a make target installs. The root manifest pins `@polyspec/kit` and
+`@polyspec/ordered-json` by the URLs of their release assets, every package of the lock
+file records its SHA-512 integrity, and `.npmrc` sets `allow-remote=root` and
+`allow-git=none`, so npm accepts only the URLs that the root manifest names and rejects a
+URL or Git source that a dependency introduces.
 A tool with no secure compatible stable release is replaced. Dependency overrides
 and audit exclusions do not satisfy these checks. Unused build and documentation
 dependencies are removed.

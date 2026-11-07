@@ -17,8 +17,7 @@ const STRINGS = shapeOf<string[]>({ type: 'array', items: { type: 'string' } });
 const strings = (value: unknown, what: string): string[] => checkedShape(STRINGS, value, what);
 import { checked, parseJson, type JTDSchemaType } from '../json.mts';
 import { kitToolPath, makeDryRun, makeEnvironment } from './make-dry-run.mts';
-import { isVendored } from '../../scripts/repository-files.mts';
-// The bootstrap action that kit-sync vendors (kit K992): it sets the Node.js of mise.toml up, installs the locked kit package
+// The bootstrap action of this repository: it sets the Node.js of mise.toml up, installs the locked kit package
 // with the npm of devEngines.packageManager, then the npm of var/tools and the packages of package-lock.json.
 const KIT_BOOTSTRAP = './.github/actions/kit-bootstrap';
 const kitBootstrap = (step: Step): boolean => step.uses === KIT_BOOTSTRAP;
@@ -526,17 +525,21 @@ test('no run of a commit of main is stopped by a later push', async () => {
 });
 
 // main receives a push of the maintainer while the version is 0.x: CI runs on a push to main and on a manual run, and the
-// documentation web is built and deployed from main and on a manual run. The other workflows are the copies of kit
-// (ci-pipeline.yml, release.yml), which kit-check holds equal to the installed kit, so their triggers are the rules of kit.
-// No other workflow of this repository exists, and each declares exactly these lines.
+// documentation web is built and deployed from main and on a manual run. ci.yml calls the gate pipeline ci-pipeline.yml, and
+// the release starts when a CI run of main succeeds or by a dispatch with the id of such a run. No other workflow of this
+// repository exists, and each declares exactly these lines.
 const TRIGGERS = {
   'ci.yml': 'on:\n  push:\n    branches: [main]\n  workflow_dispatch:\n',
+  'ci-pipeline.yml': 'on:\n  workflow_call:\n',
   'pages.yml': 'on:\n  push:\n    branches: [main]\n  workflow_dispatch:\n',
+  'release.yml': 'on:\n  workflow_run:\n    workflows: [ci]\n    types: [completed]\n    branches: [main]\n  workflow_dispatch:\n'
+    + '    inputs:\n      run:\n        description: The id of the successful CI run of main whose commit is released\n'
+    + '        required: true\n        type: string\n',
 };
 
 test('each workflow declares exactly its triggers', async () => {
   const names = (await readdir(new URL('../../.github/workflows/', import.meta.url)))
-    .filter(name => /\.ya?ml$/.test(name) && !isVendored(`.github/workflows/${name}`)).sort();
+    .filter(name => /\.ya?ml$/.test(name)).sort();
   assert.deepEqual(names, Object.keys(TRIGGERS).sort());
   for (const [name, block] of Object.entries(TRIGGERS)) {
     const declared = /^on:\n(?: .*\n)+/m.exec(await read(`.github/workflows/${name}`))?.[0] ?? '';
@@ -595,7 +598,7 @@ test('a workflow command missing from CI_TARGETS is reported', () => {
 // on branch pushes only; the release is the copy of kit.
 test('no workflow of this repository starts on a tag push', async () => {
   const violations: string[] = [];
-  for (const name of (await readdir(new URL('../../.github/workflows/', import.meta.url))).filter(file => /\.ya?ml$/.test(file) && !isVendored(`.github/workflows/${file}`))) {
+  for (const name of (await readdir(new URL('../../.github/workflows/', import.meta.url))).filter(file => /\.ya?ml$/.test(file))) {
     const on = (await workflowFile(name)).on;
     if (!isRecord(on) || !Object.hasOwn(on, 'push')) continue;
     // A push without filters parses as null.

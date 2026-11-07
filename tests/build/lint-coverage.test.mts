@@ -1,7 +1,7 @@
 // `make lint` lints the Svelte components of packages/svelte with the ESLint of their tools project, which runs the TypeScript 6
-// of that project (C14.4), and the TypeScript lint of kit (`make lint-ts`: oxlint with the copied .oxlintrc.json over every file
-// that Git does not ignore, knip and API Extractor) is the gate of kit's CI pipeline for the ts runtime, which runs it once, so
-// local make lint is kit's lint task (every runtime's lint) plus crudui-lint; CI runs crudui-lint once in build-lint (ci-local, C17.91-1).
+// of that project (C14.4), and the TypeScript lint (`make lint-ts`: oxlint with the .oxlintrc.json of the root over every file
+// that Git does not ignore, knip and API Extractor) is the gate of the CI pipeline for the ts runtime, which runs it once, so
+// local make lint is the lint task of every runtime plus crudui-lint; CI runs crudui-lint once in build-lint (ci-local, C17.91-1).
 // Each lint fails on a planted violation.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -23,13 +23,13 @@ test('make lint runs kit\'s lint task of every runtime and the Svelte lint of pa
   assert.match(run.stdout, /\bnpm\b.* run lint -w @polyspec\/crudui-generator-svelte\b/);
 });
 
-test('oxlint with the kit configuration fails on a planted violation', t => {
+test('oxlint with the .oxlintrc.json of the root fails on a planted violation', t => {
   mkdirSync(path.join(root, 'var/tmp'), { recursive: true });
   const directory = mkdtempSync(path.join(root, 'var/tmp/crudui-lint-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const file = path.join(directory, 'planted.mjs');
   writeFileSync(file, 'export function planted(value) {\n  debugger;\n  return value;\n}\n');
-  const run = spawnSync(path.join(root, 'node_modules/.bin/oxlint'), ['-c', 'node_modules/@polyspec/kit/.oxlintrc.json', '--deny-warnings', '--format', 'json', file], { cwd: root, encoding: 'utf8' });
+  const run = spawnSync(path.join(root, 'node_modules/.bin/oxlint'), ['--format', 'json', file], { cwd: root, encoding: 'utf8' });
   assert.equal(run.error, undefined, run.error?.message ?? '');
   assert.equal(run.status, 1, run.stdout + run.stderr);
   const report = parseJson<{ diagnostics: { code: string }[] }>(run.stdout, {

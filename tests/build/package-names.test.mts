@@ -10,7 +10,6 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { isVendored } from '../../scripts/repository-files.mts';
 import { parseJson, type JTDSchemaType } from '../json.mts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -36,7 +35,7 @@ function group(match: RegExpMatchArray, index: number): string {
   return value;
 }
 // The manifests under .mise/locks are the sidecar locks that mise writes for its npm-backed tools, not packages of crudui.
-const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(file => file && !isVendored(file) && !file.startsWith('.mise/locks/'));
+const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(file => file && !file.startsWith('.mise/locks/'));
 
 test('every package of packages/ has the name of the polyspec convention', () => {
   const root = named('package.json');

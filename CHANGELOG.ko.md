@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 31e616bca68fd2666ac83de54f86285e82d8858b94319a4607844f6dda441ca3 -->
+<!-- source-sha256: 96cf6da3a378e9646c19ae22134935b764b0e21f3b697694540ac0fd292fd8ea -->
 
 ## Unreleased
+
+- CRUDUI는 kit 0.0.98을 지원한다: Makefile은 kit-bootstrap.mk의 include 대신 kit utility의 자기 recipe를 담고, .npmrc는 root manifest의 release URL을 허용하며(allow-remote=root), mise.toml은 mise와 uv의 설정을 적고, ruff.toml, phpcs.xml.dist, phpstan.dist.neon, .golangci.yml, clippy.toml, .oxlintrc.json, knip.json과 각 Cargo.toml의 [workspace.lints]가 lint 규칙을 담는다. CI workflow, bootstrap action, config/layout.kit.yml은 이 저장소의 파일이고, kit hook, Claude Code hook 설정, PRINCIPLES.md, config/knip-entries.json은 지운다 (C18.24)
 
 ## 0.0.13
 

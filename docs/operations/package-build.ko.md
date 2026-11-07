@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: 0f2d688fb92c79747dcc5936cefe6048b37ed51dbd946ed2b3cde89b3a56f7e8 -->
+<!-- source-sha256: de07e93557b5de249cdf034bff35327da72002eba57556fe5e806ca3853539de -->
 
 [English](package-build.md).
 
@@ -155,13 +155,12 @@ Node.js는 활성 LTS 또는 다음 LTS로 지정된 최신 짝수 안정 메이
 첫 `make` 전에 `packageManager`에 선언한 release의 native npm으로 root lock을 설치합니다:
 
 ```sh
-npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts --allow-remote=root
+npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts
 ```
 
-이 명령은 Makefile이 `node_modules/@polyspec/kit/scripts/kit/kit-bootstrap.mk`를 include하기 전에 `@polyspec/kit`을
-설치합니다. Package가 bootstrap 파일을 제공하며 이 파일은 `kit-sync`가 관리하는 저장소 사본이 아닙니다. 설치 package는
-source와 packed 명령을 지원하므로 sibling kit checkout은 선택 사항입니다. CI는 setup-node 뒤 첫 make 명령 전에 이
-bootstrap을 실행합니다. Bootstrap npm cache는 checkout의 `var/bootstrap/npm-cache`에 둡니다.
+이 명령은 `@polyspec/kit`을 설치하며, Makefile의 recipe는 그 utility를 packed release의 `node_modules/@polyspec/kit/dist`에서,
+또는 `.links`가 연결하는 kit checkout의 source에서 실행합니다. Makefile은 자신이 실행하는 recipe를 모두 담으며, kit은 recipe를 include하지 않고 이 저장소의 파일을 쓰지 않습니다. CI는
+setup-node 뒤 첫 make 명령 전에 이 bootstrap을 실행합니다. Bootstrap npm cache는 checkout의 `var/bootstrap/npm-cache`에 둡니다.
 
 - `mise.toml`의 `node`는 정확한 Node.js 릴리스를 기록합니다. `make install-tools TOOLS=npm`이 그것을 mise로
   `var/tools`에 설치하고 `var/tools/bin/node`가 실행하며, CI의 setup-node는 그 bootstrap을 시작하려고만 그것을 읽습니다(kit K171).
@@ -226,10 +225,10 @@ package에서 실패하며, 각 package는 자기 위치에서 위로 가장 가
 읽습니다. 각 그래프의
 `npm ci --dry-run --strict-allow-scripts`는 성공해야 합니다. npm은 package를
 npm registry, workspace 또는 make 대상이 설치한 checkout 디렉터리에서 설치합니다. 루트
-매니페스트가 `file:`로 연결하는 OrderedJSON tag checkout이 그런 디렉터리입니다. 어떤
-매니페스트도 URL 또는 Git 의존성을 선언하지 않고, 잠금 파일의 모든 registry package는
-SHA-512 무결성을 기록하며, 프로젝트 npm 설정은 `allow-remote=none`과 `allow-git=none`을
-선언하므로 의존성이 추가한 URL 또는 Git 소스는 npm이 거부합니다. 호환되는 안전한 안정
+매니페스트는 `@polyspec/kit`과 `@polyspec/ordered-json`을 release asset의 URL로 고정하고,
+잠금 파일의 모든 package는 SHA-512 무결성을 기록하며, `.npmrc`는 `allow-remote=root`와
+`allow-git=none`을 선언하므로 npm은 루트 매니페스트가 적은 URL만 받고 의존성이 추가한 URL
+또는 Git 소스는 거부합니다. 호환되는 안전한 안정
 릴리스가 없는 도구는 교체합니다. 의존성 override와 audit 제외는 이 기준을
 충족하지 않습니다. 사용하지 않는 빌드·문서 의존성은 제거합니다.
 

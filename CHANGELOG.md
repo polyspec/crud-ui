@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- CRUDUI supports kit 0.0.98: the Makefile holds its own recipes of the kit utilities in place of the include of kit-bootstrap.mk; .npmrc allows the release URLs of the root manifest (allow-remote=root), mise.toml states the settings of mise and uv, and ruff.toml, phpcs.xml.dist, phpstan.dist.neon, .golangci.yml, clippy.toml, .oxlintrc.json, knip.json and the [workspace.lints] of each Cargo.toml hold the lint rules; the CI workflows, the bootstrap action and config/layout.kit.yml are files of this repository, and the kit hooks, the Claude Code hook settings, PRINCIPLES.md and config/knip-entries.json are removed (C18.24)
+
 ## 0.0.13
 
 - C18.23: every manifest and lock of a crudui package carries 0.0.13, with kit 0.0.92 and ordered-json 0.0.20 (C18.23)

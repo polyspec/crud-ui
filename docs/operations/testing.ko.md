@@ -1,6 +1,6 @@
 # 테스트 실행
 <!-- doc-id: docs-operations-testing -->
-<!-- source-sha256: 6cd7f608c30e1b27b4d911fba1de5c27afc69e315c1b5e51037d7f6b6f404b49 -->
+<!-- source-sha256: 7dcb55df60ab2000df8edd6746e19ce0e05b6be6bca7e1fe9970f45b078599e4 -->
 
 [English](testing.md).
 
@@ -57,7 +57,7 @@ package script와 CI step도 같은 규칙을 따릅니다. 독립된 여러 검
 `scripts/run-contract-tests.mts`는 앞의 명령이 실패한 뒤에도 선언된 모든 명령을 실행하고 마지막 명령 뒤에 실패합니다.
 
 CI workflow는 `main`으로의 push와 수동 실행(`workflow_dispatch`)마다 이 대상을 job에서 실행합니다. 전체 suite는 다른 곳에서
-실행하지 않습니다(PRINCIPLES.md, Verification).
+실행하지 않습니다(`@polyspec/kit`의 `PRINCIPLES.md`, Verification).
 
 native suite는 세 CI job에서 실행되므로 어떤 job도 다른 runtime이 필요한 suite를 기다리지 않습니다.
 `php-engine`은 Node.js와 C compiler로 `make crudui-test-php-engine`을 한 번, `native-generators`는
@@ -92,10 +92,9 @@ ref와 commit 또는 `working tree`와 함께 출력하고, push를 막는 상�
 재시도 조건과 함께 `[!]`로 표시합니다. checklist가 없는 push commit, 잘못된 hook 입력 줄, 읽을 수 없는 checklist, Git 오류도 그 원인을 적으며 push를
 거부합니다. 삭제되는 ref는 commit을 push하지 않으므로 working tree만으로 검사합니다.
 
-Git은 hook을 version 관리하지 않습니다. make 실행은 checkout이 `.githooks/pre-push`를 추적하면 `core.hooksPath`를 `.githooks`로 설정하므로(`@polyspec/kit`의 `kit.mk`),
-어떤 make target이든 실행한 checkout에는 hook이 있습니다. `make hooks`(`node node_modules/@polyspec/kit/dist/git-hooks.mjs install`)는 `core.hooksPath`를 설정하고 hook을 쓰고 실행 가능하게
-하며, `make hooks-check`는 `core.hooksPath`가 `.githooks`가 아니거나 `.githooks/pre-push`가 없거나 실행 가능한 file이 아니거나 도구의 hook과 다른 내용이면
-실패하고 해결 방법을 적습니다.
+`config/checklist.json`은 이 저장소의 Git hook을 나열하지 않습니다. `make install-packages`가 먼저 실행하는 `make hooks`
+(`node node_modules/@polyspec/kit/dist/git-hooks.mjs install`)는 changelog와 checklist의 merge driver를 선언하며, `make hooks-check`는
+그중 하나라도 선언되지 않았으면 실패합니다.
 
 hook이 없는 clone이나 hook을 건너뛴 push도 GitHub에 도달합니다. `.github/workflows/push-gate.yml`의 job `push-gate`는 branch로의 모든 push에서 실행되어,
 push된 commit을 checkout하고 `make ci-targets TARGETS="push-gate-commit records-check"`를 실행합니다. `make push-gate-commit`

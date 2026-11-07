@@ -64,7 +64,7 @@ and an `&&` chain puts no step after a check.
 fails after the last one.
 
 The CI workflow runs these targets in its jobs on each push to `main` and each manual run (`workflow_dispatch`); the
-full suite runs nowhere else (PRINCIPLES.md, Verification).
+full suite runs nowhere else (the `PRINCIPLES.md` of `@polyspec/kit`, Verification).
 
 The native suites run in three CI jobs, so no job waits for a suite that another runtime needs:
 `php-engine` runs `make crudui-test-php-engine` once with Node.js and the C compiler, `native-generators`
@@ -107,12 +107,9 @@ checklist, a malformed line of the hook input, a checklist that cannot be read a
 refuse the push, naming the cause; a deleted ref pushes no commit and is checked by the working tree
 alone.
 
-Git does not version hooks. A make run sets `core.hooksPath` to `.githooks` when the checkout tracks
-`.githooks/pre-push` (the `kit.mk` of `@polyspec/kit`), so a checkout that runs any make target has the hook.
-`make hooks` (`node node_modules/@polyspec/kit/dist/git-hooks.mjs install`) sets `core.hooksPath`, writes the hook and makes
-it executable, and `make hooks-check` fails while `core.hooksPath` is not `.githooks` or
-`.githooks/pre-push` is missing, is not an executable file or has other content than the hook of the
-tool, and names the fix.
+`config/checklist.json` lists no Git hook of this repository. `make hooks`
+(`node node_modules/@polyspec/kit/dist/git-hooks.mjs install`), which `make install-packages` runs first, declares the
+merge drivers of the changelogs and checklists, and `make hooks-check` fails while one of them is not declared.
 
 A clone without the hook, or a push that skips it, still reaches GitHub. The job `push-gate` of
 `.github/workflows/push-gate.yml` runs on every push to a branch, checks out the pushed commit and runs
