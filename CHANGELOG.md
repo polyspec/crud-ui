@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C18.26: crudui takes ordered-json 0.0.21, the latest release of its provider, in npm (package.json, package-lock.json), Composer (composer.json, composer.lock) and the Go and Rust servers of examples/form-comparison (C18.26)
+
 ## 0.0.14
 
 - C18.25: every manifest and lock of a crudui package carries 0.0.14, with kit 0.0.98 (C18.25)

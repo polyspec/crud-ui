@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- C18.26: crudui는 제공 라이브러리의 최신 릴리스 ordered-json 0.0.21을 npm(package.json, package-lock.json), Composer(composer.json, composer.lock)와 examples/form-comparison의 Go, Rust 서버에서 받는다 (C18.26)
+
 ## 0.0.14
 
 - C18.25: crudui package의 모든 manifest와 lock은 0.0.14를 적고 kit 0.0.98을 쓴다 (C18.25)
