@@ -1,8 +1,8 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: c7a177fc7a79ece55a00031bc4a14166c8c41748d7f421e1419145fc404d8f0c -->
+<!-- source-sha256: 030afb5d960a8b84244753befb893f63919ad19cfc673b97a364fc1e7267bbce -->
 
-모든 polyspec 저장소의 작업 원칙은 설치된 `@polyspec/kit`의 `PRINCIPLES.md`(`node_modules/@polyspec/kit/PRINCIPLES.md`)이며,
+crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
 
 ## 테스트와 실행

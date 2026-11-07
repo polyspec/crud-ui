@@ -135,9 +135,9 @@ docs-check: ## Check the documents of config/documents.json and the checklists, 
 	$(MAKE) --no-print-directory crudui-docs-check || status=1; \
 	exit $$status
 
-# The rules of this repository are those of AGENTS.md; the principles are the PRINCIPLES.md of the installed @polyspec/kit.
-rules-check: ## Check that every rule of AGENTS.md names a check that a CI workflow runs; offline
-	$(NODE) $(KIT)/check-rules.$(KIT_EXT) AGENTS.md
+# The rules of this repository are those of PRINCIPLES.md, its own copy of the principles of kit, and of AGENTS.md.
+rules-check: ## Check that every rule of PRINCIPLES.md and AGENTS.md names a check that a CI workflow runs; offline
+	$(NODE) $(KIT)/check-rules.$(KIT_EXT)
 
 # The owner checks run the checks of the changed paths (config/owner-checks.json), some of which run cargo; make -k skips
 # them while a crate is missing.
@@ -221,11 +221,10 @@ test-php-ext: build-php-ext ## Compare the declarations of the built extension w
 # The gates of this repository, in the partitions that the jobs of .github/workflows/ci-pipeline.yml run. A partition runs each
 # of its gates whatever the status of the others, so one run names every gate that fails.
 STATIC_GATES := kit-check layout-check docs-check rules-check owner-validate rebuild-check language-check test-markers-check duplication-check parity-declarations-check suppression-check divergence-check
+# make -k runs them past failures; the make line has no @, since rules-check reads it as a make call.
 kit-gates-static: ## Run the shared gates, each past the failures of the others
-	@status=0; failed=; \
-	for gate in $(STATIC_GATES); do $(MAKE) --no-print-directory $$gate || { status=1; failed="$$failed $$gate"; }; done; \
-	if [ $$status -eq 0 ]; then echo "[kit-gates-static] every shared gate passed"; else echo "[kit-gates-static] failed:$$failed" >&2; fi; \
-	exit $$status
+	$(MAKE) --no-print-directory -k $(STATIC_GATES) || { echo "[kit-gates-static] a shared gate failed" >&2; exit 1; }
+	@echo "[kit-gates-static] every shared gate passed"
 kit-gates-parity: parity-check ## Run the full parity gate
 kit-gates-runtime-ts: lint-ts ## Run the TypeScript gate
 kit-gates-runtime-php: lint-php ## Run the PHP gate

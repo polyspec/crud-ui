@@ -115,7 +115,9 @@ jobs:
     if: ${{ needs.shared.outputs.has_runtimes == 'true' }}
     strategy:
       fail-fast: false
+      # The runtimes of crudui; the plan of config/ci.json adds the tools and targets of each.
       matrix:
+        runtime: [go, php, php-ext, python, rust, ts]
         include: ${{ fromJSON(needs.shared.outputs.runtimes) }}
     runs-on: ubuntu-24.04
     steps:

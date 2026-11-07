@@ -1,8 +1,8 @@
 # Development
 <!-- doc-id: agents -->
 
-The working principles of every polyspec repository are the `PRINCIPLES.md` of the installed `@polyspec/kit`
-(`node_modules/@polyspec/kit/PRINCIPLES.md`); this file states only the rules of crudui.
+The working principles of crudui are [PRINCIPLES.md](PRINCIPLES.md), its own copy of the principles that `@polyspec/kit`
+ships as an example; this file states only the rules of crudui.
 
 ## Tests and runs
 

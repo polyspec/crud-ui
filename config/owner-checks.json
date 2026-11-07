@@ -23,6 +23,17 @@
     },
     {
       "paths": [
+        "PRINCIPLES.md",
+        "PRINCIPLES.ko.md",
+        "AGENTS.md",
+        "AGENTS.ko.md"
+      ],
+      "targets": [
+        "rules-check"
+      ]
+    },
+    {
+      "paths": [
         "contracts/features.json",
         "contracts/features.schema.json",
         "scripts/check-contract-manifest.mts",

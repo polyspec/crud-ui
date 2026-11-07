@@ -3,7 +3,7 @@
 //!
 //! A Rust `String` is always a sequence of Unicode scalar values, so the value
 //! operations need no check. A caller that decodes JSON text with
-//! [`JsonText`](polyspec_crudui_validator::text::JsonText) passes its parts here, in the
+//! [`JsonText`] passes its parts here, in the
 //! order each operation checks them, before decoding them into values.
 
 use polyspec_crudui_validator::text::{check_inputs, check_specification};

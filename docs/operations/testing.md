@@ -64,7 +64,7 @@ and an `&&` chain puts no step after a check.
 fails after the last one.
 
 The CI workflow runs these targets in its jobs on each push to `main` and each manual run (`workflow_dispatch`); the
-full suite runs nowhere else (the `PRINCIPLES.md` of `@polyspec/kit`, Verification).
+full suite runs nowhere else ([PRINCIPLES.md](../../PRINCIPLES.md), Verification).
 
 The native suites run in three CI jobs, so no job waits for a suite that another runtime needs:
 `php-engine` runs `make crudui-test-php-engine` once with Node.js and the C compiler, `native-generators`

@@ -1,6 +1,6 @@
 # 테스트 실행
 <!-- doc-id: docs-operations-testing -->
-<!-- source-sha256: 7dcb55df60ab2000df8edd6746e19ce0e05b6be6bca7e1fe9970f45b078599e4 -->
+<!-- source-sha256: 0ea1156e192704d2505c6c9fbb7c1b6d18fcd1d9bc636904d398b530c0f32337 -->
 
 [English](testing.md).
 
@@ -57,7 +57,7 @@ package script와 CI step도 같은 규칙을 따릅니다. 독립된 여러 검
 `scripts/run-contract-tests.mts`는 앞의 명령이 실패한 뒤에도 선언된 모든 명령을 실행하고 마지막 명령 뒤에 실패합니다.
 
 CI workflow는 `main`으로의 push와 수동 실행(`workflow_dispatch`)마다 이 대상을 job에서 실행합니다. 전체 suite는 다른 곳에서
-실행하지 않습니다(`@polyspec/kit`의 `PRINCIPLES.md`, Verification).
+실행하지 않습니다([PRINCIPLES.md](../../PRINCIPLES.ko.md), Verification).
 
 native suite는 세 CI job에서 실행되므로 어떤 job도 다른 runtime이 필요한 suite를 기다리지 않습니다.
 `php-engine`은 Node.js와 C compiler로 `make crudui-test-php-engine`을 한 번, `native-generators`는
