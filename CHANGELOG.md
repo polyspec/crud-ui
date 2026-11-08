@@ -3,6 +3,12 @@
 
 ## Unreleased
 
+## 0.0.17
+
+- C18.37: every manifest and lock of a crudui package carries 0.0.17, with kit 0.0.102 (C18.37)
+- C18.36: the Korean twins are stamped with the revision of their English sources (C18.36)
+- C18.35: crudui adopts kit 0.0.102, whose uv-install puts back the provider links it removed when the install fails (C18.35)
+
 ## 0.0.16
 
 - C18.34: every manifest and lock of a crudui package carries 0.0.16, with ordered-json 0.0.22 and kit 0.0.101 (C18.34)

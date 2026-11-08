@@ -1,8 +1,14 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 22307a23e6449ce181ec8de1474b3595a01ccc745742dd863c9582492ddc09b6 -->
+<!-- source-sha256: ec8e00be9fe9d0c3c67f50a1c95b5d0a3058aa6d36c50c2814e59eb2a04516ee -->
 
 ## Unreleased
+
+## 0.0.17
+
+- C18.37: crudui package의 모든 manifest와 lock은 0.0.17을 적고 kit 0.0.102를 쓴다 (C18.37)
+- C18.36: 한국어 twin은 영어 원문의 개정으로 stamp한다 (C18.36)
+- C18.35: crudui는 설치가 실패하면 uv-install이 지운 provider 링크를 되돌리는 kit 0.0.102를 채택한다 (C18.35)
 
 ## 0.0.16
 
