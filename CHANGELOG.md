@@ -5,6 +5,7 @@
 
 ## 0.0.18
 
+- C18.40: config/release.json no longer lists in notReleased the two release-install consumer manifests that C17.61 deleted (C18.40)
 - C18.39: every manifest and lock of a crudui package carries 0.0.18, with ordered-json 0.0.23 (C18.39)
 - C18.38: crudui takes ordered-json 0.0.23, the latest release of its provider, in npm (package.json, package-lock.json), Composer (composer.json, composer.lock) and the Go and Rust servers of examples/form-comparison (C18.38)
 

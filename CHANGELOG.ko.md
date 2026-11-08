@@ -1,11 +1,12 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 0ca45c0c609065d96b70af393e42abdfa95dcc5f135123b475cd0d255773815b -->
+<!-- source-sha256: 80bd1c4fb78ca253ce26ac48cbc073819893128f21e937e478c5631628c21244 -->
 
 ## Unreleased
 
 ## 0.0.18
 
+- C18.40: config/release.json의 notReleased가 C17.61이 삭제한 release-install consumer manifest 두 개를 더 이상 적지 않는다 (C18.40)
 - C18.39: crudui package의 모든 manifest와 lock은 0.0.18을 적고 ordered-json 0.0.23을 쓴다 (C18.39)
 - C18.38: crudui는 제공 라이브러리의 최신 릴리스 ordered-json 0.0.23을 npm(package.json, package-lock.json), Composer(composer.json, composer.lock)와 examples/form-comparison의 Go, Rust 서버에서 받는다 (C18.38)
 

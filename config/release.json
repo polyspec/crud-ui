@@ -110,8 +110,6 @@
   },
   "notReleased": {
     "composer.json": "the development root of the Composer packages of packages/, never published; it declares no version",
-    "tests/release-install/npm/package.json": "the npm consumer project of the release archives",
-    "tests/release-install/composer/composer.json": "the Composer consumer project of the release archives",
     "examples/cross-check-console/validators/go/go.mod": "an example module of this repository, resolved through replace and never tagged",
     "examples/form-comparison/servers/go/go.mod": "an example module of this repository, resolved through replace and never tagged",
     "tests/native-generators/programs/go/go.mod": "a test program module of this repository, resolved through replace and never tagged",
