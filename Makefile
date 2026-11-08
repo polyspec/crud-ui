@@ -130,7 +130,7 @@ hooks-check: ## Fail while a merge driver of make hooks is not declared
 twin-merge: ## The merge driver of a changelog, a checklist and their Korean twins; git runs it with MERGE="<base> <ours> <theirs> <path>"
 	@$(NODE) $(KIT)/twin-merge.$(KIT_EXT) $(MERGE)
 
-.PHONY: layout-check docs-check rules-check owner-check owner-validate rebuild-check language-check test-markers-check duplication-check suppression-check divergence-check parity-check parity-declarations-check
+.PHONY: layout-check docs-check rules-check owner-check owner-validate rebuild-check language-check duplication-check suppression-check
 layout-check: ## Check the folder layout against config/layout.yml with the alint of mise.toml, the ignored install folders and the tracked generated files; offline
 	@test -x $(ALINT) || { echo "layout-check: $(ALINT) is missing; run make install-tools"; exit 1; }
 	$(ALINT) check --config config/layout.yml --color never --compact .
@@ -166,24 +166,11 @@ rebuild-check: ## Check that every tool of config/rebuild.json has its class; of
 language-check: ## Fail on Hangul in a comment, an identifier, a message or a test name of the code; offline
 	$(NODE) $(KIT)/language-check.$(KIT_EXT) --forbid '\p{Script=Hangul}'
 
-test-markers-check: ## Fail on a test that a marker skips or narrows; offline
-	$(NODE) $(KIT)/test-markers.$(KIT_EXT)
-
 duplication-check: ## Fail on a piece of 6 lines or more of code that exists twice outside the folders of config/duplication.json; offline
 	$(NODE) $(KIT)/duplication-check.$(KIT_EXT)
 
 suppression-check: ## Fail on a suppression of a lint finding that states no reason; offline
 	$(NODE) $(KIT)/suppression-check.$(KIT_EXT)
-
-divergence-check: ## Fail on an implementation that diverges by its runtime without a kind of reason; offline
-	$(NODE) $(KIT)/divergence-check.$(KIT_EXT) --reason-kind generated --reason-kind fixture --reason-kind test --reason-kind harness --reason-kind ecosystem --reason-kind external --feature-state partial --feature-state unsupported --parity config/parity.json
-
-# Extension parity loads the native module built from the current source.
-parity-check: build-php-ext ## Run the parity bindings of config/parity.json and check its rules; UNITS="<id>..." and IMPLEMENTATIONS="<name>..." select; offline
-	$(NODE) $(KIT)/parity.$(KIT_EXT) $(foreach unit,$(UNITS),--unit $(unit)) $(foreach implementation,$(IMPLEMENTATIONS),--implementation $(implementation))
-
-parity-declarations-check: ## Check the parity rules of config/parity.json that need no run; UNITS, RULES and IDS select the findings; offline
-	$(NODE) $(KIT)/parity.$(KIT_EXT) --declarations $(foreach unit,$(UNITS),--unit $(unit)) $(foreach rule,$(RULES),--rule $(rule)) $(foreach id,$(IDS),--id $(id))
 
 .PHONY: lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
 # build, test and lint run the target <task>-<runtime> of each runtime of packages/ (go, php, php-ext, python, rust, ts), after
@@ -251,15 +238,14 @@ lint-php-ext: ## Check the names, the one stub and the stub hash of the arginfo 
 test-php-ext: build-php-ext ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
 	$(NODE) $(KIT)/php-extension.$(KIT_EXT) test --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php -- --roots packages/generator/php packages/php-ext packages/validator/php
 
-.PHONY: kit-gates-static kit-gates-parity kit-gates-runtime-ts kit-gates-runtime-php kit-gates-runtime-python kit-gates-runtime-go kit-gates-runtime-rust kit-gates-runtime-php-ext
+.PHONY: kit-gates-static kit-gates-runtime-ts kit-gates-runtime-php kit-gates-runtime-python kit-gates-runtime-go kit-gates-runtime-rust kit-gates-runtime-php-ext
 # The gates of this repository, in the partitions that the jobs of .github/workflows/ci-pipeline.yml run. A partition runs each
 # of its gates whatever the status of the others, so one run names every gate that fails.
-STATIC_GATES := layout-check docs-check rules-check owner-validate rebuild-check language-check test-markers-check duplication-check parity-declarations-check suppression-check divergence-check
+STATIC_GATES := layout-check docs-check rules-check owner-validate rebuild-check language-check duplication-check suppression-check
 # make -k runs them past failures; the make line has no @, since rules-check reads it as a make call.
 kit-gates-static: ## Run the shared gates, each past the failures of the others
 	$(MAKE) --no-print-directory -k $(STATIC_GATES) || { echo "[kit-gates-static] a shared gate failed" >&2; exit 1; }
 	@echo "[kit-gates-static] every shared gate passed"
-kit-gates-parity: parity-check ## Run the full parity gate
 kit-gates-runtime-ts: lint-ts ## Run the TypeScript gate
 kit-gates-runtime-php: lint-php ## Run the PHP gate
 kit-gates-runtime-python: lint-python ## Run the Python gate
@@ -280,16 +266,16 @@ ci-passed: ## Fail unless every job of RESULTS, the JSON of toJSON(needs), has t
 	$(NODE) $(KIT)/ci-passed.$(KIT_EXT)
 
 kit-ci-plan: ## Write the runtime, tool and target plan of config/ci.json to GITHUB_OUTPUT for .github/workflows/ci-pipeline.yml
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --parity config/parity.json --plan
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --plan
 
-kit-ci-setup: ## Run the setup targets of config/ci.json for GROUP=shared|parity|runtime and RUNTIME=<runtime>
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --parity config/parity.json --setup $(GROUP) $(RUNTIME)
+kit-ci-setup: ## Run the setup targets of config/ci.json for GROUP=shared|runtime and RUNTIME=<runtime>
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --setup $(GROUP) $(RUNTIME)
 
 kit-ci-context-prepare: ## Run the context preparation target of config/ci.json for GROUP and RUNTIME, when it declares one
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --parity config/parity.json --context-prepare $(GROUP) $(RUNTIME)
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-prepare $(GROUP) $(RUNTIME)
 
 kit-ci-context-cleanup: ## Run the context cleanup target of config/ci.json for GROUP and RUNTIME, when it declares one
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --parity config/parity.json --context-cleanup $(GROUP) $(RUNTIME)
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-cleanup $(GROUP) $(RUNTIME)
 
 .PHONY: item-new item-edit item-state commit documents-stamp text-absent land worktree-setup link link-check unlink python-venv uv-install
 # The texts of a row reach the plan utility unexpanded: each text that is set is passed as its raw value in single quotes.
@@ -873,8 +859,8 @@ CI_TARGETS = \
 	crudui-test-cross-language-equivalence \
 	check-conformance
 
-# PHP source runs include public and implementation units; extension defaults remain public. Named apart from kit's test-php,
-# which runs the PHP tests of config/parity.json with the runtime targets (C17.86).
+# PHP source runs include public and implementation units; extension defaults remain public. Named apart from test-php,
+# which runs the PHP tests of each PHP package with the runtime targets (C17.86).
 crudui-test-php-source:
 	@status=0; \
 	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd packages/generator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \

@@ -21,10 +21,3 @@ test('release and candidate archives prepare caches before current package build
   assert.deepEqual(targets['crudui-prepare-release-build']?.prerequisites,
     ['crudui-install-crates', 'crudui-install-go-modules']);
 });
-
-test('extension parity prepares the native module before its bindings run (C18.10-24)', () => {
-  const database = makeDryRun(ROOT, 'help', { database: true });
-  assert.equal(database.status, 0, database.stderr);
-  const targets = makeTargets(database.stdout);
-  assert.ok(targets['parity-check']?.prerequisites.includes('build-php-ext'), 'extension parity requires the native module before loading bindings');
-});

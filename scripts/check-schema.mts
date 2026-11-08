@@ -269,7 +269,7 @@ for (const [field, expected, keyword] of [
 // The structure-validity families share one case shape:
 // { name, note, spec, files?, expect: "ok"|"fail", reason?, engine: "pass"|{ code, at }, requirements? }.
 // `expect` and `reason` are the meta-schema result for the family entry point; `requirements` names the spec ids that the
-// case tests, which config/parity.json cites (S6).
+// case tests (S6).
 const caseKeys = new Set(['name', 'note', 'spec', 'files', 'expect', 'reason', 'engine', 'requirements']);
 function validityCase(family: string, test: unknown): ValidityCase {
   assert.ok(OBJECT(test), `${family}: every case is an object`);

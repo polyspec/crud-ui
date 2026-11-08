@@ -88,8 +88,8 @@ export const operations = {
 export type Feature = keyof typeof operations;
 
 /**
- * Registers the cases of the fixture of a feature: each case is a top-level test named by the case, so the parity check
- * reads every case of the unit by its name; the fixture's case count is checked in a test nested under a describe.
+ * Registers the cases of the fixture of a feature: each case is a top-level test named by the case, so a failure names
+ * its case; the fixture's case count is checked in a test nested under a describe.
  */
 export function registerTextValidity(feature: Feature): void {
   const fixture = `tests/fixtures/text-validity/${feature}/cases.json`;

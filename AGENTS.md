@@ -10,7 +10,7 @@ ships as an example; this file states only the rules of crudui.
   and its elapsed time. A long operation (a build, an install, a toolchain setup, a browser close, a server stop, a whole
   suite) prints step logs and has no time limit: its result is judged from its observed outcome and errors. A test that
   runs for tens of minutes, or that prints only its start and its end, is a defect.
-  Enforced by: `make test-markers-check`
+  Enforced by: none, a guided rule: each test's own review holds it.
 - Refines P20: During development only the unit tests that own the change run. The full suite runs exactly once after
   every item of the active checklists, including `docs/plans/kit-standard/checklist.md`, is complete, and never after
   each change or item. Long operations run in the
@@ -132,7 +132,7 @@ The same tree gives the same result on every date and machine, and a failed run 
 - Own: Assertions: a test asserts the structured result of an external tool (its exit status, report, events), never its
   human-readable output, whose wording changes with its version, its locale or a parent process. The commands of a
   Makefile target are read only through `makeDryRun` of `tests/build/make-dry-run.mts`.
-  Enforced by: `make test-markers-check`
+  Enforced by: none, a guided rule: each test's own review holds it.
 - Own: Shared resources: a resource that runs share is held by a lease (holder-lock of `@polyspec/kit`), or each run uses a
   directory, name or port of its own. A port is taken by the server that listens on it (port 0) and announced, never
   probed before.

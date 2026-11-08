@@ -139,8 +139,8 @@ const operations = {
 export type Feature = keyof typeof operations;
 
 /**
- * Registers the cases of the fixture of a feature: each case is a top-level test named by the case, so the parity check
- * reads every case of the unit by its name.
+ * Registers the cases of the fixture of a feature: each case is a top-level test named by the case, so a failure names
+ * its case.
  */
 export function registerInputText(feature: Feature): void {
   const decoded: unknown = JSON.parse(

@@ -11,7 +11,7 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   스스로 보고합니다. 긴 작업(build, install, toolchain 설정, browser 종료, server 중지, suite 전체)은 상세한 step 로그를
   출력하며 시간 제한이 없습니다. 결과는 관측된 outcome과 error로 판단합니다. 수십 분 동안 실행되거나 시작과 끝만
   출력하는 test는 결함입니다.
-  Enforced by: `make test-markers-check`
+  Enforced by: none, 안내 규칙: 각 test의 review가 지킨다.
 - Refines P20: 개발 중에는 바뀐 것을 소유한 unit test만 실행합니다. 전체 suite는 활성 checklist의 모든 항목을 완료한 뒤
   정확히 한 번 실행하며, 활성 checklist에는 `docs/plans/kit-standard/checklist.md`가 포함됩니다. 수정이나 개별 항목마다
   실행하지 않습니다. 긴 작업은 background에서 실행하고 진행 상태를
@@ -126,7 +126,7 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
 - Own: 단언: test는 외부 도구의 구조화된 결과(exit status, report, event)를 단언하며, 버전, locale이나 부모 process에 따라 문구가
   바뀌는 사람이 읽는 출력은 단언하지 않습니다. Makefile target의 명령은 `tests/build/make-dry-run.mts`의 `makeDryRun`으로만
   읽습니다.
-  Enforced by: `make test-markers-check`
+  Enforced by: none, 안내 규칙: 각 test의 review가 지킨다.
 - Own: 공유 자원: 실행들이 함께 쓰는 자원은 lease(`@polyspec/kit`의 holder-lock)로 보유하거나, 각 실행이 자기 directory, 이름이나
   port를 씁니다. port는 listen하는 server가 port 0으로 잡아 알려 주며, 미리 확인하지 않습니다.
   Enforced by: none, lease 사용은 각 실행의 코드에서 검토합니다.

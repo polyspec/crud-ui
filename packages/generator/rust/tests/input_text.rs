@@ -17,7 +17,7 @@ use polyspec_crudui_validator::text::JsonText;
 use serde_json::{json, Map, Value};
 use std::path::Path;
 
-/// The fixture families of the text units, each with the symbol that its binding in config/parity.json names.
+/// The fixture families of the text units, each with the symbol of its test.
 const FEATURES: [(&str, &str); 5] = [
     ("compileForm", "text_compile_form"),
     ("bindForm", "text_bind_form"),

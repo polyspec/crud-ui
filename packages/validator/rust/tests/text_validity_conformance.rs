@@ -81,7 +81,7 @@ fn check_text_case(feature: &str, case: &JsonText, name: &str) -> Vec<String> {
     }
 }
 
-/// The fixture families of the validate trio, each with the symbol that its binding in config/parity.json names.
+/// The fixture families of the validate trio, each with the symbol of its test.
 const FAMILIES: [(&str, &str); 3] = [
     ("validate", "input_text_validate"),
     ("validateList", "input_text_validate_list"),

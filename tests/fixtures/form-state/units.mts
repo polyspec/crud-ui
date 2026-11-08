@@ -1,7 +1,7 @@
 /**
  * The registration of the form-state units. Each unit has its own test file, which calls one of these functions with its
- * family and the generator core; every case of the family is a top-level test named by the case, so the parity check reads
- * each case of the unit by its name. The assertions are those of harness.mts.
+ * family and the generator core; every case of the family is a top-level test named by the case, so a failure names its
+ * case. The assertions are those of harness.mts.
  */
 import fs from 'node:fs';
 import path from 'node:path';

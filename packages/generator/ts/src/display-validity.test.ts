@@ -1,6 +1,6 @@
 /**
  * The list-validity cases through the TypeScript buildList (docs/spec/display-formats.md, CUDF-036 to CUDF-062). Each case is a
- * top-level test named by the case: the list-render-validity unit of config/parity.json.
+ * top-level test named by the case: the list-render-validity unit.
  */
 
 import { test } from 'vitest';

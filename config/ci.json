@@ -1,7 +1,6 @@
 {
   "schema": 1,
   "runtimes": ["go", "php", "php-ext", "python", "rust", "ts"],
-  "parityMode": "full",
   "setup": {
     "shared": [
       "crudui-install-go-modules",
@@ -9,9 +8,6 @@
       "crudui-install-composer",
       "crudui-install-phpdocumentor",
       "require-build"
-    ],
-    "parity": [
-      "build-php-ext"
     ],
     "runtimes": {
       "go": [
