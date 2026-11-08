@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: abea295439bb14606c3fe036d8f51173eb7bed7363a46db8c5b4576c6d09523b -->
+<!-- source-sha256: 5d95b128ebaf17ee8af7e090c52405123fb7359a2b4192dcd955745b573c869d -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -86,3 +86,4 @@
 | C18.29 | recipe나 workflow의 문구를 단언하는 시험을 지운다: 그 시험은 동작을 확인하지 않고 kit나 recipe가 바뀔 때마다 깨진다 | tests/build/ci-local.test.mts | `make lint-ts` and `make docs-check` exit 0; the deleted tests are named in the commit body | [o] |
 | C18.30 | recipe, script, command 문구를 단언하는 남은 시험을 지운다: kit 0.0.99가 recipe 줄을 바꾸자 실패했다(CI 42450492800) | tests/build/make-tool-path.test.mts, tests/build/test-commands.test.mts, tests/build/runtime-version-policy.test.mts, examples/form-comparison/check-toolchain.test.mjs, scripts/test-commands.mts | `make lint-ts`, `make owner-validate` and `make docs-check` exit 0; the deleted tests are named in the commit body | [o] |
 | C18.31 | parity를 지운 kit 0.0.100을 받는다: config/parity.json, parity, parity-declarations, divergence, test-markers target, parity CI job과 plan 출력, config/ci.json의 parity setup, go symbol extractor를 지운다. 이 검사들을 적던 규칙은 안내 규칙이 되고 각 구현은 자기 test를 그대로 둔다 | Makefile, .github/workflows/ci-pipeline.yml, config/ci.json, config/toolchain.json, config/owner-checks.json, config/parity.json, PRINCIPLES.md, PRINCIPLES.ko.md, AGENTS.md, AGENTS.ko.md, package.json, package-lock.json | `make rules-check`, `make owner-validate`, `make docs-check` and `make lint-ts` exit 0; `make kit-ci-plan` writes the plan | [o] |
+| C18.32 | kit 거부 두 가지만 멈추는 kit 0.0.101을 채택한다: 0.0.101 release asset을 고정하며, recipe 줄은 바뀌지 않는다 | package.json, package-lock.json | `make docs-check` and `make lint-ts` exit 0 | [o] |
