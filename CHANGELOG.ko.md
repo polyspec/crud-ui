@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: ec8e00be9fe9d0c3c67f50a1c95b5d0a3058aa6d36c50c2814e59eb2a04516ee -->
+<!-- source-sha256: df32d5c2c1b8cd4fdbc2a11736cca943b3f2e8a1d9c6f328711edcc3516e478c -->
 
 ## Unreleased
 
+- C18.38: crudui는 제공 라이브러리의 최신 릴리스 ordered-json 0.0.23을 npm(package.json, package-lock.json), Composer(composer.json, composer.lock)와 examples/form-comparison의 Go, Rust 서버에서 받는다 (C18.38)
 ## 0.0.17
 
 - C18.37: crudui package의 모든 manifest와 lock은 0.0.17을 적고 kit 0.0.102를 쓴다 (C18.37)

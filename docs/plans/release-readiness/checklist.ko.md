@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: 99f4047cc24f4f83d2f5ee6ef021168bf71dcc6c9b4a42ad7b5c5047fee79e6b -->
+<!-- source-sha256: a7cf626bbf09440253c09574b6a4782993186c6ce47ab6b5c40f80afd268ffb3 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -92,3 +92,4 @@
 | C18.35 | 설치가 실패하면 uv-install이 지운 provider 링크를 되돌리는 kit 0.0.102(K1134)를 채택한다: 0.0.102 release asset을 고정하며, recipe 줄은 바뀌지 않는다 | package.json, package-lock.json | `make docs-check` and `make lint-ts` exit 0 | [o] |
 | C18.36 | 한국어 twin이 영어 원문의 개정을 적는다: AGENTS, PRINCIPLES, docs/operations의 form-comparison, ordered-json, repository, kit-standard checklist, tests/build/README는 이미 원문의 안내 규칙, `.links` 링크, dispatch release를 담고 있으며, form-comparison.ko.md는 C17.90 참조를 더하고, 각 twin은 원문의 digest로 stamp한다 | the seven `.ko.md` twins | `make documents-stamp` with no PATHS reports 0 moved; `make docs-check` exits 0 | [o] |
 | C18.37 | crudui의 릴리스 버전이 kit 0.0.102를 담는다: crudui 패키지의 모든 매니페스트와 잠금 파일이 CHANGELOG 최상단 섹션의 버전 0.0.17을 가리키고, Unreleased 항목이 두 언어 모두에서 그 섹션 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- tests/build/package-names.test.mts` | [o] |
+| C18.38 | crudui가 ordered-json의 최신 릴리스 0.0.23을 받는다: 루트 package.json이 0.0.23 릴리스 URL을 적고 package-lock.json이 그것을 해석하며, composer.json과 composer.lock이 0.0.23의 packages.json과 zip을 적고, examples/form-comparison의 Go와 Rust 서버가 v0.0.23을 요구하며 go.sum과 Cargo.lock이 그에 맞는다 | package.json, package-lock.json, composer.json, composer.lock, examples/form-comparison/servers/go/go.mod, examples/form-comparison/servers/go/go.sum, examples/form-comparison/servers/rust/Cargo.toml, examples/form-comparison/servers/rust/Cargo.lock, CHANGELOG.md, CHANGELOG.ko.md | `git grep -n "ordered-json.*0.0.22" -- package.json package-lock.json composer.json composer.lock examples/form-comparison/servers` finds nothing; `npm ci` exits 0 | [o] |
