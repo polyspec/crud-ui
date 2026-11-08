@@ -1,6 +1,6 @@
 # 패키지 빌드 검사
 <!-- doc-id: tests-build-readme -->
-<!-- source-sha256: 9c25b2d7030dcf1ecca69c36256b2b8e57578314067bc59e5232f6ae316b4f8d -->
+<!-- source-sha256: 74605d2f3e2228b8acc96ade533b7990c81b0adecc68228259dd5ad151a0963b -->
 
 [English](README.md).
 

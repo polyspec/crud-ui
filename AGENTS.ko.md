@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: 030afb5d960a8b84244753befb893f63919ad19cfc673b97a364fc1e7267bbce -->
+<!-- source-sha256: 0d52d7818717f97c60e94018f0954a2d8dcebc5f23fadd8c807faed54483fbd9 -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.

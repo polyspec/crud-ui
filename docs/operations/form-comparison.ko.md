@@ -1,6 +1,6 @@
 # 폼 검증
 <!-- doc-id: docs-operations-form-comparison -->
-<!-- source-sha256: 7d23544f60af9664ea22d24560545e1702da05dfd3dace01c0aa5b99153fef65 -->
+<!-- source-sha256: 3fa7f89b07236ce4c8485f0067436603b5bd3a505f334410a01987dcba04d223 -->
 
 [English](form-comparison.md).
 
@@ -216,7 +216,7 @@ Enter)는 폼의 네이티브 필드를 `multipart/form-data`로 `/api/{server}/
 `LOCAL=1`은 kit의 `link providers --ecosystem composer`가 출력하는, `.links`의 checkout이 제공하는
 `polyspec/ordered-json-php-ext` folder를 선택합니다. Extension은 release와 같이 그 package folder에서 빌드하고 Rust 명령은
 `.links`의 checkout을 patch하는 kit의 `link cargo`로 실행합니다.
-`LOCAL=1`이 없으면 `make ordered-json-ext`가 PIE로 packages.json 저장소에서 빌드하고 `var/ordered-json-package`에 기록한 OrderedJSON php-ext 패키지를 명시적 release source로 선택합니다(C17.84).
+`LOCAL=1`이 없으면 `make ordered-json-ext`가 PIE로 packages.json 저장소에서 빌드하고 `var/ordered-json-package`에 기록한 OrderedJSON php-ext 패키지를 명시적 release source로 선택합니다(C17.84, C17.90).
 `.links` provider나 source가 없으면 실패하며 release archive를 대신 선택하지 않습니다. 그다음 로컬 구성은 다섯 프로세스를 동시에 시작하고 브라우저를 시작합니다.
 프로세스 시작과 브라우저 시작은 제한 시간이 없는 장기 작업입니다. 각각 준비 이벤트나 launch에서
 끝나고, 기다리는 동안 15초마다 경과 시간 줄을 출력합니다. 이 작업들을 실행하는 테스트 훅은
