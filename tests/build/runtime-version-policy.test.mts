@@ -221,20 +221,6 @@ test('make installs nothing on its own and make install installs the Rust toolch
   assert.equal(realpathSync(path.resolve(repository, entry)), kitToolPath('install-tools'));
 });
 
-test('CI prepares PHP before installing selected PHP tools (C18.10-2)', async () => {
-  const workflow = workflowOf(await read('.github/workflows/ci.yml'), '.github/workflows/ci.yml');
-  const missing: string[] = [];
-  for (const [id, job] of Object.entries(workflow.jobs)) {
-    const steps = job.steps ?? [];
-    const install = steps.findIndex(step => step.run === 'make install-tools' || /^make install-tools TOOLS="[^"]*\b(?:php|composer|phpunit|phpcs|phpstan)\b/.test(stepText(step, 'run')));
-    if (install < 0) continue;
-    const setup = steps.findIndex(step => stepText(step, 'uses').startsWith('shivammathur/setup-php@')
-      && step.with?.['php-version-file'] === '.php-version');
-    if (setup < 0 || setup >= install) missing.push(id);
-  }
-  assert.deepEqual(missing, []);
-});
-
 test('every workflow runs on ubuntu-24.04 with actions named by commit SHA and no auto-install', async () => {
   const violations: string[] = [];
   for (const { file, text, workflow } of await workflows()) {

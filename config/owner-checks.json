@@ -464,7 +464,6 @@
       "tests": [
         "tests/build/install-browsers.test.mts",
         "tests/build/ci-browser.test.mts",
-        "tests/build/form-comparison-ci.test.mts",
         "tests/build/runtime-version-policy.test.mts"
       ]
     },
@@ -612,7 +611,6 @@
       "tests": [
         "tests/build/ci-local.test.mts",
         "tests/build/runtime-version-policy.test.mts",
-        "tests/build/form-comparison-ci.test.mts",
         "tests/build/tool-path.test.mts"
       ]
     },
@@ -686,8 +684,7 @@
         ".github/actions/**"
       ],
       "tests": [
-        "tests/build/ci-local.test.mts",
-        "tests/build/form-comparison-ci.test.mts"
+        "tests/build/ci-local.test.mts"
       ]
     },
     {

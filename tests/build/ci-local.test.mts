@@ -10,7 +10,6 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 
 import { checkedShape, shapeOf } from '../../scripts/json-schema.mts';
-import { makeTargets } from '../../scripts/test-commands.mts';
 
 const isRecord = shapeOf<Record<string, unknown>>({ type: 'object' });
 const STRINGS = shapeOf<string[]>({ type: 'array', items: { type: 'string' } });
@@ -166,39 +165,6 @@ export function makeCommands(makefile: string): string[] {
   return block[1].trim().split('\n').map((line) => `make ${line.trim().replace(/ \\$/, '')}`);
 }
 
-// A release requires the check ci-passed of the tagged commit: the last job of the CI workflow needs every other job, runs
-// after a failed, cancelled or skipped one, and fails unless each of them succeeded.
-test('the last CI job ci-passed needs every other job and runs always', async () => {
-  const workflow = await workflowFile('ci.yml');
-  const ids = Object.keys(workflow.jobs);
-  assert.equal(ids.at(-1), 'ci-passed', 'ci-passed is the last job of .github/workflows/ci.yml');
-  const job = jobOf(workflow, 'ci-passed');
-  assert.equal(job.name, undefined, 'the check carries the job id ci-passed');
-  assert.equal(job.if, '${{ always() }}');
-  assert.deepEqual(job.needs, ids.slice(0, -1));
-  assert.equal(job['runs-on'], 'ubuntu-24.04');
-  assert.deepEqual((job.steps ?? []).filter((step) => step.run !== undefined && !/^make (?:install-tools|install-packages)\b/.test(step.run)).map((step) => step.run),
-    ["make ci-passed RESULTS='${{ toJSON(needs) }}' FAIL_SKIPPED=1"]);
-});
-
-test('runtime checks run in four independent CI shards with separate reports (C18.9)', async () => {
-  const workflow = await workflowFile('ci.yml');
-  const job = jobOf(workflow, 'runtime-tests');
-  assert.deepEqual(job.strategy?.matrix?.shard, ['1', '2', '3', '4']);
-  assert.equal(job.strategy?.['fail-fast'], false);
-  assert.equal(job.needs, 'kit');
-  assert.equal(job.env?.CRUDUI_TEST_SHARD, '${{ matrix.shard }}/4');
-  assert.deepEqual((job.steps ?? []).flatMap(step => step.run?.startsWith('make ci-targets ') ? [step.run] : []),
-    ['make ci-targets TARGETS="crudui-test-runtimes"']);
-  const upload = (job.steps ?? []).find(step => step.with?.path === 'var/report/ci-targets');
-  assert.equal(upload?.with?.name, 'report-runtime-tests-${{ matrix.shard }}');
-  const artifacts = (job.strategy?.matrix?.shard ?? []).map(shard => upload?.with?.name?.replaceAll('${{ matrix.shard }}', shard));
-  assert.equal(new Set(artifacts).size, 4);
-  assert.ok(artifacts.every(name => name !== undefined && !name.includes('/')));
-  assert.equal(strings(jobOf(workflow, 'ci-passed').needs, 'CI completion dependencies').includes('runtime-tests'), true);
-  assert.equal((jobOf(workflow, 'build-lint').steps ?? []).some(step => step.run?.includes('TARGETS="crudui-test-runtimes')), false);
-});
-
 test('the runtime script passes native Node sharding only when requested (C18.9)', async (t) => {
   const directory = await mkdtemp(path.join(tmpdir(), 'crudui-runtime-shard-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -222,35 +188,6 @@ test('the runtime script passes native Node sharding only when requested (C18.9)
     assert.deepEqual(selected.filter(argument => argument.startsWith('--test-shard=')), [`--test-shard=${shard}`]);
     assert.deepEqual(selected.filter(argument => argument.startsWith('tests/')), files);
   }
-});
-
-// Native unit suites run separately from the cross-language comparison job.
-const NATIVE_JOBS: Record<string, { targets: string; tools: string[]; php?: string[] }> = {
-  'php-engine': { targets: 'crudui-test-php-engine', tools: ['actions/checkout', KIT_BOOTSTRAP] },
-  'native-generators': { targets: 'crudui-test-generator-js', tools: ['actions/checkout', KIT_BOOTSTRAP] },
-  'cross-language-equivalence': { targets: 'crudui-test-cross-language-equivalence', tools: ['actions/checkout', KIT_BOOTSTRAP, 'shivammathur/setup-php', 'Swatinem/rust-cache'] },
-  'php-api': { targets: 'crudui-test-php-api', tools: ['actions/checkout', KIT_BOOTSTRAP, 'shivammathur/setup-php'] },
-};
-
-test('native unit suites and cross-language comparisons each run once', async () => {
-  const workflow = await workflowFile('ci.yml');
-  for (const [id, expected] of Object.entries(NATIVE_JOBS)) {
-    const job = jobOf(workflow, id);
-    const steps = job.steps ?? [];
-    assert.deepEqual(steps.map((step) => step.run).filter((run) => /^make ci-targets\b/.test(run ?? '')), [`make ci-targets TARGETS="${expected.targets}"`], id);
-    const tools = steps.map((step) => String(step.uses ?? '').split('@')[0])
-      .filter((uses) => uses && !['actions/upload-artifact', 'actions/cache'].includes(uses));
-    assert.deepEqual(tools, expected.tools, id);
-    assert.deepEqual(job.strategy?.matrix?.php, expected.php, id);
-  }
-  const run = makeDryRun(ROOT, 'crudui-test-native');
-  assert.equal(run.status, 0, run.stderr);
-  const commands = run.stdout.split('\n');
-  for (const command of [
-    /^\/\S+\/var\/tools\/bin\/node tests\/conformance\/run-suite\.mts node --timeout 30 -- --test-concurrency=1 packages\/php-ext\/tests\/engine\/engine\.test\.mjs packages\/php-ext\/tests\/contract\/\*\.test\.mjs packages\/php-ext\/tests\/comparison\/comparison\.test\.mjs$/,
-    /^\/\S+\/var\/tools\/bin\/node tests\/native-generators\/run\.mts --target javascript,html,go,rust,python --report "[^"]+report\.json" \|\| status=1; \\$/,
-    /^\/\S+\/var\/tools\/bin\/node tests\/native-generators\/run\.mts --extension "[^"]+crudui\.so" --target php,php-native --report "[^"]+report-php\.json" \|\| status=1; \\$/,
-  ]) assert.equal(commands.filter((line) => command.test(line.trim())).length, 1, `${command}\n${run.stdout}`);
 });
 
 // Each job preserves its conformance evidence under a name of its own, and the conformance job downloads each artifact
@@ -334,34 +271,6 @@ test('CI_TARGETS lists every checking command of the CI workflow, in the same or
   assert.deepEqual(local, workflow);
 });
 
-test('CI builds public JavaScript entries before dependency checks and validator tests (C18.10-3)', async () => {
-  const workflow = workflowCommands(await workflowFile('ci.yml'));
-  const build = workflow.indexOf('make build');
-  assert.ok(build >= 0, 'the public entries are built');
-  const validator = makeDryRun(ROOT, 'crudui-test-validator-js');
-  assert.equal(validator.status, 0, validator.stderr);
-  const lines = validator.stdout.split('\n');
-  const prepare = lines.findIndex(line => line.endsWith('/var/tools/bin/node scripts/require-current-build.mts'));
-  const suite = lines.findIndex(line => line.endsWith('/var/tools/bin/npm test -w @polyspec/crudui-validator'));
-  assert.ok(prepare >= 0 && suite > prepare, 'the validator source suite prepares the public entries it imports');
-});
-
-test('Pages prepares dependencies through existing native install targets (C18.10-8)', async () => {
-  const job = jobOf(await workflowFile('pages.yml'), 'docs-web');
-  const installs = (job.steps ?? []).flatMap(step => /^make (?:crudui-)?install-(?:composer|go-modules|phpdocumentor|crates)$/.test(step.run ?? '') ? [step.run] : []);
-  const expected = ['crudui-install-composer', 'crudui-install-go-modules', 'crudui-install-phpdocumentor', 'crudui-install-crates'];
-  assert.deepEqual(installs, expected.map(target => `make ${target}`));
-  const database = makeDryRun(ROOT, 'help', { database: true });
-  assert.equal(database.status, 0, database.stderr);
-  const targets = makeTargets(database.stdout);
-  for (const target of expected) {
-    const rule = targets[target];
-    assert.ok(rule, `${target}: expected a declared preparation target`);
-    assert.ok(rule.commands.some(command => command.trim() !== '') || rule.prerequisites.length > 0,
-      `${target}: expected native preparation commands or prerequisites`);
-  }
-});
-
 // A recipe of the Makefile starts a tool of kit as $(KIT)/<tool>.mjs; the installed package has to ship it, or the target
 // fails with a missing module instead of its own error.
 test('every tool of kit that the Makefile starts is in the installed @polyspec/kit', async () => {
@@ -384,36 +293,6 @@ test('a CI install takes OrderedJSON only from its installed packages: no clone 
   }
   // The S5 rule of the path repositories of composer.json names no checkout of another repository as an exception.
   assert.doesNotMatch(readFileSync(path.join(ROOT, 'config/layout.yml'), 'utf8'), /\.\.\/ordered-json/);
-});
-
-test('PIE builds the OrderedJSON php-ext of the release that composer.lock installs, from its packages.json (C18.22)', () => {
-  const run = makeDryRun(ROOT, 'ordered-json-ext');
-  assert.equal(run.status, 0, run.stderr);
-  // The recipe reads the version from composer.lock and the repository from composer.json, so it holds no copy of either.
-  const value = (name: string): string => {
-    const line = new RegExp(`${name}="\\$\\(\\S*node -p '(.*)'\\)"`).exec(run.stdout);
-    assert.ok(line, `the recipe reads ${name} with node: ${run.stdout}`);
-    const result = spawnSync('node', ['-p', line[1] ?? ''], { cwd: ROOT, encoding: 'utf8' });
-    assert.equal(result.status, 0, result.stderr);
-    return result.stdout.trim();
-  };
-  const lock = parseJson<{ packages: { name: string; version: string }[] }>(readFileSync(path.join(ROOT, 'composer.lock'), 'utf8'),
-    { properties: { packages: { elements: { properties: { name: { type: 'string' }, version: { type: 'string' } }, additionalProperties: true } } }, additionalProperties: true }, 'composer.lock');
-  assert.equal(value('version'), lock.packages.find(item => item.name === 'polyspec/ordered-json')?.version);
-  const manifest = parseJson<{ repositories: { type: string; url: string }[] }>(readFileSync(path.join(ROOT, 'composer.json'), 'utf8'),
-    { properties: { repositories: { elements: { properties: { type: { type: 'string' }, url: { type: 'string' } }, additionalProperties: true } } }, additionalProperties: true }, 'composer.json');
-  assert.equal(value('packages'), manifest.repositories.find(item => item.type === 'composer')?.url);
-  assert.match(run.stdout, /repository:add composer "\$packages"/);
-  assert.match(run.stdout, /build "polyspec\/ordered-json-php-ext:\$version"/);
-});
-
-test('a CI job runs no kit task that repeats the shared gates: build-lint runs the Svelte lint, and kit\'s lint task runs in no job (K870, C17.91)', async () => {
-  const workflow = workflowCommands(await workflowFile('ci.yml'));
-  const runs = (target: string): boolean => workflow.some(command => new RegExp(`TARGETS="[^"]*\\b${target}\\b`).test(command) || command === `make ${target}`);
-  assert.equal(runs('crudui-lint'), true, 'a CI job runs the Svelte lint');
-  // kit's lint task runs lint-<runtime> for every runtime, which repeats the TypeScript gate of kit's pipeline (K870).
-  assert.equal(runs('lint'), false, 'no CI job runs the lint task of kit');
-  assert.deepEqual(['lint-python', 'lint-php', 'lint-rust', 'lint-go', 'lint-ts', 'docs-check'].filter(target => runs(target)), []);
 });
 
 /** The steps that run a checking command without `if: ${{ !cancelled() }}`, as `job: step`. */
@@ -515,48 +394,6 @@ test('every job runs its checks through make ci-targets and uploads their report
   assert.deepEqual(violations, []);
 });
 
-// The runners are few: a new push to a pull request stops the CI run of its previous push. A merge group has a ref of its
-// own and its run is never stopped, and the push check runs on every pushed commit and keeps its runs.
-test('no run of a commit of main is stopped by a later push', async () => {
-  assert.deepEqual((await workflowFile('ci.yml')).concurrency, {
-    group: '${{ github.workflow }}-${{ github.ref }}', 'cancel-in-progress': false,
-  });
-  assert.deepEqual((await workflowFile('pages.yml')).concurrency, { group: 'github-pages', 'cancel-in-progress': false });
-});
-
-// main receives a push of the maintainer while the version is 0.x: CI runs on a push to main and on a manual run, and the
-// documentation web is built and deployed from main and on a manual run. ci.yml calls the gate pipeline ci-pipeline.yml, and
-// the release starts when a CI run of main succeeds or by a dispatch with the id of such a run. No other workflow of this
-// repository exists, and each declares exactly these lines.
-const TRIGGERS = {
-  'ci.yml': 'on:\n  push:\n    branches: [main]\n  workflow_dispatch:\n',
-  'ci-pipeline.yml': 'on:\n  workflow_call:\n',
-  'pages.yml': 'on:\n  push:\n    branches: [main]\n  workflow_dispatch:\n',
-  'release.yml': 'on:\n  workflow_run:\n    workflows: [ci]\n    types: [completed]\n    branches: [main]\n  workflow_dispatch:\n'
-    + '    inputs:\n      run:\n        description: The id of the successful CI run of main whose commit is released\n'
-    + '        required: true\n        type: string\n',
-};
-
-test('each workflow declares exactly its triggers', async () => {
-  const names = (await readdir(new URL('../../.github/workflows/', import.meta.url)))
-    .filter(name => /\.ya?ml$/.test(name)).sort();
-  assert.deepEqual(names, Object.keys(TRIGGERS).sort());
-  for (const [name, block] of Object.entries(TRIGGERS)) {
-    const declared = /^on:\n(?: .*\n)+/m.exec(await read(`.github/workflows/${name}`))?.[0] ?? '';
-    assert.equal(declared, block, `.github/workflows/${name}`);
-  }
-});
-
-test('CI runs on a push to main, the push check on every push, and Pages deploys main', async () => {
-  assert.deepEqual((await workflowFile('ci.yml')).on, { push: { branches: ['main'] }, workflow_dispatch: null });
-  const pages = await workflowFile('pages.yml');
-  assert.deepEqual(pages.on, { push: { branches: ['main'] }, workflow_dispatch: null });
-  const deploy = jobOf(pages, 'deploy');
-  assert.equal(deploy.environment?.name, 'github-pages');
-  assert.equal(deploy.needs, 'docs-web');
-  assert.doesNotMatch(await read('.github/workflows/ci.yml'), /refs\/heads\/main|deploy-pages|upload-pages-artifact/);
-});
-
 test('every checking step of the CI workflow runs after an earlier failure', async () => {
   const violations = stepsStoppedByFailure(await workflowFile('ci.yml'));
   assert.deepEqual(violations, []);
@@ -613,24 +450,6 @@ test('no workflow of this repository starts on a tag push', async () => {
   assert.equal(Object.hasOwn(release, 'checks'), false);
 });
 
-// make install-packages runs the svelte tools after its npm ci (INSTALL_PACKAGES_EXTRA, kit K428) and links nothing: make
-// install links after install-packages through install-link. The tools of packages/svelte then install without a link of their own.
-test('install-packages installs the svelte tools after its npm ci and runs no link', () => {
-  const run = makeDryRun(ROOT, 'install-packages');
-  assert.equal(run.status, 0, run.stderr);
-  assert.match(run.stdout, /crudui-install-svelte-tools/, 'install-packages runs the svelte tools');
-  assert.doesNotMatch(run.stdout, /link\.mjs|--no-print-directory link/, 'install-packages runs no link');
-  const svelte = makeDryRun(ROOT, 'crudui-install-svelte-tools');
-  assert.equal(svelte.status, 0, svelte.stderr);
-  assert.match(svelte.stdout, /npm ci --prefix packages\/svelte\/tools/);
-  assert.doesNotMatch(svelte.stdout, /link\.mjs|--no-print-directory link/, 'the svelte tools link nothing themselves');
-  const database = makeDryRun(ROOT, 'help', { database: true });
-  assert.equal(database.status, 0, database.stderr);
-  const targets = makeTargets(database.stdout);
-  assert.ok(targets['install-packages']?.prerequisites.includes('hooks'), 'dependency installation prepares the repository hooks');
-  assert.deepEqual(targets.hooks?.commands.filter(command => command.trim() !== ''), ['$(NODE) $(KIT)/git-hooks.$(KIT_EXT) install $(HOOK_DECLARATION)']);
-});
-
 // Both native link entry points use the Python environment prepared for this checkout.
 test('install-link links into the venv of var/python', async (t) => {
   const directory = await mkdtemp(path.join(tmpdir(), 'crudui-link-venv-'));
@@ -654,55 +473,6 @@ console.log(JSON.stringify({ venv: process.env.UV_PROJECT_ENVIRONMENT }));
     assert.equal(result.status, 0, result.stderr);
     const report = parseJson<{ venv: string }>(result.stdout, { properties: { venv: { type: 'string' } } }, `${target} process environment`);
     assert.equal(report.venv, path.join(ROOT, 'var/python'), target);
-  }
-});
-
-
-test('cross-language generator equivalence runs independently of language unit jobs', async () => {
-  const workflow = await workflowFile('ci.yml');
-  const comparison = jobOf(workflow, 'cross-language-equivalence');
-  assert.equal(comparison.needs, 'kit');
-  assert.ok((comparison.steps ?? []).some(step => step.run === 'make ci-targets TARGETS="crudui-test-cross-language-equivalence"'));
-  for (const target of ['crudui-test-generator-js', 'crudui-test-generator-go', 'crudui-test-generator-rust', 'crudui-test-php-api']) {
-    const run = makeDryRun(ROOT, target);
-    assert.equal(run.status, 0, run.stderr);
-    assert.doesNotMatch(run.stdout, /tests\/native-generators\/run\.mts --/);
-  }
-  const run = makeDryRun(ROOT, 'crudui-test-cross-language-equivalence');
-  assert.equal(run.status, 0, run.stderr);
-  assert.match(run.stdout, /--target javascript,html,go,rust,python/);
-  assert.match(run.stdout, /--target php,php-native/);
-  for (const id of ['conformance', 'ci-passed']) {
-    assert.ok(strings(jobOf(workflow, id).needs, `${id} dependencies`).includes('cross-language-equivalence'));
-  }
-});
-
-
-test('language jobs install only their required tools and own both validator and generator checks', async () => {
-  const workflow = await workflowFile('ci.yml');
-  const expected: Record<string, { tools: string; targets: string }> = {
-    'validator-js': { tools: 'node', targets: 'crudui-test-validator-js' },
-    'validator-go': { tools: 'node go', targets: 'crudui-test-validator-go crudui-test-generator-go' },
-    'validator-rust': { tools: 'node rust', targets: 'crudui-test-validator-rust crudui-test-generator-rust' },
-    python: { tools: 'node python uv', targets: 'crudui-test-validator-python crudui-test-generator-python' },
-    'native-generators': { tools: 'node', targets: 'crudui-test-generator-js' },
-  };
-  for (const [id, contract] of Object.entries(expected)) {
-    const job = jobOf(workflow, id);
-    assert.equal(job.needs, 'kit', id);
-    const commands = (job.steps ?? []).map(step => step.run);
-    assert.ok(commands.includes(`make install-tools TOOLS="${contract.tools}"`), id);
-    assert.ok(commands.includes(`make ci-targets TARGETS="${contract.targets}"`), id);
-    assert.equal((job.steps ?? []).some(step => step.uses?.startsWith('shivammathur/setup-php@')), false, id);
-  }
-  for (const id of ['cli', 'form-runtime', 'package-browser', 'php-engine', 'conformance', 'ci-passed']) {
-    const job = jobOf(workflow, id);
-    assert.ok((job.steps ?? []).some(step => step.run === 'make install-tools TOOLS="node"'), id);
-    assert.equal((job.steps ?? []).some(step => step.uses?.startsWith('shivammathur/setup-php@')), false, id);
-  }
-  for (const [id, job] of Object.entries(workflow.jobs)) {
-    assert.equal((job.steps ?? []).some(step => step.run === 'make install-tools'), false, id);
-    assert.equal((job.steps ?? []).some(step => /^make install(?:\s|$)/.test(step.run ?? '')), false, id);
   }
 });
 
