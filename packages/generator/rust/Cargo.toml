@@ -1,13 +1,13 @@
 [package]
 name = "polyspec-crudui-generator"
-version = "0.0.15"
+version = "0.0.16"
 edition = "2021"
 rust-version = "1.99.0"
 license = "MIT"
 description = "CRUDUI form compilation, data binding and HTML rendering"
 
 [dependencies]
-polyspec-crudui-validator = { path = "../../validator/rust", version = "0.0.15" }
+polyspec-crudui-validator = { path = "../../validator/rust", version = "0.0.16" }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 getrandom = "0.4"

@@ -11,12 +11,12 @@ members = [
 
 [[package]]
 name = "polyspec-crudui-conformance"
-version = "0.0.15"
+version = "0.0.16"
 source = { editable = "tests/conformance/python" }
 
 [[package]]
 name = "polyspec-crudui-generator"
-version = "0.0.15"
+version = "0.0.16"
 source = { editable = "packages/generator/python" }
 dependencies = [
     { name = "polyspec-crudui-validator" },
@@ -27,5 +27,5 @@ requires-dist = [{ name = "polyspec-crudui-validator", editable = "packages/vali
 
 [[package]]
 name = "polyspec-crudui-validator"
-version = "0.0.15"
+version = "0.0.16"
 source = { editable = "packages/validator/python" }

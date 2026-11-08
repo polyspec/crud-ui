@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-generator-html",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Framework-independent CRUDUI form and list HTML renderer",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -32,7 +32,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@polyspec/crudui-generator-core": "0.0.15"
+    "@polyspec/crudui-generator-core": "0.0.16"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
