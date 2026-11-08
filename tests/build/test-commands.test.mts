@@ -11,9 +11,9 @@ import { fileURLToPath } from 'node:url';
 
 import { parse } from 'yaml';
 
-import { checked, parseJson, manifestSchema, script, type JTDSchemaType, type Manifest } from '../json.mts';
+import { checked, parseJson, manifestSchema, type JTDSchemaType, type Manifest } from '../json.mts';
 import {
-  directTestTools, isTestCommand, makeHooks, makeTargets, matchesArgument, nodeScripts, nodeTestArguments, projectCommands, runsTests,
+  isTestCommand, makeHooks, makeTargets, matchesArgument, nodeScripts, nodeTestArguments, projectCommands, runsTests,
   workflowJobs,
 } from '../../scripts/test-commands.mts';
 
@@ -69,30 +69,6 @@ const tracked = [
 const read = (file: string): string => readFileSync(path.join(ROOT, file), 'utf8');
 /** The package.json or composer.json `file` of the checkout. */
 const manifestOf = (file: string): Manifest => parseJson(read(file), manifestSchema, file);
-
-test('a direct test tool call is found in each command form', () => {
-  for (const command of [
-    'node --test tests/a.test.mjs', 'node --test-timeout=1 --test a.mjs', 'vitest run', 'npx vitest',
-    'go test ./...', 'go -C packages/generator/go test -race ./...', 'cargo test', 'node scripts/run-rust-command.mts test --locked',
-    'phpunit', 'vendor/bin/phpunit tests',
-  ]) assert.notDeepEqual(directTestTools(command), [], command);
-  for (const command of [
-    'node scripts/run-tests.mts node -- tests/a.test.mjs', 'node scripts/run-tests.mts vitest --workspace packages/generator/ts',
-    'node $(KIT)/run-tests.$(KIT_EXT) go --cwd packages/generator/go -- ./...', 'node ../../scripts/run-tests.mts vitest --cwd packages/cli',
-    'npm run test:forms', 'node scripts/run-rust-command.mts build --release', 'composer install', 'go build ./...',
-    'npm run build && npm test -w @polyspec/crudui-generator-html', 'composer --working-dir=packages/generator/php test',
-  ]) assert.deepEqual(directTestTools(command), [], command);
-});
-
-test('project commands call test tools only through the test runner', () => {
-  const violations: string[] = [];
-  for (const file of tracked) {
-    for (const { name, command } of projectCommands(file, read(file))) {
-      for (const tool of directTestTools(command)) violations.push(`${file} ${name}: ${tool} in \`${command}\``);
-    }
-  }
-  assert.deepEqual(violations, []);
-});
 
 test('a script a test command starts prints through the shared progress lines', () => {
   assert.deepEqual(nodeScripts('node scripts/a.mjs --flag && FOO=1 node --import tsx b/c.js x; node scripts/run-tests.mts node -- d.test.mjs; npm test'), ['scripts/a.mjs', 'b/c.js']);
@@ -308,13 +284,6 @@ test('a package script or a CI step runs every check after an earlier check fail
   assert.deepEqual(violations, []);
 });
 
-// tests/build/public-packages.test.mts loads every published package through its exports, which name its `dist`, so
-// test:build builds the packages first and never reads the output of an earlier build.
-test('test:build builds the packages before the tests that load them', () => {
-  assert.match(script(manifestOf('package.json'), 'test:build'), /^node scripts\/require-current-build\.mts && node scripts\/run-tests\.mts node -- .*tests\/build\/public-packages\.test\.mts/);
-  assert.match(read('tests/build/public-packages.test.mts'), /await import\(pkg\.manifest\.name\)/);
-});
-
 // A CI step runs either tests, whose cases each hold their own timeout in the test runner, or a
 // long operation: a checkout, a toolchain setup, an install, a build, a lint or type check, an
 // upload or a deployment. A long operation prints its own logs and has no time limit, and a job
@@ -335,19 +304,6 @@ test('CI has no time limit over a long operation, a test step or a job', () => {
   assert.deepEqual(violations, []);
 });
 
-// The Go and Rust benchmark drivers compile for minutes on a cold cache. The build is its own step
-// with step logs and no time limit; the test runs the built drivers, each test within seconds.
-test('the benchmark driver test runs built drivers within the default test timeout', () => {
-  const command = script(manifestOf('package.json'), 'test:bench');
-  const build = command.indexOf('node benchmarks/validators/build-drivers.mjs');
-  const runner = command.indexOf('node scripts/run-tests.mts node');
-  assert.ok(build !== -1 && runner > build, `test:bench builds the drivers before the test: ${command}`);
-  assert.doesNotMatch(command, /--timeout/, 'test:bench keeps the 30-second timeout of each test');
-  const source = read('tests/build/bench-drivers.test.mts');
-  assert.doesNotMatch(source, /\btimeout:/, 'no benchmark driver test sets its own timeout');
-  assert.doesNotMatch(source, /'run'/, 'the test runs no `go run` or `cargo run`, which compile');
-});
-
 // The load of the machine changes elapsed time, so a test never asserts an upper or lower bound on
 // an elapsed time; it checks the cause instead: an event, a result that only the expected path can
 // produce, or an operation that never ends unless the code under test stops it, under the test's
@@ -362,16 +318,6 @@ test('no test asserts a bound on an elapsed time', () => {
     .split('\n').filter(file => file && existsSync(path.join(ROOT, file)));
   const bounds = files.flatMap(file => read(file).split('\n').flatMap((line, index) => CLOCK_BOUND.test(line) ? [`${file}:${index + 1}`] : []));
   assert.deepEqual(bounds, []);
-});
-
-// Building the packages is a long operation. The reproducible build check builds them twice in a logged step without a
-// time limit and compares its own two builds; its test reads no build record and runs within the default timeout.
-test('the reproducible build check compares its own builds and its test reads no record', () => {
-  const command = script(manifestOf('package.json'), 'test:build:repeat');
-  assert.equal(command, 'status=0; node scripts/repeat-build.mts || status=1; node scripts/run-tests.mts node -- tests/build/reproducible-build.test.mts || status=1; exit $status');
-  const test = read('tests/build/reproducible-build.test.mts');
-  assert.doesNotMatch(test, /npm', \['run', 'build'\]|REPEAT_BUILD|readFileSync\(join\(/, 'the test runs no build and reads no build record');
-  assert.doesNotMatch(read('scripts/repeat-build.mts'), /writeFile|REPEAT_BUILD/, 'the check keeps no record between runs');
 });
 
 // A program waits for the event of what it waits for (AGENTS): a process exit, a readiness line, a

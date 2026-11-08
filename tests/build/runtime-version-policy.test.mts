@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, realpathSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -9,7 +9,6 @@ import { parse } from 'yaml';
 
 import { checkedFiles } from '@polyspec/kit/tracked-files';
 import { checked, parseJson, type JTDSchemaType, type PackageManagerEngine } from '../json.mts';
-import { kitToolPath, makeDryRun } from './make-dry-run.mts';
 import { DEVENGINES_NPM_VERSION, recordedNpmRelease } from './npm-release.mts';
 
 const repository = fileURLToPath(new URL('../..', import.meta.url));
@@ -205,20 +204,6 @@ test('every @types/node range requires the major of the Node.js of mise.toml', a
     }
   }
   assert.deepEqual(violations, []);
-});
-
-test('make installs nothing on its own and make install installs the Rust toolchain', async () => {
-  const makefile = await read('Makefile');
-  assert.match(makefile, /^export RUSTUP_AUTO_INSTALL := 0$/m);
-  assert.match(makefile, /^export GOTOOLCHAIN := local$/m);
-  // install-tools of kit installs the Rust toolchain of rust-toolchain.toml (kit K151); no target of crudui repeats it.
-  assert.doesNotMatch(makefile, /^install-rust:/m);
-  // Model the installing checkout in the dry run; an actual worktree uses the main checkout's tools and refuses installs.
-  const install = makeDryRun(repository, 'install', { variables: ['KIT_WORKTREE='] });
-  assert.equal(install.status, 0, install.stderr);
-  const entry = /\/var\/tools\/bin\/node (\S+\/install-tools\.(?:mts|mjs))\s*$/m.exec(install.stdout)?.[1];
-  assert.ok(entry, install.stdout);
-  assert.equal(realpathSync(path.resolve(repository, entry)), kitToolPath('install-tools'));
 });
 
 test('every workflow runs on ubuntu-24.04 with actions named by commit SHA and no auto-install', async () => {

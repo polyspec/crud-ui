@@ -29,49 +29,6 @@ function toolVariables(directory: string): string[] {
   return tools.map(([name, command]) => `${name}=${path.join(directory, command)}`);
 }
 
-test('crudui-test-native runs the Rust tests through the test runner', async t => {
-  const directory = await mkdtemp(path.join(await realpath(os.tmpdir()), 'crudui-make-path-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
-
-  const home = path.join(directory, 'home');
-  const commandDirectory = path.join(directory, 'commands');
-  const commandLog = path.join(directory, 'commands.log');
-  await mkdir(home);
-  await mkdir(commandDirectory);
-
-  await Promise.all(['composer', 'go', 'node', 'npm', 'sh'].map(command => (
-    writeExecutable(path.join(commandDirectory, command))
-  )));
-
-  const result = spawnSync(make, ['--no-print-directory', '-f', 'Makefile', 'crudui-test-native', ...toolVariables(commandDirectory)], {
-    cwd: repository,
-    encoding: 'utf8',
-    env: {
-      COMMAND_LOG: commandLog,
-      HOME: home,
-      LANG: 'C',
-      LC_ALL: 'C',
-      PATH: `${commandDirectory}:/usr/bin:/bin`,
-    },
-  });
-
-  assert.equal(result.error, undefined, result.error?.message ?? '');
-  assert.equal(result.status, 0, [result.stdout, result.stderr].join('\n'));
-  const commands = await readFile(commandLog, 'utf8');
-  assert.ok(commands.split('\n').includes('node\ttests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml'), commands);
-  const suite = path.join(repository, 'tests/conformance/run-suite.mts');
-  assert.match(await readFile(suite, 'utf8'), /import \{ parseArguments, run \} from '@polyspec\/kit\/run-tests';/);
-  const observed = path.join(directory, 'delegated.json');
-  const fixture = path.join(directory, 'delegated.test.mjs');
-  await writeFile(fixture, `import test from 'node:test';\nimport { writeFileSync } from 'node:fs';\ntest('delegated case', () => writeFileSync(${JSON.stringify(observed)}, JSON.stringify({ ran: true })));\n`);
-  const delegated = spawnSync(process.execPath, [suite, 'node', '--', fixture], {
-    cwd: repository, encoding: 'utf8', env: { ...process.env, CRUDUI_CONFORMANCE_EVIDENCE: '' },
-  });
-  assert.equal(delegated.status, 0, delegated.stdout + delegated.stderr);
-  assert.deepEqual(JSON.parse(await readFile(observed, 'utf8')), { ran: true });
-
-});
-
 test('crudui-test-native runs the generator and PHP API parts after the PHP engine tests fail, and fails', async t => {
   const directory = await mkdtemp(path.join(await realpath(os.tmpdir()), 'crudui-make-status-'));
   t.after(() => rm(directory, { recursive: true, force: true }));

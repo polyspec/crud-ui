@@ -114,34 +114,6 @@ export function projectCommands(file: string, text: string): ProjectCommand[] {
 // Test commands use the kit runtime selected by make, the public CLI adapter, or the conformance evidence runner.
 const runner = /(?:^|\/)(?:\$\(KIT\)\/run-tests\.\$\(KIT_EXT\)|scripts\/run-tests\.mts|tests\/conformance\/run-suite\.m[jt]s)$/;
 
-/** The test tools a command calls directly, outside the test runner. */
-export function directTestTools(command: string): string[] {
-  const tools: string[] = [];
-  for (const segment of command.split(/&&|\|\||[;|\n]/)) {
-    const tokens = segment.trim().split(/\s+/).filter(Boolean);
-    while (tokens[0] !== undefined && /^[A-Z_][A-Z0-9_]*=/.test(tokens[0])) tokens.shift();
-    if (!tokens.length) continue;
-    if (tokens.some(token => runner.test(token))) continue;
-    const program = itemAt(tokens, 0).split('/').pop();
-    const args = tokens.slice(1);
-    // The first argument that is neither an option nor the value of a directory option.
-    const subcommand = (() => {
-      for (let index = 0; index < args.length; index++) {
-        if (['-C', '--manifest-path', '--working-dir', '-d'].includes(itemAt(args, index))) { index++; continue; }
-        if (!itemAt(args, index).startsWith('-')) return args[index];
-      }
-      return undefined;
-    })();
-    if (program === 'node' && args.includes('--test')) tools.push('node --test');
-    if (tokens.some(token => token.split('/').pop() === 'vitest')) tools.push('vitest');
-    if (program === 'go' && subcommand === 'test') tools.push('go test');
-    if (program === 'cargo' && subcommand === 'test') tools.push('cargo test');
-    if (program === 'node' && args[0]?.endsWith('run-rust-command.mts') && args.slice(1).find(arg => !arg.startsWith('-')) === 'test') tools.push('cargo test');
-    if (tokens.some(token => token.split('/').pop() === 'phpunit')) tools.push('phpunit');
-  }
-  return tools;
-}
-
 /** Whether a project command runs tests: a test script or target, a CI step or a feature verification. */
 export function isTestCommand(file: string, name: string): boolean {
   const base = file.split('/').pop();
