@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: f0ebb667c65f9076bbf5a9acc05ce776b55c5817f3274d6270ae9d0b7995fdb5 -->
+<!-- source-sha256: 47afa19c81e11ca26f26e8850051de00d3ec20b1a5761251bdd55d328c61b75e -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -95,3 +95,4 @@
 | C18.38 | crudui가 ordered-json의 최신 릴리스 0.0.23을 받는다: 루트 package.json이 0.0.23 릴리스 URL을 적고 package-lock.json이 그것을 해석하며, composer.json과 composer.lock이 0.0.23의 packages.json과 zip을 적고, examples/form-comparison의 Go와 Rust 서버가 v0.0.23을 요구하며 go.sum과 Cargo.lock이 그에 맞는다 | package.json, package-lock.json, composer.json, composer.lock, examples/form-comparison/servers/go/go.mod, examples/form-comparison/servers/go/go.sum, examples/form-comparison/servers/rust/Cargo.toml, examples/form-comparison/servers/rust/Cargo.lock, CHANGELOG.md, CHANGELOG.ko.md | `git grep -n "ordered-json.*0.0.22" -- package.json package-lock.json composer.json composer.lock examples/form-comparison/servers` finds nothing; `npm ci` exits 0 | [o] |
 | C18.39 | crudui의 릴리스 버전이 ordered-json 0.0.23을 담는다: crudui 패키지의 모든 매니페스트와 잠금 파일이 CHANGELOG 최상단 섹션의 버전 0.0.18을 가리키고, Unreleased 항목이 두 언어 모두에서 그 섹션 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- tests/build/package-names.test.mts` | [o] |
 | C18.40 | config/release.json의 notReleased는 checkout의 패키지 파일만 적는다: C17.61이 파일을 삭제한 tests/release-install/npm/package.json과 tests/release-install/composer/composer.json 항목을 지운다 | config/release.json, CHANGELOG.md, CHANGELOG.ko.md | `make release-coverage` | [o] |
+| C18.41 | package-lock.json이 다시 devtools-protocol 0.0.1704951을 해석한다: C18.39의 버전 치환이 그것을 npm registry에 없는 0.0.1804951로 바꾸어, Pages run 42515462764의 documentation web job에서 npm ci가 E404로 실패했다 | package-lock.json, CHANGELOG.md, CHANGELOG.ko.md | `git grep -n 1804951 -- package-lock.json` finds nothing; the resolved URL of devtools-protocol answers 200 and its integrity is the one the lock held before C18.39 | [o] |
