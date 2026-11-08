@@ -197,10 +197,10 @@ lint: ## Run lint-<runtime> for every runtime of packages/; offline
 
 # The build of each package of a runtime with the build of its ecosystem; a PHP library has none (kit K1106).
 build-go: ## Build each Go package with go build; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/go packages/validator/go -- var/tools/bin/go build ./...
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/go packages/validator/go -- $(GO) build ./...
 build-php: ## A PHP library has no build step; offline
 build-python: ## Build each Python package with uv build; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/python packages/validator/python -- var/tools/bin/uv build
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/python packages/validator/python -- $(UV) build
 build-rust: ## Build each Rust package with cargo build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/rust packages/validator/rust -- cargo build --locked
 build-ts: ## Build each TypeScript package with tsc; offline
