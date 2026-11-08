@@ -345,13 +345,12 @@
     {
       "name": "php-extension",
       "runner": "php",
+      "shares": "php",
       "prose": [
         "PHP extension"
       ],
       "roots": [
-        "packages/php-ext",
-        "packages/generator/php",
-        "packages/validator/php"
+        "packages/php-ext"
       ],
       "tests": [
         "packages/php-ext/tests/engine/*.test.mjs",
