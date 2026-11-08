@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: a35d4232904c9340ca836d86a5bb7bf938b9d4103890441e5c8f97e03cffe69b -->
+<!-- source-sha256: ff6944f44753b055d3cd05626810f618de982f124815b6b4ea776a69df22f87b -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -89,3 +89,4 @@
 | C18.32 | kit 거부 두 가지만 멈추는 kit 0.0.101을 채택한다: 0.0.101 release asset을 고정하며, recipe 줄은 바뀌지 않는다 | package.json, package-lock.json | `make docs-check` and `make lint-ts` exit 0 | [o] |
 | C18.33 | crudui가 ordered-json의 최신 릴리스 0.0.22를 받는다: 루트 package.json이 0.0.22 릴리스 URL을 적고 package-lock.json이 그것을 해석하며, composer.json과 composer.lock이 0.0.22의 packages.json과 zip을 적고, examples/form-comparison의 Go와 Rust 서버가 v0.0.22를 요구하며 go.sum과 Cargo.lock이 그에 맞는다. .npmrc는 allow-remote=root를 유지한다 | package.json, package-lock.json, composer.json, composer.lock, examples/form-comparison/servers/go/go.mod, examples/form-comparison/servers/go/go.sum, examples/form-comparison/servers/rust/Cargo.toml, examples/form-comparison/servers/rust/Cargo.lock, CHANGELOG.md, CHANGELOG.ko.md | `git grep -n "ordered-json.*0.0.21" -- package.json package-lock.json composer.json composer.lock examples/form-comparison/servers` finds nothing; `npm ci` exits 0 | [o] |
 | C18.34 | crudui의 릴리스 버전이 ordered-json 0.0.22와 kit 0.0.101을 담는다: crudui 패키지의 모든 매니페스트와 잠금 파일이 CHANGELOG 최상단 섹션의 버전 0.0.16을 가리키고, Unreleased 항목이 두 언어 모두에서 그 섹션 아래로 옮겨진다 | the manifests and locks of config/release.json and of the examples, tests and benchmarks that require them, CHANGELOG.md, CHANGELOG.ko.md | `node scripts/run-tests.mts node -- tests/build/package-names.test.mts` | [o] |
+| C18.35 | 설치가 실패하면 uv-install이 지운 provider 링크를 되돌리는 kit 0.0.102(K1134)를 채택한다: 0.0.102 release asset을 고정하며, recipe 줄은 바뀌지 않는다 | package.json, package-lock.json | `make docs-check` and `make lint-ts` exit 0 | [o] |
