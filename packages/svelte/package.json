@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "node ../../scripts/package-dist.mts build 'npm exec --prefix tools -- svelte-package -i src -o \"$CRUDUI_DIST\"'",
-    "test": "status=0; node ../../tests/conformance/run-suite.mts vitest --cwd packages/svelte || status=1; node ../../tests/conformance/run-suite.mts vitest --cwd packages/svelte --config vitest.client.config.ts || status=1; exit $status",
+    "test": "status=0; node ../../tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/svelte || status=1; node ../../tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/svelte --config vitest.client.config.ts || status=1; exit $status",
     "lint": "npm exec --prefix tools -- eslint --config tools/eslint.config.js src",
     "typecheck": "npm exec --prefix tools -- svelte-check --tsconfig ./tsconfig.json"
   },

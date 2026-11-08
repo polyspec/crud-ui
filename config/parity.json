@@ -349,7 +349,9 @@
         "PHP extension"
       ],
       "roots": [
-        "packages/php-ext"
+        "packages/php-ext",
+        "packages/generator/php",
+        "packages/validator/php"
       ],
       "tests": [
         "packages/php-ext/tests/engine/*.test.mjs",

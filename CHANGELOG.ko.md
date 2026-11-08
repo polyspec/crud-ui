@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 8dd06dc618512d56625b74ed1ce008d3f4ec86ebcbfdca4636ffd5e890cb191a -->
+<!-- source-sha256: 6e7cd74238c826472bf69239e21bea894a946f9caec4a0f02853f04a847124c5 -->
 
 ## Unreleased
+
+- C18.28: crudui는 kit 0.0.99를 0.0.98 동작 그대로 채택한다. recipe와 설정이 kit 0.0.98이 고정하던 값을 넘긴다 (C18.28)
 
 ## 0.0.15
 

@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: de07e93557b5de249cdf034bff35327da72002eba57556fe5e806ca3853539de -->
+<!-- source-sha256: b332c4de17558db7c0ee5a07f2cefd02a7ddd96e2ff9a61085ed1fedd4f54ddf -->
 
 [English](package-build.md).
 
@@ -189,8 +189,7 @@ setup-node 뒤 첫 make 명령 전에 이 bootstrap을 실행합니다. Bootstra
   그 suite를 실행하는(`make crudui-install-python`) Python의 minor 릴리스(PHP처럼 비교)를, `composer`에 정확한 Composer 릴리스(`version`과 phar의
   SHA-256을 가진 object)를, `go`에 `go` 줄이 Go 릴리스인 `go.mod`를, uv와 Python build, alint, ruff, vulture, golangci-lint,
   deadcode의 정확한 릴리스와 digest를, `cargoAudit`에 정확한 cargo-audit 릴리스를
-  기록합니다. 이 file은
-  `node_modules/@polyspec/kit/dist/schema/toolchain.schema.json` schema를 따르며 `make kit-check`가 이를 적용합니다. setup-php는 다른 도구와 같은 patch를 설치할 수 없으므로 PHP는 minor 릴리스로 고정합니다. 검사는 실행 중인 PHP의 major와 minor를 비교하고, 실행이 쓴 patch는
+  기록합니다. 이 file은 kit의 도구가 읽는 field를 담습니다. setup-php는 다른 도구와 같은 patch를 설치할 수 없으므로 PHP는 minor 릴리스로 고정합니다. 검사는 실행 중인 PHP의 major와 minor를 비교하고, 실행이 쓴 patch는
   그 실행의 evidence이며 `node_modules/@polyspec/kit/dist/check-toolchain.mjs`가 출력하고 `var/full-run.json`이 다른 실행 중인 릴리스와
   함께 기록합니다.
 - 기록된 release는 kit이 설치합니다(K854: 도구 검사는 삭제됨; 없는 도구는 그 도구를 쓰는 타깃을 실패시킵니다).

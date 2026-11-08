@@ -1,5 +1,27 @@
 {
   "schema": 1,
+  "formats": [
+    "typescript",
+    "javascript",
+    "go",
+    "php",
+    "python",
+    "rust",
+    "c"
+  ],
+  "minLines": 6,
+  "ignorePatterns": [
+    "(?m)^(declare\\([^)]*\\)|namespace [^;]+|use [^;]+);$",
+    "(?m)^import\\s[^;'\"]*['\"][^'\"\\n]*['\"];?$",
+    "(?m)^package \\w+$",
+    "(?m)^import (\\w+ )?\"[^\"\\n]*\"$",
+    "(?m)^import \\([^)]*\\)$",
+    "(?m)^import [^\\n]+$",
+    "(?m)^from [\\w.]+ import [^\\n(]+$",
+    "(?m)^from [\\w.]+ import \\([^)]*\\)$",
+    "(?m)^(pub )?use [^;]+;$",
+    "(?m)^#include [<\"][^>\"\\n]*[>\"]$"
+  ],
   "exclude": [
     {
       "glob": "packages/php-ext/src/unicode_data.c",
@@ -44,6 +66,10 @@
     {
       "glob": "**/*_test.go",
       "reason": "test: a test states its case in full; the rule separates the concerns of components"
+    },
+    {
+      "glob": "packages/php-ext/src/polyspec_*.stub.php",
+      "reason": "the S10 stub declares the library under the same names and signatures"
     }
   ]
 }

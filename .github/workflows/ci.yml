@@ -931,4 +931,4 @@ jobs:
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node"
       - name: Fail unless every other job succeeded
-        run: make ci-passed RESULTS='${{ toJSON(needs) }}'
+        run: make ci-passed RESULTS='${{ toJSON(needs) }}' FAIL_SKIPPED=1

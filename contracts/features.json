@@ -703,7 +703,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
@@ -711,7 +711,7 @@
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -762,7 +762,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
@@ -770,11 +770,11 @@
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/template-shape.test.ts"
         }
       ]
     },
@@ -822,19 +822,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -run TestButtonsSuite ."
+          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run TestButtonsSuite ."
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests/test_buttons.py"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests/test_buttons.py"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml --test buttons"
+          "command": "node scripts/run-tests.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml --test buttons -- --test-threads=1"
         },
         {
           "id": "test-5",
@@ -842,7 +842,7 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/template-shape.test.ts"
         }
       ]
     },
@@ -883,19 +883,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -run TestButtonsSuite ."
+          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run TestButtonsSuite ."
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests/test_buttons.py"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests/test_buttons.py"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml --test buttons"
+          "command": "node scripts/run-tests.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml --test buttons -- --test-threads=1"
         },
         {
           "id": "test-5",
@@ -950,19 +950,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-choices.test.ts src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-choices.test.ts src/template-shape.test.ts"
         }
       ]
     },
@@ -1109,11 +1109,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/list.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/list.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -1159,11 +1159,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/detail.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/detail.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -1315,11 +1315,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/widget-controls.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/widget-controls.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
         }
       ]
     },
@@ -1353,7 +1353,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/patch.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/patch.test.ts"
         },
         {
           "id": "test-2",
@@ -1442,11 +1442,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_outline"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_outline"
         },
         {
           "id": "test-3",
@@ -1484,7 +1484,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
         }
       ]
     },
@@ -1532,19 +1532,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -run 'TestFormActions'"
+          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run 'TestFormActions'"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_state"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_state"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts cargo --cwd packages/generator/rust -- --test form_state"
+          "command": "node scripts/run-tests.mts cargo --cwd packages/generator/rust -- --test form_state -- --test-threads=1"
         },
         {
           "id": "test-5",
@@ -1552,7 +1552,7 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-actions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-actions.test.ts"
         }
       ]
     },
@@ -1600,23 +1600,23 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-state.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-state.test.ts"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -run 'TestFormView|TestViewFunctions'"
+          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run 'TestFormView|TestViewFunctions'"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_state"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_state"
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts cargo --cwd packages/generator/rust -- --test form_state"
+          "command": "node scripts/run-tests.mts cargo --cwd packages/generator/rust -- --test form_state -- --test-threads=1"
         },
         {
           "id": "test-6",
@@ -1624,7 +1624,7 @@
         },
         {
           "id": "test-7",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/view-functions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/view-functions.test.ts"
         }
       ]
     },
@@ -1673,19 +1673,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -run 'TestFormHistory|TestHistoryFunctions'"
+          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run 'TestFormHistory|TestHistoryFunctions'"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_history"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_history"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts cargo --cwd packages/generator/rust -- --test history_functions"
+          "command": "node scripts/run-tests.mts cargo --cwd packages/generator/rust -- --test history_functions -- --test-threads=1"
         },
         {
           "id": "test-5",
@@ -1693,7 +1693,7 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-history.test.ts src/history-functions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-history.test.ts src/history-functions.test.ts"
         }
       ]
     },

@@ -16,10 +16,10 @@ const root = path.resolve(import.meta.dirname, '../..');
 const svelteWorkspace = path.join(root, 'packages/svelte');
 const svelteTools = path.join(svelteWorkspace, 'tools');
 
-test('make lint runs kit\'s lint task of every runtime and the Svelte lint of packages/svelte (C17.91-2)', () => {
+test('make lint runs the lint of every runtime and the Svelte lint of packages/svelte (C17.91-2)', () => {
   const run = makeDryRun(root, 'lint');
   assert.equal(run.status, 0, run.stderr);
-  assert.match(run.stdout, /runtime-targets\.(?:mts|mjs)\s+task lint\b/, run.stdout);
+  assert.match(run.stdout, /--no-print-directory lint-go lint-php lint-php-ext lint-python lint-rust lint-ts\b/, run.stdout);
   assert.match(run.stdout, /\bnpm\b.* run lint -w @polyspec\/crudui-generator-svelte\b/);
 });
 

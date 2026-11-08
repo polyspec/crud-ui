@@ -25,7 +25,7 @@
   "scripts": {
     "build": "node ../../../scripts/package-dist.mts build 'tsup src/index.ts src/internal.ts --format cjs,esm --splitting --clean --out-dir \"$CRUDUI_DIST\" && tsc --project tsconfig.build.json --outDir \"$CRUDUI_DIST\"'",
     "dev": "tsup src/index.ts src/internal.ts --format cjs,esm --splitting --watch --onSuccess \"tsc --project tsconfig.build.json\"",
-    "test": "node ../../../tests/conformance/run-suite.mts vitest --cwd packages/validator/ts",
+    "test": "node ../../../tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/validator/ts",
     "typecheck": "status=0; tsc --noEmit || status=1; tsc --noEmit --project tsconfig.scripts.json || status=1; exit $status",
     "prepublishOnly": "npm run build"
   },

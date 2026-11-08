@@ -1,5 +1,5 @@
 <!-- doc-id: rebuild-test-commands -->
-<!-- source-sha256: 5a3fcb52dc809d406aba5568479f18a4ef5c0db13bc6705888986d7c4d03aa27 -->
+<!-- source-sha256: 6ceae680dba15fd60de3d71f738e88626fd4041b3fae92f37aceefad6724b64a -->
 # 재구현 기록: test-commands
 
 [English](test-commands.md)
@@ -21,7 +21,7 @@ test 도구를 직접 호출하는 명령, test target을 prerequisite로 받는
 
 | 도구 | 상태 | 판정 |
 |---|---|---|
-| kit 0.0.54 (`kit-check`, `test-markers-check`, `ci-targets`, `parity`) | 설치됨 | `kit-check`는 복사된 파일을 비교하고, `test-markers-check`는 test 파일을 읽고, `ci-targets`는 target을 실행하고, `parity`는 구현의 unit을 읽습니다. Makefile, package script, workflow의 명령에서 test 도구의 직접 호출을 찾는 것은 없습니다 |
+| kit 0.0.54 (`test-markers-check`, `ci-targets`, `parity`) | 설치됨 | `test-markers-check`는 test 파일을 읽고, `ci-targets`는 target을 실행하고, `parity`는 구현의 unit을 읽습니다. Makefile, package script, workflow의 명령에서 test 도구의 직접 호출을 찾는 것은 없습니다 |
 | actionlint, shellcheck | 설치되지 않음 | workflow와 shell의 문법을 검사하며, 명령이 어떤 도구를 실행하는지는 보지 않습니다 |
 | ESLint, knip | 설치됨 | JavaScript 소스와 manifest를 읽으며, Makefile이나 workflow의 명령은 읽지 않습니다 |
 

@@ -25,7 +25,7 @@
   "scripts": {
     "build": "node ../../scripts/package-dist.mts build 'tsup src/index.ts src/server.ts --format cjs,esm --clean --external react --external react-dom --out-dir \"$CRUDUI_DIST\" && tsc --project tsconfig.build.json --outDir \"$CRUDUI_DIST\"'",
     "dev": "tsup src/index.ts src/server.ts --format cjs,esm --watch --external react --external react-dom --onSuccess \"tsc --project tsconfig.build.json\"",
-    "test": "node ../../tests/conformance/run-suite.mts vitest --cwd packages/react",
+    "test": "node ../../tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/react",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },

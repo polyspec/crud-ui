@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C18.28: crudui adopts kit 0.0.99 with the behaviour of 0.0.98: its recipes and configurations pass the values that kit 0.0.98 fixed (C18.28)
+
 ## 0.0.15
 
 - C18.27: every manifest and lock of a crudui package carries 0.0.15, with ordered-json 0.0.21 (C18.27)

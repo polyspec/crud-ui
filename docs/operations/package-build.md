@@ -206,8 +206,8 @@ belongs to the checkout at `var/bootstrap/npm-cache`.
   (`make crudui-install-python`), in `python`, compared like PHP, the exact Composer release in `composer`
   (an object with `version` and the SHA-256 of its phar), the `go.mod` whose `go` line is the Go release in `go`, the
   exact releases and digests of uv and the Python build, alint, ruff, vulture, golangci-lint and deadcode, the exact
-  cargo-audit release in `cargoAudit`. The file follows the schema
-  `node_modules/@polyspec/kit/dist/schema/toolchain.schema.json`, which `make kit-check` applies. PHP is pinned by its minor release, because
+  cargo-audit release in `cargoAudit`, the fields
+  that the tools of kit read. PHP is pinned by its minor release, because
   setup-php cannot install the same patch as every other tool of the checkout: the checks compare the
   major and minor of the running PHP, and the patch that a run ran on is its
   evidence, which `node_modules/@polyspec/kit/dist/check-toolchain.mjs` prints and

@@ -33,7 +33,15 @@
     "**/go.work.sum",
     ".verification/**",
     ".form-comparison/**",
-    "*.plist"
+    "*.plist",
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/__pycache__/**",
+    "**/target/**",
+    "**/dist/**",
+    "**/*.egg-info/**"
   ],
   "tracked": [
     {
@@ -45,5 +53,12 @@
       "reason": "generated from contracts/unicode-properties.json by packages/validator/go/validator/validate/unicode_data_generate.go; the Go module ships its tables"
     }
   ],
-  "exceptions": []
+  "exceptions": [],
+  "headers": [
+    "Code generated .* DO NOT EDIT"
+  ],
+  "moduleFiles": [
+    "go.mod",
+    "Cargo.toml"
+  ]
 }

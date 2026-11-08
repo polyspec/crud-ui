@@ -178,7 +178,7 @@ test('the last CI job ci-passed needs every other job and runs always', async ()
   assert.deepEqual(job.needs, ids.slice(0, -1));
   assert.equal(job['runs-on'], 'ubuntu-24.04');
   assert.deepEqual((job.steps ?? []).filter((step) => step.run !== undefined && !/^make (?:install-tools|install-packages)\b/.test(step.run)).map((step) => step.run),
-    ["make ci-passed RESULTS='${{ toJSON(needs) }}'"]);
+    ["make ci-passed RESULTS='${{ toJSON(needs) }}' FAIL_SKIPPED=1"]);
 });
 
 test('runtime checks run in four independent CI shards with separate reports (C18.9)', async () => {
@@ -247,7 +247,7 @@ test('native unit suites and cross-language comparisons each run once', async ()
   assert.equal(run.status, 0, run.stderr);
   const commands = run.stdout.split('\n');
   for (const command of [
-    /^\/\S+\/var\/tools\/bin\/node tests\/conformance\/run-suite\.mts node -- packages\/php-ext\/tests\/engine\/engine\.test\.mjs packages\/php-ext\/tests\/contract\/\*\.test\.mjs packages\/php-ext\/tests\/comparison\/comparison\.test\.mjs$/,
+    /^\/\S+\/var\/tools\/bin\/node tests\/conformance\/run-suite\.mts node --timeout 30 -- --test-concurrency=1 packages\/php-ext\/tests\/engine\/engine\.test\.mjs packages\/php-ext\/tests\/contract\/\*\.test\.mjs packages\/php-ext\/tests\/comparison\/comparison\.test\.mjs$/,
     /^\/\S+\/var\/tools\/bin\/node tests\/native-generators\/run\.mts --target javascript,html,go,rust,python --report "[^"]+report\.json" \|\| status=1; \\$/,
     /^\/\S+\/var\/tools\/bin\/node tests\/native-generators\/run\.mts --extension "[^"]+crudui\.so" --target php,php-native --report "[^"]+report-php\.json" \|\| status=1; \\$/,
   ]) assert.equal(commands.filter((line) => command.test(line.trim())).length, 1, `${command}\n${run.stdout}`);
@@ -628,7 +628,7 @@ test('install-packages installs the svelte tools after its npm ci and runs no li
   assert.equal(database.status, 0, database.stderr);
   const targets = makeTargets(database.stdout);
   assert.ok(targets['install-packages']?.prerequisites.includes('hooks'), 'dependency installation prepares the repository hooks');
-  assert.deepEqual(targets.hooks?.commands.filter(command => command.trim() !== ''), ['$(NODE) $(KIT)/git-hooks.$(KIT_EXT) install']);
+  assert.deepEqual(targets.hooks?.commands.filter(command => command.trim() !== ''), ['$(NODE) $(KIT)/git-hooks.$(KIT_EXT) install $(HOOK_DECLARATION)']);
 });
 
 // Both native link entry points use the Python environment prepared for this checkout.

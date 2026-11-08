@@ -696,8 +696,7 @@
         "config/generated.json"
       ],
       "targets": [
-        "hooks-check",
-        "kit-check"
+        "hooks-check"
       ]
     },
     {
@@ -705,17 +704,14 @@
         "config/documents.json"
       ],
       "targets": [
-        "docs-check",
-        "kit-check"
+        "docs-check"
       ]
     },
     {
       "paths": [
         "config/ci.json"
       ],
-      "targets": [
-        "kit-check"
-      ],
+      "targets": [],
       "tests": [
         "tests/build/ci-local.test.mts",
         "tests/build/runtime-version-policy.test.mts"
@@ -726,8 +722,7 @@
         "config/owner-checks.json"
       ],
       "targets": [
-        "owner-validate",
-        "kit-check"
+        "owner-validate"
       ]
     },
     {
@@ -735,8 +730,7 @@
         "config/release.json"
       ],
       "targets": [
-        "release-coverage",
-        "kit-check"
+        "release-coverage"
       ],
       "tests": [
         "tests/build/ci-local.test.mts",

@@ -124,5 +124,18 @@
   "goModules": {
     "packages/generator/go": "github.com/polyspec/crudui/packages/generator/go",
     "packages/validator/go": "github.com/polyspec/crudui/packages/validator/go"
-  }
+  },
+  "annotatedTags": true,
+  "packageFiles": [
+    "package.json",
+    "composer.json",
+    "Cargo.toml",
+    "pyproject.toml",
+    "go.mod",
+    "VERSION"
+  ],
+  "writtenFiles": [
+    "config/phpunit/composer.json",
+    ".mise/locks/**"
+  ]
 }

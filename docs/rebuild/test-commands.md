@@ -20,7 +20,7 @@ target that takes a test target as a prerequisite, and every CI time limit over 
 
 | Tool | State | Verdict |
 |---|---|---|
-| kit 0.0.54 (`kit-check`, `test-markers-check`, `ci-targets`, `parity`) | installed | `kit-check` compares the copied files, `test-markers-check` reads the test files, `ci-targets` runs targets and `parity` reads the units of the implementations; none reads the commands of a Makefile, a package script or a workflow for a direct call of a test tool |
+| kit 0.0.54 (`test-markers-check`, `ci-targets`, `parity`) | installed | `test-markers-check` reads the test files, `ci-targets` runs targets and `parity` reads the units of the implementations; none reads the commands of a Makefile, a package script or a workflow for a direct call of a test tool |
 | actionlint, shellcheck | not installed | check the syntax of workflows and shell, not which tool a command runs |
 | ESLint, knip | installed | read JavaScript sources and manifests, not the commands of a Makefile or a workflow |
 
