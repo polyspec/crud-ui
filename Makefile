@@ -172,7 +172,7 @@ duplication-check: ## Fail on a piece of 6 lines or more of code that exists twi
 suppression-check: ## Fail on a suppression of a lint finding that states no reason; offline
 	$(NODE) $(KIT)/suppression-check.$(KIT_EXT)
 
-.PHONY: php-ext-tables lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
+.PHONY: php-ext-tables php-tables lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
 # build, test and lint run the target <task>-<runtime> of each runtime of packages/ (go, php, php-ext, python, rust, ts), after
 # the steps of this repository that are their prerequisites (kit K1106).
 build: ## Run build-<runtime> for every runtime of packages/; offline
@@ -197,7 +197,7 @@ build-ts: ## Build each TypeScript package with tsc; offline
 # passed (kit K1094, K1106): one go test over the modules of go.work, one test at a time in cargo and the 30 s test timeout of vitest.
 test-go: ## Run the unit tests of the Go modules with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner go --roots packages/generator/go packages/validator/go -- -count=1 -timeout=0
-test-php: ## Run the unit tests of each PHP package with CASES=<pattern>; offline
+test-php: php-tables ## Run the unit tests of each PHP package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner php --roots packages/generator/php packages/validator/php
 test-python: ## Run the unit tests of each Python package with CASES=<pattern>; offline
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots packages/generator/python packages/validator/python --venv .venv
@@ -209,7 +209,7 @@ test-ts: ## Run the unit tests of each TypeScript package with CASES=<pattern>; 
 lint-python: ## Lint the Python: ruff with ruff.toml, and vulture on each package; offline
 	$(NODE) $(KIT)/lint-python.$(KIT_EXT)
 
-lint-php: ## Lint the PHP: phpcs with phpcs.xml.dist, and PHPStan with phpstan.dist.neon on each Composer package; offline
+lint-php: php-tables ## Lint the PHP: phpcs with phpcs.xml.dist, and PHPStan with phpstan.dist.neon on each Composer package; offline
 	$(NODE) $(KIT)/lint-php.$(KIT_EXT) --memory-limit=-1
 
 lint-rust: ## Lint the Rust: cargo clippy in each Cargo workspace with the [workspace.lints] of its Cargo.toml and clippy.toml
@@ -233,11 +233,18 @@ production-dependencies-check:
 php-ext-tables: ## Write packages/php-ext/src/unicode_data.c and interface_messages.c from contracts/; offline
 	$(NODE) packages/php-ext/tools/generate-unicode-data.mjs
 	$(NODE) packages/php-ext/tools/generate-interface-messages.mjs
+# The PHP tables of packages/validator/php and packages/generator/php are untracked build output of contracts/ (P34):
+# php-tables writes them with the generators of scripts/ of their packages, each target that reads the PHP sources of those
+# packages depends on it, and the release runs it for the Composer archive of each package (config/release.json).
+php-tables: ## Write packages/validator/php/src/Values/UnicodeData.php and packages/generator/php/src/Internal/InterfaceMessages.php from contracts/; offline
+	php packages/validator/php/scripts/generate-unicode-data.php
+	php packages/generator/php/scripts/generate-interface-messages.php
 # The PHP extension of packages/php-ext: one build with phpize, the check of its names and stub, and its declaration and unit tests.
-build-php-ext: php-ext-tables ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
+# Its build and check read the PHP libraries (--library), so they depend on php-tables too.
+build-php-ext: php-ext-tables php-tables ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
 	$(ONLINE) $(NODE) $(KIT)/php-extension.$(KIT_EXT) build --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php
 
-lint-php-ext: php-ext-tables ## Check the names, the one stub and the stub hash of the arginfo header of packages/php-ext; offline
+lint-php-ext: php-ext-tables php-tables ## Check the names, the one stub and the stub hash of the arginfo header of packages/php-ext; offline
 	$(NODE) $(KIT)/php-extension.$(KIT_EXT) check --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php
 
 test-php-ext: build-php-ext ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
@@ -493,7 +500,7 @@ crudui-install-svelte-tools: ## Install the tools project of packages/svelte fro
 # The private root Composer project resolves this checkout's PHP packages and OrderedJSON from its packages.json repository.
 # Composer owns the path links, autoload files and installed metadata. Updating the path packages refreshes their native
 # metadata when a source manifest changes; make link replaces the installed OrderedJSON with a checkout that .links declares.
-crudui-install-composer: ## Resolve and install the current local PHP source packages with Composer
+crudui-install-composer: php-tables ## Resolve and install the current local PHP source packages with Composer
 ifeq ($(GITHUB_ACTIONS),true)
 	$(ONLINE) $(COMPOSER_BIN) install --no-interaction --prefer-dist
 else
@@ -570,7 +577,7 @@ typecheck: ## Type-check every TypeScript package, the TypeScript of scripts/ an
 crudui-test-validator-js: ## The TypeScript validator suite
 	$(NODE) scripts/require-current-build.mts
 	$(NPM) test -w @polyspec/crudui-validator
-crudui-test-validator-php: ## The PHP validator suite
+crudui-test-validator-php: php-tables ## The PHP validator suite
 	$(COMPOSER_BIN) --working-dir=packages/validator/php test
 crudui-test-validator-go: ## The Go validator suite
 	@packages="$$($(GO) -C packages/validator/go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)" || exit $$?; \
@@ -629,7 +636,7 @@ check-conformance: ## The conformance evidence against contracts/features.json
 docs: docs-clean docs-web ## 전체 문서 생성 (clean-then-generate)
 	@echo "[make] docs: complete -> docs/.web/dist"
 
-docs-api: ## 멀티언어 API doc
+docs-api: php-tables ## 멀티언어 API doc
 	$(NPM) run docs:api
 
 docs-schema: ## 스펙 JSON Schema 검사
@@ -664,7 +671,7 @@ docs-check-documents:
 	$(NPM) run docs:build || status=1; \
 	exit $$status
 
-docs-check-libs: ## 라이브러리 packages/* doc-coverage
+docs-check-libs: php-tables ## 라이브러리 packages/* doc-coverage
 	$(NPM) run docs:check
 
 docs-clean: ## 생성물 전부 제거
@@ -705,13 +712,13 @@ docs-verify-idempotent: ## docs 를 2회 생성하고 diff 가 비는지 검증
 bench-fixtures: ## 벤치 fixture JSON 재생성 (스펙 → spec/input JSON)
 	$(NODE) benchmarks/validators/gen-fixtures.js
 
-bench: bench-fixtures ## 4언어 검증기 처리량 비교
+bench: bench-fixtures php-tables ## 4언어 검증기 처리량 비교
 	$(NODE) benchmarks/validators/run.js --iters $(BENCH_ITERS) --warmup $(BENCH_WARMUP)
 
 bench-js: bench-fixtures ## JS 검증기만 측정
 	$(NODE) benchmarks/validators/run.js --only js --iters $(BENCH_ITERS) --warmup $(BENCH_WARMUP)
 
-bench-php: bench-fixtures ## PHP 검증기만 측정
+bench-php: bench-fixtures php-tables ## PHP 검증기만 측정
 	$(NODE) benchmarks/validators/run.js --only php --iters $(BENCH_ITERS) --warmup $(BENCH_WARMUP)
 
 bench-go: bench-fixtures ## Go 검증기만 측정
@@ -745,7 +752,7 @@ crudui-test-native-generators:
 	$(MAKE) --no-print-directory crudui-test-generator-js || status=1; \
 	exit $$status
 
-crudui-test-php-api: require-build build-php-ext
+crudui-test-php-api: php-tables require-build build-php-ext
 	@status=0; \
 	PHP_EXTENSION="$(PHP_EXTENSION)" $(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/php-ext || status=1; \
 	$(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/generator/php -- --testsuite public,php-source-internal || status=1; \
@@ -767,7 +774,7 @@ crudui-test-native:
 	$(MAKE) --no-print-directory crudui-test-php-api || status=1; \
 	exit $$status
 
-crudui-test-validators:
+crudui-test-validators: php-tables
 	@status=0; \
 	$(NODE) tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/validator/ts || status=1; \
 	$(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/validator/php -- --testsuite public,php-source-internal || status=1; \
@@ -864,7 +871,7 @@ CI_TARGETS = \
 
 # PHP source runs include public and implementation units; extension defaults remain public. Named apart from test-php,
 # which runs the PHP tests of each PHP package with the runtime targets (C17.86).
-crudui-test-php-source:
+crudui-test-php-source: php-tables
 	@status=0; \
 	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd packages/generator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
 	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd packages/validator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \

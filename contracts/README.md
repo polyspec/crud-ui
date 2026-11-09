@@ -67,5 +67,5 @@ after editing the file, run every runtime's script:
 - TypeScript: `node packages/generator/ts/scripts/generate-interface-messages.mjs`
 - Go: `go generate` in `packages/generator/go`
 - Rust: `node packages/generator/rust/tools/generate-interface-messages.mjs`
-- PHP: `php packages/generator/php/scripts/generate-interface-messages.php`
+- PHP: `make php-tables`, which writes the untracked `src/Internal/InterfaceMessages.php` of `packages/generator/php`
 - PHP extension: `node packages/php-ext/tools/generate-interface-messages.mjs`

@@ -1,6 +1,6 @@
 # CRUDUI 계약 manifest
 <!-- doc-id: contracts-readme -->
-<!-- source-sha256: d8abb10354c4de37a2e17c357bb82d202f87bb860a71df36deeec9bdae6a3cc2 -->
+<!-- source-sha256: 1ec90e6482e9fb59d1d1f02e92f48f8eef656bb7e3bf4e65e6a1b39a6b675bb3 -->
 
 [English](README.md).
 
@@ -56,5 +56,5 @@ CLI는 같은 계약을 도구가 읽을 수 있는 JSON 또는 Markdown으로 �
 - TypeScript: `node packages/generator/ts/scripts/generate-interface-messages.mjs`
 - Go: `packages/generator/go`에서 `go generate`
 - Rust: `node packages/generator/rust/tools/generate-interface-messages.mjs`
-- PHP: `php packages/generator/php/scripts/generate-interface-messages.php`
+- PHP: `make php-tables`. 추적하지 않는 `packages/generator/php`의 `src/Internal/InterfaceMessages.php`를 씁니다
 - PHP 확장: `node packages/php-ext/tools/generate-interface-messages.mjs`

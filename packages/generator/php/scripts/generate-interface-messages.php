@@ -2,6 +2,7 @@
 
 /**
  * Generate src/Internal/InterfaceMessages.php from contracts/interface-messages.json.
+ * make php-tables runs it before every target that reads packages/generator/php; the output is untracked (P34).
  *
  * Run: php packages/generator/php/scripts/generate-interface-messages.php
  */

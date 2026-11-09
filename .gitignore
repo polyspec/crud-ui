@@ -26,6 +26,10 @@ dist.old/
 packages/php-ext/src/unicode_data.c
 packages/php-ext/src/interface_messages.c
 
+# The PHP tables of packages/validator/php and packages/generator/php, which make php-tables writes from contracts/ (P34)
+packages/validator/php/src/Values/UnicodeData.php
+packages/generator/php/src/Internal/InterfaceMessages.php
+
 # Rust build outputs (Cargo.lock is committed for the binary crate)
 target/
 

@@ -60,14 +60,32 @@
       "directory": "packages/generator/php",
       "name": "polyspec/crudui-generator",
       "product": "crudui-generator",
-      "runtime": "php"
+      "runtime": "php",
+      "generated": [
+        {
+          "kind": "make",
+          "target": "php-tables",
+          "outputs": [
+            "src/Internal/InterfaceMessages.php"
+          ]
+        }
+      ]
     },
     {
       "kind": "composer",
       "directory": "packages/validator/php",
       "name": "polyspec/crudui-validator",
       "product": "crudui-validator",
-      "runtime": "php"
+      "runtime": "php",
+      "generated": [
+        {
+          "kind": "make",
+          "target": "php-tables",
+          "outputs": [
+            "src/Values/UnicodeData.php"
+          ]
+        }
+      ]
     },
     {
       "kind": "wheel",

@@ -49,12 +49,12 @@ final class InterfaceMessagesTest extends TestCase
         self::assertSame(
             0,
             $status,
-            'Generator script failed; run: php packages/generator/php/scripts/generate-interface-messages.php'
+            'Generator script failed; run: make php-tables'
         );
         self::assertSame(
             $expected,
             implode("\n", $output) . "\n",
-            'Generated source does not match; run: php packages/generator/php/scripts/generate-interface-messages.php'
+            'Generated source does not match; run: make php-tables'
         );
     }
 }

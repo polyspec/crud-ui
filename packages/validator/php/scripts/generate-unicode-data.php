@@ -2,6 +2,7 @@
 
 /**
  * Generate src/Values/UnicodeData.php from contracts/unicode-properties.json.
+ * make php-tables runs it before every target that reads packages/validator/php; the output is untracked (P34).
  *
  * Run: php packages/validator/php/scripts/generate-unicode-data.php
  */

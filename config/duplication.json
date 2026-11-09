@@ -28,16 +28,8 @@
       "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/python/scripts/generate_unicode_data.py; the tables are data"
     },
     {
-      "glob": "packages/validator/php/src/Values/UnicodeData.php",
-      "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/php/scripts/generate-unicode-data.php; the tables are data"
-    },
-    {
       "glob": "packages/validator/ts/src/unicode/properties.ts",
       "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/ts/scripts/generate-unicode-properties.mjs; the tables are data"
-    },
-    {
-      "glob": "packages/generator/php/src/Internal/InterfaceMessages.php",
-      "reason": "generated: generated from contracts/interface-messages.json by packages/generator/php/scripts/generate-interface-messages.php; the tables are data"
     },
     {
       "glob": "packages/generator/python/src/polyspec/crudui/generator/interface_messages.py",

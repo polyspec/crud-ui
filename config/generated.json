@@ -43,7 +43,9 @@
     "**/dist/**",
     "**/*.egg-info/**",
     "packages/php-ext/src/unicode_data.c",
-    "packages/php-ext/src/interface_messages.c"
+    "packages/php-ext/src/interface_messages.c",
+    "packages/validator/php/src/Values/UnicodeData.php",
+    "packages/generator/php/src/Internal/InterfaceMessages.php"
   ],
   "tracked": [
     {
