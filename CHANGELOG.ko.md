@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: e5f39b9f411c658f21485e7e3dafa520f87ffccde6054086f7d3bc1b34d662c2 -->
+<!-- source-sha256: bb304ad1f158924c7d4fe3ccd8d7e6505fb58aa66d67c0eec18c8f195a022483 -->
 
 ## Unreleased
+
+- C17.106-5: config/generated.json은 추적하는 Rust crate 표 interface_messages.rs와 data.rs를 생성기와 함께 선언하고, 그 헤더 패턴 하나는 PHP와 Rust 표 생성기가 쓰는 첫 주석 줄 Generated from contracts/...와 맞으므로, 어떤 항목도 선언하지 않은 표의 추적 사본에서 layout-check가 실패한다. Rust 생성기는 그 줄을 맨 앞에 쓴다 (C17.106-5)
 
 - C17.106-4: packages/validator/ts/src/unicode/properties.ts, packages/generator/ts/src/interface-messages.ts, packages/generator/ts/src/form-template-validator.mjs는 더 추적하지 않는다. 두 패키지의 prebuild 스크립트가 contracts/에서 쓰고, build, build-ts, test-ts, typecheck, lint-ts, crudui-test-validators는 패키지 빌드 뒤에 실행된다 (C17.106-4)
 

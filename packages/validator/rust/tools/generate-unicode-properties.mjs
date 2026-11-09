@@ -13,10 +13,10 @@ const hex = value => `0x${value.toString(16).toUpperCase()}`;
 const ranges = list => `&[${list.map(([start, end]) => `(${hex(start)}, ${hex(end)})`).join(', ')}]`;
 const table = map => Object.entries(map).map(([name, list]) => `    (${JSON.stringify(name)}, ${ranges(list)}),\n`).join('');
 
-writeFileSync(join(CRATE, 'src/validate/unicode/data.rs'), `//! Unicode ${contract.unicodeVersion} data as inclusive code-point ranges.
-//!
-//! Generated from \`contracts/unicode-properties.json\` by
+writeFileSync(join(CRATE, 'src/validate/unicode/data.rs'), `//! Generated from \`contracts/unicode-properties.json\` by
 //! \`node tools/generate-unicode-properties.mjs\` (run in \`packages/validator/rust\`); do not edit.
+//!
+//! Unicode ${contract.unicodeVersion} data as inclusive code-point ranges.
 
 use super::Ranges;
 

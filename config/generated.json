@@ -60,11 +60,20 @@
     {
       "path": "packages/validator/go/validator/validate/unicode_data.go",
       "reason": "generated from contracts/unicode-properties.json by packages/validator/go/validator/validate/unicode_data_generate.go; the Go module ships its tables"
+    },
+    {
+      "path": "packages/generator/rust/src/messages/interface_messages.rs",
+      "reason": "generated from contracts/interface-messages.json by packages/generator/rust/tools/generate-interface-messages.mjs; the Rust crate, which consumers install by git tag, ships its tables"
+    },
+    {
+      "path": "packages/validator/rust/src/validate/unicode/data.rs",
+      "reason": "generated from contracts/unicode-properties.json by packages/validator/rust/tools/generate-unicode-properties.mjs; the Rust crate, which consumers install by git tag, ships its tables"
     }
   ],
   "exceptions": [],
   "headers": [
-    "Code generated .* DO NOT EDIT"
+    "Code generated .* DO NOT EDIT",
+    "^//!? Generated from `?contracts/"
   ],
   "moduleFiles": [
     "go.mod",

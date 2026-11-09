@@ -1,7 +1,7 @@
-//! Interface messages for CRUDUI as string constants.
-//!
 //! Generated from `contracts/interface-messages.json` by
 //! `node tools/generate-interface-messages.mjs` (run in `packages/generator/rust`); do not edit.
+//!
+//! Interface messages for CRUDUI as string constants.
 
 use super::{ListMessages, Messages};
 

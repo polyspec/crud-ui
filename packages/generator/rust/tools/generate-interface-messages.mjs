@@ -29,10 +29,10 @@ const generateConstant = (lang, langCode) => generateTable('form', lang, langCod
 const generateListConstant = (lang, langCode) => generateTable('list', lang, `${langCode}_LIST`, 'ListMessages');
 
 // Generate Rust source
-const output = `//! Interface messages for CRUDUI as string constants.
-//!
-//! Generated from \`contracts/interface-messages.json\` by
+const output = `//! Generated from \`contracts/interface-messages.json\` by
 //! \`node tools/generate-interface-messages.mjs\` (run in \`packages/generator/rust\`); do not edit.
+//!
+//! Interface messages for CRUDUI as string constants.
 
 use super::{ListMessages, Messages};
 

@@ -1,7 +1,7 @@
-//! Unicode 16.0.0 data as inclusive code-point ranges.
-//!
 //! Generated from `contracts/unicode-properties.json` by
 //! `node tools/generate-unicode-properties.mjs` (run in `packages/validator/rust`); do not edit.
+//!
+//! Unicode 16.0.0 data as inclusive code-point ranges.
 
 use super::Ranges;
 
