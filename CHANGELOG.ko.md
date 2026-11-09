@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 5698a0c328e42d4de3f43673e8b45f0065a3fb7c2be0bc9c77f86add3e806e4e -->
+<!-- source-sha256: 6edcae94b6e5878ecb8c4ec0654520e237ea4ae33d64f09b283149e362ad27c2 -->
 
 ## Unreleased
+
+- C17.92-2: ci.yml의 job form-runtime은 crudui-test-forms만 실행한다. manifest-check와 manifest-docs-check는 공유 gate의 docs-check에서 한 번 실행된다 (C17.92-2)
 
 - C17.92-1: ci.yml의 job은 결과를 읽지 않는 job kit과 함께 시작하고, ci-passed만 kit을 needs로 둔다 (C17.92-1)
 

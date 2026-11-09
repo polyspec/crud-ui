@@ -842,8 +842,6 @@ CI_TARGETS = \
 	crudui-test-bench \
 	require-build \
 	crudui-test-cli \
-	manifest-check \
-	manifest-docs-check \
 	crudui-test-forms \
 	crudui-test-form-comparison \
 	crudui-test-form-comparison-pipeline \

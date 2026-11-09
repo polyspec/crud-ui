@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C17.92-2: the job form-runtime of ci.yml runs only crudui-test-forms; manifest-check and manifest-docs-check run once, in docs-check of the shared gates (C17.92-2)
+
 - C17.92-1: the jobs of ci.yml start together with the job kit, whose results none of them reads; only ci-passed needs kit (C17.92-1)
 
 - C18.22-2: the comment of the PIE test states that the recipe reads the packages.json repository from composer.json and the version from composer.lock, and no longer names the ci-local test that C18.29 deleted (C18.22-2)

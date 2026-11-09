@@ -403,7 +403,7 @@ jobs:
         run: make check-ci-browser
       - name: Run the checks and write their report
         if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="manifest-check manifest-docs-check crudui-test-forms"
+        run: make ci-targets TARGETS="crudui-test-forms"
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
