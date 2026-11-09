@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C18.22-2: the comment of the PIE test states that the recipe reads the packages.json repository from composer.json and the version from composer.lock, and no longer names the ci-local test that C18.29 deleted (C18.22-2)
+
 ## 0.0.18
 
 - C18.41: package-lock.json resolves devtools-protocol 0.0.1704951 again, which the version replacement of C18.39 had turned into the unpublished 0.0.1804951 (C18.41)

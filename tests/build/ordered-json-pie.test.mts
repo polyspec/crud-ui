@@ -13,7 +13,7 @@ test('ordered-json-ext runs PIE directly and no pie-build of kit (C17.96)', () =
   const run = makeDryRun(root, 'ordered-json-ext');
   assert.equal(run.status, 0, run.stderr);
   assert.doesNotMatch(run.stdout, /pie-build/, run.stdout);
-  // The repository and the version come from composer.json and composer.lock; ci-local.test.mts checks their values (C18.22).
+  // The recipe reads the packages.json repository from composer.json and the version from composer.lock (C18.22).
   assert.match(run.stdout, /\/shims\/pie repository:add composer "\$packages" --no-interaction/, run.stdout);
   assert.match(run.stdout, /\/shims\/pie build "polyspec\/ordered-json-php-ext:\$version" --no-interaction/, run.stdout);
   assert.match(run.stdout, /PIE_WORKING_DIRECTORY=\S*var\/pie\//, run.stdout);

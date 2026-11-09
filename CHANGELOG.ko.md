@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 7030676876a9c82ae149cbcb79fce57e54826e9d5ec404b9ee55d5999c69b594 -->
+<!-- source-sha256: f4f9603a4e9a7674c7f5b753ecc4d82ef8797caecbf39dbb14a2dc0e34842e26 -->
 
 ## Unreleased
+
+- C18.22-2: PIE 테스트의 주석은 recipe가 packages.json 저장소를 composer.json에서, version을 composer.lock에서 읽는다고 적고, C18.29가 지운 ci-local 테스트를 더는 가리키지 않는다 (C18.22-2)
 
 ## 0.0.18
 
