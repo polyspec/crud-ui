@@ -30,6 +30,11 @@ packages/php-ext/src/interface_messages.c
 packages/validator/php/src/Values/UnicodeData.php
 packages/generator/php/src/Internal/InterfaceMessages.php
 
+# The Python tables of packages/validator/python and packages/generator/python, which make python-tables writes from contracts/
+# (P34)
+packages/validator/python/src/polyspec/crudui/validator/unicode_data.py
+packages/generator/python/src/polyspec/crudui/generator/interface_messages.py
+
 # Rust build outputs (Cargo.lock is committed for the binary crate)
 target/
 

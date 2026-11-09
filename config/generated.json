@@ -45,7 +45,9 @@
     "packages/php-ext/src/unicode_data.c",
     "packages/php-ext/src/interface_messages.c",
     "packages/validator/php/src/Values/UnicodeData.php",
-    "packages/generator/php/src/Internal/InterfaceMessages.php"
+    "packages/generator/php/src/Internal/InterfaceMessages.php",
+    "packages/validator/python/src/polyspec/crudui/validator/unicode_data.py",
+    "packages/generator/python/src/polyspec/crudui/generator/interface_messages.py"
   ],
   "tracked": [
     {

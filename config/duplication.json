@@ -24,16 +24,8 @@
   ],
   "exclude": [
     {
-      "glob": "packages/validator/python/src/polyspec/crudui/validator/unicode_data.py",
-      "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/python/scripts/generate_unicode_data.py; the tables are data"
-    },
-    {
       "glob": "packages/validator/ts/src/unicode/properties.ts",
       "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/ts/scripts/generate-unicode-properties.mjs; the tables are data"
-    },
-    {
-      "glob": "packages/generator/python/src/polyspec/crudui/generator/interface_messages.py",
-      "reason": "generated: generated from contracts/interface-messages.json by packages/generator/python/scripts/generate_interface_messages.py; the tables are data"
     },
     {
       "glob": "tests/**",

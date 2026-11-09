@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C17.106-3: packages/validator/python/src/polyspec/crudui/validator/unicode_data.py and packages/generator/python/src/polyspec/crudui/generator/interface_messages.py are no longer tracked; make python-tables writes them from contracts/ before every target that reads the Python sources of the two packages, and the release writes each into the wheel of its package (C17.106-3)
+
 - C17.106-2: packages/validator/php/src/Values/UnicodeData.php and packages/generator/php/src/Internal/InterfaceMessages.php are no longer tracked; make php-tables writes them from contracts/ before every target that reads the PHP sources of the two packages, and the release writes each into the Composer archive of its package (C17.106-2)
 
 - C17.106-1: packages/php-ext/src/unicode_data.c and interface_messages.c are no longer tracked; make php-ext-tables writes them from contracts/ before every target that reads the sources of the extension (C17.106-1)

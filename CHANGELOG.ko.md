@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 36709a2e491ac36854fbf38c4726e6a9c1cf13b57d5d87fddaf4223f2ba73128 -->
+<!-- source-sha256: b7a08e1ea19969b30f15512e96ba3a7b0293c8b810671ebaa0dbe977a05c0b74 -->
 
 ## Unreleased
+
+- C17.106-3: packages/validator/python/src/polyspec/crudui/validator/unicode_data.py와 packages/generator/python/src/polyspec/crudui/generator/interface_messages.py는 더 추적하지 않는다. make python-tables가 두 패키지의 Python 소스를 읽는 모든 대상보다 먼저 contracts/에서 쓰고, 릴리스는 각 파일을 그 패키지의 wheel에 넣는다 (C17.106-3)
 
 - C17.106-2: packages/validator/php/src/Values/UnicodeData.php와 packages/generator/php/src/Internal/InterfaceMessages.php는 더 추적하지 않는다. make php-tables가 두 패키지의 PHP 소스를 읽는 모든 대상보다 먼저 contracts/에서 쓰고, 릴리스는 각 파일을 그 패키지의 Composer archive에 넣는다 (C17.106-2)
 

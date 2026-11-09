@@ -2,6 +2,9 @@
 """Write the module polyspec.crudui.generator.interface_messages from contracts/interface-messages.json.
 
 python3 packages/generator/python/scripts/generate_interface_messages.py
+
+make python-tables runs it before every target that reads packages/generator/python; the
+output is untracked (P34).
 """
 
 import json

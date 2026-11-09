@@ -92,14 +92,32 @@
       "directory": "packages/validator/python",
       "name": "polyspec-crudui-validator",
       "product": "crudui-validator",
-      "runtime": "python"
+      "runtime": "python",
+      "generated": [
+        {
+          "kind": "make",
+          "target": "python-tables",
+          "outputs": [
+            "src/polyspec/crudui/validator/unicode_data.py"
+          ]
+        }
+      ]
     },
     {
       "kind": "wheel",
       "directory": "packages/generator/python",
       "name": "polyspec-crudui-generator",
       "product": "crudui-generator",
-      "runtime": "python"
+      "runtime": "python",
+      "generated": [
+        {
+          "kind": "make",
+          "target": "python-tables",
+          "outputs": [
+            "src/polyspec/crudui/generator/interface_messages.py"
+          ]
+        }
+      ]
     }
   ],
   "manifests": {

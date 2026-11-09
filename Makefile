@@ -172,7 +172,7 @@ duplication-check: ## Fail on a piece of 6 lines or more of code that exists twi
 suppression-check: ## Fail on a suppression of a lint finding that states no reason; offline
 	$(NODE) $(KIT)/suppression-check.$(KIT_EXT)
 
-.PHONY: php-ext-tables php-tables lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
+.PHONY: php-ext-tables php-tables python-tables lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
 # build, test and lint run the target <task>-<runtime> of each runtime of packages/ (go, php, php-ext, python, rust, ts), after
 # the steps of this repository that are their prerequisites (kit K1106).
 build: ## Run build-<runtime> for every runtime of packages/; offline
@@ -186,7 +186,7 @@ lint: ## Run lint-<runtime> for every runtime of packages/; offline
 build-go: ## Build each Go package with go build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/go packages/validator/go -- $(GO) build ./...
 build-php: ## A PHP library has no build step; offline
-build-python: ## Build each Python package with uv build; offline
+build-python: python-tables ## Build each Python package with uv build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/python packages/validator/python -- $(UV) build
 build-rust: ## Build each Rust package with cargo build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/rust packages/validator/rust -- cargo build --locked
@@ -199,14 +199,14 @@ test-go: ## Run the unit tests of the Go modules with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner go --roots packages/generator/go packages/validator/go -- -count=1 -timeout=0
 test-php: php-tables ## Run the unit tests of each PHP package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner php --roots packages/generator/php packages/validator/php
-test-python: ## Run the unit tests of each Python package with CASES=<pattern>; offline
+test-python: python-tables ## Run the unit tests of each Python package with CASES=<pattern>; offline
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots packages/generator/python packages/validator/python --venv .venv
 test-rust: ## Run the unit tests of each Rust package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner cargo --roots packages/generator/rust packages/validator/rust -- -- --test-threads=1
 test-ts: ## Run the unit tests of each TypeScript package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner vitest --roots packages/generator/ts packages/validator/ts -- --testTimeout=30000 --hookTimeout=30000
 
-lint-python: ## Lint the Python: ruff with ruff.toml, and vulture on each package; offline
+lint-python: python-tables ## Lint the Python: ruff with ruff.toml, and vulture on each package; offline
 	$(NODE) $(KIT)/lint-python.$(KIT_EXT)
 
 lint-php: php-tables ## Lint the PHP: phpcs with phpcs.xml.dist, and PHPStan with phpstan.dist.neon on each Composer package; offline
@@ -239,6 +239,13 @@ php-ext-tables: ## Write packages/php-ext/src/unicode_data.c and interface_messa
 php-tables: ## Write packages/validator/php/src/Values/UnicodeData.php and packages/generator/php/src/Internal/InterfaceMessages.php from contracts/; offline
 	php packages/validator/php/scripts/generate-unicode-data.php
 	php packages/generator/php/scripts/generate-interface-messages.php
+# The Python tables of packages/validator/python and packages/generator/python are untracked build output of contracts/ (P34):
+# python-tables writes them with the generators of scripts/ of their packages and the Python of mise.toml, each target that
+# reads the Python sources of those packages depends on it, and the release runs it for the wheel of each package
+# (config/release.json).
+python-tables: ## Write unicode_data.py of packages/validator/python and interface_messages.py of packages/generator/python from contracts/; offline
+	$(PYTHON) packages/validator/python/scripts/generate_unicode_data.py
+	$(PYTHON) packages/generator/python/scripts/generate_interface_messages.py
 # The PHP extension of packages/php-ext: one build with phpize, the check of its names and stub, and its declaration and unit tests.
 # Its build and check read the PHP libraries (--library), so they depend on php-tables too.
 build-php-ext: php-ext-tables php-tables ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
@@ -408,6 +415,8 @@ PYTHON_VENV := $(CURDIR)/var/python
 # UV_PROJECT_ENVIRONMENT, and without it the link finds no environment of the repository and fails (K360-2).
 install-link link: export UV_PROJECT_ENVIRONMENT := $(PYTHON_VENV)
 UV := $(TOOLS_DIR)/mise/shims/uv
+# The python3 of mise.toml, which runs the table generators of the Python packages before the venv of PYTHON_VENV exists.
+PYTHON := $(TOOLS_DIR)/mise/shims/python3
 # The go and Composer of mise.toml, by the absolute paths of their shims: make 3.81 runs a recipe line without shell syntax
 # from the PATH that make started with (kit K171).
 GO := $(TOOLS_DIR)/mise/shims/go
@@ -513,7 +522,7 @@ crudui-local-composer-check: ## Validate the canonical Composer manifest, lock a
 	$(COMPOSER_BIN) check-platform-reqs || status=1; \
 	exit $$status
 
-crudui-install-python: ## Make the venv var/python and install the Python packages of the uv workspace into it in editable mode
+crudui-install-python: python-tables ## Make the venv var/python and install the Python packages of the uv workspace into it in editable mode
 	$(MAKE) --no-print-directory python-venv DIR=$(PYTHON_VENV)
 	UV_PROJECT_ENVIRONMENT=$(PYTHON_VENV) $(MAKE) --no-print-directory uv-install DIR=. SYNC='--quiet --all-packages'
 
@@ -585,11 +594,11 @@ crudui-test-validator-go: ## The Go validator suite
 	$(NODE) tests/conformance/run-suite.mts go --cwd packages/validator/go -- -count=1 -timeout=0 $$packages
 crudui-test-validator-rust: ## The Rust validator suite
 	$(NODE) tests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml -- --test-threads=1
-crudui-test-validator-python: ## The Python validator suite
+crudui-test-validator-python: python-tables ## The Python validator suite
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd packages/validator/python -- discover -s tests -t .
-crudui-test-generator-python: ## The Python generator suite
+crudui-test-generator-python: python-tables ## The Python generator suite
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd packages/generator/python -- discover -s tests -t .
-crudui-test-cross-check: ## The cross-check console gateway conformance
+crudui-test-cross-check: python-tables ## The cross-check console gateway conformance
 	$(NPM) test --prefix examples/cross-check-console/server
 manifest-test: ## The verification commands of the feature contracts
 	$(NPM) run manifest:test
@@ -760,7 +769,7 @@ crudui-test-php-api: php-tables require-build build-php-ext
 	exit $$status
 
 # Compare every declared generator runtime independently of the language unit suites.
-crudui-test-cross-language-equivalence: require-build build-php-ext
+crudui-test-cross-language-equivalence: python-tables require-build build-php-ext
 	@status=0; \
 	$(NODE) tests/native-generators/run.mts --target javascript,html,go,rust,python --report "$(NATIVE_REPORT)" || status=1; \
 	$(NODE) tests/native-generators/run.mts --extension "$(PHP_EXTENSION)" --target php,php-native --report "$(PHP_NATIVE_REPORT)" || status=1; \

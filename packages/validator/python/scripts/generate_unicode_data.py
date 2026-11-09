@@ -3,6 +3,9 @@
 
     python3 packages/validator/python/scripts/generate_unicode_data.py
 
+make python-tables runs it before every target that reads packages/validator/python; the
+output is untracked (P34).
+
 Ranges are written as flat [start, end, start, end, ...] lists of inclusive code
 points. test_unicode_data fails when the written data differs from the contract.
 """
