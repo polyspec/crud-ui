@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b7a08e1ea19969b30f15512e96ba3a7b0293c8b810671ebaa0dbe977a05c0b74 -->
+<!-- source-sha256: e5f39b9f411c658f21485e7e3dafa520f87ffccde6054086f7d3bc1b34d662c2 -->
 
 ## Unreleased
+
+- C17.106-4: packages/validator/ts/src/unicode/properties.ts, packages/generator/ts/src/interface-messages.ts, packages/generator/ts/src/form-template-validator.mjs는 더 추적하지 않는다. 두 패키지의 prebuild 스크립트가 contracts/에서 쓰고, build, build-ts, test-ts, typecheck, lint-ts, crudui-test-validators는 패키지 빌드 뒤에 실행된다 (C17.106-4)
 
 - C17.106-3: packages/validator/python/src/polyspec/crudui/validator/unicode_data.py와 packages/generator/python/src/polyspec/crudui/generator/interface_messages.py는 더 추적하지 않는다. make python-tables가 두 패키지의 Python 소스를 읽는 모든 대상보다 먼저 contracts/에서 쓰고, 릴리스는 각 파일을 그 패키지의 wheel에 넣는다 (C17.106-3)
 

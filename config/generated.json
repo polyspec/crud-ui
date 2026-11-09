@@ -47,7 +47,10 @@
     "packages/validator/php/src/Values/UnicodeData.php",
     "packages/generator/php/src/Internal/InterfaceMessages.php",
     "packages/validator/python/src/polyspec/crudui/validator/unicode_data.py",
-    "packages/generator/python/src/polyspec/crudui/generator/interface_messages.py"
+    "packages/generator/python/src/polyspec/crudui/generator/interface_messages.py",
+    "packages/validator/ts/src/unicode/properties.ts",
+    "packages/generator/ts/src/interface-messages.ts",
+    "packages/generator/ts/src/form-template-validator.mjs"
   ],
   "tracked": [
     {

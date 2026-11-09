@@ -4,6 +4,8 @@
  *
  *   node packages/validator/ts/scripts/generate-unicode-properties.mjs
  *
+ * The prebuild script of packages/validator/ts runs it before every build; the output is untracked (P34).
+ *
  * Ranges are written as flat [start, end, start, end, …] lists of inclusive
  * code points. src/unicode/properties.unit.test.ts fails when the written data
  * differs from the contract.

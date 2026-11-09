@@ -35,6 +35,12 @@ packages/generator/php/src/Internal/InterfaceMessages.php
 packages/validator/python/src/polyspec/crudui/validator/unicode_data.py
 packages/generator/python/src/polyspec/crudui/generator/interface_messages.py
 
+# The TypeScript tables of packages/validator/ts and packages/generator/ts, which the prebuild scripts of the two packages
+# write from contracts/ (P34)
+packages/validator/ts/src/unicode/properties.ts
+packages/generator/ts/src/interface-messages.ts
+packages/generator/ts/src/form-template-validator.mjs
+
 # Rust build outputs (Cargo.lock is committed for the binary crate)
 target/
 

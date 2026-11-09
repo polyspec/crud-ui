@@ -37,7 +37,7 @@ export GOPROXY := off
 export npm_config_offline := true
 export COMPOSER_DISABLE_NETWORK := 1
 ONLINE := env -u CARGO_NET_OFFLINE -u GOPROXY -u npm_config_offline -u COMPOSER_DISABLE_NETWORK
-.PHONY: crudui-test-generator-go crudui-test-generator-rust crudui-test-generator-js crudui-test-cross-language-equivalence help release-assets form-template-validator form-template-validator-check install crudui-install crudui-install-go-modules crudui-install-composer crudui-install-python crudui-install-phpdocumentor crudui-install-browsers check-ci-browser crudui-test-runtimes crudui-test-dependencies crudui-build crudui-lint crudui-docs-check build lint typecheck crudui-test-validator-js crudui-test-validator-php crudui-test-validator-go crudui-test-validator-rust crudui-test-validator-python crudui-test-generator-python crudui-test-cross-check manifest-test require-build crudui-test-cli manifest-check manifest-docs-check crudui-test-forms crudui-test-form-comparison crudui-test-form-comparison-pipeline crudui-test-form-comparison-checks crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-packages crudui-test-build crudui-test-build-repeat crudui-test-inspector crudui-test-bench check-conformance crudui-install-crates crudui-install-svelte-tools docs docs-api docs-schema docs-web docs-dev docs-preview docs-clean docs-check docs-check-documents docs-check-libs docs-verify-idempotent bench bench-fixtures bench-js bench-php bench-go bench-rust crudui-test-php-engine crudui-test-native-generators crudui-test-php-api crudui-test-native crudui-test-validators crudui-test-form-binding conformance format-check records-check
+.PHONY: crudui-test-generator-go crudui-test-generator-rust crudui-test-generator-js crudui-test-cross-language-equivalence help release-assets install crudui-install crudui-install-go-modules crudui-install-composer crudui-install-python crudui-install-phpdocumentor crudui-install-browsers check-ci-browser crudui-test-runtimes crudui-test-dependencies crudui-build crudui-lint crudui-docs-check build lint typecheck crudui-test-validator-js crudui-test-validator-php crudui-test-validator-go crudui-test-validator-rust crudui-test-validator-python crudui-test-generator-python crudui-test-cross-check manifest-test require-build crudui-test-cli manifest-check manifest-docs-check crudui-test-forms crudui-test-form-comparison crudui-test-form-comparison-pipeline crudui-test-form-comparison-checks crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-packages crudui-test-build crudui-test-build-repeat crudui-test-inspector crudui-test-bench check-conformance crudui-install-crates crudui-install-svelte-tools docs docs-api docs-schema docs-web docs-dev docs-preview docs-clean docs-check docs-check-documents docs-check-libs docs-verify-idempotent bench bench-fixtures bench-js bench-php bench-go bench-rust crudui-test-php-engine crudui-test-native-generators crudui-test-php-api crudui-test-native crudui-test-validators crudui-test-form-binding conformance format-check records-check
 .NOTPARALLEL: docs docs-web docs-dev docs-preview docs-check docs-verify-idempotent release-assets release-candidate-assets
 
 # ---- The recipes of the kit utilities ------------------------------------------------------------------------------------
@@ -190,7 +190,7 @@ build-python: python-tables ## Build each Python package with uv build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/python packages/validator/python -- $(UV) build
 build-rust: ## Build each Rust package with cargo build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/rust packages/validator/rust -- cargo build --locked
-build-ts: ## Build each TypeScript package with tsc; offline
+build-ts: require-build ## Build each TypeScript package with tsc after the build of the packages, which writes their tables; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/ts packages/validator/ts -- node_modules/.bin/tsc -p tsconfig.build.json
 
 # The unit tests of a runtime with CASES=<pattern>, the name filter of its runner, with the runner arguments that kit 0.0.98
@@ -203,7 +203,7 @@ test-python: python-tables ## Run the unit tests of each Python package with CAS
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots packages/generator/python packages/validator/python --venv .venv
 test-rust: ## Run the unit tests of each Rust package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner cargo --roots packages/generator/rust packages/validator/rust -- -- --test-threads=1
-test-ts: ## Run the unit tests of each TypeScript package with CASES=<pattern>; offline
+test-ts: require-build ## Run the unit tests of each TypeScript package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner vitest --roots packages/generator/ts packages/validator/ts -- --testTimeout=30000 --hookTimeout=30000
 
 lint-python: python-tables ## Lint the Python: ruff with ruff.toml, and vulture on each package; offline
@@ -220,7 +220,7 @@ lint-go: ## Lint the Go: golangci-lint with .golangci.yml, and deadcode -test, i
 
 # Production imports are resolved from each package's own runtime dependencies.
 # catch-check refuses a catch without a statement, which no-empty of oxlint passes when the block holds a comment.
-lint-ts: production-dependencies-check ## Lint the TypeScript: oxlint with .oxlintrc.json, knip with knip.json, API Extractor in each package with an api-extractor.json, and catch-check; offline
+lint-ts: require-build production-dependencies-check ## Lint the TypeScript: oxlint with .oxlintrc.json, knip with knip.json, API Extractor in each package with an api-extractor.json, and catch-check; offline
 	@status=0; \
 	$(NODE) $(KIT)/lint-ts.$(KIT_EXT) || status=1; \
 	$(NODE) $(KIT)/catch-check.$(KIT_EXT) || status=1; \
@@ -559,17 +559,13 @@ crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-
 # The checking commands of the CI workflow, one target each (CI_TARGETS).
 crudui-test-runtimes: ## Exact runtime versions and test standards
 	$(NPM) run test:runtimes
-# The validator of the compiled form template of packages/generator/ts is ajv's standalone validation code of
-# contracts/schema/form-template.schema.json (C14.38): make form-template-validator generates
-# packages/generator/ts/src/form-template-validator.mjs, and the build checks that it is current, so the package has no
-# runtime dependency on ajv and compiles no schema at run time.
+# The TypeScript tables are untracked build output of contracts/ (P34): the build script of packages/validator/ts writes
+# src/unicode/properties.ts, and the build script of packages/generator/ts writes src/interface-messages.ts and
+# src/form-template-validator.mjs, ajv's standalone validation code of contracts/schema/form-template.schema.json (C14.38),
+# so the package has no runtime dependency on ajv and compiles no schema at run time. Each target that reads the sources
+# of the two packages runs after that build (require-build).
 build: crudui-build ## Build the JavaScript packages
-crudui-build: form-template-validator-check build-php-ext
-	$(NPM) run build
-form-template-validator: ## Generate the form template validator of packages/generator/ts from its JSON Schema
-	$(NODE) scripts/generate-form-template-validator.mts
-form-template-validator-check: ## Check that the form template validator of packages/generator/ts is current
-	$(NODE) scripts/generate-form-template-validator.mts --check
+crudui-build: require-build build-php-ext
 # The TypeScript and JavaScript sources are linted by kit's gate lint-ts, which the CI pipeline runs once for the ts runtime
 # (kit-gates-runtime-ts, C17.91). oxlint has no Svelte rules, so the components of packages/svelte are linted here by the
 # ESLint of that workspace.
@@ -579,7 +575,7 @@ crudui-lint:
 # The root tsconfig.json checks the TypeScript of scripts/ and tests/ (S9 of kit) strictly. It sets skipLibCheck: the
 # declarations that @tailwindcss/node 4.3.3 publishes import seven modules (./ast, ./candidate, ...) that the package does
 # not ship, so a check of the declaration files of node_modules fails on that package and not on this code.
-typecheck: ## Type-check every TypeScript package, the TypeScript of scripts/ and tests/ with the root tsconfig.json, and the form comparison
+typecheck: require-build ## Type-check every TypeScript package, the TypeScript of scripts/ and tests/ with the root tsconfig.json, and the form comparison
 	$(NPM) run typecheck
 	node_modules/.bin/tsc -p tsconfig.json
 	node_modules/.bin/tsc -p examples/form-comparison/src/tsconfig.json
@@ -783,7 +779,7 @@ crudui-test-native:
 	$(MAKE) --no-print-directory crudui-test-php-api || status=1; \
 	exit $$status
 
-crudui-test-validators: php-tables
+crudui-test-validators: php-tables require-build
 	@status=0; \
 	$(NODE) tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/validator/ts || status=1; \
 	$(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/validator/php -- --testsuite public,php-source-internal || status=1; \

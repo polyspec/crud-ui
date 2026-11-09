@@ -159,7 +159,7 @@
         "scripts/generate-form-template-validator.mts"
       ],
       "targets": [
-        "form-template-validator-check"
+        "require-build"
       ],
       "scripts": [
         "test:forms"

@@ -21,6 +21,11 @@ import { createOperationProgress } from './operation-progress.mts';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const STAMP = path.join(ROOT, 'node_modules/.cache/crudui/build-stamp.json');
 const PACKAGES = ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding'];
+const TABLE_INPUTS = [
+  'contracts/unicode-properties.json', 'contracts/interface-messages.json', 'contracts/schema/form-template.schema.json',
+  'packages/validator/ts/scripts/generate-unicode-properties.mjs', 'packages/generator/ts/scripts/generate-interface-messages.mjs',
+  'scripts/generate-form-template-validator.mts',
+];
 const SOURCE_FILE = /\.(?:ts|tsx|mts|cts|js|mjs|cjs|json|svelte|vue|css)$/;
 
 const digest = (value: string | Uint8Array): string => createHash('sha256').update(value).digest('hex');
@@ -68,7 +73,9 @@ async function state(): Promise<BuildState> {
     }
     await walk(path.join(base, 'dist'), outputs, () => true);
   }
-  for (const file of ['package.json', 'package-lock.json', 'scripts/require-current-build.mts']) {
+  // The prebuild scripts of packages/validator/ts and packages/generator/ts write their untracked tables from these
+  // contracts with these generators (P34), so a change of one of them builds the packages again.
+  for (const file of ['package.json', 'package-lock.json', 'scripts/require-current-build.mts', ...TABLE_INPUTS]) {
     inputs[file] = digest(await readFile(path.join(ROOT, file)));
   }
   return { inputs: digest(JSON.stringify(inputs)), outputs: digest(JSON.stringify(outputs)), packages: PACKAGES };

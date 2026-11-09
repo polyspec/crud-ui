@@ -4,6 +4,8 @@
  *
  *   node packages/generator/ts/scripts/generate-interface-messages.mjs
  *
+ * The prebuild script of packages/generator/ts runs it before every build; the output is untracked (P34).
+ *
  * Every table of the contract (form, list) is written with its four languages, keys in the
  * contract's order. src/interface-messages.test.ts fails when the written data differs from the
  * contract.

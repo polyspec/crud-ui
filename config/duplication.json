@@ -24,10 +24,6 @@
   ],
   "exclude": [
     {
-      "glob": "packages/validator/ts/src/unicode/properties.ts",
-      "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/ts/scripts/generate-unicode-properties.mjs; the tables are data"
-    },
-    {
       "glob": "tests/**",
       "reason": "test: a test states its case in full; the rule separates the concerns of components; tests/fixtures holds data"
     },

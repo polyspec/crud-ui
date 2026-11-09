@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: 49959b1ad31670d68b8d6842b7ded04fdd01b5cb5d8fc3d25f54ec47045eb4bb -->
+<!-- source-sha256: bdcaff3a0f3973fcd8cb783d847dde425b9cbbfd8b7165f9ab84d7d9c04df0bb -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -82,7 +82,7 @@ JSON 경계를 넘는 템플릿, 예를 들어 서버가 `JSON.stringify`로 페
 템플릿은 사용하기 전에 `@polyspec/crudui-generator-core`의 `decodeFormTemplate(value)`로 디코딩합니다. 디코더는 파싱한
 값을 위 형태의 JSON Schema인 [`contracts/schema/form-template.schema.json`](../../contracts/schema/form-template.schema.json)에
 대해 그 스키마의 ajv standalone 검증 코드로 검사합니다. 이 코드는
-`scripts/generate-form-template-validator.mts`가 생성하고 `make build`가 검사하므로, 패키지는 실행 중에 ajv를
+`scripts/generate-form-template-validator.mts`가 패키지를 빌드할 때마다 먼저 쓰므로, 패키지는 실행 중에 ajv를
 읽지 않고 코드를 컴파일하지 않습니다. 디코더는 그 값을 바꾸지 않고 `FormTemplate`으로 돌려줍니다. 다른 형태의 값은 `FormTemplateError`로
 실패합니다. 이 오류는 코드가 `INVALID_FORM_INPUT`인 `FormInputError`이며, `pointer`는 첫 번째로 잘못된 멤버의 JSON
 Pointer(RFC 6901)입니다. 없거나 알 수 없는 멤버는 그 멤버 자신을, 값 자체는 빈 문자열을 가리킵니다. 메시지는

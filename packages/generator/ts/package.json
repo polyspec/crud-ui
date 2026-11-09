@@ -25,6 +25,7 @@
     "styles"
   ],
   "scripts": {
+    "prebuild": "node scripts/generate-interface-messages.mjs && node ../../../scripts/generate-form-template-validator.mts",
     "build": "node ../../../scripts/package-dist.mts build 'tsup src/index.ts src/internal.ts --format cjs,esm --splitting --clean --out-dir \"$CRUDUI_DIST\" && tsc --project tsconfig.build.json --outDir \"$CRUDUI_DIST\"'",
     "dev": "tsup src/index.ts src/internal.ts --format cjs,esm --splitting --watch --onSuccess \"tsc --project tsconfig.build.json\"",
     "typecheck": "tsc --noEmit",
