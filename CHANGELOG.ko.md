@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: f4f9603a4e9a7674c7f5b753ecc4d82ef8797caecbf39dbb14a2dc0e34842e26 -->
+<!-- source-sha256: 5698a0c328e42d4de3f43673e8b45f0065a3fb7c2be0bc9c77f86add3e806e4e -->
 
 ## Unreleased
+
+- C17.92-1: ci.yml의 job은 결과를 읽지 않는 job kit과 함께 시작하고, ci-passed만 kit을 needs로 둔다 (C17.92-1)
 
 - C18.22-2: PIE 테스트의 주석은 recipe가 packages.json 저장소를 composer.json에서, version을 composer.lock에서 읽는다고 적고, C18.29가 지운 ci-local 테스트를 더는 가리키지 않는다 (C18.22-2)
 

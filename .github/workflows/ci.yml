@@ -26,6 +26,8 @@ env:
   GOTOOLCHAIN: local
 
 jobs:
+  # No other job reads a result of kit, so each starts with it; only ci-passed needs kit (S12: a dependency orders only
+  # work that consumes an earlier result).
   kit:
     uses: ./.github/workflows/ci-pipeline.yml
     permissions:
@@ -40,7 +42,6 @@ jobs:
     env:
       CRUDUI_TEST_SHARD: '${{ matrix.shard }}/4'
     runs-on: ubuntu-24.04
-    needs: kit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -76,7 +77,6 @@ jobs:
   build-lint:
     name: build, lint and types
     runs-on: ubuntu-24.04
-    needs: kit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -116,7 +116,6 @@ jobs:
   validator-js:
     name: validator · JavaScript
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -151,7 +150,6 @@ jobs:
   validator-php:
     name: validator · PHP
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -193,7 +191,6 @@ jobs:
   validator-go:
     name: validator · Go
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -230,7 +227,6 @@ jobs:
   validator-rust:
     name: validator · Rust
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -271,7 +267,6 @@ jobs:
   python:
     name: validator · Python
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -310,7 +305,6 @@ jobs:
   cross-check-console:
     name: cross-check console gateway
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -363,7 +357,6 @@ jobs:
   cli:
     name: command-line interface
     runs-on: ubuntu-24.04
-    needs: kit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -388,7 +381,6 @@ jobs:
   form-runtime:
     name: Form instances and data injection
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
@@ -430,7 +422,6 @@ jobs:
   form-comparison:
     name: Form comparison runner regressions
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
       PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
@@ -470,7 +461,6 @@ jobs:
   form-comparison-pipeline:
     name: Record stores and the canonical flow
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
       PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
@@ -526,7 +516,6 @@ jobs:
   form-comparison-browser:
     name: Form comparison browser checks against a local stack (${{ matrix.server }})
     runs-on: ubuntu-24.04
-    needs: kit
     strategy:
       fail-fast: false
       matrix:
@@ -594,7 +583,7 @@ jobs:
   # typing and the evidence of all reports.
   form-comparison-checks:
     name: Form comparison checks against a local stack
-    needs: [kit, form-comparison-browser]
+    needs: form-comparison-browser
     runs-on: ubuntu-24.04
     env:
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
@@ -655,7 +644,6 @@ jobs:
   package-browser:
     name: Packages, public builds and browser inspector
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
       PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
@@ -691,7 +679,6 @@ jobs:
   php-engine:
     name: native PHP engine and sanitizers
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -726,7 +713,6 @@ jobs:
   native-generators:
     name: Generator unit tests · JavaScript
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
       PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
@@ -760,7 +746,6 @@ jobs:
   php-api:
     name: Generator unit tests and PHP API
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -802,7 +787,6 @@ jobs:
   cross-language-equivalence:
     name: Cross-language generator equivalence
     runs-on: ubuntu-24.04
-    needs: kit
     env:
       CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
@@ -882,7 +866,7 @@ jobs:
 
   conformance:
     name: conformance evidence against the standard
-    needs: [kit, validator-js, validator-php, validator-go, validator-rust, python, cross-check-console, form-runtime, php-engine, php-api, cross-language-equivalence]
+    needs: [validator-js, validator-php, validator-go, validator-rust, python, cross-check-console, form-runtime, php-engine, php-api, cross-language-equivalence]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:

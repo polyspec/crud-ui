@@ -32,7 +32,8 @@ git push origin main
 The pre-push hook `.githooks/pre-push` refuses the push while a row is `[~]`, and the job `push-gate` of
 `.github/workflows/push-gate.yml` fails for a pushed commit that has such a row
 ([push check](testing.md)). The push starts `.github/workflows/ci.yml`, which runs the full suite in its jobs; its last
-job `ci-passed` needs every other job and fails unless each of them succeeded. A tag is created only after `ci-passed` and
+job `ci-passed` needs every other job and fails unless each of them succeeded. The other jobs read no result of the job `kit` and
+start together with it. A tag is created only after `ci-passed` and
 `push-gate` succeeded for the commit that it names. A branch or worktree of an agent is named
 `{type}/{shortname}-{task ID}` and `{project}-{shortname}-{task ID}` and is removed as soon as it is merged into `main`.
 

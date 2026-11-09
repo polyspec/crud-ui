@@ -1,6 +1,6 @@
 # 저장소
 <!-- doc-id: docs-operations-repository -->
-<!-- source-sha256: 1ef55c2616192b478e949e90ba3c68f5f9fb188b778c30de3e2c18c059a250d6 -->
+<!-- source-sha256: eca2010e1f6688411bb7fabf3c9052514d6f535ae8e3dd0ec40ba519e3829271 -->
 
 [English](repository.md).
 
@@ -29,7 +29,8 @@ git push origin main
 
 pre-push hook `.githooks/pre-push`는 row가 `[~]`인 동안 push를 거부하고, `.github/workflows/push-gate.yml`의 job `push-gate`는
 그런 row가 있는 push된 commit에서 실패합니다([push 검사](testing.ko.md)). push는 `.github/workflows/ci.yml`을 시작하며, 이
-workflow는 전체 suite를 job에서 실행합니다. 마지막 job `ci-passed`는 다른 모든 job이 필요하고 각각이 성공하지 않으면 실패합니다.
+workflow는 전체 suite를 job에서 실행합니다. 마지막 job `ci-passed`는 다른 모든 job이 필요하고 각각이 성공하지 않으면 실패합니다. 다른 job은 job `kit`의 결과를 읽지 않으므로
+그와 함께 시작합니다.
 tag는 그것이 가리키는 commit에서 `ci-passed`와 `push-gate`가 성공한 뒤에만 만듭니다. agent의 branch와 worktree는
 `{type}/{shortname}-{task ID}`와 `{project}-{shortname}-{task ID}`로 이름 짓고 `main`에 merge되는 즉시 지웁니다.
 
