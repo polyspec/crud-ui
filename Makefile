@@ -172,7 +172,7 @@ duplication-check: ## Fail on a piece of 6 lines or more of code that exists twi
 suppression-check: ## Fail on a suppression of a lint finding that states no reason; offline
 	$(NODE) $(KIT)/suppression-check.$(KIT_EXT)
 
-.PHONY: lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
+.PHONY: php-ext-tables lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
 # build, test and lint run the target <task>-<runtime> of each runtime of packages/ (go, php, php-ext, python, rust, ts), after
 # the steps of this repository that are their prerequisites (kit K1106).
 build: ## Run build-<runtime> for every runtime of packages/; offline
@@ -228,11 +228,16 @@ lint-ts: production-dependencies-check ## Lint the TypeScript: oxlint with .oxli
 production-dependencies-check:
 	$(NODE) node_modules/knip/bin/knip.js --config config/knip-production.json --production --strict --include unlisted --no-progress --no-config-hints
 
+# The C tables of packages/php-ext are untracked build output of contracts/ (P34): php-ext-tables writes them, and each target
+# that reads the sources of the extension depends on it.
+php-ext-tables: ## Write packages/php-ext/src/unicode_data.c and interface_messages.c from contracts/; offline
+	$(NODE) packages/php-ext/tools/generate-unicode-data.mjs
+	$(NODE) packages/php-ext/tools/generate-interface-messages.mjs
 # The PHP extension of packages/php-ext: one build with phpize, the check of its names and stub, and its declaration and unit tests.
-build-php-ext: ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
+build-php-ext: php-ext-tables ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
 	$(ONLINE) $(NODE) $(KIT)/php-extension.$(KIT_EXT) build --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php
 
-lint-php-ext: ## Check the names, the one stub and the stub hash of the arginfo header of packages/php-ext; offline
+lint-php-ext: php-ext-tables ## Check the names, the one stub and the stub hash of the arginfo header of packages/php-ext; offline
 	$(NODE) $(KIT)/php-extension.$(KIT_EXT) check --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php
 
 test-php-ext: build-php-ext ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
@@ -717,7 +722,7 @@ bench-rust: bench-fixtures ## Rust 검증기만 측정
 
 # Native unit suites and cross-language generator equivalence run in independent CI jobs.
 # The aggregate target runs each part once and reports every failure.
-crudui-test-php-engine:
+crudui-test-php-engine: php-ext-tables
 	$(NODE) scripts/require-current-build.mts
 	$(NODE) tests/conformance/run-suite.mts node --timeout 30 -- --test-concurrency=1 packages/php-ext/tests/engine/engine.test.mjs packages/php-ext/tests/contract/*.test.mjs packages/php-ext/tests/comparison/comparison.test.mjs
 

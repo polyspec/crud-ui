@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 6edcae94b6e5878ecb8c4ec0654520e237ea4ae33d64f09b283149e362ad27c2 -->
+<!-- source-sha256: 989196cdcb08129c3305ebf40daea381b2a373a2fd780214211612b3263f1dae -->
 
 ## Unreleased
+
+- C17.106-1: packages/php-ext/src/unicode_data.c와 interface_messages.c는 더 추적하지 않는다. make php-ext-tables가 확장의 소스를 읽는 모든 대상보다 먼저 contracts/에서 쓴다 (C17.106-1)
 
 - C17.92-2: ci.yml의 job form-runtime은 crudui-test-forms만 실행한다. manifest-check와 manifest-docs-check는 공유 gate의 docs-check에서 한 번 실행된다 (C17.92-2)
 

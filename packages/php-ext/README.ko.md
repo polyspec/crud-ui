@@ -1,6 +1,6 @@
 # PHP 네이티브 생성과 검증
 <!-- doc-id: packages-php-ext-readme -->
-<!-- source-sha256: 9acebf6fa85e40eb076358ca3060e0ec9031b3abb44bf6b1604bc0ea6eeb21a5 -->
+<!-- source-sha256: fe565a19c6abf5cec73b826b64316b09dbe5a38739a1feb018153cda0dcb624b -->
 
 [English](README.md).
 
@@ -23,8 +23,8 @@
 
 `pattern`과 `match` 규칙은 정규 표현식 라이브러리를 사용하지 않습니다. 엔진이
 CRUDUI 패턴을 직접 해석하고, 내장한 유니코드 데이터(`src/unicode_data.c`,
-`node packages/php-ext/tools/generate-unicode-data.mjs`가
-`contracts/unicode-properties.json`에서 생성)로 선형 시간에 매칭합니다. 빌드에는
+빌드 전에 `make php-ext-tables`가
+`contracts/unicode-properties.json`에서 생성하며 Git이 추적하지 않음)로 선형 시간에 매칭합니다. 빌드에는
 PCRE2 파일이나 `pkg-config`가 필요하지 않습니다.
 
 저장소 루트에서 실행합니다.

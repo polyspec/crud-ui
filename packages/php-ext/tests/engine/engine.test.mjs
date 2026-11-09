@@ -452,7 +452,7 @@ const unicode = JSON.parse(readFileSync(contractPath, 'utf8'));
 test('PHP extension Unicode data is generated from the contract', { timeout: ENGINE_INSPECTION_BUDGET }, async () => {
   assert.equal(unicode.format, 'crudui/unicode-properties');
   assert.equal(await readFile(outputPath, 'utf8'), unicodeDataSource(unicode),
-    'Regenerate with: node packages/php-ext/tools/generate-unicode-data.mjs');
+    'Regenerate with: make php-ext-tables');
 });
 
 test('PHP extension interface messages are generated from the contract', { timeout: ENGINE_INSPECTION_BUDGET }, async () => {
@@ -460,7 +460,7 @@ test('PHP extension interface messages are generated from the contract', { timeo
   const contract = JSON.parse(await readFile(messages.contractPath, 'utf8'));
   assert.equal(contract.format, 'crudui/interface-messages');
   assert.equal(await readFile(messages.outputPath, 'utf8'), messages.interfaceMessagesSource(contract, await messages.structFields()),
-    'Regenerate with: node packages/php-ext/tools/generate-interface-messages.mjs');
+    'Regenerate with: make php-ext-tables');
 });
 
 test('PHP extension interface messages value includes every contract key', { timeout: ENGINE_TEST_BUDGET }, async t => {

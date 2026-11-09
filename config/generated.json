@@ -41,7 +41,9 @@
     "**/__pycache__/**",
     "**/target/**",
     "**/dist/**",
-    "**/*.egg-info/**"
+    "**/*.egg-info/**",
+    "packages/php-ext/src/unicode_data.c",
+    "packages/php-ext/src/interface_messages.c"
   ],
   "tracked": [
     {

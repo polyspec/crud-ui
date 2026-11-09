@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C17.106-1: packages/php-ext/src/unicode_data.c and interface_messages.c are no longer tracked; make php-ext-tables writes them from contracts/ before every target that reads the sources of the extension (C17.106-1)
+
 - C17.92-2: the job form-runtime of ci.yml runs only crudui-test-forms; manifest-check and manifest-docs-check run once, in docs-check of the shared gates (C17.92-2)
 
 - C17.92-1: the jobs of ci.yml start together with the job kit, whose results none of them reads; only ci-passed needs kit (C17.92-1)

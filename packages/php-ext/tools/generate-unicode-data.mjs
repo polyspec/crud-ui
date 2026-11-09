@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Writes packages/php-ext/src/unicode_data.c from contracts/unicode-properties.json.
 // Run from the repository root: node packages/php-ext/tools/generate-unicode-data.mjs
-// The engine tests fail when the committed file differs from this generator's output.
+// make php-ext-tables runs it before every target that reads the sources of the extension; the output is untracked (P34).
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

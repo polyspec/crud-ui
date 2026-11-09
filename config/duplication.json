@@ -24,10 +24,6 @@
   ],
   "exclude": [
     {
-      "glob": "packages/php-ext/src/unicode_data.c",
-      "reason": "generated: generated from contracts/unicode-properties.json by packages/php-ext/tools/generate-unicode-data.mjs; the tables are data"
-    },
-    {
       "glob": "packages/validator/python/src/polyspec/crudui/validator/unicode_data.py",
       "reason": "generated: generated from contracts/unicode-properties.json by packages/validator/python/scripts/generate_unicode_data.py; the tables are data"
     },

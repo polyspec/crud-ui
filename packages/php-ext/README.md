@@ -23,9 +23,8 @@ takes the version of the extension from `composer.json`.
 
 The `pattern` and `match` rules use no regular-expression library: the engine
 recognizes CRUDUI patterns and matches them itself in linear time over the Unicode
-data it embeds (`src/unicode_data.c`, generated from
-`contracts/unicode-properties.json` by
-`node packages/php-ext/tools/generate-unicode-data.mjs`). The build needs no
+data it embeds (`src/unicode_data.c`, which `make php-ext-tables` generates from
+`contracts/unicode-properties.json` before each build; the file is not tracked). The build needs no
 PCRE2 files or `pkg-config`.
 
 Run from the repository root:

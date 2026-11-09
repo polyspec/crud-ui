@@ -22,6 +22,10 @@ dist.old/
 .svelte-kit/
 *.tsbuildinfo
 
+# The C tables of packages/php-ext, which make php-ext-tables writes from contracts/ (P34)
+packages/php-ext/src/unicode_data.c
+packages/php-ext/src/interface_messages.c
+
 # Rust build outputs (Cargo.lock is committed for the binary crate)
 target/
 
