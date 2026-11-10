@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "polyspec-crudui-validator"
-version = "0.0.18"
+version = "0.0.19"
 description = "Form, list and detail validation for CRUDUI specifications"
 readme = "README.md"
 requires-python = ">=3.14"

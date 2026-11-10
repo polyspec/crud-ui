@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-form-binding",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Browser validation of server-rendered CRUDUI forms",
   "type": "module",
   "exports": {
@@ -30,9 +30,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@polyspec/crudui-generator-core": "0.0.18",
-    "@polyspec/crudui-generator-html": "0.0.18",
-    "@polyspec/crudui-validator": "0.0.18"
+    "@polyspec/crudui-generator-core": "0.0.19",
+    "@polyspec/crudui-generator-html": "0.0.19",
+    "@polyspec/crudui-validator": "0.0.19"
   },
   "devDependencies": {
     "@types/jsdom": "^30.0.0",

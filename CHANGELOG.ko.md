@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: ee1a32638afeb8eaf5e60c61ff6c1f9c1c560db1f9f5a4e5d019394e4f2313b0 -->
+<!-- source-sha256: 8904890cad8c9dae8104c4c882272f48e1d8eab830255f9202a8b05d3db08802 -->
 
 ## Unreleased
+
+## 0.0.19
 
 - C18.43: crudui는 npm, Composer, examples/form-comparison의 Go 서버와 Rust 서버에서 ordered-json 0.0.24를 받는다.
 

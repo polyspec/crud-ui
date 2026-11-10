@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "polyspec-crudui-generator"
-version = "0.0.18"
+version = "0.0.19"
 description = "Form, list and detail rendering for CRUDUI specifications"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "polyspec-crudui-validator @ https://github.com/polyspec/crudui/releases/download/v0.0.18/polyspec_crudui_validator-0.0.18-py3-none-any.whl",
+    "polyspec-crudui-validator @ https://github.com/polyspec/crudui/releases/download/v0.0.19/polyspec_crudui_validator-0.0.19-py3-none-any.whl",
 ]
 
 [tool.setuptools]
