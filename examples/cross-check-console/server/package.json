@@ -12,7 +12,7 @@
     "start": "node server.mjs",
     "dev": "node --watch server.mjs",
     "pretest": "npm run build:validators",
-    "test": "node ../../../scripts/run-tests.mts vitest --timeout 30 --cwd examples/cross-check-console/server --root . --dir ."
+    "test": "node ../../../scripts/run-tests.mts vitest --cwd examples/cross-check-console/server --root . --dir ."
   },
   "engines": {
     "node": ">=26.12.0"

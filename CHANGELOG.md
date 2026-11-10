@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- crudui adopts kit 0.0.105, which removed the time limits of run-tests (kit K1175), passes no `--timeout` to run-tests, and takes ordered-json 0.0.25 in every manifest and lock (C18.45).
+
 ## 0.0.19
 
 - C18.43: crudui takes ordered-json 0.0.24 in npm, Composer, the Go server and the Rust server of examples/form-comparison.

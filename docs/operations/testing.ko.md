@@ -1,6 +1,6 @@
 # 테스트 실행
 <!-- doc-id: docs-operations-testing -->
-<!-- source-sha256: 0ea1156e192704d2505c6c9fbb7c1b6d18fcd1d9bc636904d398b530c0f32337 -->
+<!-- source-sha256: 31aa5e53fdc09b2c481f329ae6fd0609c42a279893da070023db0add563299ac -->
 
 [English](testing.md).
 
@@ -145,15 +145,12 @@ script는 typescript-eslint가 그 package의 TypeScript 6으로 parse합니다.
 모든 테스트는 `node_modules/@polyspec/kit/dist/run-tests.mjs`로 실행합니다.
 
 ```sh
-node node_modules/@polyspec/kit/dist/run-tests.mjs <node|vitest|go|cargo|phpunit> [--timeout <seconds>] [--cwd <directory>] [--] [<arguments>]
+node node_modules/@polyspec/kit/dist/run-tests.mjs <node|vitest|go|cargo|phpunit> [--cwd <directory>] [--] [<arguments>]
 ```
 
-실행기는 각 테스트의 시작, 실행 중임을 알리는 줄, 결과와 경과 시간을 출력합니다. 모든
-테스트는 자기 제한 시간을 가지며, `--timeout`으로 지정하지 않으면 30초입니다. 패키지
+실행기는 각 테스트의 시작, 실행 중임을 알리는 줄, 결과와 경과 시간을 출력합니다. 실행기는
+시간 제한을 두지 않으며, 도구를 실행하고 그 출력과 exit code를 그대로 전합니다. 패키지
 스크립트, Composer 스크립트, Makefile 대상은 이 실행기를 통해서만 테스트 도구를 호출합니다.
-실행기는 Go, Cargo, PHPUnit 테스트를 제한 시간에 멈추며, PHPUnit은 자체 시간 제한을 두지 않습니다.
-`node --test`와 Vitest는 테스트가 기다리는 동안에만 제한 시간에 테스트를 멈추므로 동기 작업을
-멈출 수 없습니다.
 PHPUnit은 `--teamcity`로 실행합니다. 실행기는 TeamCity test를 하나씩 세고 test class나 data provider
 method는 세지 않으며, 없는 test file에 대한 오류나 warning을 담은 요약처럼 TeamCity message가 아닌
 줄을 모두 출력합니다.

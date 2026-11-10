@@ -166,15 +166,12 @@ tag.
 Every test runs through `node_modules/@polyspec/kit/dist/run-tests.mjs`:
 
 ```sh
-node node_modules/@polyspec/kit/dist/run-tests.mjs <node|vitest|go|cargo|phpunit> [--timeout <seconds>] [--cwd <directory>] [--] [<arguments>]
+node node_modules/@polyspec/kit/dist/run-tests.mjs <node|vitest|go|cargo|phpunit> [--cwd <directory>] [--] [<arguments>]
 ```
 
 The runner prints each test's start, a line while it is still running, its result and its
-elapsed time. Every test has its own timeout, 30 seconds unless `--timeout` sets another.
+elapsed time. It sets no time limit: it runs the tool and passes its output and exit code through.
 Package scripts, Composer scripts and Makefile targets call test tools only through this runner.
-The runner stops a Go, Cargo or PHPUnit test at its timeout, and PHPUnit sets no time limit of its
-own; `node --test` and Vitest stop a test at its timeout only when the test waits, so they cannot
-stop synchronous work.
 PHPUnit runs with `--teamcity`: the runner counts each TeamCity test, never a test class or a data
 provider method, and prints every line that is not a TeamCity message, such as an error about a
 missing test file or the summary with its warnings.

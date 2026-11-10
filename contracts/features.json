@@ -703,7 +703,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
@@ -711,7 +711,7 @@
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -762,7 +762,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
@@ -770,11 +770,11 @@
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/template-shape.test.ts"
         }
       ]
     },
@@ -822,7 +822,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
         },
         {
           "id": "test-2",
@@ -842,7 +842,7 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/template-shape.test.ts"
         }
       ]
     },
@@ -883,7 +883,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
         },
         {
           "id": "test-2",
@@ -950,19 +950,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-choices.test.ts src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-choices.test.ts src/template-shape.test.ts"
         }
       ]
     },
@@ -1109,11 +1109,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/list.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/list.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -1159,11 +1159,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/detail.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/detail.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -1315,11 +1315,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/widget-controls.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/widget-controls.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
         }
       ]
     },
@@ -1353,7 +1353,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/patch.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/patch.test.ts"
         },
         {
           "id": "test-2",
@@ -1442,7 +1442,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
@@ -1484,7 +1484,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
         }
       ]
     },
@@ -1532,7 +1532,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
@@ -1552,7 +1552,7 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-actions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-actions.test.ts"
         }
       ]
     },
@@ -1600,11 +1600,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-state.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-state.test.ts"
         },
         {
           "id": "test-3",
@@ -1624,7 +1624,7 @@
         },
         {
           "id": "test-7",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/view-functions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/view-functions.test.ts"
         }
       ]
     },
@@ -1673,7 +1673,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
@@ -1693,7 +1693,7 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --timeout 30 --cwd packages/generator/ts -- src/form-history.test.ts src/history-functions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-history.test.ts src/history-functions.test.ts"
         }
       ]
     },

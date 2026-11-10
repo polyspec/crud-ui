@@ -1,7 +1,7 @@
 // Run the test tool of a suite that records conformance evidence and leave the record of its run
 // (docs/operations/conformance.md, "Suite runs"):
 //
-//   node tests/conformance/run-suite.mts <tool> [--timeout <seconds>] [--cwd <directory>] [--] [<arguments>]
+//   node tests/conformance/run-suite.mts <tool> [--cwd <directory>] [--] [<arguments>]
 //
 // The arguments are those of the run-tests tool of @polyspec/kit, which runs the tool and whose exit status this process takes.
 // The record names this file as its program, with the tool, the directory relative to the repository root and the

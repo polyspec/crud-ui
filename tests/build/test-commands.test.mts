@@ -94,7 +94,7 @@ test('a script a test command starts prints through the shared progress lines', 
 });
 
 test('every node:test file runs in a project command', () => {
-  assert.deepEqual(nodeTestArguments('node scripts/run-tests.mts node --timeout 5 -- a.test.mjs b/*.test.mjs && node scripts/run-tests.mts vitest -- c.test.ts'), ['a.test.mjs', 'b/*.test.mjs']);
+  assert.deepEqual(nodeTestArguments('node scripts/run-tests.mts node -- a.test.mjs b/*.test.mjs && node scripts/run-tests.mts vitest -- c.test.ts'), ['a.test.mjs', 'b/*.test.mjs']);
   assert.equal(matchesArgument('tests/docs/a.test.mts', 'tests/docs/*.test.mts'), true);
   assert.equal(matchesArgument('tests/docs/x/a.test.mts', 'tests/docs/*.test.mts'), false);
   const arguments_ = tracked.flatMap(file => projectCommands(file, read(file)).flatMap(({ command }: ProjectCommand) => nodeTestArguments(command)));

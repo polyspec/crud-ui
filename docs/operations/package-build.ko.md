@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: 8c1a984634882800dc3b3df3a2685c819c879eaa7994f1e0a99abf697f94c658 -->
+<!-- source-sha256: a5f3ba1474adc3e124849a43d6c8ee1a9d4897948f90631c223d84b12a6a8bed -->
 
 [English](package-build.md).
 
@@ -276,7 +276,7 @@ package를 내려받는 release archive의 사용자 project lock `release-consu
 `cargo fetch --locked`로 download하고, `make install`이 이를 실행하므로 어떤 대상도 따로 검사하지 않습니다.
 `make ordered-json-ext`는 `composer.lock`이 설치한 OrderedJSON release의 PHP 확장을 `composer.json`의 packages.json 저장소에서
 빌드하며, comparison pipeline은 그 빌드를 읽고
-없으면 실패하며, 아무것도 download하지 않습니다. comparison의 Go module은 OrderedJSON module `v0.0.24`을 요구하고,
+없으면 실패하며, 아무것도 download하지 않습니다. comparison의 Go module은 OrderedJSON module `v0.0.25`을 요구하고,
 `GOPROXY=off`가 module cache에서 이를 읽습니다.
 
 ## 문서 웹

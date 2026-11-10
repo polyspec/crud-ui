@@ -13,7 +13,7 @@ checks to collect their actual results.
 ```sh
 node scripts/require-current-build.mts
 composer install
-node node_modules/@polyspec/kit/scripts/kit/run-tests.mts node --timeout 10 -- tests/native-generators/protocol.test.mts
+node node_modules/@polyspec/kit/scripts/kit/run-tests.mts node -- tests/native-generators/protocol.test.mts
 node tests/native-generators/run.mts \
   --extension /absolute/path/to/crudui.so \
   --report .git/native-generators/report.json

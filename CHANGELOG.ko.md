@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 8904890cad8c9dae8104c4c882272f48e1d8eab830255f9202a8b05d3db08802 -->
+<!-- source-sha256: 598e24e6f8eb6064ddda2e629010eca4ba370807f9e69e2bc4fe126760e0be60 -->
 
 ## Unreleased
+
+- crudui는 run-tests의 시간 제한을 없앤 kit 0.0.105(kit K1175)를 채택해 run-tests에 `--timeout`을 넘기지 않고, 모든 manifest와 lock에서 ordered-json 0.0.25를 받는다(C18.45).
 
 ## 0.0.19
 

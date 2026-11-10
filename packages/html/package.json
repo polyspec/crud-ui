@@ -20,7 +20,7 @@
   "scripts": {
     "build": "node ../../scripts/package-dist.mts build 'tsup src/index.ts --format cjs,esm --clean --out-dir \"$CRUDUI_DIST\" && tsc --project tsconfig.build.json --outDir \"$CRUDUI_DIST\"'",
     "dev": "tsup src/index.ts --format cjs,esm --watch --onSuccess \"tsc --project tsconfig.build.json\"",
-    "test": "node ../../tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/html",
+    "test": "node ../../tests/conformance/run-suite.mts vitest --cwd packages/html",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },

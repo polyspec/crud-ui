@@ -21,7 +21,7 @@
   "scripts": {
     "build": "node ../../scripts/package-dist.mts build 'tsup src/index.ts --format cjs,esm --clean --external vue --out-dir \"$CRUDUI_DIST\" && tsc --project tsconfig.build.json --outDir \"$CRUDUI_DIST\"'",
     "dev": "tsup src/index.ts --format cjs,esm --watch --external vue --onSuccess \"tsc --project tsconfig.build.json\"",
-    "test": "node ../../tests/conformance/run-suite.mts vitest --timeout 30 --cwd packages/vue",
+    "test": "node ../../tests/conformance/run-suite.mts vitest --cwd packages/vue",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
