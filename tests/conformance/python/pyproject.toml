@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "polyspec-crudui-conformance"
-version = "0.0.19"
+version = "0.0.20"
 description = "Conformance evidence of the Python suites of crudui"
 requires-python = ">=3.14"
 classifiers = ["Private :: Do Not Upload"]

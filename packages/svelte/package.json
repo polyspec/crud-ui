@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-generator-svelte",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Svelte form builder component library based on crudui YAML definitions",
   "type": "module",
   "main": "dist/index.js",
@@ -33,7 +33,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@polyspec/crudui-generator-core": "0.0.19"
+    "@polyspec/crudui-generator-core": "0.0.20"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
