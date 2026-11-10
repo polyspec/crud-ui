@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- The repository adopts kit 0.0.103, which keeps the output, errors and failures that kit used to drop silently (kit K1136–K1165) (C18.42).
+
 - C17.106-5: config/generated.json declares the tracked Rust crate tables interface_messages.rs and data.rs with their generators, and a header pattern of it matches the first comment line, Generated from contracts/..., that the PHP and Rust table generators write, so layout-check fails on a tracked copy of a table that no entry declares; the Rust generators write that line first (C17.106-5)
 
 - C17.106-4: packages/validator/ts/src/unicode/properties.ts, packages/generator/ts/src/interface-messages.ts and packages/generator/ts/src/form-template-validator.mjs are no longer tracked; the prebuild scripts of the two packages write them from contracts/, and build, build-ts, test-ts, typecheck, lint-ts and crudui-test-validators run after the build of the packages (C17.106-4)
