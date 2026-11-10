@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-release-readiness -->
-<!-- source-sha256: d9f55c1411a52c200e164d9b38753d56b2f67f8d12b7b6f2167987b8f575bf94 -->
+<!-- source-sha256: 45af870729534bf9f33db56f0915d8df079a47d9bb689117e72e48839aa995c5 -->
 # Release candidate 재검토 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -98,3 +98,4 @@
 | C18.40 | config/release.json의 notReleased는 checkout의 패키지 파일만 적는다: C17.61이 파일을 삭제한 tests/release-install/npm/package.json과 tests/release-install/composer/composer.json 항목을 지운다 | config/release.json, CHANGELOG.md, CHANGELOG.ko.md | `make release-coverage` | [o] |
 | C18.41 | package-lock.json이 다시 devtools-protocol 0.0.1704951을 해석한다: C18.39의 버전 치환이 그것을 npm registry에 없는 0.0.1804951로 바꾸어, Pages run 42515462764의 documentation web job에서 npm ci가 E404로 실패했다 | package-lock.json, CHANGELOG.md, CHANGELOG.ko.md | `git grep -n 1804951 -- package-lock.json` finds nothing; the resolved URL of devtools-protocol answers 200 and its integrity is the one the lock held before C18.39 | [o] |
 | C18.42 | kit이 조용히 버리던 출력, 오류, 실패를 남기는 kit 0.0.103(kit K1136–K1165)를 채택한다: 0.0.103 release asset을 고정한다 | `package.json`, `package-lock.json` | `make docs-check` and `make lint-ts` exit 0 | [o] |
+| C18.43 | crudui는 provider의 최신 release인 ordered-json 0.0.24를 받는다: npm과 Composer release URL, examples/form-comparison Go 서버의 Go module, Rust 서버의 git tag와 version이며, 각 lock은 자기 도구로 쓴다 | `package.json`, `composer.json`, `examples/form-comparison/servers/go/go.mod`, `examples/form-comparison/servers/rust/Cargo.toml`과 그 lock | manifest와 lock에서 ordered-json 0.0.23의 `git grep`이 exit 1; form-comparison 서버의 `go build`와 `cargo check`가 exit 0 | [o] |

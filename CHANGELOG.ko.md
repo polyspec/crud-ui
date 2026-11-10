@@ -1,8 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 3e51de2200a96989584a5a7572b6773f53ea3d86dcb7adfb0947136f667f2379 -->
+<!-- source-sha256: ee1a32638afeb8eaf5e60c61ff6c1f9c1c560db1f9f5a4e5d019394e4f2313b0 -->
 
 ## Unreleased
+
+- C18.43: crudui는 npm, Composer, examples/form-comparison의 Go 서버와 Rust 서버에서 ordered-json 0.0.24를 받는다.
 
 - 저장소는 kit이 조용히 버리던 출력, 오류, 실패를 남기는 kit 0.0.103(kit K1136–K1165)를 채택한다(C18.42).
 

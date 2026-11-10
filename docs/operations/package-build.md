@@ -317,7 +317,7 @@ third-party packages that their locks pin, lift them with `$(ONLINE)`; `release-
 crates of every Cargo.lock with `cargo fetch --locked`, and `make install` runs it, so no target runs a separate check of
 them. `make ordered-json-ext` builds the PHP extension of the OrderedJSON release that `composer.lock` installs, from the
 packages.json repository of `composer.json`; the comparison pipeline reads that build and fails when it is missing;
-it downloads nothing. The Go module of the comparison servers requires the OrderedJSON module at `v0.0.18`, which `GOPROXY=off`
+it downloads nothing. The Go module of the comparison servers requires the OrderedJSON module at `v0.0.24`, which `GOPROXY=off`
 reads from the module cache.
 
 ## Documentation web

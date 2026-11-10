@@ -1,6 +1,6 @@
-github.com/polyspec/crudui/packages/generator/go v0.0.17 h1:0bVnrQGvvlybvjXTqBPe+Ztn5cJruiZ7gRpwYPKAAoo=
-github.com/polyspec/crudui/packages/generator/go v0.0.17/go.mod h1:bjMIjWbVK+q6+FOvMzQ5JTmofykHFAcTAjbRJ0ngxdM=
-github.com/polyspec/crudui/packages/validator/go v0.0.17 h1:yKKNbV8QVJkW5zgYBzgPom0wHQ4E4Zm/wCCY1aaYITk=
-github.com/polyspec/crudui/packages/validator/go v0.0.17/go.mod h1:vxbdKIF5OlB0ci4WI8TZzcJIjx2Z4mXRQJdkhNKesJA=
-github.com/polyspec/ordered-json/packages/go v0.0.23 h1:5tHJdugYgyTqp3CHmttjJBvWACNH6kzx3ISMxvXAwTQ=
-github.com/polyspec/ordered-json/packages/go v0.0.23/go.mod h1:Qhp4Xd4WQ4dzf36bCA8dfylrX07y66pK0439h0qcvzs=
+github.com/polyspec/crudui/packages/generator/go v0.0.18 h1:4I8ni5UpXEtIVXEQYpLWEmQkatBV16f/79fdmkNvYSQ=
+github.com/polyspec/crudui/packages/generator/go v0.0.18/go.mod h1:GDTI5zd7mH93j+lDP34X4RFGpUtpUSGedB+wDNNxM8c=
+github.com/polyspec/crudui/packages/validator/go v0.0.18 h1:l4qCZNgBdIwl66xygA/sKMivgx9zfXXEuzYt/LQDGGE=
+github.com/polyspec/crudui/packages/validator/go v0.0.18/go.mod h1:vxbdKIF5OlB0ci4WI8TZzcJIjx2Z4mXRQJdkhNKesJA=
+github.com/polyspec/ordered-json/packages/go v0.0.24 h1:BJkX5gp/Qhx67GWf/HUkf94dbkhTUM+XjxNhnAybDpo=
+github.com/polyspec/ordered-json/packages/go v0.0.24/go.mod h1:Qhp4Xd4WQ4dzf36bCA8dfylrX07y66pK0439h0qcvzs=

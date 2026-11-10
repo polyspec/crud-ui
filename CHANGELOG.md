@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- C18.43: crudui takes ordered-json 0.0.24 in npm, Composer, the Go server and the Rust server of examples/form-comparison.
+
 - The repository adopts kit 0.0.103, which keeps the output, errors and failures that kit used to drop silently (kit K1136–K1165) (C18.42).
 
 - C17.106-5: config/generated.json declares the tracked Rust crate tables interface_messages.rs and data.rs with their generators, and a header pattern of it matches the first comment line, Generated from contracts/..., that the PHP and Rust table generators write, so layout-check fails on a tracked copy of a table that no entry declares; the Rust generators write that line first (C17.106-5)

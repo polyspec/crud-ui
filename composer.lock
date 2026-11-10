@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b091cc5c13038ae278272d008753a757",
+    "content-hash": "14ddc51d344a550a8bcc58edd6e67cf7",
     "packages": [
         {
             "name": "polyspec/crudui-generator",
@@ -96,11 +96,11 @@
         },
         {
             "name": "polyspec/ordered-json",
-            "version": "0.0.23",
+            "version": "0.0.24",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.23/polyspec-ordered-json-php-0.0.23.zip",
-                "shasum": "35286b76439fb14c8ab486a22b565803dad1bf34"
+                "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.24/polyspec-ordered-json-php-0.0.24.zip",
+                "shasum": "2fc6e2616c4ad90d60da54d26e9e8e493b2ab2c0"
             },
             "require": {
                 "ext-json": "*",
