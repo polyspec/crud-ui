@@ -130,7 +130,7 @@ export async function checkCiBrowser({
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const lines = createProgress({ write: text => process.stdout.write(text), timeoutMs: 60_000, onTimeout: () => process.exit(1) });
+  const lines = createProgress({ write: text => process.stdout.write(text) });
   // The Chrome that puppeteer pins (scripts/install-browsers.mts), or the one that PUPPETEER_EXECUTABLE_PATH names.
   const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ?? await puppeteer.executablePath();
   const id = `sandboxed Chrome at ${executablePath}`;
