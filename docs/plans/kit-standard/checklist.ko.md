@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-kit-standard -->
-<!-- source-sha256: c8b7be383272ba9553247c55a36634547cbadd329eee95a5471d28e4f82e16ed -->
+<!-- source-sha256: 684af5c20ac3bfcb033b50469b9e27b23b3047d797a9c5fbf5d22275b29e5ea9 -->
 # kit 표준 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -472,3 +472,4 @@
 | C17.113-1 | Go 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/go/widget.go; its tests; the Go package README where the kinds are listed | Red: the common cases fail for Go before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
 | C17.113-2 | PHP 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/php/src/Internal/Widget.php; its tests; the PHP package README where the kinds are listed | Red: the common cases fail for PHP before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
 | C17.113-3 | Python 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/python/src/polyspec/crudui/generator/widget.py; its tests; the Python package README where the kinds are listed | Red: the common cases fail for Python before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
+| C17.113-4 | Rust 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/rust/src/widget.rs; its tests; the Rust package README where the kinds are listed | Red: the common cases fail for Rust before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
