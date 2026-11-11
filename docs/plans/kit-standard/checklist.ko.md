@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-kit-standard -->
-<!-- source-sha256: dcac10142b3954884fc3e0d6c3dab8a3207c9dc9326bc3e616a8e80df25bf3a5 -->
+<!-- source-sha256: 104ace07663b10dbbabe751aca2aaa99fde0e759c17d7471f2331415be49bd5e -->
 # kit 표준 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -468,3 +468,4 @@
 | C17.110 | Go와 Rust form-comparison 서버는 옛 0.0.10 Go 모듈과 0.0.14 Rust 태그 대신, 루트 package.json과 composer.json이 고정한 ordered-json 0.0.17을 요구한다 | examples/form-comparison/servers/go/go.mod, examples/form-comparison/servers/go/go.sum, examples/form-comparison/servers/rust/Cargo.toml, examples/form-comparison/servers/rust/Cargo.lock, tests/build/dependency-health.test.mts, CHANGELOG.md, CHANGELOG.ko.md | `node --test tests/build/dependency-health.test.mts` | [o] |
 | C17.111 | ci.yml의 job form-comparison-checks가 needs: kit로 job kit을 따르게 한다(kit 0.0.88 S12). | form-comparison-checks has needs: [kit, form-comparison-browser]. | `make kit-check` | [o] |
 | C17.112 | kit 0.0.88을 채택한다: release를 pin하고 kit-sync가 쓰는 사본을 commit한다. | package.json and package-lock.json pin kit 0.0.88; PRINCIPLES.md and PRINCIPLES.ko.md are its copies. | `make kit-check`; make kit-inject-check runs on the commit | [o] |
+| C17.113 | field 명세가 이름을 대는 custom element 컨트롤의 필드를 CRUDUI가 렌더링한다. 그 element는 자기 form에 연결되고 name을 가지며, form binding은 input, select, textarea와 같이 element의 value 속성을 텍스트로 읽는다. | packages/form-binding/src/nodes.ts, bind.ts, data.ts; the renderer and the schema of the new field kind (docs/spec form-markup, schema.md); tests of the renderer and the binding; packages/form-binding/README.md and README.ko.md; CHANGELOG.md; CHANGELOG.ko.md | make build typecheck lint-ts exit 0; the new renderer and binding tests pass with node --test; make layout-check kit-check exit 0 | [ ] |
