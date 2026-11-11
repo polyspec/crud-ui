@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-kit-standard -->
-<!-- source-sha256: 104ace07663b10dbbabe751aca2aaa99fde0e759c17d7471f2331415be49bd5e -->
+<!-- source-sha256: 8f994191f19b7901691e981aefd53bc8d72eafa8597f7a3e41ab6557edbce197 -->
 # kit 표준 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -469,3 +469,4 @@
 | C17.111 | ci.yml의 job form-comparison-checks가 needs: kit로 job kit을 따르게 한다(kit 0.0.88 S12). | form-comparison-checks has needs: [kit, form-comparison-browser]. | `make kit-check` | [o] |
 | C17.112 | kit 0.0.88을 채택한다: release를 pin하고 kit-sync가 쓰는 사본을 commit한다. | package.json and package-lock.json pin kit 0.0.88; PRINCIPLES.md and PRINCIPLES.ko.md are its copies. | `make kit-check`; make kit-inject-check runs on the commit | [o] |
 | C17.113 | field 명세가 이름을 대는 custom element 컨트롤의 필드를 CRUDUI가 렌더링한다. 그 element는 자기 form에 연결되고 name을 가지며, form binding은 input, select, textarea와 같이 element의 value 속성을 텍스트로 읽는다. | packages/form-binding/src/nodes.ts, bind.ts, data.ts; the renderer and the schema of the new field kind (docs/spec form-markup, schema.md); tests of the renderer and the binding; packages/form-binding/README.md and README.ko.md; CHANGELOG.md; CHANGELOG.ko.md | make build typecheck lint-ts exit 0; the new renderer and binding tests pass with node --test; make layout-check kit-check exit 0 | [ ] |
+| C17.113-1 | Go 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/go/widget.go; its tests; the Go package README where the kinds are listed | Red: the common cases fail for Go before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
