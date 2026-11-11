@@ -1,5 +1,5 @@
 <!-- doc-id: checklist-kit-standard -->
-<!-- source-sha256: 80427c7c1684c6ebb5a778db1debc261d918574f8055a74d1d4f14e962854fb0 -->
+<!-- source-sha256: c8b7be383272ba9553247c55a36634547cbadd329eee95a5471d28e4f82e16ed -->
 # kit 표준 체크리스트
 
 | ID | Task | Deliverables | Verification | State |
@@ -471,3 +471,4 @@
 | C17.113 | field 명세가 이름을 대는 custom element 컨트롤의 필드를 CRUDUI가 렌더링한다. 그 element는 자기 form에 연결되고 name을 가지며, form binding은 input, select, textarea와 같이 element의 value 속성을 텍스트로 읽는다. | packages/form-binding/src/nodes.ts, bind.ts, data.ts; the renderer and the schema of the new field kind (docs/spec form-markup, schema.md); tests of the renderer and the binding; packages/form-binding/README.md and README.ko.md; CHANGELOG.md; CHANGELOG.ko.md | make build typecheck lint-ts exit 0; the new renderer and binding tests pass with node --test; make layout-check kit-check exit 0 | [ ] |
 | C17.113-1 | Go 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/go/widget.go; its tests; the Go package README where the kinds are listed | Red: the common cases fail for Go before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
 | C17.113-2 | PHP 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/php/src/Internal/Widget.php; its tests; the PHP package README where the kinds are listed | Red: the common cases fail for PHP before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
+| C17.113-3 | Python 렌더러가 스펙의 crudui-element 종류(CUMK-013)를 렌더링하고, C17.113의 공통 케이스와 form-comparison 검사를 통과한다. | packages/generator/python/src/polyspec/crudui/generator/widget.py; its tests; the Python package README where the kinds are listed | Red: the common cases fail for Python before the change; Green: the same cases and make form-comparison-checks exit 0 after it | [ ] |
