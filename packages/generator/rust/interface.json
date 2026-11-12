@@ -2146,32 +2146,23 @@
           "parameters": [
             {
               "name": [
-                "fields"
+                "template"
               ],
               "type": {
-                "list": "json_value"
+                "unit": "form_template"
               },
               "required": true
             },
             {
               "name": [
-                "buttons"
+                "data"
               ],
-              "type": {
-                "list": "json_value"
-              },
+              "type": "json_value",
               "required": true
             },
             {
               "name": [
-                "language"
-              ],
-              "type": "text",
-              "required": true
-            },
-            {
-              "name": [
-                "options"
+                "render"
               ],
               "type": {
                 "optional": "json_value"
@@ -2182,17 +2173,33 @@
             },
             {
               "name": [
-                "description"
+                "options"
               ],
-              "type": "text",
+              "type": {
+                "unit": "bind_options"
+              },
               "default": {
-                "literal": ""
+                "empty": "object"
               }
             }
           ],
           "returns": "text",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::boundary::render_form_view"
@@ -3024,7 +3031,7 @@
     {
       "id": "html-renderer",
       "rule": "CUMK-073",
-      "reason": "CUMK-071, CUMK-072, CUMK-073: the HTML renderer package becomes operations of the core; the view renderers take the interface language instead of a message table, and the outline view takes the history state as two flags instead of a snapshot",
+      "reason": "CUMK-071, CUMK-072, CUMK-073: the HTML renderer package becomes operations of the core; the form view takes a compiled template, data and bind options instead of raw nodes, buttons, a message table and a description, so compilation is the one check of the node shape (P-1); the other view renderers take the interface language instead of a message table, and the outline view takes the history state as two flags instead of a snapshot",
       "symbol": "renderFormView, renderOutline, renderOutlineView, renderData, renderDataPanel",
       "from": {
         "node": "renderFormView(fields, buttons, messages, options?, description?); renderOutlineView(state, messages); renderDataPanel(data, messages); renderOutline(form); renderData(form) of @polyspec/crudui-generator-html"

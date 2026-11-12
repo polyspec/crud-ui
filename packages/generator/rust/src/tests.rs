@@ -698,10 +698,7 @@ fn native_fixture_records() {
                         .unwrap();
                 let fields = bind_form(&template, case.get("data").unwrap_or(&json!({})), &bind)?;
                 let data = case.get("data").cloned().unwrap_or(json!({}));
-                let language = case["options"]["language"].as_str().unwrap_or("ko");
-                let buttons = bind_buttons(&template, &data, &bind)?;
-                let description = crate::util::translate(template.description.as_ref(), language);
-                let html = render_form_view(&fields, &buttons, language, None, &description)?;
+                let html = render_form_view(&template, &data, None, &bind)?;
                 Ok(json!({"name":case["name"],"template":template,"fields":fields,"html":html}))
             });
             settled(case, result)

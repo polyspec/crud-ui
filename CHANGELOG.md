@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- CUMK-073: the Rust `render_form_view(template, data, render, options)` takes a compiled template, data and bind options and binds the nodes and buttons itself instead of taking raw nodes, buttons, a language and a description that nothing checked; compilation is the one check of the node shape, and the generator contract records the change (CUMK-073).
 - CUVR-095: Rust validation refuses an `accept` parameter that is neither a string nor a list of strings with `INVALID_RULE_PARAMETER`, and `accept` fails a list value with a member that is no file object and a value that is no string, list or object, which it used to pass (CUVR-016, CUVR-095).
 - N-3: the Rust crates take the JSON library as the crate `polyspec-json` (library `polyspec_json`) from `https://github.com/polyspec/json.git`, the name that the json repository gives its core; the contracts name `json` as the library of `json_value`, and CUIT-022, CUIT-040 and CURP-030 name it (N-3).
 - CUSC-092: a `$ref` to a composition file whose document is no object fails with `REF_FORMAT_ERROR` and the file key; the Rust memory loader keeps every entry instead of dropping such a file, which then read as missing (CUSC-092).

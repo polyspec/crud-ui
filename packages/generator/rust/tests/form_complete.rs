@@ -68,6 +68,8 @@ fn check_case(case: &Value) {
         language,
         ..BindOptions::default()
     };
+    let view_template = template.clone();
+    let view_options = options.clone();
     let form = match Form::new(template, &case["data"], options) {
         Ok(form) => form,
         Err(error) => panic!("{name}: bind failed: {error}"),
@@ -77,11 +79,10 @@ fn check_case(case: &Value) {
     // the same markup.
     if form.template().action.is_none() {
         let view = render_form_view(
-            form.fields(),
-            form.buttons(),
-            case["options"]["language"].as_str().unwrap_or("ko"),
+            &view_template,
+            &case["data"],
             Some(&case["render"]),
-            &form.description(),
+            &view_options,
         );
         assert_eq!(
             view.as_ref().map_err(|error| error.message.clone()),

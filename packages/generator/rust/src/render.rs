@@ -5,7 +5,7 @@ use crate::util::OrNoText;
 use serde_json::{json, Map, Value};
 
 use crate::util::{join_class, js_string, scalar, style};
-use crate::{Form, FormResult};
+use crate::{BindOptions, Form, FormResult, FormTemplate};
 
 pub(crate) fn escape(value: &str) -> String {
     value
@@ -866,16 +866,21 @@ pub fn render_form(form: &Form, options: Option<&Value>) -> FormResult<String> {
     )
 }
 
-/// Render the complete form of evaluated nodes and form buttons, as `bind_form`, `bind_buttons`
-/// and the translated root description give them, for data owned outside an instance (CUMK-073).
-/// `options` is as for [`render_form`]; its `action` has no template action here.
+/// Render the complete form of a compiled template for data owned outside an instance (CUMK-073):
+/// the nodes and buttons that `bind_form` and `bind_buttons` give for `data` and `options`, the root
+/// description and the interface text of the bound language. It takes no raw nodes, so compilation
+/// is the one check of their shape. `render` is as the options of [`render_form`]; its `action` has
+/// no template action here.
 pub fn render_form_view(
-    fields: &[Value],
-    buttons: &[Value],
-    language: &str,
-    options: Option<&Value>,
-    description: &str,
+    template: &FormTemplate,
+    data: &Value,
+    render: Option<&Value>,
+    options: &BindOptions,
 ) -> FormResult<String> {
-    let model = render_model(fields, None, options)?;
-    render_form_html(fields, buttons, description, language, &model)
+    let fields = crate::bind_form(template, data, options)?;
+    let buttons = crate::bind_buttons(template, data, options)?;
+    let language = crate::binding::bindable_language(template, data, options)?;
+    let description = crate::util::translate(template.description.as_ref(), language);
+    let model = render_model(&fields, None, render)?;
+    render_form_html(&fields, &buttons, &description, language, &model)
 }

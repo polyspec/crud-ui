@@ -140,7 +140,7 @@ pub fn form_buttons_html(buttons: &Value) -> FormResult<String> {
 }
 
 /// The language of a binding, once the record is an object and the template a form template.
-fn bindable_language<'a>(
+pub(crate) fn bindable_language<'a>(
     template: &FormTemplate,
     data: &Value,
     options: &'a BindOptions,

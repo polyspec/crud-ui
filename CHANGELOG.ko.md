@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 4f4095121475f5a12f7b5d7290875b76feadb472f8227b0bb1bd018e7bfeebca -->
+<!-- source-sha256: 70a461563248ccf35ddc963536ee166efb0ea9cc79bc62e20bd88fbf5c73ac91 -->
 
 ## Unreleased
 
+- CUMK-073: Rust `render_form_view(template, data, render, options)`는 아무도 검사하지 않던 원시 노드·버튼·언어·설명 대신 컴파일한 템플릿, 데이터, 바인딩 옵션을 받아 노드와 버튼을 직접 바인딩합니다. 노드 형태는 컴파일에서 한 번만 검사하며, generator 계약이 이 변경을 기록합니다(CUMK-073).
 - CUVR-095: Rust 검증은 문자열도 문자열 목록도 아닌 `accept` 매개변수를 `INVALID_RULE_PARAMETER`로 거절하고, 객체가 아닌 항목이 있는 목록 값과 문자열·목록·객체가 아닌 값을 통과시키던 대신 `accept` 실패로 처리합니다(CUVR-016, CUVR-095).
 - N-3: Rust crate는 JSON 라이브러리를 `https://github.com/polyspec/json.git`의 crate `polyspec-json`(라이브러리 `polyspec_json`)으로 받습니다. json 저장소가 코어에 붙인 이름입니다. 계약은 `json_value`의 라이브러리를 `json`으로 적고, CUIT-022, CUIT-040, CURP-030이 그 이름을 씁니다(N-3).
 - CUSC-092: 문서가 객체가 아닌 합성 파일을 가리키는 `$ref`는 `REF_FORMAT_ERROR`와 파일 키로 실패합니다. Rust 메모리 로더는 그런 파일을 버려 없는 파일로 읽던 대신 모든 항목을 보관합니다(CUSC-092).

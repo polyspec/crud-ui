@@ -218,22 +218,20 @@ pub fn render_form(form: &Form, options: Option<&JsonValue>) -> FormResult<Strin
 
 /// [`crate::render_form_view`] at the boundary.
 pub fn render_form_view(
-    fields: &[JsonValue],
-    buttons: &[JsonValue],
-    language: &str,
-    options: Option<&JsonValue>,
-    description: &str,
+    template: &FormTemplate,
+    data: &JsonValue,
+    render: Option<&JsonValue>,
+    options: &BindOptions,
 ) -> FormResult<String> {
-    let options = match options {
-        Some(options) => Some(enter("options", options)?),
+    let render = match render {
+        Some(render) => Some(enter("render", render)?),
         None => None,
     };
     crate::render_form_view(
-        &enter_list("fields", fields)?,
-        &enter_list("buttons", buttons)?,
-        language,
-        options.as_ref(),
-        description,
+        template,
+        &enter("data", data)?,
+        render.as_ref(),
+        &options.core(),
     )
 }
 
