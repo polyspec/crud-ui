@@ -4388,6 +4388,55 @@
     "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"pass\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:pass\">Pass</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><textarea class=\"valid-target crudui-input crudui-input--condition\" data-crudui-value=\"json\" data-default=\"\" data-name=\"pass\" data-rule-name=\"pass\" id=\"crudui:pass\" name=\"pass\" rows=\"5\">{\"any\":[{\"all\":[{\"field\":\"clues.size\",\"op\":\"ge\",\"value\":2},{\"op\":\"in\",\"value\":[\"a\",0.5,-1e-7,1e+21,true],\"field\":\"mood\"}]},{\"judge\":\"Jian says \\\"yes\\\" \\\\ no\\n\\ttab \\u0001 \\u001f  한글   &lt;b&gt;&amp;amp;&lt;/b&gt;\"}]}</textarea></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"Form actions\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">Save</button></div></div></div>"
   },
   {
+    "name": "condition-integer-beyond-safe",
+    "note": "an integer beyond 2^53 in a condition tree is the double that ECMAScript reads for it (CURP-028): 9007199254740993 is written 9007199254740992, -9007199254740993 is written -9007199254740992 and 12345678901234567890 is written 12345678901234567000.",
+    "requirements": [
+      "CUMK-001",
+      "CUMK-002",
+      "CUMK-003",
+      "CUMK-010",
+      "CUMK-011",
+      "CUMK-066",
+      "CURP-028"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "pass": {
+          "type": "condition",
+          "label": "Pass",
+          "validate": {
+            "required": true,
+            "conditionTree": "judge"
+          }
+        }
+      }
+    },
+    "data": {
+      "pass": {
+        "any": [
+          {
+            "field": "n",
+            "op": "eq",
+            "value": 9007199254740993
+          },
+          {
+            "field": "m",
+            "op": "in",
+            "value": [
+              -9007199254740993,
+              12345678901234567890
+            ]
+          }
+        ]
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"pass\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:pass\">Pass</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><textarea class=\"valid-target crudui-input crudui-input--condition\" data-crudui-value=\"json\" data-default=\"\" data-name=\"pass\" data-rule-name=\"pass\" id=\"crudui:pass\" name=\"pass\" rows=\"5\">{\"any\":[{\"field\":\"n\",\"op\":\"eq\",\"value\":9007199254740992},{\"field\":\"m\",\"op\":\"in\",\"value\":[-9007199254740992,12345678901234567000]}]}</textarea></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"Form actions\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">Save</button></div></div></div>"
+  },
+  {
     "name": "condition-default",
     "note": "condition without data → the JSON text of default as the text and as data-default.",
     "requirements": [

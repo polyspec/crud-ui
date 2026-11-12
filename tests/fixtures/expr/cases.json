@@ -904,6 +904,226 @@
     ]
   },
   {
+    "name": "cmp-eq-string-non-ascii",
+    "expr": ".city == 'Zürich'",
+    "requirements": [
+      "CUXP-001",
+      "CUXP-004",
+      "CUXP-005",
+      "CUXP-009",
+      "CUXP-016",
+      "CUXP-017",
+      "CUXP-022",
+      "CUXP-023",
+      "CUXP-024"
+    ],
+    "tokens": [
+      {
+        "type": "DOT",
+        "value": ".",
+        "literal": null
+      },
+      {
+        "type": "IDENTIFIER",
+        "value": "city",
+        "literal": "city"
+      },
+      {
+        "type": "EQ",
+        "value": "==",
+        "literal": null
+      },
+      {
+        "type": "STRING",
+        "value": "'Zürich'",
+        "literal": "Zürich"
+      },
+      {
+        "type": "EOF",
+        "value": "",
+        "literal": null
+      }
+    ],
+    "ast": {
+      "type": "Binary",
+      "operator": "==",
+      "left": {
+        "type": "Path",
+        "relative": true,
+        "levelsUp": 0,
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "city"
+          }
+        ]
+      },
+      "right": {
+        "type": "Literal",
+        "valueType": "string",
+        "value": "Zürich"
+      }
+    },
+    "cases": [
+      {
+        "data": {
+          "city": "Zürich"
+        },
+        "value": true,
+        "truthy": true
+      },
+      {
+        "data": {
+          "city": "ZÃ¼rich"
+        },
+        "value": false,
+        "truthy": false
+      }
+    ]
+  },
+  {
+    "name": "string-escape-non-ascii",
+    "expr": ".a == '\\é'",
+    "requirements": [
+      "CUXP-001",
+      "CUXP-004",
+      "CUXP-005",
+      "CUXP-009",
+      "CUXP-016",
+      "CUXP-017",
+      "CUXP-022",
+      "CUXP-023",
+      "CUXP-024"
+    ],
+    "tokens": [
+      {
+        "type": "DOT",
+        "value": ".",
+        "literal": null
+      },
+      {
+        "type": "IDENTIFIER",
+        "value": "a",
+        "literal": "a"
+      },
+      {
+        "type": "EQ",
+        "value": "==",
+        "literal": null
+      },
+      {
+        "type": "STRING",
+        "value": "'é'",
+        "literal": "é"
+      },
+      {
+        "type": "EOF",
+        "value": "",
+        "literal": null
+      }
+    ],
+    "ast": {
+      "type": "Binary",
+      "operator": "==",
+      "left": {
+        "type": "Path",
+        "relative": true,
+        "levelsUp": 0,
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "a"
+          }
+        ]
+      },
+      "right": {
+        "type": "Literal",
+        "valueType": "string",
+        "value": "é"
+      }
+    },
+    "cases": [
+      {
+        "data": {
+          "a": "é"
+        },
+        "value": true,
+        "truthy": true
+      }
+    ]
+  },
+  {
+    "name": "cmp-eq-integer-beyond-safe",
+    "expr": ".n == 9007199254740992",
+    "requirements": [
+      "CUXP-001",
+      "CUXP-004",
+      "CUXP-006",
+      "CUXP-009",
+      "CUXP-016",
+      "CUXP-017",
+      "CUXP-022",
+      "CUXP-023",
+      "CURP-028"
+    ],
+    "tokens": [
+      {
+        "type": "DOT",
+        "value": ".",
+        "literal": null
+      },
+      {
+        "type": "IDENTIFIER",
+        "value": "n",
+        "literal": "n"
+      },
+      {
+        "type": "EQ",
+        "value": "==",
+        "literal": null
+      },
+      {
+        "type": "NUMBER",
+        "value": "9007199254740992",
+        "literal": 9007199254740992
+      },
+      {
+        "type": "EOF",
+        "value": "",
+        "literal": null
+      }
+    ],
+    "ast": {
+      "type": "Binary",
+      "operator": "==",
+      "left": {
+        "type": "Path",
+        "relative": true,
+        "levelsUp": 0,
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "n"
+          }
+        ]
+      },
+      "right": {
+        "type": "Literal",
+        "valueType": "number",
+        "value": 9007199254740992
+      }
+    },
+    "cases": [
+      {
+        "data": {
+          "n": 9007199254740993
+        },
+        "value": true,
+        "truthy": true
+      }
+    ]
+  },
+  {
     "name": "cmp-eq-unquoted-ident",
     "expr": ".status == draft",
     "requirements": [
