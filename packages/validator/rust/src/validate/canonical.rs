@@ -37,11 +37,11 @@ pub fn canonical_text(value: &Value) -> Option<Cow<'_, str>> {
     }
 }
 
-/// ECMAScript `Number::toString(x)` with radix 10 (CUVR-021): the float text of ordered-json, the one
+/// ECMAScript `Number::toString(x)` with radix 10 (CUVR-021): the float text of polyspec-json, the one
 /// float-to-text function of polyspec (C-1), for a finite number, and `NaN`, `Infinity` and
 /// `-Infinity` for the others, which no JSON value holds.
 pub fn number_text(x: f64) -> String {
-    match polyspec_ordered_json::number_text(x) {
+    match polyspec_json::number_text(x) {
         Ok(text) => text,
         Err(_) if x.is_nan() => "NaN".to_owned(),
         Err(_) if x > 0.0 => "Infinity".to_owned(),

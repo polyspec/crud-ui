@@ -1,5 +1,5 @@
 //! The public boundary of the generator for the bindings (CURP-030): JSON values cross it as
-//! ordered-json values. A value that enters is checked by the input text rules of its argument and
+//! polyspec-json values. A value that enters is checked by the input text rules of its argument and
 //! read with its members in order and its numbers as ECMAScript doubles; a value that leaves is
 //! written with its members in order and its numbers as `Number::toString` writes their doubles.
 //! Every operation here runs the operation of the same name of the crate.
@@ -7,7 +7,7 @@
 use bindgen_core::OrderedMap;
 use polyspec_crud_ui_validator::boundary::{input, output, specification};
 use polyspec_crud_ui_validator::{FormInputError, ValidateError};
-use polyspec_ordered_json::Value as JsonValue;
+use polyspec_json::Value as JsonValue;
 use serde_json::{Map, Value};
 
 use crate::{
@@ -550,11 +550,7 @@ mod tests {
     use super::*;
 
     fn json(text: &str) -> JsonValue {
-        polyspec_ordered_json::parse(
-            text.as_bytes(),
-            &polyspec_ordered_json::ParseOptions::default(),
-        )
-        .unwrap()
+        polyspec_json::parse(text.as_bytes(), &polyspec_json::ParseOptions::default()).unwrap()
     }
 
     /// CURP-030: the boundary renders the instance that the crate renders, and data leaves with its

@@ -16,7 +16,7 @@ polyspec-bindgen-core = { git = "https://github.com/polyspec/bindgen.git", branc
 # The owner of the value type json_value of the interface contract (F-1 (a), C-10): Cargo resolves the package whose
 # interface.json the contract check reads (bindgen design I-1, T-3). The JSON reading and writing of the crate move to it
 # in the C-1 change of C-10.
-polyspec-ordered-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
+polyspec-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
 polyspec-crud-ui-validator = { path = "../../validator/rust", version = "0.0.20" }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }

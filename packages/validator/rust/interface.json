@@ -45,7 +45,7 @@
   },
   "types": {
     "json_value": {
-      "library": "ordered-json",
+      "library": "json",
       "unit": "value"
     }
   },
@@ -631,7 +631,7 @@
     {
       "id": "json-values",
       "rule": "CURP-030",
-      "reason": "CURP-030: specifications, data and files cross as ordered-json values instead of native arrays, objects and stdClass, so member order and the difference between an empty object and an empty list never depend on the language",
+      "reason": "CURP-030: specifications, data and files cross as json values instead of native arrays, objects and stdClass, so member order and the difference between an empty object and an empty list never depend on the language",
       "symbol": "spec, data, files",
       "from": {
         "php": "array|\\stdClass $spec",

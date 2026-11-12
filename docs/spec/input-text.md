@@ -61,7 +61,7 @@ beyond its limits when:
 - **CUIT-021** it holds more than 1,000,000 nodes, where each array, object, string, number, boolean and
   `null` of the tree is a node, the value itself included; or
 - **CUIT-022** it nests more than 256 levels of arrays and objects, the value itself being the first level. 256 is the
-  reading limit of the JSON reader ([ordered-json](https://github.com/polyspec/ordered-json)), so every value that a runtime
+  reading limit of the JSON reader ([json](https://github.com/polyspec/json)), so every value that a runtime
   accepts can also be written and read as JSON text.
 
 A value that contains itself nests without end, so it is always beyond them. The walk stops at
@@ -136,9 +136,9 @@ A value beyond the value limits is an input failure in every argument and option
 - **CUIT-039** PHP: `Polyspec\Crudui\Validator\Support\JsonText::decode` returns what
   `json_decode($json, false, 512, JSON_THROW_ON_ERROR)` returns and keeps an escaped surrogate as
   its three bytes. The class has no dependencies.
-- **CUIT-040** Rust: `polyspec_crud_ui_validator::text::JsonText` reads the text with the reader of ordered-json, which
+- **CUIT-040** Rust: `polyspec_crud_ui_validator::text::JsonText` reads the text with the reader of polyspec-json, which
   refuses a repeated member name and keeps an unpaired surrogate escape as its code unit, without replacing anything.
-  The JSON texts that the Rust core writes take their string and number tokens from the writer of ordered-json.
+  The JSON texts that the Rust core writes take their string and number tokens from the writer of polyspec-json.
   `validate_text`, `validate_list_text` and `validate_detail_text` run the validation entries
   over it, and `polyspec_crud_ui_generator::text` holds the checks of the generation entries.
 

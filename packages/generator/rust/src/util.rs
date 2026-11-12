@@ -70,8 +70,8 @@ fn number_string(number: &serde_json::Number) -> String {
 }
 
 /// The JSON text of a value as ECMAScript `JSON.stringify` writes it (CUMK-066): members in order,
-/// no whitespace, each string as the string token of ordered-json and each number as its double
-/// (CURP-028); the tokens are those of the serializer of ordered-json (C-1).
+/// no whitespace, each string as the string token of polyspec-json and each number as its double
+/// (CURP-028); the tokens are those of the serializer of polyspec-json (C-1).
 pub(crate) fn json_text(value: &Value) -> String {
     let mut out = String::new();
     write_json(&mut out, value);
@@ -123,9 +123,9 @@ fn write_pretty(out: &mut String, value: &Value, level: usize) {
     }
 }
 
-/// The string token of a text, as ordered-json writes it.
+/// The string token of a text, as polyspec-json writes it.
 pub(crate) fn string_token(text: &str) -> String {
-    polyspec_ordered_json::Value::string(text).raw().to_owned()
+    polyspec_json::Value::string(text).raw().to_owned()
 }
 
 /// Write the JSON text of a value; see [`json_text`].

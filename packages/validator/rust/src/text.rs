@@ -86,15 +86,15 @@ impl fmt::Display for JsonTextError {
 impl std::error::Error for JsonTextError {}
 
 impl JsonText {
-    /// Read one JSON document with the reader of ordered-json (C-1): its grammar (RFC 8259), its
+    /// Read one JSON document with the reader of polyspec-json (C-1): its grammar (RFC 8259), its
     /// nesting limit of 256 levels (CUIT-022), and a repeated member name refused, keeping every
     /// string as written, an unpaired surrogate escape included.
     pub fn parse(text: &str) -> Result<JsonText, JsonTextError> {
-        let options = polyspec_ordered_json::ParseOptions {
+        let options = polyspec_json::ParseOptions {
             max_depth: None,
             reject_duplicates: Some(true),
         };
-        let value = polyspec_ordered_json::parse(text.as_bytes(), &options).map_err(text_error)?;
+        let value = polyspec_json::parse(text.as_bytes(), &options).map_err(text_error)?;
         from_ordered(&value)
     }
 
@@ -161,7 +161,7 @@ impl JsonText {
 }
 
 /// The failure of a JSON text at the offset that the reader reports.
-fn text_error(error: polyspec_ordered_json::Error) -> JsonTextError {
+fn text_error(error: polyspec_json::Error) -> JsonTextError {
     let offset = match error.offset().map(usize::try_from) {
         Some(Ok(offset)) => offset,
         // A failure without an offset, or one beyond usize, is placed at the end of the text.
@@ -171,10 +171,10 @@ fn text_error(error: polyspec_ordered_json::Error) -> JsonTextError {
 }
 
 /// A JSON string of the UTF-16 code units of a string value: text when they are valid UTF-16.
-fn json_string(value: &polyspec_ordered_json::Value) -> Result<JsonString, JsonTextError> {
+fn json_string(value: &polyspec_json::Value) -> Result<JsonString, JsonTextError> {
     let mut units = Vec::new();
     for unit in value.string_units().map_err(text_error)? {
-        // ordered-json gives UTF-16 code units, each below 65536.
+        // polyspec-json gives UTF-16 code units, each below 65536.
         match u16::try_from(unit) {
             Ok(unit) => units.push(unit),
             Err(_) => return Err(JsonTextError { offset: usize::MAX }),
@@ -186,11 +186,9 @@ fn json_string(value: &polyspec_ordered_json::Value) -> Result<JsonString, JsonT
     })
 }
 
-/// The JSON text value of a value that ordered-json read.
-pub(crate) fn from_ordered(
-    value: &polyspec_ordered_json::Value,
-) -> Result<JsonText, JsonTextError> {
-    use polyspec_ordered_json::Kind;
+/// The JSON text value of a value that polyspec-json read.
+pub(crate) fn from_ordered(value: &polyspec_json::Value) -> Result<JsonText, JsonTextError> {
+    use polyspec_json::Kind;
     Ok(match value.kind() {
         Kind::Null => JsonText::Null,
         Kind::Boolean => JsonText::Bool(value.boolean_value().map_err(text_error)?),

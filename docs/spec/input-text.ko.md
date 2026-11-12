@@ -1,6 +1,6 @@
 # 입력 텍스트
 <!-- doc-id: docs-spec-input-text -->
-<!-- source-sha256: 8b84702e1498f04c4c24c83403cceb70f0a496898eca4f23bc5a109436ca5219 -->
+<!-- source-sha256: ab8750d5cc1a93dc8ea0ed20815fe657790a60cb9fd5e1f7d1c9e0592df23cd1 -->
 
 [English](input-text.md).
 
@@ -60,7 +60,7 @@ JavaScript 배열과 객체, PHP 배열과 객체, Go 맵, 슬라이스, 순서 
 - **CUIT-021** 노드가 1,000,000개보다 많은 값. 트리의 배열, 객체, 문자열, 숫자, 불리언, `null`이 각각 노드이며
   값 자신도 포함합니다
 - **CUIT-022** 배열과 객체가 256단계보다 깊이 중첩된 값. 값 자신이 첫 단계입니다. 256은 JSON 읽기
-  ([ordered-json](https://github.com/polyspec/ordered-json))의 읽기 한도이므로, 런타임이 받는 모든 값은 JSON 텍스트로 쓰고 다시 읽을 수 있습니다
+  ([json](https://github.com/polyspec/json))의 읽기 한도이므로, 런타임이 받는 모든 값은 JSON 텍스트로 쓰고 다시 읽을 수 있습니다
 
 자기 자신을 담는 값은 끝없이 중첩되므로 언제나 한도를 넘습니다. 순회는 순서상 첫 실패에서
 멈추므로, 값이 어떤 트리를 나타내든 노드를 최대 1,000,001개만 방문합니다. 한도보다 먼저 만난
@@ -128,9 +128,9 @@ PHP 라이브러리의 값 복사와 확장의 값 변환은 변환하는 모든
 - **CUIT-039** PHP: `Polyspec\Crudui\Validator\Support\JsonText::decode`는
   `json_decode($json, false, 512, JSON_THROW_ON_ERROR)`와 같은 값을 반환하고, 이스케이프된
   서로게이트를 3바이트로 보존합니다. 이 클래스는 의존성이 없습니다.
-- **CUIT-040** Rust: `polyspec_crud_ui_validator::text::JsonText`는 ordered-json의 읽기로 아무것도 바꾸지 않고 텍스트를
+- **CUIT-040** Rust: `polyspec_crud_ui_validator::text::JsonText`는 polyspec-json의 읽기로 아무것도 바꾸지 않고 텍스트를
   읽습니다. 반복된 멤버 이름은 거부하고, 짝 없는 서로게이트 이스케이프는 그 코드 단위로 유지합니다. Rust 코어가 쓰는
-  JSON 텍스트의 문자열·숫자 토큰은 ordered-json의 쓰기에서 옵니다.
+  JSON 텍스트의 문자열·숫자 토큰은 polyspec-json의 쓰기에서 옵니다.
   `validate_text`, `validate_list_text`, `validate_detail_text`는 이 값으로 검증 진입점을 실행하고,
   `polyspec_crud_ui_generator::text`는 생성 진입점의 검사를 제공합니다.
 

@@ -1,10 +1,10 @@
 //! The public boundary of the validator for the bindings (CURP-030): JSON values cross it as
-//! ordered-json values, which are checked by the input text rules of their argument and read with
-//! their members in order and their numbers as ECMAScript doubles; results leave as ordered-json
+//! polyspec-json values, which are checked by the input text rules of their argument and read with
+//! their members in order and their numbers as ECMAScript doubles; results leave as polyspec-json
 //! values. Every operation here runs the operation of the same name of the crate.
 
 use bindgen_core::OrderedMap;
-use polyspec_ordered_json::Value as JsonValue;
+use polyspec_json::Value as JsonValue;
 use serde_json::Value;
 
 use crate::text::{
@@ -49,8 +49,8 @@ pub struct ValidationResult {
     pub hidden: Vec<String>,
 }
 
-/// The JSON text value of a boundary value. ordered-json values hold only what JSON text holds, so
-/// the conversion fails only on a broken invariant of ordered-json.
+/// The JSON text value of a boundary value. polyspec-json values hold only what JSON text holds, so
+/// the conversion fails only on a broken invariant of polyspec-json.
 pub(crate) fn text_of(value: &JsonValue) -> Result<JsonText, ValidateError> {
     from_ordered(value).map_err(|error| {
         ValidateError::Input(FormInputError::new(format!(
@@ -114,7 +114,7 @@ pub fn output(value: &Value) -> Result<JsonValue, FormInputError> {
             JsonValue::array(&items).map_err(result_error)?
         }
         Value::Object(members) => {
-            let mut map = polyspec_ordered_json::OrderedMap::new();
+            let mut map = polyspec_json::OrderedMap::new();
             for (key, member) in members {
                 map.insert(JsonValue::string(key), output(member)?)
                     .map_err(|error| FormInputError::new(error.message()))?;
@@ -125,10 +125,10 @@ pub fn output(value: &Value) -> Result<JsonValue, FormInputError> {
 }
 
 /// The failure of a value that leaves the boundary: beyond 256 levels it is the value limit of the
-/// result (CURP-030), and any other refusal of ordered-json keeps its message.
-fn result_error(error: polyspec_ordered_json::Error) -> FormInputError {
+/// result (CURP-030), and any other refusal of polyspec-json keeps its message.
+fn result_error(error: polyspec_json::Error) -> FormInputError {
     match error {
-        polyspec_ordered_json::Error::MaximumDepthExceeded { .. } => {
+        polyspec_json::Error::MaximumDepthExceeded { .. } => {
             FormInputError::new(format!("{VALUE_LIMIT_MESSAGE}: result"))
         }
         other => FormInputError::new(other.message()),
@@ -209,11 +209,7 @@ mod tests {
     use super::*;
 
     fn json(text: &str) -> JsonValue {
-        polyspec_ordered_json::parse(
-            text.as_bytes(),
-            &polyspec_ordered_json::ParseOptions::default(),
-        )
-        .unwrap()
+        polyspec_json::parse(text.as_bytes(), &polyspec_json::ParseOptions::default()).unwrap()
     }
 
     /// CURP-030: members keep their order and numbers leave as ECMAScript doubles.

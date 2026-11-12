@@ -188,7 +188,7 @@ fn placeholder_option() -> Value {
     json!({"value":"","label":"select","selected":false,"isDefault":false})
 }
 
-/// A string literal of a script: the string token of ordered-json with `<`, U+2028 and U+2029
+/// A string literal of a script: the string token of polyspec-json with `<`, U+2028 and U+2029
 /// escaped, so the literal cannot end a script element or a line of the script.
 fn script_string(value: &str) -> String {
     string_token(value)
