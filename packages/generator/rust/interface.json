@@ -1702,10 +1702,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2180,10 +2176,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -3407,6 +3399,71 @@
       "member": "generator.render_detail",
       "file": "tests/fixtures/detail-render/cases.json",
       "group": "cases"
+    },
+    {
+      "member": "generator.compile_form",
+      "file": "contracts/generator-cases.json",
+      "group": "compile_form"
+    },
+    {
+      "member": "generator.build_outline",
+      "file": "contracts/generator-cases.json",
+      "group": "build_outline"
+    },
+    {
+      "member": "generator.render_outline_view",
+      "file": "contracts/generator-cases.json",
+      "group": "render_outline_view"
+    },
+    {
+      "member": "generator.render_data_panel",
+      "file": "contracts/generator-cases.json",
+      "group": "render_data_panel"
+    },
+    {
+      "member": "generator.form_buttons_html",
+      "file": "contracts/generator-cases.json",
+      "group": "form_buttons_html"
+    },
+    {
+      "member": "generator.resolve_action",
+      "file": "contracts/generator-cases.json",
+      "group": "resolve_action"
+    },
+    {
+      "member": "generator.initial_view",
+      "file": "contracts/generator-cases.json",
+      "group": "initial_view"
+    },
+    {
+      "member": "generator.collapsible_rows",
+      "file": "contracts/generator-cases.json",
+      "group": "collapsible_rows"
+    },
+    {
+      "member": "generator.set_all_expanded_view",
+      "file": "contracts/generator-cases.json",
+      "group": "set_all_expanded_view"
+    },
+    {
+      "member": "generator.empty_history",
+      "file": "contracts/generator-cases.json",
+      "group": "empty_history"
+    },
+    {
+      "member": "generator.sequence_row_key",
+      "file": "contracts/generator-cases.json",
+      "group": "sequence_row_key"
+    },
+    {
+      "member": "generator.create_row_key",
+      "file": "contracts/generator-cases.json",
+      "group": "create_row_key"
+    },
+    {
+      "member": "form_template.from_json",
+      "file": "contracts/generator-cases.json",
+      "group": "from_json"
     }
   ]
 }

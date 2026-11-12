@@ -1,12 +1,19 @@
 # CRUDUI 계약 manifest
 <!-- doc-id: contracts-readme -->
-<!-- source-sha256: a7a5ff7bd6393eecae4fc4aa135fa9a0b0af4caaeb00a68d9c8d0c6abe41d3bc -->
+<!-- source-sha256: ff26193c237c3a29d50063aabdf767c9479e70d0142847883bcb428fdbd94b58 -->
 
 [English](README.md).
 
 [`features.json`](features.json)은 각 기능과 담당 패키지, 입력, 출력, 상태 변경,
 오류, 지원 행렬, 테스트, 문서를 연결합니다. manifest는 widget이나 검증
 목록을 복사하지 않습니다. 해당 목록은 실제 registry와 schema에서 계속 생성합니다.
+
+[`generator-cases.json`](generator-cases.json)과 [`validator-cases.json`](validator-cases.json)은 인터페이스 계약
+(`packages/<component>/rust/interface.json`)의 member 가운데 `tests/fixtures`의 fixture가 다른 형식의 규칙 corpus(단계의 세션,
+field map, 인스턴스가 렌더링하는 명세)인 member의 계약 case입니다. member 이름을 딴 각 group은 case마다 member를 한 번
+부르며, 인수는 매개변수 이름으로 적고 각 `json_value`는 `{ "kind", "value" }`로 씁니다(binding G-5). 성공하는 case 몇 건과
+member가 내는 kind마다 `raises`를 가진 case 한 건씩입니다. 이 case는 `tests/fixtures`에 남는 규칙 corpus의 사본이 아니며, 각
+crate의 Rust 시험 `contract_cases`가 경계에서 실행합니다.
 
 저장소 루트에서 manifest를 검사합니다.
 

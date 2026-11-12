@@ -134,7 +134,8 @@
     {
       "paths": [
         "legacy/packages/validator/go/**",
-        "packages/validator/rust/**"
+        "packages/validator/rust/**",
+        "contracts/validator-cases.json"
       ],
       "targets": [
         "crudui-test-validators"
@@ -234,6 +235,7 @@
       "paths": [
         "legacy/packages/generator/{php,go}/**",
         "packages/generator/rust/**",
+        "contracts/generator-cases.json",
         "legacy/packages/php-ext/**",
         "legacy/tests/native-generators/**"
       ],
@@ -905,7 +907,8 @@
         "tests/fixtures/**",
         "contracts/schema/crudui.schema.json",
         "contracts/unicode-properties.json",
-        "legacy/tests/fixtures/**"
+        "legacy/tests/fixtures/**",
+        "contracts/validator-cases.json"
       ]
     },
     {
@@ -917,7 +920,8 @@
         "legacy/packages/validator/php/**",
         "legacy/tests/native-generators/**",
         "tests/fixtures/**",
-        "legacy/tests/fixtures/**"
+        "legacy/tests/fixtures/**",
+        "contracts/generator-cases.json"
       ]
     },
     {
@@ -951,7 +955,8 @@
       "paths": [
         "legacy/examples/cross-check-console/**",
         "legacy/packages/validator/{ts,php,go}/**",
-        "packages/validator/rust/**"
+        "packages/validator/rust/**",
+        "contracts/validator-cases.json"
       ]
     },
     {

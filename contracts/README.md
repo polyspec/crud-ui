@@ -8,6 +8,14 @@ input, output, state changes, errors, support matrix, tests and documentation.
 The manifest does not copy widget or validation catalogs. Those catalogs remain
 derived from the live registries and schema.
 
+[`generator-cases.json`](generator-cases.json) and [`validator-cases.json`](validator-cases.json) are the contract
+cases of the members of the interface contracts (`packages/<component>/rust/interface.json`) whose fixtures in
+`tests/fixtures` are a rule corpus of another form: sessions of steps, field maps or specifications that an instance
+renders. Each group, named after its member, calls the member once per case with the arguments that the case names by
+their parameter names, each `json_value` written as `{ "kind", "value" }` (binding G-5): a few cases that succeed and one
+case for each kind that the member raises, under `raises`. They are no copy of the rule corpus, which stays in
+`tests/fixtures`, and the Rust test `contract_cases` of each crate runs them at the boundary.
+
 Validate the manifest from the repository root:
 
 ```sh

@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 05bbd99ca8b62ec4eb63b3cabf2a953d0c6bc8629d29a5935106e03375403208 -->
+<!-- source-sha256: 0490309153f5f7f48edd9544aaec7557a8b519d14a133b49bafd97d25b043a3f -->
 
 ## Unreleased
 
+- G-5: `contracts/generator-cases.json`과 `contracts/validator-cases.json`은 fixture가 다른 형식의 규칙 corpus인 member의 계약 case를 담습니다: `compile_form`, `form_template.from_json`, `build_outline`, `render_outline_view`, `render_data_panel`, `form_buttons_html`, `resolve_action`, `initial_view`, `collapsible_rows`, `set_all_expanded_view`, `empty_history`, `sequence_row_key`, `create_row_key`, `hidden_paths`. 각 case는 member를 한 번 부르고 member가 내는 kind마다 case가 하나씩 있으며, 각 crate의 Rust 시험 `contract_cases`가 경계에서 실행합니다. 계약은 컴파일이 내지 않는 규칙과 금지 키의 kind를 `compile_form`의 raises에서 뺍니다(G-5).
 - G-5: 목록·상세 렌더링 case인 `tests/fixtures/list-render`, `detail-render`를 binding 생성 시험의 case 형식으로 쓰고, 레코드 `options`는 모든 필드를 적습니다. 행이 목록이 아닌 목록 case는 계약이 가리키지 않는 group `row_shapes`에 둡니다. generator 계약은 이 case만 가리킵니다. 다른 family는 단계의 세션을 담거나 member에 class handle을 주는데 case는 그것을 줄 수 없고, `form-state`에는 case 파일이 없습니다. legacy TypeScript 구현으로 실행하는 fixture 생성기는 legacy 구현의 도구이며 실행하지 않습니다(G-5).
 - C16.1: `legacy/` 아래 네이티브 생성기 검사기에서 Rust 대상을 뺍니다. Rust 코어는 `legacy/tests/fixtures`를 고정한 뒤 바뀐 규칙을 따르므로 그 사본 위의 비교는 의미가 없고, Rust 코어는 자기 시험이 `tests/fixtures`로 검사합니다(C16.1).
 - C16.1: legacy TypeScript 코어로 실행하는 react, vue, svelte, form-binding의 suite는 `legacy/tests/fixtures`를 읽습니다(C16.1).

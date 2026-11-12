@@ -922,6 +922,11 @@
   ],
   "cases": [
     {
+      "member": "validator.hidden_paths",
+      "file": "contracts/validator-cases.json",
+      "group": "hidden_paths"
+    },
+    {
       "member": "validator.validate",
       "file": "tests/fixtures/validate/cases.json",
       "group": "cases"

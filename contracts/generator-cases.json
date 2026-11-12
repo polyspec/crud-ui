@@ -1,0 +1,976 @@
+{
+  "comment": "The contract cases of the generator (binding G-5): each case calls its member once with the arguments that it names by their parameter names, each json_value written as {kind, value}. A case without raises succeeds; raises names the kind of the failure. The rules themselves are tested by the shared fixtures of tests/fixtures.",
+  "compile_form": [
+    {
+      "id": "compiles_a_form",
+      "note": "a form with one text field compiles.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "key_prefix": null
+      }
+    },
+    {
+      "id": "compiles_a_reference",
+      "note": "a field map of a file of options.files is composed.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {
+          "base.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "properties",
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "a",
+                      {
+                        "kind": "map",
+                        "value": [
+                          [
+                            "type",
+                            {
+                              "kind": "text",
+                              "value": "text"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "basepath": "",
+        "key_prefix": null
+      }
+    },
+    {
+      "id": "ref_file_not_found",
+      "note": "a reference to a file that options.files does not hold.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "missing.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "ref_file_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_format_error",
+      "note": "an empty reference path.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": ""
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "ref_format_error",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_detect_key_not_found",
+      "note": "a file without the properties that the reference reads.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {
+          "base.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "fields",
+                {
+                  "kind": "map",
+                  "value": []
+                }
+              ]
+            ]
+          }
+        },
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "ref_detect_key_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_cycle",
+      "note": "two files that reference each other.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "a.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {
+          "a.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "properties",
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "$ref",
+                      {
+                        "kind": "text",
+                        "value": "b.yml"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          },
+          "b.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "properties",
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "$ref",
+                      {
+                        "kind": "text",
+                        "value": "a.yml"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "ref_cycle",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_value_type",
+      "note": "a reference that is no text.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "number",
+                    "value": "5"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "ref_value_type",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_shape",
+      "note": "a patch that is no object.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "text",
+                    "value": "x"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {
+          "base.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "properties",
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "a",
+                      {
+                        "kind": "map",
+                        "value": [
+                          [
+                            "type",
+                            {
+                              "kind": "text",
+                              "value": "text"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "patch_shape",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_path_conflict",
+      "note": "a patch that names a path below a value that is no object.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "a.type.x",
+                        {
+                          "kind": "text",
+                          "value": "y"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {
+          "base.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "properties",
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "a",
+                      {
+                        "kind": "map",
+                        "value": [
+                          [
+                            "type",
+                            {
+                              "kind": "text",
+                              "value": "text"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "patch_path_conflict",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_remove_target_missing",
+      "note": "a patch that removes a member that the file does not hold.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "remove",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "text",
+                              "value": "ghost.subkey"
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {
+          "base.yml": {
+            "kind": "map",
+            "value": [
+              [
+                "properties",
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "a",
+                      {
+                        "kind": "map",
+                        "value": [
+                          [
+                            "type",
+                            {
+                              "kind": "text",
+                              "value": "text"
+                            }
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "patch_remove_target_missing",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_text",
+      "note": "a label with an unpaired surrogate.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "\ud800"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "invalid_text",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a specification that is no object.",
+      "spec": {
+        "kind": "list",
+        "value": []
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "key_prefix": null
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ],
+  "build_outline": [
+    {
+      "id": "outlines_no_node",
+      "note": "an outline of no node is empty.",
+      "nodes": []
+    }
+  ],
+  "render_outline_view": [
+    {
+      "id": "renders_an_empty_outline",
+      "note": "the outline view of no field.",
+      "fields": [],
+      "can_undo": false,
+      "can_redo": true,
+      "language": "en"
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a language that the interface text does not hold.",
+      "fields": [],
+      "can_undo": false,
+      "can_redo": false,
+      "language": "xx",
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ],
+  "render_data_panel": [
+    {
+      "id": "renders_the_data",
+      "note": "the data panel of one member.",
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "a",
+            {
+              "kind": "number",
+              "value": "1"
+            }
+          ]
+        ]
+      },
+      "language": "ko"
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a language that the interface text does not hold.",
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "language": "xx",
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ],
+  "form_buttons_html": [
+    {
+      "id": "writes_no_button",
+      "note": "the footer of no button.",
+      "buttons": {
+        "kind": "list",
+        "value": []
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "buttons that are no list.",
+      "buttons": {
+        "kind": "map",
+        "value": []
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ],
+  "resolve_action": [
+    {
+      "id": "resolves_undo",
+      "note": "the action undo names no path.",
+      "input": {
+        "action": "undo",
+        "path": null,
+        "key": null
+      }
+    },
+    {
+      "id": "resolves_no_action",
+      "note": "an input without an action resolves to none.",
+      "input": {
+        "action": null,
+        "path": null,
+        "key": null
+      }
+    }
+  ],
+  "initial_view": [
+    {
+      "id": "initial_view",
+      "note": "the initial view has no collapsed row."
+    }
+  ],
+  "collapsible_rows": [
+    {
+      "id": "no_node",
+      "note": "no node has no collapsible row.",
+      "nodes": []
+    }
+  ],
+  "set_all_expanded_view": [
+    {
+      "id": "expands_no_node",
+      "note": "expanding no node collapses no row.",
+      "nodes": [],
+      "expanded": true
+    }
+  ],
+  "empty_history": [
+    {
+      "id": "empty_history",
+      "note": "the empty history has no entry."
+    }
+  ],
+  "sequence_row_key": [
+    {
+      "id": "pads_a_sequence",
+      "note": "a sequence is padded to 13 digits.",
+      "sequence": "7"
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a sequence that is no decimal digits.",
+      "sequence": "x",
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ],
+  "create_row_key": [
+    {
+      "id": "creates_a_row_key",
+      "note": "a row key of 13 hexadecimal digits; the failure of the random source cannot be given by a case."
+    }
+  ],
+  "from_json": [
+    {
+      "id": "reads_a_compiled_template",
+      "note": "a template that compile_form writes.",
+      "value": {
+        "kind": "map",
+        "value": [
+          [
+            "kind",
+            {
+              "kind": "text",
+              "value": "crudui/form-template"
+            }
+          ],
+          [
+            "fields",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "name",
+                      {
+                        "kind": "text",
+                        "value": "name"
+                      }
+                    ],
+                    [
+                      "spec",
+                      {
+                        "kind": "map",
+                        "value": [
+                          [
+                            "type",
+                            {
+                              "kind": "text",
+                              "value": "text"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    [
+                      "children",
+                      {
+                        "kind": "list",
+                        "value": []
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            "buttons",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "type",
+                      {
+                        "kind": "text",
+                        "value": "submit"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a template without fields.",
+      "value": {
+        "kind": "map",
+        "value": [
+          [
+            "kind",
+            {
+              "kind": "text",
+              "value": "crudui/form-template"
+            }
+          ],
+          [
+            "buttons",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "map",
+                  "value": [
+                    [
+                      "type",
+                      {
+                        "kind": "text",
+                        "value": "submit"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ]
+}

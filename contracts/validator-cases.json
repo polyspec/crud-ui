@@ -1,0 +1,206 @@
+{
+  "comment": "The contract cases of the validator (binding G-5): each case calls its member once with the arguments that it names by their parameter names, each json_value written as {kind, value}. A case without raises succeeds; raises names the kind of the failure. The rules themselves are tested by the shared fixtures of tests/fixtures.",
+  "hidden_paths": [
+    {
+      "id": "hides_a_field",
+      "note": "a field hidden by design.show.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "design",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "show",
+                              {
+                                "kind": "bool",
+                                "value": false
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      }
+    },
+    {
+      "id": "ref_file_not_found",
+      "note": "hidden_paths composes without files.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "raises": {
+        "kind": "ref_file_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_text",
+      "note": "a label with an unpaired surrogate.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "\ud800"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "raises": {
+        "kind": "invalid_text",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "data that is no object.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "list",
+        "value": []
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    }
+  ]
+}

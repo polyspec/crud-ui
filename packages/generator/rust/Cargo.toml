@@ -74,5 +74,9 @@ harness = false
 name = "validity_render"
 harness = false
 
+[[test]]
+name = "contract_cases"
+harness = false
+
 [lints]
 workspace = true

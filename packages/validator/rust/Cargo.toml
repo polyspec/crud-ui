@@ -54,5 +54,9 @@ harness = false
 name = "compose_conformance"
 harness = false
 
+[[test]]
+name = "contract_cases"
+harness = false
+
 [lints]
 workspace = true
