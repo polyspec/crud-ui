@@ -12,6 +12,11 @@ final class Numbers
     /** Format a number with decimal and exponent thresholds matching the form model. */
     public static function string(int|float $number): string
     {
+        // CURP-028: a number is the double that ECMAScript reads for it, so an integer beyond 2^53 is
+        // written as its nearest double.
+        if (is_int($number) && ($number > 9007199254740992 || $number < -9007199254740992)) {
+            $number = (float) $number;
+        }
         if ($number == 0) {
             return '0';
         }

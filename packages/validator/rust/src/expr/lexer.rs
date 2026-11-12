@@ -7,15 +7,16 @@
 //! across 4 languages.
 //!
 //! NO regex-split / no string-split evaluation anywhere (GRAMMAR §10): a single
-//! forward byte scan. Identifiers are ASCII (`[A-Za-z_][A-Za-z0-9_]*`), so
-//! byte-wise scanning is exact.
+//! forward scan over the characters of the source, never its bytes (CUXP-024), so
+//! a string literal keeps every character and a character that starts no token
+//! is one `INVALID` token of that character.
 
 use super::error::ParseError;
 use super::token::{Literal, Token, TokenType};
 
 /// Forward-scanning tokenizer over a single expression string.
 pub struct Lexer {
-    input: Vec<u8>,
+    input: Vec<char>,
     position: usize,
 }
 
@@ -23,7 +24,7 @@ impl Lexer {
     /// Build a lexer over the given expression string.
     pub fn new(input: &str) -> Self {
         Lexer {
-            input: input.as_bytes().to_vec(),
+            input: input.chars().collect(),
             position: 0,
         }
     }
@@ -83,16 +84,16 @@ impl Lexer {
         }
 
         // NOT operator (single !), only when not part of !=
-        if self.peek() == b'!' && self.peek_next() != b'=' {
+        if self.peek() == Some('!') && self.peek_next() != Some('=') {
             self.advance();
             return Ok(Token::new(TokenType::Not, "!", Literal::None));
         }
 
         // Multi-dot (.., ..., etc.) vs single dot
-        if self.peek() == b'.' {
+        if self.peek() == Some('.') {
             let mut dot_count: i64 = 0;
             let dot_start = self.position;
-            while self.peek() == b'.' {
+            while self.peek() == Some('.') {
                 dot_count += 1;
                 self.advance();
             }
@@ -135,12 +136,12 @@ impl Lexer {
 
         // String literal
         let ch = self.peek();
-        if ch == b'\'' || ch == b'"' {
+        if ch == Some('\'') || ch == Some('"') {
             return self.read_string();
         }
 
         // Number: leading digit, or leading '-' directly followed by a digit
-        if is_digit(ch) || (ch == b'-' && is_digit(self.peek_next())) {
+        if is_digit(ch) || (ch == Some('-') && is_digit(self.peek_next())) {
             return self.read_number();
         }
 
@@ -156,45 +157,36 @@ impl Lexer {
     }
 
     fn read_string(&mut self) -> Result<Token, ParseError> {
-        let quote = self.advance();
+        let Some(quote) = self.advance() else {
+            return Err(ParseError::new("Unterminated string literal"));
+        };
         let mut value = String::new();
 
-        while !self.is_at_end() && self.peek() != quote {
-            if self.peek() == b'\\' {
-                self.advance();
-                if !self.is_at_end() {
-                    let escaped = self.advance();
-                    match escaped {
-                        b'n' => value.push('\n'),
-                        b't' => value.push('\t'),
-                        b'r' => value.push('\r'),
-                        b'\\' => value.push('\\'),
-                        b'\'' => value.push('\''),
-                        b'"' => value.push('"'),
-                        other => value.push(other as char),
-                    }
-                }
-            } else {
-                value.push(self.advance() as char);
+        loop {
+            match self.advance() {
+                None => return Err(ParseError::new("Unterminated string literal")),
+                Some(ch) if ch == quote => break,
+                Some('\\') => match self.advance() {
+                    Some('n') => value.push('\n'),
+                    Some('t') => value.push('\t'),
+                    Some('r') => value.push('\r'),
+                    // CUXP-024: a backslash before any other character is that character.
+                    Some(other) => value.push(other),
+                    None => return Err(ParseError::new("Unterminated string literal")),
+                },
+                Some(ch) => value.push(ch),
             }
         }
 
-        if self.is_at_end() {
-            return Err(ParseError::new("Unterminated string literal"));
-        }
-
-        self.advance(); // closing quote
-
         // JS stores value = quote + content + quote (raw), literal = decoded.
-        let q = quote as char;
-        let raw = format!("{}{}{}", q, value, q);
+        let raw = format!("{quote}{value}{quote}");
         Ok(Token::new(TokenType::String, raw, Literal::Str(value)))
     }
 
     fn read_number(&mut self) -> Result<Token, ParseError> {
         let start = self.position;
 
-        if self.peek() == b'-' {
+        if self.peek() == Some('-') {
             self.advance();
         }
 
@@ -203,7 +195,7 @@ impl Lexer {
         }
 
         let mut is_float = false;
-        if self.peek() == b'.' && is_digit(self.peek_next()) {
+        if self.peek() == Some('.') && is_digit(self.peek_next()) {
             is_float = true;
             self.advance(); // consume '.'
             while is_digit(self.peek()) {
@@ -212,10 +204,10 @@ impl Lexer {
         }
 
         // Scientific notation (JS parity).
-        if self.peek() == b'e' || self.peek() == b'E' {
+        if self.peek() == Some('e') || self.peek() == Some('E') {
             is_float = true;
             self.advance();
-            if self.peek() == b'+' || self.peek() == b'-' {
+            if self.peek() == Some('+') || self.peek() == Some('-') {
                 self.advance();
             }
             while is_digit(self.peek()) {
@@ -279,39 +271,38 @@ impl Lexer {
     }
 
     fn match_string(&mut self, s: &str) -> bool {
-        let bytes = s.as_bytes();
-        let end = self.position + bytes.len();
-        if end <= self.input.len() && &self.input[self.position..end] == bytes {
-            self.position = end;
-            return true;
+        let mut position = self.position;
+        for expected in s.chars() {
+            if self.input.get(position) != Some(&expected) {
+                return false;
+            }
+            position += 1;
         }
-        false
+        self.position = position;
+        true
     }
 
+    /// The characters from `start` to `end`, positions of the scan.
     fn slice(&self, start: usize, end: usize) -> String {
-        // Tokens are ASCII-bounded; from_utf8_lossy is exact for our byte spans.
-        String::from_utf8_lossy(&self.input[start..end]).into_owned()
+        self.input.get(start..end).into_iter().flatten().collect()
     }
 
-    fn peek(&self) -> u8 {
-        if self.position < self.input.len() {
-            self.input[self.position]
-        } else {
-            0
-        }
+    /// The character at the scan position; none past the end.
+    fn peek(&self) -> Option<char> {
+        self.input.get(self.position).copied()
     }
 
-    fn peek_next(&self) -> u8 {
-        if self.position + 1 < self.input.len() {
-            self.input[self.position + 1]
-        } else {
-            0
-        }
+    /// The character after the scan position; none past the end.
+    fn peek_next(&self) -> Option<char> {
+        self.input.get(self.position + 1).copied()
     }
 
-    fn advance(&mut self) -> u8 {
+    /// The character at the scan position, which the scan passes; none past the end.
+    fn advance(&mut self) -> Option<char> {
         let ch = self.peek();
-        self.position += 1;
+        if ch.is_some() {
+            self.position += 1;
+        }
         ch
     }
 
@@ -326,18 +317,60 @@ fn parse_float(raw: &str) -> Result<f64, ParseError> {
         .map_err(|error| ParseError::new(format!("invalid number `{raw}`: {error}")))
 }
 
-fn is_digit(c: u8) -> bool {
-    c.is_ascii_digit()
+fn is_digit(c: Option<char>) -> bool {
+    c.is_some_and(|c| c.is_ascii_digit())
 }
 
-fn is_alpha(c: u8) -> bool {
-    c.is_ascii_alphabetic() || c == b'_'
+fn is_alpha(c: Option<char>) -> bool {
+    c.is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
 }
 
-fn is_alpha_numeric(c: u8) -> bool {
+fn is_alpha_numeric(c: Option<char>) -> bool {
     is_alpha(c) || is_digit(c)
 }
 
-fn is_whitespace(c: u8) -> bool {
-    matches!(c, b' ' | b'\t' | b'\n' | b'\r' | 0x0b | 0x0c)
+fn is_whitespace(c: Option<char>) -> bool {
+    matches!(c, Some(' ' | '\t' | '\n' | '\r' | '\u{0b}' | '\u{0c}'))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn tokens(source: &str) -> Vec<(TokenType, String)> {
+        match Lexer::new(source).tokenize() {
+            Ok(tokens) => tokens
+                .into_iter()
+                .map(|token| (token.token_type, token.value))
+                .collect(),
+            Err(error) => panic!("{source} does not tokenize: {}", error.message),
+        }
+    }
+
+    /// CUXP-024: a character that starts no token is one INVALID token of that whole character.
+    #[test]
+    fn a_character_outside_ascii_is_one_invalid_token() {
+        assert_eq!(
+            tokens("§é"),
+            vec![
+                (TokenType::Invalid, "§".to_owned()),
+                (TokenType::Invalid, "é".to_owned()),
+                (TokenType::Eof, String::new()),
+            ]
+        );
+    }
+
+    /// CUXP-024: a string keeps its characters, and an escape of another character is that character.
+    #[test]
+    fn a_string_keeps_its_characters() {
+        assert_eq!(
+            tokens("'Zürich' \"\\é\" '😀'"),
+            vec![
+                (TokenType::String, "'Zürich'".to_owned()),
+                (TokenType::String, "\"é\"".to_owned()),
+                (TokenType::String, "'😀'".to_owned()),
+                (TokenType::Eof, String::new()),
+            ]
+        );
+    }
 }

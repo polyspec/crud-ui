@@ -22,6 +22,7 @@
 use serde_json::{Number, Value};
 
 use crate::json_type::js_type_of;
+use crate::validate::canonical::{json_number, number_text};
 use super::ast::{LiteralValue, Node, PathSegment};
 
 /// A resolved value is either a single value or a wildcard-produced list of
@@ -581,8 +582,8 @@ fn parse_float_prefix(value: &str) -> Option<f64> {
     )
 }
 
-/// JS `String(value)`: null→"", strings pass, booleans→"true"/"false", integral
-/// floats drop the fraction (so 5.0 → "5").
+/// JS `String(value)`: null→"", strings pass, booleans→"true"/"false", and a
+/// number as ECMAScript `Number::toString` writes its double (so 5.0 → "5").
 fn to_string(value: &Value) -> String {
     match value {
         Value::Null => String::new(),
@@ -594,21 +595,8 @@ fn to_string(value: &Value) -> String {
                 "false".to_string()
             }
         }
-        Value::Number(n) => {
-            if let Some(i) = n.as_i64() {
-                i.to_string()
-            } else if let Some(u) = n.as_u64() {
-                u.to_string()
-            } else if let Some(f) = n.as_f64() {
-                if f.is_finite() && f == f.floor() {
-                    (f as i64).to_string()
-                } else {
-                    f.to_string()
-                }
-            } else {
-                String::new()
-            }
-        }
+        // CURP-028: a number is the double ECMAScript reads for it, written as `String(number)` writes it.
+        Value::Number(n) => number_text(json_number(n)),
         _ => String::new(),
     }
 }

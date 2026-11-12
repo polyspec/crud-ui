@@ -11,7 +11,6 @@
 
 use std::collections::HashSet;
 use std::fmt;
-use std::sync::{Arc, Weak};
 
 use serde_json::{Map, Number, Value};
 
@@ -56,12 +55,10 @@ impl JsonString {
 
 /// A JSON document read without replacing any text.
 ///
-/// [`JsonText::Shared`] and [`JsonText::Link`] hold what JSON text cannot write: a value placed in
-/// several parents, and a link back to a shared value that contains it, which makes a value that
-/// contains itself. Neither is a node of its own: a walk counts each visit of the value it denotes,
-/// as the TypeScript and Go runtimes do, so the node and nesting limits bound every walk. A link
-/// must refer to a value that its owner holds; the parser never produces either variant.
-#[derive(Clone, Debug)]
+/// A value owns each of its nodes: it shares no container and does not contain itself. A language
+/// value that shares a container or contains itself is walked as the tree it denotes by the
+/// binding that describes it to the core (CUIT-042).
+#[derive(Clone, Debug, PartialEq)]
 pub enum JsonText {
     /// `null`.
     Null,
@@ -75,26 +72,6 @@ pub enum JsonText {
     Array(Vec<JsonText>),
     /// An object with unique member names.
     Object(Vec<(JsonString, JsonText)>),
-    /// A value shared by several parents.
-    Shared(Arc<JsonText>),
-    /// A link to a shared value, which makes a cycle when the link is inside that value.
-    Link(Weak<JsonText>),
-}
-
-impl PartialEq for JsonText {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (JsonText::Null, JsonText::Null) => true,
-            (JsonText::Bool(a), JsonText::Bool(b)) => a == b,
-            (JsonText::Number(a), JsonText::Number(b)) => a == b,
-            (JsonText::String(a), JsonText::String(b)) => a == b,
-            (JsonText::Array(a), JsonText::Array(b)) => a == b,
-            (JsonText::Object(a), JsonText::Object(b)) => a == b,
-            (JsonText::Shared(a), JsonText::Shared(b)) => Arc::ptr_eq(a, b) || a == b,
-            (JsonText::Link(a), JsonText::Link(b)) => Weak::ptr_eq(a, b),
-            _ => false,
-        }
-    }
 }
 
 /// JSON text that is not one JSON document.
@@ -341,23 +318,21 @@ impl JsonText {
         Ok(value)
     }
 
-    /// The member `name` of an object. A shared object is read through its target; a link is not.
+    /// The member `name` of an object.
     pub fn get(&self, name: &str) -> Option<&JsonText> {
         match self {
             JsonText::Object(members) => members
                 .iter()
                 .find(|(member, _)| member.as_str() == Some(name))
                 .map(|(_, value)| value),
-            JsonText::Shared(target) => target.get(name),
             _ => None,
         }
     }
 
-    /// The item at `index` of an array. A shared array is read through its target; a link is not.
+    /// The item at `index` of an array.
     pub fn item(&self, index: usize) -> Option<&JsonText> {
         match self {
             JsonText::Array(items) => items.get(index),
-            JsonText::Shared(target) => target.item(index),
             _ => None,
         }
     }
@@ -414,7 +389,7 @@ pub(crate) enum ValueFailure {
     Limit,
 }
 
-/// The nodes of one walk, counted per visit: a shared value visited twice counts twice.
+/// The nodes of one walk.
 #[derive(Default)]
 struct Walk {
     nodes: usize,
@@ -431,25 +406,11 @@ impl Walk {
     }
 }
 
-/// Run `f` on the value that `value` denotes: a shared or linked value is its target, which is no
-/// node of its own. A link is followed by upgrading it; its owner holds the target while it is read.
-fn with_node<R>(value: &JsonText, f: impl FnOnce(&JsonText) -> R) -> R {
-    match value {
-        JsonText::Shared(target) => with_node(target, f),
-        JsonText::Link(target) => {
-            let target = target
-                .upgrade()
-                .expect("a link refers to a shared value that its owner holds");
-            with_node(&target, f)
-        }
-        other => f(other),
-    }
-}
-
 /// Whether the value holds a failure, walked in member order: the quick walk that precedes the
 /// ordered one, with its own node count.
 fn holds_failure(value: &JsonText, depth: usize, walk: &mut Walk) -> bool {
-    with_node(value, |node| {
+    let node = value;
+    {
         if !walk.admit(node, depth) {
             return true;
         }
@@ -463,7 +424,7 @@ fn holds_failure(value: &JsonText, depth: usize, walk: &mut Walk) -> bool {
             }),
             _ => false,
         }
-    })
+    }
 }
 
 /// The first failure in walk order: array items in index order; for an object, every member name
@@ -474,7 +435,8 @@ fn first_failure(
     depth: usize,
     walk: &mut Walk,
 ) -> Option<ValueFailure> {
-    with_node(value, |node| {
+    let node = value;
+    {
         if !walk.admit(node, depth) {
             return Some(ValueFailure::Limit);
         }
@@ -516,7 +478,7 @@ fn first_failure(
             }
             _ => None,
         }
-    })
+    }
 }
 
 /// The first failure of `value`: the quick walk finds whether there is one, and the ordered walk
@@ -533,7 +495,7 @@ fn value_failure(value: &JsonText) -> Option<ValueFailure> {
 
 /// The shape of a value within its limits, as [`JsonText::shape`] states it.
 fn shape_of(value: &JsonText) -> Value {
-    with_node(value, |node| match node {
+    match value {
         JsonText::Array(items) => Value::Array(items.iter().map(shape_of).collect()),
         JsonText::Object(members) => {
             let mut map = Map::new();
@@ -551,8 +513,7 @@ fn shape_of(value: &JsonText) -> Value {
         JsonText::Null => Value::Null,
         JsonText::Bool(value) => Value::Bool(*value),
         JsonText::Number(text) => number_value(text).unwrap_or(Value::Null),
-        JsonText::Shared(_) | JsonText::Link(_) => unreachable!("with_node resolves shared values"),
-    })
+    }
 }
 
 /// Check a specification and then the composition files an operation reads.
@@ -625,7 +586,7 @@ fn number_value(text: &str) -> Option<Value> {
 /// not accept. The callers convert only values within their limits, so the nesting is bounded by
 /// the nesting limit and the recursion stays within it.
 fn json_text_to_value(value: &JsonText) -> Option<Value> {
-    with_node(value, |node| match node {
+    match value {
         JsonText::Null => Some(Value::Null),
         JsonText::Bool(b) => Some(Value::Bool(*b)),
         JsonText::Number(text) => number_value(text),
@@ -647,8 +608,7 @@ fn json_text_to_value(value: &JsonText) -> Option<Value> {
             }
             Some(Value::Object(object))
         }
-        JsonText::Shared(_) | JsonText::Link(_) => unreachable!("with_node resolves shared values"),
-    })
+    }
 }
 
 /// A JSON text member that is not text, or a number `serde_json` does not

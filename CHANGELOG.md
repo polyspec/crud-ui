@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- 9c: the Rust and PHP generators write an integer beyond 2^53 as its nearest double in every text (CURP-028, CUMK-066); the Rust expression lexer reads characters instead of bytes (CUXP-024); Rust `validate` refuses a specification that is no object with `Form specification must be an object` (CUVR-088); Rust `Form::get_value` returns `None` when the data holds no value at the path (CURT-093) and `Form::snapshot` returns the fields, the buttons, the revision and the history state (CURP-029), with `Form::buttons` and `Form::description`; `JsonText` has no shared or linked values, and the Rust core tests build the value graphs that are trees (CUIT-042) (9c).
+
 ## 0.0.20
 
 - crudui adopts kit 0.0.105, which removed the time limits of run-tests (kit K1175), passes no `--timeout` to run-tests, and takes ordered-json 0.0.25 in every manifest and lock (C18.45).

@@ -1,14 +1,11 @@
 pub(crate) use crate::css::style_string as style;
+use polyspec_crudui_validator::validate::canonical::{json_number, number_text};
 use serde_json::{Map, Value};
 
+/// The text of a JSON number: the double that ECMAScript reads for it, as `Number::toString`
+/// writes it (CURP-028), so an integer beyond 2^53 is written as its nearest double.
 fn number_string(number: &serde_json::Number) -> String {
-    if number.is_f64() {
-        ryu_js::Buffer::new()
-            .format(number.as_f64().expect("JSON number"))
-            .into()
-    } else {
-        number.to_string()
-    }
+    number_text(json_number(number))
 }
 
 /// JSON text as JSON.stringify writes it: each number as `number_string` writes it.
@@ -147,18 +144,32 @@ pub(crate) fn segments(path: &str) -> Vec<String> {
     result
 }
 
+/// The index that a path segment names in a list: decimal digits without a sign or a leading
+/// zero (CURT-093); `None` for any other segment and for an index beyond `usize`.
+fn list_index(segment: &str) -> Option<usize> {
+    let canonical = !segment.is_empty()
+        && segment.bytes().all(|byte| byte.is_ascii_digit())
+        && (segment == "0" || !segment.starts_with('0'));
+    if !canonical {
+        return None;
+    }
+    match segment.parse::<usize>() {
+        Ok(index) => Some(index),
+        // Digits beyond usize name no item of any list.
+        Err(_) => None,
+    }
+}
+
+/// The value at a data path (CURT-093), or `None` when the data holds no value there.
 pub(crate) fn value_at<'a>(data: &'a Value, path: &str) -> Option<&'a Value> {
     let mut value = data;
     for segment in segments(path) {
         let key = segment.as_str();
         value = match value {
             Value::Object(map) => map.get(key)?,
-            Value::Array(list) => {
-                // A segment that is no index names no item of the array, so the path has no value.
-                #[allow(clippy::disallowed_methods, reason = "no index: the lookup has no value")]
-                let index = key.parse::<usize>().ok()?;
-                list.get(index)?
-            }
+            // CURT-093: an item is named by its index in decimal without a sign or a leading zero; any
+            // other segment names no item, so the path has no value.
+            Value::Array(list) => list.get(list_index(key)?)?,
             _ => return None,
         };
     }

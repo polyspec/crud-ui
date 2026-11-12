@@ -237,7 +237,7 @@ fn focus_on(path: &str, key: &str) -> ActionResult {
 /// The row keys of the keyed collection at `path`, in order.
 fn row_keys(form: &Form, path: &str) -> FormResult<Vec<String>> {
     match form.get_value(path)? {
-        serde_json::Value::Object(rows) => Ok(rows.keys().cloned().collect()),
+        Some(serde_json::Value::Object(rows)) => Ok(rows.keys().cloned().collect()),
         _ => Err(FormError::input(format!(
             "Repeated data must be a keyed object: {path}"
         ))),

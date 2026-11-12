@@ -1,4 +1,4 @@
-use crate::binding::bind_ordered;
+use crate::binding::{bind_buttons, bind_ordered};
 use crate::history::{
     can_redo, can_undo, empty_history, record_change, redo_change, undo_change, History,
     HistoryResult,
@@ -231,12 +231,29 @@ fn present_value<'de, D: serde::Deserializer<'de>>(
     Value::deserialize(deserializer).map(Some)
 }
 
+/// The state of a form instance that a renderer reads after each operation (CURP-029).
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FormSnapshot {
+    /// Evaluated fields for the current data and view.
+    pub fields: Vec<Value>,
+    /// Evaluated form buttons for the current data.
+    pub buttons: Vec<Value>,
+    /// Number of successful data updates (CURT-067).
+    pub revision: u64,
+    /// Whether `undo` can restore an earlier record (CURT-061).
+    pub can_undo: bool,
+    /// Whether `redo` can reapply a reverted change (CURT-061).
+    pub can_redo: bool,
+}
+
 /// An independent editable form instance using a compiled structure.
 #[derive(Clone)]
 pub struct Form {
     template: FormTemplate,
     data: Value,
     fields: Vec<Value>,
+    buttons: Vec<Value>,
     options: BindOptions,
     revision: u64,
     view: ViewState,
@@ -250,10 +267,12 @@ impl Form {
         let template = member_ordered_template(&template);
         let data = normalize_fields(&template.fields, Some(data), "", false)?;
         let fields = bind_ordered(&template, &data, &options)?;
+        let buttons = bind_buttons(&template, &data, &options)?;
         Ok(Self {
             template,
             data,
             fields,
+            buttons,
             options,
             revision: 0,
             view: initial_view(),
@@ -281,6 +300,29 @@ impl Form {
         self.revision
     }
 
+    /// The evaluated form buttons for the current data.
+    pub fn buttons(&self) -> &[Value] {
+        &self.buttons
+    }
+
+    /// The root description of the template translated for the instance language; empty text
+    /// when the root declares none.
+    pub fn description(&self) -> String {
+        crate::util::translate(self.template.description.as_ref(), self.language())
+    }
+
+    /// The fields, the buttons, the revision and the history state of the instance (CURP-029).
+    /// A renderer reads it after each operation that succeeded; the instance keeps no listener.
+    pub fn snapshot(&self) -> FormSnapshot {
+        FormSnapshot {
+            fields: self.fields.clone(),
+            buttons: self.buttons.clone(),
+            revision: self.revision,
+            can_undo: self.can_undo(),
+            can_redo: self.can_redo(),
+        }
+    }
+
     /// Return detached submission data.
     pub fn get_data(&self) -> Value {
         self.data.clone()
@@ -295,10 +337,11 @@ impl Form {
         )
     }
 
-    /// Return a detached value relative to the data root.
-    pub fn get_value(&self, path: &str) -> FormResult<Value> {
+    /// Return a detached value relative to the data root, or `None` when the data holds no value at
+    /// `path` (CURT-093); a member whose value is null gives `Some(Value::Null)`.
+    pub fn get_value(&self, path: &str) -> FormResult<Option<Value>> {
         checked_segments(path)?;
-        Ok(value_at(&self.data, path).cloned().unwrap_or(Value::Null))
+        Ok(value_at(&self.data, path).cloned())
     }
 
     /// Update one data path and reevaluate the form atomically.
@@ -340,9 +383,11 @@ impl Form {
             &result.value,
             &self.bind_options(&self.view),
         )?;
+        let buttons = bind_buttons(&self.template, &result.value, &self.options)?;
         self.history = result.history;
         self.data = result.value;
         self.fields = fields;
+        self.buttons = buttons;
         self.revision += 1;
         Ok(())
     }
@@ -381,8 +426,10 @@ impl Form {
         history: History<Value>,
     ) -> FormResult<()> {
         let fields = bind_ordered(&self.template, &data, &self.bind_options(&view))?;
+        let buttons = bind_buttons(&self.template, &data, &self.options)?;
         self.data = data;
         self.fields = fields;
+        self.buttons = buttons;
         self.view = view;
         self.history = history;
         self.revision += 1;

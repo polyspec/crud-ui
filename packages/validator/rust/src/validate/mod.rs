@@ -14,7 +14,7 @@
 //! The compose pass reuses the existing `crate::compose` module and the
 //! expression engine reuses `crate::expr`. Nothing re-implements them.
 
-mod canonical;
+pub mod canonical;
 mod choice_data;
 mod condition_tree;
 mod data_limits;
@@ -90,7 +90,11 @@ pub fn validate(
 
     // The specification is read in member order; the data keeps its own order.
     let spec = &member_ordered(spec);
-    let spec_map = spec.as_object().cloned().unwrap_or_default();
+    // CUVR-088: a specification that is not an object fails before composition; it is never a
+    // form without fields.
+    let Some(spec_map) = spec.as_object().cloned() else {
+        return Err(FormInputError::new("Form specification must be an object").into());
+    };
 
     let has_own_properties = matches!(spec.get("properties"), Some(Value::Object(_)));
     let is_composition_entry = spec_map.contains_key("$ref") || spec_map.contains_key("$patch");
@@ -126,4 +130,23 @@ pub fn validate(
     // The data is measured before any rule.
     check_data_limits(data, &limits)?;
     validator.validate(data)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    /// CUVR-088: a specification that is not an object is an input failure, never a valid result.
+    #[test]
+    fn a_specification_that_is_not_an_object_fails() {
+        for spec in [json!([]), json!("form"), json!(5), json!(null), json!(true)] {
+            match validate(&spec, &json!({}), &ValidateOptions::default()) {
+                Err(ValidateError::Input(error)) => {
+                    assert_eq!(error.message, "Form specification must be an object");
+                }
+                other => panic!("{spec} gave {other:?}"),
+            }
+        }
+    }
 }

@@ -2,19 +2,33 @@
 //!
 //! A string is itself, `true` is `1`, `false` is `0`, and a finite number is written
 //! as ECMAScript `Number.prototype.toString` writes it. JSON integers are read as
-//! the double that ECMAScript would read.
+//! the double that ECMAScript would read (CURP-028).
 
 use std::borrow::Cow;
 
-use serde_json::Value;
+use serde_json::{Number, Value};
 
-/// The canonical text of a scalar; `None` for `null`, arrays and objects.
-pub(crate) fn canonical_text(value: &Value) -> Option<Cow<'_, str>> {
+/// The double that ECMAScript's `JSON.parse` reads for a JSON number (CURP-028).
+///
+/// `serde_json` keeps an integer token as an `i64` or a `u64`; its conversion to `f64`
+/// rounds to the nearest double with ties to even, as ECMAScript reads the token, so
+/// `9007199254740993` is `9007199254740992`.
+pub fn json_number(number: &Number) -> f64 {
+    match number.as_f64() {
+        Some(value) => value,
+        // `as_f64` has no value only for a number that `serde_json`'s `arbitrary_precision`
+        // feature keeps as text, which this crate does not enable; such a number has no double.
+        None => f64::NAN,
+    }
+}
+
+/// The canonical text of a scalar (CUVR-021); `None` for `null`, arrays and objects.
+pub fn canonical_text(value: &Value) -> Option<Cow<'_, str>> {
     match value {
         Value::String(text) => Some(Cow::Borrowed(text)),
         Value::Bool(true) => Some(Cow::Borrowed("1")),
         Value::Bool(false) => Some(Cow::Borrowed("0")),
-        Value::Number(number) => number.as_f64().map(|n| Cow::Owned(number_text(n))),
+        Value::Number(number) => Some(Cow::Owned(number_text(json_number(number)))),
         Value::Null | Value::Array(_) | Value::Object(_) => None,
     }
 }
@@ -30,7 +44,7 @@ pub(crate) fn canonical_text(value: &Value) -> Option<Cow<'_, str>> {
 /// correctly rounded one, which `{:.*e}` writes with ties to even; when that one
 /// does not read back as `x` (possible just above a power of two), the shortest
 /// output is the only k-digit decimal that does.
-pub(crate) fn number_text(x: f64) -> String {
+pub fn number_text(x: f64) -> String {
     if x.is_nan() {
         return "NaN".to_string();
     }

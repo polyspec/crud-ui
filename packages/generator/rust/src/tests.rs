@@ -241,7 +241,7 @@ fn bracket_paths_preserve_literal_dots_in_object_keys() {
         BindOptions::default(),
     )
     .unwrap();
-    assert_eq!(form.get_value("meta[a.b]").unwrap(), "old");
+    assert_eq!(form.get_value("meta[a.b]").unwrap(), Some(json!("old")));
     form.set_value("meta[a.b]", json!("new")).unwrap();
     assert_eq!(form.get_data()["meta"], json!({"a.b":"new"}));
 }
@@ -1725,4 +1725,52 @@ fn appearance_ternary_gives_the_branch_value() {
         crate::design::appearance(Some(&class), &data, &path, &[]),
         "btn-a"
     );
+}
+
+/// CURT-093: a path without a value is absent, a null member is null, and a list item is named by a
+/// decimal index without a sign or a leading zero.
+#[test]
+fn get_value_tells_absence_from_null() {
+    let template = compile_form(
+        &json!({"type":"group","properties":{
+            "memo":{"type":"text"},
+            "tags":{"type":"multichoice","items":{"a":"A","b":"B"}}
+        }}),
+        &CompileOptions::default(),
+    )
+    .unwrap();
+    let form = Form::new(
+        template,
+        &json!({"memo":null,"tags":["a","b"]}),
+        BindOptions::default(),
+    )
+    .unwrap();
+    assert_eq!(form.get_value("memo").unwrap(), Some(Value::Null));
+    assert_eq!(form.get_value("missing").unwrap(), None);
+    assert_eq!(form.get_value("memo.inner").unwrap(), None);
+    assert_eq!(form.get_value("tags.1").unwrap(), Some(json!("b")));
+    for segment in ["01", "+1", "-1", "2", "x"] {
+        assert_eq!(form.get_value(&format!("tags.{segment}")).unwrap(), None, "{segment}");
+    }
+}
+
+/// CURP-029: the snapshot holds the fields, the buttons, the revision and the history state; a view
+/// change keeps the revision (CURT-067).
+#[test]
+fn snapshot_reports_the_state_of_the_instance() {
+    let mut form = Form::new(template(), &record(), BindOptions::default()).unwrap();
+    let first = form.snapshot();
+    assert_eq!(first.fields, form.fields());
+    assert_eq!(first.buttons, form.buttons());
+    assert_eq!((first.revision, first.can_undo, first.can_redo), (0, false, false));
+    form.set_value("memo", json!("edited")).unwrap();
+    let edited = form.snapshot();
+    assert_eq!((edited.revision, edited.can_undo, edited.can_redo), (1, true, false));
+    form.set_all_expanded(false).unwrap();
+    let collapsed = form.snapshot();
+    assert_eq!(collapsed.revision, 1);
+    assert_ne!(collapsed.fields, edited.fields);
+    form.undo().unwrap();
+    let undone = form.snapshot();
+    assert_eq!((undone.revision, undone.can_undo, undone.can_redo), (2, false, true));
 }

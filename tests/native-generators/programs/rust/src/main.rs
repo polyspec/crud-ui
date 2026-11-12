@@ -116,7 +116,14 @@ fn action(form: &mut Form, action: &Value, text: Option<&JsonText>) -> FormResul
             )?;
         }
         "getData" => return Ok(form.get_data()),
-        "getValue" => return form.get_value(string_arg(args, 0)?),
+        // The step record writes the absence of a value (CURT-093) as null, as the JavaScript program
+        // writes `undefined ?? null`.
+        "getValue" => {
+            return match form.get_value(string_arg(args, 0)?)? {
+                Some(value) => Ok(value),
+                None => Ok(Value::Null),
+            }
+        }
         "addRow" => {
             let options = args
                 .get(1)

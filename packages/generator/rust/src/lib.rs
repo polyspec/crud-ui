@@ -36,7 +36,7 @@ pub use history::{
     can_redo, can_undo, empty_history, record_change, redo_change, undo_change, History,
     HistoryResult, HISTORY_LIMIT,
 };
-pub use instance::{create_row_key, sequence_row_key, AddRowOptions, Form};
+pub use instance::{create_row_key, sequence_row_key, AddRowOptions, Form, FormSnapshot};
 pub use list::{build_list, list_rows, render_list, ListOptions};
 pub use outline::build_outline;
 pub use render::render_form;

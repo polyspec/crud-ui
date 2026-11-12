@@ -79,10 +79,10 @@ fn check_records(case: &JsonText, expected: &Value) -> Result<(), Failed> {
             .expect("the paths of a record are a list")
         {
             let path = path.as_str().expect("a path is text");
-            read.insert(
-                path.to_string(),
-                form.get_value(path).expect("the path reads"),
-            );
+            // CURT-093: a path without a value is absent from the results, as JSON writes undefined.
+            if let Some(value) = form.get_value(path).expect("the path reads") {
+                read.insert(path.to_string(), value);
+            }
         }
         results.push(Value::Object(read));
     }
