@@ -25897,5 +25897,27 @@
     "requirements": [
       "CUVR-091"
     ]
+  },
+  {
+    "name": "validate-not-object",
+    "note": "a validate member that is no object fails the load at the field (CUVR-094).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "validate": "required"
+        }
+      }
+    },
+    "data": {},
+    "expectFailure": {
+      "code": "INVALID_RULE_PARAMETER",
+      "message": "Invalid validate at name: expected an object",
+      "at": "name"
+    },
+    "requirements": [
+      "CUVR-094"
+    ]
   }
 ]
