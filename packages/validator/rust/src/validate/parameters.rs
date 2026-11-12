@@ -93,7 +93,18 @@ fn check_fields(
                 path.clone(),
             )));
         }
-        if let Some(Value::Object(rules)) = field.get("validate") {
+        // CUVR-094: the rules of a field are an object, or false for none; another value is a load failure.
+        let rules = match field.get("validate") {
+            None | Some(Value::Bool(false)) => None,
+            Some(Value::Object(rules)) => Some(rules),
+            Some(_) => {
+                return Err(parameter_failure(
+                    format!("Invalid validate at {}: expected an object", path.join(".")),
+                    path,
+                ));
+            }
+        };
+        if let Some(rules) = rules {
             for (rule, value) in rules {
                 check_name(rule, path)?;
                 if is_disabled(value) {
