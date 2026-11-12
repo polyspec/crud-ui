@@ -13,7 +13,9 @@
 )]
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{compile_form, render_form, render_form_view, BindOptions, CompileOptions, Form};
+use polyspec_crudui_generator::{
+    compile_form, render_form, render_form_view, BindOptions, CompileOptions, Form,
+};
 use serde_json::Value;
 use std::path::Path;
 
