@@ -404,7 +404,7 @@ fn form_data_limits_preserve_numeric_values_and_closed_members() {
         r#"{"dataLimits":{}}"#,
         r#"{"dataLimits":{"depth":2.0}}"#,
         r#"{"dataLimits":{"values":1000000}}"#,
-        r#"{"dataLimits":{"depth":512,"values":1}}"#,
+        r#"{"dataLimits":{"depth":256,"values":1}}"#,
     ] {
         let value: Value = serde_json::from_str(text).unwrap();
         let field: FieldSpec = serde_json::from_value(value.clone()).unwrap();

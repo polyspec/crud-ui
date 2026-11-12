@@ -140,9 +140,9 @@ fn json_text_reads_what_serde_json_reads() {
     assert!(serde_json::from_str::<Value>(&nested(127)).is_ok());
     assert!(JsonText::parse(&nested(127)).is_ok());
     assert!(serde_json::from_str::<Value>(&nested(128)).is_err());
-    // JsonText now supports up to 512 levels
-    assert!(JsonText::parse(&nested(512)).is_ok());
-    assert!(JsonText::parse(&nested(513)).is_err());
+    // JsonText reads up to 256 levels, the reading limit of ordered-json (CUIT-022).
+    assert!(JsonText::parse(&nested(256)).is_ok());
+    assert!(JsonText::parse(&nested(257)).is_err());
 }
 
 fn json_text_preserves_object_member_values_for_validation() {

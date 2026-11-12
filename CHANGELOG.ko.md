@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: e9eb45ca12961dabc0dddb7936e67489b7fa48aa1a409bebb7127fce0573c602 -->
+<!-- source-sha256: a3b227631801d9a8d8d0c34d5df68ad5fed591f8fd6b90cc99d666c3ab589c99 -->
 
 ## Unreleased
 
+- D-16: 값의 중첩은 최대 256단계이고(CUIT-022) `dataLimits.depth`의 상한도 256이다(CUSC-087, CUVR-084). ordered-json의 읽기 한도다. Rust 읽기와 순회가 이를 따르고, 공유 검증 케이스에 객체가 아닌 명세(CUVR-088)가 생겼다(D-16).
 - C-10: `packages/validator/rust/interface.json`과 `packages/generator/rust/interface.json`이 두 crate의 인터페이스 계약을 bindgen 스키마로 선언하고, 언어 API와 다른 점을 `changes`에 적는다. 각 crate는 계약을 패키지에 담고(`include`) 값 타입 `json_value`의 주인인 `polyspec-ordered-json`에 git 소스로 의존한다. Rust `Form::copy_row`는 `CopyRowOptions { new_key, after_key }`를 받고(CURT-005), `ViewState`와 `History`에 읽기 접근자가 생겼으며, Rust 시험 프로그램은 픽스처의 JavaScript `{ key, afterKey }`를 그것으로 옮긴다(C-10).
 - L-2: 두 Rust crate는 bindgen git 저장소의 `polyspec-bindgen-core`에 의존하고(각 `Cargo.lock`이 commit을 고정한다) `ComposeLoadError`, `FormInputError`, `ValidateError`, `FormError`에 그 `Kinds`를 구현한다. kind는 code의 소문자 snake case(예: `invalid_form_input`)이고 status와 errno는 없다. `FormError::code`는 code 텍스트로 쓰고 비교하는 enum `FormErrorCode`다(L-2).
 - R-1: Rust crate는 `unwrap_used`, `expect_used`, `let_underscore_must_use`, `let_underscore_untyped`, 값을 자르거나 감싸거나 부호를 잃는 cast를 deny하고, `clippy.toml`로 `Option`·`Result`의 `unwrap_or`·`map_or` 계열과 `Result::ok`를 금지한다. 남은 사용은 모두 `allow` reason에 규칙을 적는다. 표현식 경로 마디 `1e3`은 잘린 정수 대신 ECMAScript가 쓰는 `1000`을 가리키고, `moveRow`는 플랫폼 인덱스를 넘는 위치를 거부하며, validator는 panic 경로 없이 날짜, hex escape, 숫자를 읽는다. 표현식의 대소 비교 변환에 id CUXP-025를 붙였다(R-1).

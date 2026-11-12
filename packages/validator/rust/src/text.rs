@@ -24,14 +24,14 @@ pub const MESSAGE: &str = "Text must be Unicode scalar values";
 /// Message of every value beyond the limits.
 pub const VALUE_LIMIT_MESSAGE: &str = "Recursive or excessively nested value";
 
-/// The nesting depth the JSON parser accepts (same as other runtimes).
-const MAX_DEPTH: usize = 512;
+/// The nesting depth the JSON parser accepts: the reading limit of ordered-json (CUIT-022).
+const MAX_DEPTH: usize = 256;
 
 /// Maximum nodes a value may hold: every array, object, string, number, boolean and null.
 pub(crate) const NODE_LIMIT: usize = 1_000_000;
 
-/// Maximum levels of arrays and objects a value may nest.
-pub(crate) const NESTING_LIMIT: usize = 512;
+/// Maximum levels of arrays and objects a value may nest (CUIT-022).
+pub(crate) const NESTING_LIMIT: usize = 256;
 
 /// A string or member name of a JSON document: valid text, or the UTF-16
 /// code units of text that holds an unpaired surrogate.
