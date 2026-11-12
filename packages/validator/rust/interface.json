@@ -537,9 +537,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
@@ -576,12 +573,7 @@
           "raises": [
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
@@ -631,9 +623,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
@@ -757,9 +746,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
@@ -816,9 +802,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
@@ -940,6 +923,21 @@
       "member": "validator.validate_detail",
       "file": "tests/fixtures/detail-validity/cases.json",
       "group": "cases"
+    },
+    {
+      "member": "validator.validate",
+      "file": "contracts/validator-cases.json",
+      "group": "validate"
+    },
+    {
+      "member": "validator.validate_list",
+      "file": "contracts/validator-cases.json",
+      "group": "validate_list"
+    },
+    {
+      "member": "validator.validate_detail",
+      "file": "contracts/validator-cases.json",
+      "group": "validate_detail"
     }
   ]
 }

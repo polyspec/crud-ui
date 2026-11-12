@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- G-5: the raises of each operation of the contracts name only the kinds that the operation raises, each with a contract case: `validate` 14 kinds, `hidden_paths` 9 (it composes without files, so no kind that needs a file), `validate_list` and `validate_detail` 11 and `build_list`, `render_list`, `build_detail` and `render_detail` 11 (a declaration holds no rule); the operations with a loader take the kinds of the operation they extend (G-5).
 - CUDF-091: Rust `validate_list` and `validate_detail` refuse a specification that is no object with `INVALID_FORM_INPUT` and the message of CUDF-024 or CUDF-032 before the composition, where they used to pass it as a declaration without members; they return `ValidateError` (CUDF-091).
 - E-1: the input failure of the Rust validator is the variant `ValidateError::InvalidFormInput`, whose kind, `invalid_form_input`, is the one that the interface contract derives from its name; the legacy implementations raise the same failure with the code `INVALID_FORM_INPUT` (E-1).
 - C16.1: the lock takes polyspec-binding-core f4e30c6, the end of the branch of binding, and binding scaffold writes the packages of the targets go and wasm of both contracts: `packages/<component>/go` (the Go module `github.com/polyspec/crud-ui/packages/<component>/go` with its FFI crate `go/internal/ffi`) and `packages/<component>/ts/wasm`, members of the root workspace; `packages/<component>/ts/package.json` gains the browser entry. The wasm crates pin wasm-bindgen 0.2.130 and js-sys 0.3.107 (C16.1).

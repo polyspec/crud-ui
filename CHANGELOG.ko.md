@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 57be8a5f85c0858e513b43c0978efdc520951ff28410484d273748b7c8e39319 -->
+<!-- source-sha256: 4d80021161164520033a1c7e9c3259b50822f98b160dbb1cc51260ccaf7d1cc3 -->
 
 ## Unreleased
 
+- G-5: 계약의 각 연산의 raises는 그 연산이 내는 kind만 적고 kind마다 계약 case가 있습니다: `validate` 14개, `hidden_paths` 9개(파일 없이 조합하므로 파일이 필요한 kind는 없음), `validate_list`와 `validate_detail` 11개, `build_list`, `render_list`, `build_detail`, `render_detail` 11개(선언에 규칙이 없음). 로더를 받는 연산은 확장하는 연산의 kind를 받습니다(G-5).
 - CUDF-091: Rust `validate_list`와 `validate_detail`은 객체가 아닌 명세를 멤버 없는 선언으로 통과시키던 대신 조합 전에 `INVALID_FORM_INPUT`와 CUDF-024 또는 CUDF-032의 메시지로 거절하며, `ValidateError`를 반환합니다(CUDF-091).
 - E-1: Rust validator의 입력 실패는 변형 `ValidateError::InvalidFormInput`이며, 그 kind `invalid_form_input`은 인터페이스 계약이 그 이름에서 이끌어 내는 kind와 같습니다. legacy 구현은 같은 실패를 코드 `INVALID_FORM_INPUT`으로 냅니다(E-1).
 - C16.1: lock이 binding branch 끝인 polyspec-binding-core f4e30c6을 받고, binding scaffold가 두 계약의 target go와 wasm의 package를 씁니다: `packages/<component>/go`(Go module `github.com/polyspec/crud-ui/packages/<component>/go`와 FFI crate `go/internal/ffi`)와 `packages/<component>/ts/wasm`이며 루트 workspace의 구성원입니다. `packages/<component>/ts/package.json`에 browser 진입점이 붙습니다. wasm crate는 wasm-bindgen 0.2.130과 js-sys 0.3.107을 고정합니다(C16.1).

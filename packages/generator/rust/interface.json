@@ -1942,9 +1942,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2001,9 +1998,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2058,9 +2052,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2115,9 +2106,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2242,9 +2230,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2311,9 +2296,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2378,9 +2360,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -2445,9 +2424,6 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
@@ -3464,6 +3440,26 @@
       "member": "form_template.from_json",
       "file": "contracts/generator-cases.json",
       "group": "from_json"
+    },
+    {
+      "member": "generator.build_list",
+      "file": "contracts/generator-cases.json",
+      "group": "build_list"
+    },
+    {
+      "member": "generator.render_list",
+      "file": "contracts/generator-cases.json",
+      "group": "render_list"
+    },
+    {
+      "member": "generator.build_detail",
+      "file": "contracts/generator-cases.json",
+      "group": "build_detail"
+    },
+    {
+      "member": "generator.render_detail",
+      "file": "contracts/generator-cases.json",
+      "group": "render_detail"
     }
   ]
 }

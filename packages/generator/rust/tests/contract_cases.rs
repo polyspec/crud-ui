@@ -12,9 +12,9 @@
 use binding_core::{Kinds, OrderedMap};
 use libtest_mimic::{Arguments, Failed, Trial};
 use polyspec_crud_ui_generator::boundary::{
-    build_outline, collapsible_rows, compile_form, empty_history, form_buttons_html,
-    render_data_panel, render_outline_view, set_all_expanded_view, template_from_json,
-    CompileOptions,
+    build_detail, build_list, build_outline, collapsible_rows, compile_form, empty_history,
+    form_buttons_html, render_data_panel, render_detail, render_list, render_outline_view,
+    set_all_expanded_view, template_from_json, CompileOptions, ListOptions,
 };
 use polyspec_crud_ui_generator::{
     create_row_key, initial_view, resolve_action, sequence_row_key, ActionInput, FormError,
@@ -65,6 +65,29 @@ fn text(value: &Value) -> String {
 /// An optional text of a record field: none for null.
 fn optional_text(value: &Value) -> Option<String> {
     (value.kind() != Kind::Null).then(|| text(value))
+}
+
+/// The list options of a case, every field written.
+fn list_options(case: &Value) -> ListOptions {
+    let options = argument(case, "options");
+    let mut files = OrderedMap::new();
+    for (name, file) in argument(options, "files").members().unwrap().iter() {
+        files.insert(text(name), case_value(file));
+    }
+    let number = |name: &str| {
+        let value = argument(options, name);
+        (value.kind() != Kind::Null)
+            .then(|| value.number_literal().unwrap().parse::<u64>().unwrap())
+    };
+    let data = argument(options, "data");
+    ListOptions {
+        files,
+        basepath: text(argument(options, "basepath")),
+        language: text(argument(options, "language")),
+        data: (data.kind() != Kind::Null).then(|| case_value(data)),
+        page: number("page"),
+        total: number("total"),
+    }
 }
 
 fn values(value: &Value) -> Vec<Value> {
@@ -172,6 +195,30 @@ fn run(member: &str, case: &Value) -> Result<(), FormError> {
         }
         "sequence_row_key" => sequence_row_key(&text(argument(case, "sequence"))).map(|_| ()),
         "create_row_key" => create_row_key().map(|_| ()),
+        "build_list" => build_list(
+            &case_value(argument(case, "spec")),
+            &values(argument(case, "rows")),
+            &list_options(case),
+        )
+        .map(|_| ()),
+        "render_list" => render_list(
+            &case_value(argument(case, "spec")),
+            &values(argument(case, "rows")),
+            &list_options(case),
+        )
+        .map(|_| ()),
+        "build_detail" => build_detail(
+            &case_value(argument(case, "spec")),
+            &case_value(argument(case, "record")),
+            &list_options(case),
+        )
+        .map(|_| ()),
+        "render_detail" => render_detail(
+            &case_value(argument(case, "spec")),
+            &case_value(argument(case, "record")),
+            &list_options(case),
+        )
+        .map(|_| ()),
         "from_json" => template_from_json(&case_value(argument(case, "value"))).map(|_| ()),
         other => panic!("no member {other}"),
     }
@@ -197,6 +244,10 @@ fn main() {
         "sequence_row_key",
         "create_row_key",
         "from_json",
+        "build_list",
+        "render_list",
+        "build_detail",
+        "render_detail",
     ] {
         let cases = file
             .get(member)
