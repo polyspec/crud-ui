@@ -43,6 +43,13 @@ HTML `form` element and handles submission. Data defaults and row identity are p
 before either renderer runs. Field-only rendering is an internal operation. `setData(data)`
 replaces the record after mounting, including previously edited input values.
 The template remains unchanged. `getData()` returns detached submission data.
+- **CURT-093** `getValue(path)` returns a detached copy of the value at the data path `path`, or
+  absence when the data holds no value there. The data holds no value at a path when one of its
+  segments names no member of the object reached so far, names no item of the list reached so far
+  (an item is named by its index written in decimal without a sign or a leading zero), or follows a
+  value that is neither an object nor a list. A member whose value is `null` gives `null`, never
+  absence (CURP-025). JavaScript returns `undefined` for absence; a runtime without such a value
+  returns its absent value (Rust `None`).
 The React `Form` accepts `renderButtons={false}` when its host owns submission
 controls; this renders the CRUDUI fields without the declared form-button footer.
 

@@ -48,7 +48,9 @@ Every case runs as one test within the runner's per-test limit; a walk that grow
 value denotes (2^40 nodes for a shared list forty levels deep) does not finish within it. Wall-clock
 thresholds are not asserted, since a machine's speed would decide them.
 The TypeScript, PHP, Go and PHP extension tests run them. A Rust value owns its nodes and
-cannot share one, so Rust does not.
+cannot share one, so the Rust core tests run the cases whose value is a tree (`flat` and `chain`),
+and the cases of `doubled` and `self-twice` are cases of the walk of the bindings
+([CUIT-042](../../../docs/spec/input-text.md#value-limits)).
 
 ## Tests that read the cases
 

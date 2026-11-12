@@ -1,6 +1,6 @@
 # 데이터 검증
 <!-- doc-id: docs-operations-validation -->
-<!-- source-sha256: 243e8d019f6b2e9fdf393ff4cd15bfbda6c9a1f728a67ae6094dc4b42c0581d5 -->
+<!-- source-sha256: d60ce14299345fbc0d18a669b437480f6bff612d4e033bd955a44faa9a51e8da -->
 
 [English](validation.md).
 
@@ -159,6 +159,7 @@ make crudui-test-form-binding
 | 데이터 | 메시지 |
 | --- | --- |
 | 객체가 아닌 루트 데이터(합성 전에 검사) | `Form data must be an object` |
+| 객체가 아닌 명세(루트 데이터 뒤, 합성 전에 검사, CUVR-088) | `Form specification must be an object` |
 | 값이 있지만 객체가 아닌 그룹 데이터 또는 반복 그룹 행 | `Group data must be an object: {path}` |
 | 값이 있지만 키 기반 객체가 아닌 반복 데이터 | `Repeated data must be a keyed object: {path}` |
 | 루트·그룹·반복 그룹 행 데이터에서 선언된 필드가 없는 객체 멤버 | `Unknown form data field: {path}` |

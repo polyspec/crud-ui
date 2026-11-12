@@ -470,6 +470,11 @@ literal, not a path, and an object given to `conditionTree` is a parameter error
 
 ## Errors and verification
 
+- **CUVR-088** `validate(spec, data)` reads a specification that is an object. Another specification,
+  such as a list, a string or a number, fails after the root data check and before composition with
+  an input failure: code `INVALID_FORM_INPUT`, message `Form specification must be an object` and an
+  empty location. A specification is never read as a form without fields.
+
 Each error contains the field path, field name, failing rule, message and value
 when available. Custom messages use the declared rule name, including the
 distinction between `match` and `pattern`. Defaults are defined by the rule

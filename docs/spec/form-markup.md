@@ -272,7 +272,9 @@ or of `default` when the data has no value for the field, and `data-default` is 
 - **CUMK-066** The condition text of a value: a string is itself, `null` and an absent value are empty, and any
   other value is its JSON text as ECMAScript's `JSON.stringify` writes it without indentation. That
   text has no whitespace, writes the members of an object in their data order, writes a number in the
-  shortest form of ECMAScript's `Number::toString` and writes `true`, `false` and `null`. A string is in
+  shortest form of ECMAScript's `Number::toString` and writes `true`, `false` and `null`. A number is
+  the double that ECMAScript reads for it (CURP-028), so the integer `9007199254740993` is written
+  `9007199254740992`. A string is in
   double quotes: `"` and `\` are escaped by a backslash; U+0008, U+0009, U+000A, U+000C and U+000D
   are written as `\b`, `\t`, `\n`, `\f` and `\r`; every other character below U+0020 and every
   unpaired surrogate is written as `\u` and four lowercase hexadecimal digits; and every other

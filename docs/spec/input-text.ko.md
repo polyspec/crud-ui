@@ -1,6 +1,6 @@
 # 입력 텍스트
 <!-- doc-id: docs-spec-input-text -->
-<!-- source-sha256: d5a8452e24080c3c6bb341dc1147472066c50d33b0ee447b6b82d7d8585caabe -->
+<!-- source-sha256: 8d9a55888ea931845750b68be08738f5adf08722c23acadfeaeb0aadc79aa8fd -->
 
 [English](input-text.md).
 
@@ -69,9 +69,15 @@ JavaScript 배열과 객체, PHP 배열과 객체, Go 맵, 슬라이스, 순서 
 사용자 정의 로더의 문서는 `files`로 부릅니다.
 
 Go의 값 진입점은 노드를 공유할 수 있는 맵, 슬라이스, `*compose.OMap` 값을 받으므로 Go도
-JavaScript, PHP와 같이 한도를 적용합니다. Rust `serde_json::Value`는 모든 노드를 소유합니다.
-컨테이너를 공유하거나 자기 자신을 담을 수 없으므로 공유 컨테이너가 값에 두 번 나타날 수 없습니다.
-Rust 값 진입점은 노드와 단계를 셉니다. 순회 비용은 값을 만드는 비용을 넘지 않습니다.
+JavaScript, PHP와 같이 한도를 적용합니다. Rust 값인 `serde_json::Value`와
+`polyspec_crudui_validator::text::JsonText`는 모든 노드를 소유합니다. 컨테이너를 공유하거나 자기 자신을 담을
+수 없으므로 공유 컨테이너가 값에 두 번 나타날 수 없습니다. Rust 값 진입점은 노드와 단계를 셉니다. 순회
+비용은 값을 만드는 비용을 넘지 않습니다.
+
+- **CUIT-042** 언어 값은 바인딩을 거쳐 Rust 코어에 도달합니다. 바인딩의 언어 값 순회(바인딩의 `HostValue`
+  순회)는 그 값이 나타내는 트리가 담는 대로 공유 컨테이너를 모든 자리에서, 자기 자신을 담는 컨테이너를
+  끝없이 방문하고, 이 절의 순서에서 첫 실패에서 멈춥니다. Rust 코어는 트리만 받으므로 코어에는 노드를
+  공유하는 값 타입이 없습니다.
 
 PHP 라이브러리의 값 복사와 확장의 값 변환은 변환하는 모든 값에 같은 한도를 적용합니다. 어떤 검사도
 순회하지 않는 멤버, 예를 들어 마크업이 읽지 않는 버튼 멤버도 포함합니다. 이때 실패는
@@ -132,5 +138,7 @@ JSON으로 거부합니다.
 
 [`tests/fixtures/text-validity`](../../tests/fixtures/text-validity/README.ko.md)에는 연산마다
 케이스 파일이 하나씩 있고, 공유하거나 자기 자신을 담는 값을 받는 런타임이 자기 컨테이너로 만드는
-`value-graphs.json` 케이스가 있습니다. JSON 텍스트로 전달할 수 없는 바이트 문자열은 바이트 문자열 런타임의
+`value-graphs.json` 케이스가 있습니다. Rust 코어 시험은 값이 트리인 케이스(`flat`, `chain`)를 만들고,
+공유하거나 자기 자신을 담는 값의 케이스(`doubled`, `self-twice`)는 바인딩 순회의 케이스입니다(CUIT-042).
+JSON 텍스트로 전달할 수 없는 바이트 문자열은 바이트 문자열 런타임의
 각 테스트가 검사합니다.

@@ -34,6 +34,12 @@ Rust provide these stages as well as TypeScript. Evaluation does not use `eval`.
 - **CUXP-016** `WHITESPACE` — Pattern: whitespace, omitted from output; Example: space
 - **CUXP-017** `EOF` — Pattern: end of input; Example: end of input
 
+- **CUXP-024** The lexer reads the source as characters (Unicode scalar values), never as bytes. A
+  `STRING` holds the characters between its quotes: `\n`, `\t` and `\r` are a line feed, a tab and a
+  carriage return, and a backslash before any other character is that character, so `'Zürich'` is
+  `Zürich` and `'\é'` is `é`. A character that starts no token is one `INVALID` token whose text is
+  that character.
+
 ## 2. Grammar
 
 The parser accepts one comparison per comparison expression. Parentheses group

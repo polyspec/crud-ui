@@ -95,6 +95,20 @@ structure or validation rules.
   new keys, ordering and scoped row operations follow the form runtime contract in
   every implementation. Invalid operations leave both data and evaluated fields
   unchanged.
+- **CURP-028** A number of a specification, a template, data or an option is an ECMAScript Number:
+  the double that ECMAScript's `JSON.parse` reads for its text. An integer whose magnitude is beyond
+  2^53 is therefore the nearest double in every comparison and in every text that a runtime writes
+  (canonical text CUVR-021, condition text CUMK-066, control values CUMK-069, list cells and JSON
+  text), so `9007199254740993` equals and is written as `9007199254740992`. React's server
+  rendering, the reference of every string renderer, writes these texts from such doubles; a runtime
+  whose JSON reader keeps a wider integer converts it to the nearest double before it compares or
+  writes it.
+- **CURP-029** The form instance (`createForm`) holds the data, the view state and the undo history,
+  and its `snapshot()` returns the evaluated fields, the evaluated buttons, `revision`, `canUndo` and
+  `canRedo` of the current state. Registering a listener (`subscribe`) is not an operation of the
+  rules: a browser layer that renders the instance with React, Vue or Svelte calls the instance,
+  notifies its listeners after each operation that succeeded, and reads `snapshot()` again; the
+  instance keeps no listener and calls no host code.
 
 ## Implementation packages
 

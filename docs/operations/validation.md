@@ -164,6 +164,7 @@ the wrong shape is an input failure (`FormInputError`, code `INVALID_FORM_INPUT`
 | Data | Message |
 | --- | --- |
 | Root data that is not an object, checked before composition | `Form data must be an object` |
+| A specification that is not an object, checked after the root data and before composition (CUVR-088) | `Form specification must be an object` |
 | Present group data or a repeated group row that is not an object | `Group data must be an object: {path}` |
 | Present repeated data that is not a keyed object | `Repeated data must be a keyed object: {path}` |
 | An object member in root, group or repeated group row data without a declared field | `Unknown form data field: {path}` |

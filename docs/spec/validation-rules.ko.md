@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: 80462f9909aabd92cf8332622c408bef86d8e6e31eb326a285d002004d91e857 -->
+<!-- source-sha256: 5006fc3167a206beb2dea613207ca577ae724f3294ecfb3cb6272806fa64eb9a -->
 
 [English](validation-rules.md).
 
@@ -396,6 +396,10 @@ properties:
 `validate.required`의 조건은 보이는 필드를 선택 입력으로 만듭니다.
 
 ## 오류와 검증
+
+- **CUVR-088** `validate(spec, data)`는 객체인 명세를 읽습니다. 목록, 문자열, 숫자 같은 다른 명세는 루트
+  데이터 검사 뒤, 합성 전에 입력 실패로 끝납니다. 코드는 `INVALID_FORM_INPUT`, 메시지는
+  `Form specification must be an object`, 위치는 비어 있습니다. 명세를 필드 없는 폼으로 읽지 않습니다.
 
 각 오류는 필드 경로·필드 이름·실패 규칙·메시지를 포함하고 값이 있으면 값도
 포함합니다. 사용자 지정 메시지는 `match`와 `pattern`을 구분해 선언한 규칙 이름을

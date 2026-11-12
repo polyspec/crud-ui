@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: bdcaff3a0f3973fcd8cb783d847dde425b9cbbfd8b7165f9ab84d7d9c04df0bb -->
+<!-- source-sha256: 96069463091227805545c41c73c11bd75a59a8b1a2c2be8161a7136989fe01d5 -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -43,6 +43,12 @@
 `setData(data)`는 마운트 후 레코드를 교체하며, 사용자가 편집한 입력값도
 교체합니다. 템플릿은 변경하지 않습니다. `getData()`는 제출 데이터의 복사본을
 반환합니다.
+- **CURT-093** `getValue(path)`는 데이터 경로 `path`에 있는 값의 복사본을 돌려주고, 데이터가 그 경로에 값을
+  갖지 않으면 부재를 돌려줍니다. 경로의 한 마디가 지금까지 도달한 객체의 어떤 멤버도 가리키지 않거나,
+  지금까지 도달한 목록의 어떤 항목도 가리키지 않거나(항목은 부호와 앞자리 0 없이 십진수로 쓴 인덱스로
+  가리킵니다), 객체도 목록도 아닌 값 뒤에 오면 데이터는 그 경로에 값을 갖지 않습니다. 값이 `null`인
+  멤버는 부재가 아니라 `null`입니다(CURP-025). JavaScript는 부재로 `undefined`를 돌려주고, 그런 값이 없는
+  런타임은 자기 부재 값(Rust `None`)을 돌려줍니다.
 React `Form`은 호스트가 제출 컨트롤을 소유할 때 `renderButtons={false}`를
 받을 수 있으며, 선언된 form 버튼 footer 없이 CRUDUI 필드를 렌더링합니다.
 

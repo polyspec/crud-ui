@@ -71,9 +71,16 @@ The limits apply to every checked value, the specification and the composition f
 as an input failure that names the value. A custom loader's document is named `files`.
 
 Go's value entries take maps, slices and `*compose.OMap` values that can share nodes, so Go
-applies the limits like JavaScript and PHP. A Rust `serde_json::Value` owns each of its nodes: it
-cannot share a container or contain itself, so a shared container cannot appear twice in a value.
-Rust's value entries count nodes and levels: the walk costs no more than building it.
+applies the limits like JavaScript and PHP. A Rust value, a `serde_json::Value` or a
+`polyspec_crudui_validator::text::JsonText`, owns each of its nodes: it cannot share a container
+or contain itself, so a shared container cannot appear twice in a value. Rust's value entries count
+nodes and levels: the walk costs no more than building it.
+
+- **CUIT-042** A language value reaches the Rust core through a binding, whose walk of the language
+  value (the `HostValue` walk of the bindings) visits a shared container at every place and a
+  container that contains itself without end, as the tree that the value denotes holds it, and stops
+  at the first failure in the order of this section. The Rust core receives only trees, so the core
+  has no value type that shares a node.
 
 The PHP library's value copies and the extension's value conversion apply the same limits to
 every value they convert, including members that no check walks, such as a member of a button
@@ -138,5 +145,7 @@ invalid JSON before decoding it.
 
 [`tests/fixtures/text-validity`](../../tests/fixtures/text-validity/README.md) holds one case
 file for each operation, and `value-graphs.json`, whose cases each runtime that takes shared or
-self-containing values builds with its own containers. Byte strings that JSON text cannot carry
+self-containing values builds with its own containers. The Rust core tests build the cases whose
+values are trees (`flat` and `chain`); the cases of shared and self-containing values (`doubled`
+and `self-twice`) are cases of the bindings' walk (CUIT-042). Byte strings that JSON text cannot carry
 are checked by each byte string runtime's own tests.

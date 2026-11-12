@@ -1,6 +1,6 @@
 # 입력 텍스트 픽스처
 <!-- doc-id: tests-fixtures-text-validity-readme -->
-<!-- source-sha256: 048dbac18922262d8fbbc97fcf67e3330f763054087b9a215b5b8837fceea40d -->
+<!-- source-sha256: 67f343047e7ec8a812e2c0f7643a983ac4523303597fca5fe7e67f679e3c0b5c -->
 
 [English](README.md).
 
@@ -47,8 +47,9 @@ Native 경계에서 허용되는 case는 `dataLimits.depth` 512 또는 `dataLimi
 모든 케이스는 실행기의 테스트별 제한 시간 안에서 테스트 하나로 실행됩니다. 값이 나타내는 트리에 비례해
 커지는 순회(40단계 공유 목록이면 2^40개 노드)는 그 안에 끝나지 않습니다. 절대 시간 기준은 기계 속도에 따라
 달라지므로 단언하지 않습니다.
-TypeScript, PHP, Go, PHP 확장 테스트가 실행합니다. Rust 값은 노드를 소유해 공유할 수 없으므로 Rust는
-실행하지 않습니다.
+TypeScript, PHP, Go, PHP 확장 테스트가 실행합니다. Rust 값은 노드를 소유해 공유할 수 없으므로 Rust 코어
+시험은 값이 트리인 케이스(`flat`, `chain`)를 실행하고, `doubled`와 `self-twice` 케이스는 바인딩 순회의
+케이스입니다([CUIT-042](../../../docs/spec/input-text.ko.md#값-한도)).
 
 ## 사례를 읽는 테스트
 

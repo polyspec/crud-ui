@@ -1,6 +1,6 @@
 # 표현식 문법
 <!-- doc-id: docs-spec-expressions -->
-<!-- source-sha256: 8ef42d2caa388a444576f5026f94e1948b58291c35c0deb6585ba6b6a0448008 -->
+<!-- source-sha256: 458539300eaf3524dad109e11b8e8eaaffd93c307cfc294834837fdfc7d6b4ca -->
 
 [English](expressions.md).
 
@@ -33,6 +33,11 @@ PHP·Go·Rust도 이 단계를 구현합니다. 평가는 `eval`을 사용하지
 - **CUXP-015** `LBRACKET RBRACKET COMMA` — 패턴: `[` `]` `,`; 예: `[US, CA]`
 - **CUXP-016** `WHITESPACE` — 패턴: 출력에서 제외하는 공백; 예: 공백
 - **CUXP-017** `EOF` — 패턴: 입력 종료; 예: 입력 종료
+
+- **CUXP-024** 렉서는 소스를 바이트가 아니라 문자(유니코드 스칼라 값)로 읽습니다. `STRING`은 따옴표 사이의
+  문자를 담습니다. `\n`, `\t`, `\r`은 줄바꿈, 탭, 캐리지 리턴이고, 그 밖의 문자 앞의 백슬래시는 그 문자이므로
+  `'Zürich'`은 `Zürich`, `'\é'`는 `é`입니다. 어떤 토큰도 시작하지 않는 문자는 그 문자를 텍스트로 가진
+  `INVALID` 토큰 하나입니다.
 
 ## 2. 문법
 
