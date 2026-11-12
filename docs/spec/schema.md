@@ -541,6 +541,10 @@ select a fragment of a file as `(file.yml).key`. A reference resolves to the fie
 map of the layer it selects, which is why a declaration whose root is a bare `$ref`
 is that field map and not yet a specification.
 
+- **CUSC-092** A composition file is an object. A reference to a file whose document is not an object fails the
+  load — Code: `REF_FORMAT_ERROR`; Message: `$ref file is not an object: {key}`; location: the file key, as for a
+  missing file. The file is never treated as missing.
+
 The CLI static check also rejects unresolved composition. It does not treat
 checking an uncomposed field as successful reference resolution.
 
