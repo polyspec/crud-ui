@@ -168,6 +168,17 @@ impl Validator {
         })
     }
 
+    /// The data paths of the fields whose `design.show` resolves to `false` against `data`
+    /// (CUVR-093); `data` is an object.
+    pub fn hidden_paths(&self, data: &Value) -> Result<Vec<String>, ValidateError> {
+        if !data.is_object() {
+            return Err(FormInputError::new("Form data must be an object").into());
+        }
+        let mut hidden = Vec::new();
+        collect_hidden(&self.properties, data, &[], &[], data, &mut hidden);
+        Ok(hidden)
+    }
+
     // =====================================================================
     // Field traversal (SPEC §3).
     // =====================================================================

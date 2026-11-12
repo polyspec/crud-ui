@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 4ef5521cbb658b0ea7aec7129ce2ea051fbe28954c6962df2a92938ef6efc566 -->
+<!-- source-sha256: b371337be4340fefee841689df34cd9737f4260bf89d4e58fb870d19d5ebd551 -->
 
 ## Unreleased
 
+- CUVR-093: Rust validator에 브라우저 폼 바인딩을 위한 `hidden_paths(spec, data)`가 생겼다. 파일 없이 합성한 검증의 숨은 경로이며, 검증 적합성 시험이 파일 없는 모든 결과의 `hidden`과 비교한다(CUVR-093).
 - P-4: Rust 검증은 문자열이 아닌 `messages` 멤버와 객체가 아닌 `messages`(CUVR-089), 합성 뒤 객체인 `properties`가 없는 루트(CUVR-091), 텍스트 진입점의 객체가 아닌 `files`와 문자열이 아닌 `basepath`(CUVR-092)를 건너뛰지 않고 거부한다. 없는 값은 규칙 CUVR-090으로 `null`로 검증하고, 코어가 읽는 기본값은 CUMK-070, CURT-094, CUSC-091, CUDF-089, CUDF-090을 가리킨다(P-4).
 - C-1: Rust crate는 JSON 텍스트를 ordered-json의 읽기로 읽고, 쓰는 JSON 텍스트의 문자열·숫자 토큰과 유일한 실수 텍스트를 ordered-json에서 가져온다. 라이브러리는 더는 serde_json으로 입력 텍스트를 읽지 않으므로 ordered-json이 켜는 feature(`unbounded_depth`, `raw_value`)가 입력에 닿지 않는다(C-1).
 - D-16: 값의 중첩은 최대 256단계이고(CUIT-022) `dataLimits.depth`의 상한도 256이다(CUSC-087, CUVR-084). ordered-json의 읽기 한도다. Rust 읽기와 순회가 이를 따르고, 공유 검증 케이스에 객체가 아닌 명세(CUVR-088)가 생겼다(D-16).

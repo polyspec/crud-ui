@@ -23,7 +23,7 @@ const FEATURE: &str = "validate";
 const FIXTURE: &str = "tests/fixtures/validate/cases.json";
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::validate::{validate, ValidateOptions};
+use polyspec_crudui_validator::validate::{hidden_paths, validate, ValidateOptions};
 use serde_json::{json, Map, Value};
 use std::path::{Path, PathBuf};
 
@@ -111,6 +111,16 @@ fn check_case(case: &Value, name: &str) -> Vec<String> {
                         "[{}] result mismatch\n  expected: {}\n  actual:   {}",
                         name, expected, actual_v
                     ));
+                }
+                // CUVR-093: hidden_paths, composed without files, gives the hidden paths of the result.
+                if case.get("files").is_none() {
+                    match hidden_paths(spec, &data) {
+                        Ok(hidden) if hidden == actual.hidden => {}
+                        other => failures.push(format!(
+                            "[{}] hidden_paths gave {:?}, want {:?}",
+                            name, other, actual.hidden
+                        )),
+                    }
                 }
             }
             Err(e) => failures.push(format!(

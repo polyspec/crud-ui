@@ -22,4 +22,6 @@ pub use types::{
     DEFAULT_KEY, FORBIDDEN_META_KEYS,
 };
 
-pub use validate::{validate, FormInputError, ValidateError, ValidateOptions, Validator};
+pub use validate::{
+    hidden_paths, validate, FormInputError, ValidateError, ValidateOptions, Validator,
+};

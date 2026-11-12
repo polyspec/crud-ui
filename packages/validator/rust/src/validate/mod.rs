@@ -71,6 +71,27 @@ pub fn validate(
     data: &Value,
     options: &ValidateOptions,
 ) -> Result<ValidationResult, ValidateError> {
+    let (validator, limits) = prepared(spec, data, options)?;
+    // The data is measured before any rule.
+    check_data_limits(data, &limits)?;
+    validator.validate(data)
+}
+
+/// The data paths of the fields whose `design.show` resolves to `false` against `data`, in
+/// declaration order (CUVR-093). The specification is composed without files, as the browser form
+/// binding sends it, and checked as [`validate`] checks it; the data is an object, and data of
+/// another shape inside it is read as missing.
+pub fn hidden_paths(spec: &Value, data: &Value) -> Result<Vec<String>, ValidateError> {
+    let (validator, _) = prepared(spec, data, &ValidateOptions::default())?;
+    validator.hidden_paths(data)
+}
+
+/// The checked validator of a specification and its data limits, after the root data check.
+fn prepared(
+    spec: &Value,
+    data: &Value,
+    options: &ValidateOptions,
+) -> Result<(Validator, data_limits::DataLimits), ValidateError> {
     // Root data is a request precondition, checked before composition.
     if !data.is_object() {
         return Err(FormInputError::new("Form data must be an object").into());
@@ -135,9 +156,7 @@ pub fn validate(
     let limits = data_limits(spec)?;
     // Rule parameters are checked after composition and the forbidden-key scan.
     let validator = Validator::new(properties)?;
-    // The data is measured before any rule.
-    check_data_limits(data, &limits)?;
-    validator.validate(data)
+    Ok((validator, limits))
 }
 
 #[cfg(test)]
