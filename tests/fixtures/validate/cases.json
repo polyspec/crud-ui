@@ -25827,5 +25827,75 @@
     "requirements": [
       "CUVR-088"
     ]
+  },
+  {
+    "name": "messages-member-not-string",
+    "note": "a messages member whose value is no string fails the load at the field (CUVR-089).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "group": {
+          "type": "group",
+          "properties": {
+            "name": {
+              "type": "text",
+              "validate": {
+                "required": true
+              },
+              "messages": {
+                "required": 5
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {},
+    "expectFailure": {
+      "code": "INVALID_RULE_PARAMETER",
+      "message": "Invalid messages.required at group.name: expected a string",
+      "at": "group.name"
+    },
+    "requirements": [
+      "CUVR-089"
+    ]
+  },
+  {
+    "name": "messages-not-object",
+    "note": "a messages that is no object fails the load at the field (CUVR-089).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "messages": "Required"
+        }
+      }
+    },
+    "data": {},
+    "expectFailure": {
+      "code": "INVALID_RULE_PARAMETER",
+      "message": "Invalid messages at name: expected an object",
+      "at": "name"
+    },
+    "requirements": [
+      "CUVR-089"
+    ]
+  },
+  {
+    "name": "specification-without-properties",
+    "note": "a root without object properties is no form without fields (CUVR-091).",
+    "spec": {
+      "type": "group"
+    },
+    "data": {},
+    "expectFailure": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "A form spec must be a group with properties",
+      "at": ""
+    },
+    "requirements": [
+      "CUVR-091"
+    ]
   }
 ]
