@@ -12,8 +12,6 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
-#[path = "support/evidence.rs"]
-mod evidence;
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
@@ -101,7 +99,7 @@ fn main() {
         Trial::test(
             format!("detail_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
             move || {
-                evidence::prove_all(
+                support::evidence::prove_all(
                     &["buildDetail", "renderDetail"],
                     "tests/fixtures/detail-render/cases.json",
                     &name,

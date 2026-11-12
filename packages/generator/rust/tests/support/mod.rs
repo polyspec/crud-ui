@@ -4,13 +4,13 @@
 use serde_json::{json, Value};
 use std::path::Path;
 
-#[path = "../../../../validator/rust/tests/common/case_value.rs"]
-mod case_value;
+#[path = "evidence.rs"]
+pub mod evidence;
 #[allow(
     unused_imports,
     reason = "each test crate of the package uses the readers that its fixtures need"
 )]
-pub use case_value::*;
+pub use evidence::conformance::*;
 
 /// The cases of the groups `groups` of a fixture family in the case form of binding (G-5), in group order.
 #[allow(

@@ -1,7 +1,7 @@
 //! Record the actual result of a generator fixture trial through the shared Rust evidence recorder.
 
 #[path = "../../../../validator/rust/tests/common/mod.rs"]
-mod conformance;
+pub mod conformance;
 
 use libtest_mimic::Failed;
 
