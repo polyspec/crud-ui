@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: ad6d42c5093e1b2485af397726ad62b133cb0040f674ec54de0525931e2083b4 -->
+<!-- source-sha256: 22486e911aad1392174afc52751b5a008871f63e9c89309512bf0c8d36512c09 -->
 
 [English](validation-rules.md).
 
@@ -27,7 +27,9 @@
 - **CUVR-013** `enddate`: 시작일 필드 경로이며 파싱한 종료일은 파싱한 시작일보다 이전일 수 없습니다.
 - **CUVR-014** `mincount`, `maxcount`: 컬렉션 크기의 최소 또는 최대입니다.
 - **CUVR-015** `unique`: 고유성 검사이며 선택적으로 참조 또는 필터 매개변수를 사용합니다.
-- **CUVR-016** `accept`: 파일 확장자 또는 MIME 타입 매개변수입니다.
+- **CUVR-016** `accept`: 파일 확장자 또는 MIME 타입 매개변수이며, 쉼표로 구분한 문자열이나 그런 문자열의 목록입니다.
+  문자열 값은 파일 이름이나 MIME 타입이고, 객체 값은 파일(`type` 또는 `mimeType`, `name` 또는 `filename`)이며, 목록
+  값은 각각 맞아야 하는 파일들입니다. 객체가 아닌 목록 항목과 다른 타입의 값은 규칙을 만족하지 못해 실패합니다.
 - **CUVR-066** `conditionTree`: `true` 또는 `judge`이며, 값은 [조건 트리](#조건-트리)이고 판정 문장은 `judge`에서만
   허용됩니다.
 - **CUVR-071** `reference`: 값은 매개변수가 가리키는 필드에서 데이터가 선언한 id를 가리킵니다.
@@ -316,6 +318,7 @@ POSIX 클래스, 소유·중첩 수량자, `\uHHHH`, 8진수·제어 문자 이�
 - **CUVR-078** 문자열이 아닌 `typeFrom` — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid typeFrom parameter: expected a field reference string`
 - **CUVR-081** 문자열이 아닌 `minFrom`, `maxFrom` — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid {rule} parameter: expected a field reference string`
 - **CUVR-055** 문자열·숫자·불리언이 아닌 `notEqual` — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid notEqual parameter: expected a string, number or boolean`
+- **CUVR-095** 문자열도 문자열 목록도 아닌 `accept` — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid accept parameter: expected a string or a list of strings`. 매개변수의 타입이 달라서 규칙을 건너뛰는 일은 없습니다.
 - **CUVR-056** 불리언이나 문자열이 아닌 `unique` — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid unique parameter: expected true, false or a string`
 - **CUVR-074** 문자열이 아니거나, type이 `group`이 아니고 `lang`이 없거나 `false`·`null`인 form 필드의 선언 경로가 아닌 `reference` — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid reference parameter: expected the declaration path of a field`
 - **CUVR-057** 언어에 속하지 않는 `pattern`, `match` — 코드: `INVALID_RULE_PATTERN`; 메시지: `Invalid {rule} pattern: {reason} at {offset}`

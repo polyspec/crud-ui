@@ -33,7 +33,10 @@ entry points, load failures and input failures.
 - **CUVR-013** `enddate`: Start-date field path; a parsed end date must not precede the parsed start date.
 - **CUVR-014** `mincount`, `maxcount`: Minimum or maximum collection size.
 - **CUVR-015** `unique`: Uniqueness check, optionally using a reference or filter parameter.
-- **CUVR-016** `accept`: File extension or MIME-type parameter.
+- **CUVR-016** `accept`: File extension or MIME-type parameter, a comma-separated string or a list of such strings.
+  A string value is a file name or a MIME type, an object value is a file (`type` or `mimeType`, `name` or
+  `filename`), and a list value holds files that each match. A list member that is not an object and a value of
+  another type do not satisfy the rule and fail it.
 - **CUVR-066** `conditionTree`: `true` or `judge`; the value is a [condition tree](#condition-trees), with judged
   text only under `judge`.
 - **CUVR-071** `reference`: The value names an id that the data declares at the field the parameter names; see
@@ -378,6 +381,7 @@ without row keys. Every runtime reports the same code and message:
 - **CUVR-078** `typeFrom` that is not a string — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid typeFrom parameter: expected a field reference string`
 - **CUVR-081** `minFrom`, `maxFrom` that is not a string — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid {rule} parameter: expected a field reference string`
 - **CUVR-055** `notEqual` that is not a string, number or boolean — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid notEqual parameter: expected a string, number or boolean`
+- **CUVR-095** `accept` that is neither a string nor a list of strings — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid accept parameter: expected a string or a list of strings`. The rule is never skipped because its parameter has another type.
 - **CUVR-056** `unique` that is not a boolean or a string — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid unique parameter: expected true, false or a string`
 - **CUVR-074** `reference` that is not a string, or a string that is not the declaration path of a field of the form whose type is not `group` and whose `lang` is absent, `false` or `null` — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid reference parameter: expected the declaration path of a field`
 - **CUVR-057** `pattern`, `match` outside the language — Code: `INVALID_RULE_PATTERN`; Message: `Invalid {rule} pattern: {reason} at {offset}`
