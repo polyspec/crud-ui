@@ -496,6 +496,8 @@ fn condition_node(node: &Value, editor: &Value) -> String {
             let field = str_at(node, "field");
             let control = match editor["fields"].as_array() {
                 Some(names) => {
+                    // The names are the `options.fields` of the editor model that the binding builds; the
+                    // compilation refuses a member that is not a string (CUSC-084), so none is dropped here.
                     let mut choices: Vec<&str> = names.iter().filter_map(Value::as_str).collect();
                     if !choices.contains(&field) {
                         choices.insert(0, field);
