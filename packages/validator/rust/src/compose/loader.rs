@@ -38,21 +38,16 @@ pub trait FileLoader {
 /// set here; the engine resolves `$ref` against it with no disk access. Keys are
 /// the normalized identifiers (`normalize` output).
 pub struct MemoryLoader {
-    files: HashMap<String, LoadedDoc>,
+    files: HashMap<String, Value>,
 }
 
 impl MemoryLoader {
-    /// Build a loader from a `{ key: doc }` map. Each `doc` must be a JSON object
-    /// (a parsed YAML document); a non-object entry is dropped (it can never be a
-    /// valid file body), matching the fixture contract where every file is a map.
+    /// Build a loader from a `{ key: doc }` map. Every entry is kept; a `doc` that is
+    /// not a JSON object fails its load with `REF_FORMAT_ERROR` (CUSC-092).
     pub fn new(files: Map<String, Value>) -> Self {
-        let mut map = HashMap::new();
-        for (key, doc) in files {
-            if let Value::Object(obj) = doc {
-                map.insert(key, obj);
-            }
+        MemoryLoader {
+            files: files.into_iter().collect(),
         }
-        MemoryLoader { files: map }
     }
 }
 
@@ -71,7 +66,13 @@ impl FileLoader for MemoryLoader {
     fn load(&self, key: &str) -> ComposeResult<LoadedDoc> {
         match self.files.get(key) {
             // Defensive clone so resolution never mutates the source file set.
-            Some(doc) => Ok(doc.clone()),
+            Some(Value::Object(doc)) => Ok(doc.clone()),
+            // CUSC-092: a file is an object; another document fails the load.
+            Some(_) => Err(ComposeLoadError::with_trace(
+                ComposeErrorCode::RefFormatError,
+                format!("$ref file is not an object: {}", key),
+                vec![key.to_string()],
+            )),
             None => Err(ComposeLoadError::with_trace(
                 ComposeErrorCode::RefFileNotFound,
                 format!("$ref file not found: {}", key),
