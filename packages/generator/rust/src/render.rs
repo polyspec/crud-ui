@@ -547,7 +547,7 @@ fn part_text(value: &Value) -> String {
 }
 
 /// One control group of `data-crudui-action` buttons.
-fn controls(controls: &Value) -> String {
+pub(crate) fn controls(controls: &Value) -> String {
     let buttons = controls["actions"]
         .as_array()
         .into_iter()
@@ -807,21 +807,20 @@ pub(crate) fn render_fields(fields: &[Value], model: &RenderModel, description: 
 /// Render fields and the form buttons for a record as the complete form of `model`.
 pub(crate) fn render_form_html(
     fields: &[Value],
-    template: &crate::FormTemplate,
-    data: &Value,
+    buttons: &[Value],
+    description: &str,
     language: &str,
     model: &RenderModel,
 ) -> FormResult<String> {
     let messages = crate::messages::form_messages(language)?;
-    let description = crate::util::translate(template.description.as_ref(), language);
-    let body = render_fields(fields, model, &description);
+    let body = render_fields(fields, model, description);
     let footer = element(
         "div",
         &json!({"class":"crudui-form__footer"}),
         &element(
             "div",
             &json!({"class":"crudui-controls","role":"group","aria-label":messages.form_actions}),
-            &crate::buttons::form_buttons_html(&template.buttons, data, language, messages),
+            &crate::buttons::buttons_markup(buttons)?,
         ),
     );
     // render_fields writes an element, which ends with its closing tag.
@@ -858,9 +857,23 @@ pub fn render_form(form: &Form, options: Option<&Value>) -> FormResult<String> {
     let model = render_model(form.fields(), form.template().action.as_ref(), options)?;
     render_form_html(
         form.fields(),
-        form.template(),
-        &form.get_data(),
+        form.buttons(),
+        &form.description(),
         form.language(),
         &model,
     )
+}
+
+/// Render the complete form of evaluated nodes and form buttons, as `bind_form`, `bind_buttons`
+/// and the translated root description give them, for data owned outside an instance (CUMK-073).
+/// `options` is as for [`render_form`]; its `action` has no template action here.
+pub fn render_form_view(
+    fields: &[Value],
+    buttons: &[Value],
+    language: &str,
+    options: Option<&Value>,
+    description: &str,
+) -> FormResult<String> {
+    let model = render_model(fields, None, options)?;
+    render_form_html(fields, buttons, description, language, &model)
 }

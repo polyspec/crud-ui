@@ -40,8 +40,10 @@ pub use instance::{
     create_row_key, sequence_row_key, AddRowOptions, CopyRowOptions, Form, FormSnapshot,
 };
 pub use list::{build_list, list_rows, render_list, ListOptions};
-pub use outline::build_outline;
-pub use render::render_form;
+pub use outline::{
+    build_outline, render_data, render_data_panel, render_outline, render_outline_view,
+};
+pub use render::{render_form, render_form_view};
 pub use template::{compile_form, CompileOptions, FieldTemplate, FormTemplate};
 pub use view::{
     collapsible_rows, initial_view, rekey_row_view, remove_row_view, set_all_expanded_view,

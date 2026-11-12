@@ -12,21 +12,15 @@
 )]
 
 use libtest_mimic::{Arguments, Trial};
+mod support;
+
 use polyspec_crudui_generator::{
-    bind_form, build_outline, compile_form, BindOptions, CompileOptions,
+    bind_form, build_outline, compile_form, render_data_panel, render_outline_view, BindOptions,
+    CompileOptions,
 };
 use serde_json::Value;
+use support::{first_difference, html_tree};
 
-fn cases() -> Vec<Value> {
-    let cases: Vec<Value> = serde_json::from_str(include_str!(
-        "../../../../tests/fixtures/form-outline/cases.json"
-    ))
-    .unwrap();
-    assert!(!cases.is_empty(), "form-outline cases are empty");
-    cases
-}
-
-/// One case builds the recorded outline rows.
 fn check_case(case: &Value) {
     let template = compile_form(&case["spec"], &CompileOptions::default()).unwrap();
     let bind: BindOptions = serde_json::from_value(case["options"].clone()).unwrap();
@@ -37,10 +31,40 @@ fn check_case(case: &Value) {
         "{}",
         case["name"]
     );
+    // CUMK-072 and CUMK-071: the structure map and the data panel, compared as layout trees.
+    let language = case["options"]["language"].as_str().unwrap_or("ko");
+    let outline = render_outline_view(
+        &fields,
+        case["canUndo"] == true,
+        case["canRedo"] == true,
+        language,
+    )
+    .unwrap();
+    let (actual, expected) = (
+        html_tree(&outline),
+        html_tree(case["expected_outline_html"].as_str().unwrap()),
+    );
+    assert!(
+        actual == expected,
+        "{} outline: {:?}",
+        case["name"],
+        first_difference(&actual, &expected)
+    );
+    let data = render_data_panel(&case["data"], language).unwrap();
+    let (actual, expected) = (
+        html_tree(&data),
+        html_tree(case["expected_data_html"].as_str().unwrap()),
+    );
+    assert!(
+        actual == expected,
+        "{} data: {:?}",
+        case["name"],
+        first_difference(&actual, &expected)
+    );
 }
 
 fn main() {
-    let trials = cases()
+    let trials = support::cases("form-outline")
         .into_iter()
         .map(|case| {
             let name = case["name"]

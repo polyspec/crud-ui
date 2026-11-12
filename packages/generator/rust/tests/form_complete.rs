@@ -13,7 +13,7 @@
 )]
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
+use polyspec_crudui_generator::{compile_form, render_form, render_form_view, BindOptions, CompileOptions, Form};
 use serde_json::Value;
 use std::path::Path;
 
@@ -71,6 +71,22 @@ fn check_case(case: &Value) {
         Err(error) => panic!("{name}: bind failed: {error}"),
     };
     let rendered = render_form(&form, Some(&case["render"]));
+    // CUMK-073: without a template action, the view of the same nodes, buttons and description is
+    // the same markup.
+    if form.template().action.is_none() {
+        let view = render_form_view(
+            form.fields(),
+            form.buttons(),
+            case["options"]["language"].as_str().unwrap_or("ko"),
+            Some(&case["render"]),
+            &form.description(),
+        );
+        assert_eq!(
+            view.as_ref().map_err(|error| error.message.clone()),
+            rendered.as_ref().map_err(|error| error.message.clone()),
+            "{name}: render_form_view"
+        );
+    }
     if let Some(expected) = case.get("expectError") {
         let error = rendered.err().unwrap_or_else(|| panic!("{name} must fail"));
         assert_eq!(

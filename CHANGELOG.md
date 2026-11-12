@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- C-10: the Rust generator renders the structure map (`render_outline`, `render_outline_view`, CUMK-072), the data view (`render_data`, `render_data_panel`, CUMK-071) and the form view of evaluated nodes (`render_form_view`, CUMK-073), which the HTML renderer package had alone; the form footer is written from the evaluated buttons of the instance, and the contracts declare these operations and `hidden_paths` (C-10).
 - CUVR-093: the Rust validator has `hidden_paths(spec, data)`, the hidden paths of a validation composed without files, for the browser form binding; the validation conformance test compares it with the `hidden` member of every result without files (CUVR-093).
 - P-4: Rust validation refuses a `messages` member that is no string and a `messages` that is no object (CUVR-089), a root without object `properties` after composition (CUVR-091), and in the text entries `files` that are no object and a `basepath` that is no string (CUVR-092), where it used to skip them; a missing value is validated as `null` by the rule CUVR-090, and the defaults that the core reads name CUMK-070, CURT-094, CUSC-091, CUDF-089 and CUDF-090 (P-4).
 - C-1: the Rust crates read JSON text with the reader of ordered-json and take the string and number tokens of the JSON texts that they write, and the one float text, from ordered-json; serde_json reads no input text of the libraries any more, so the features that ordered-json enables on it (`unbounded_depth`, `raw_value`) reach no input (C-1).

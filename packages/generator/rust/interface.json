@@ -2215,6 +2215,203 @@
           "core": "polyspec_crudui_generator::render_detail"
         },
         {
+          "id": "generator.render_form_view",
+          "name": [
+            "render",
+            "form",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "fields"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "buttons"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "language"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "optional": "json_value"
+              },
+              "default": {
+                "literal": null
+              }
+            },
+            {
+              "name": [
+                "description"
+              ],
+              "type": "text",
+              "default": {
+                "literal": ""
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_form_view"
+        },
+        {
+          "id": "generator.render_outline",
+          "name": [
+            "render",
+            "outline"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "form"
+              ],
+              "type": {
+                "unit": "form"
+              },
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_outline"
+        },
+        {
+          "id": "generator.render_outline_view",
+          "name": [
+            "render",
+            "outline",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "fields"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "can",
+                "undo"
+              ],
+              "type": "bool",
+              "required": true
+            },
+            {
+              "name": [
+                "can",
+                "redo"
+              ],
+              "type": "bool",
+              "required": true
+            },
+            {
+              "name": [
+                "language"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_outline_view"
+        },
+        {
+          "id": "generator.render_data",
+          "name": [
+            "render",
+            "data"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "form"
+              ],
+              "type": {
+                "unit": "form"
+              },
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_data"
+        },
+        {
+          "id": "generator.render_data_panel",
+          "name": [
+            "render",
+            "data",
+            "panel"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "language"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_data_panel"
+        },
+        {
           "id": "generator.build_outline",
           "name": [
             "build",
@@ -2884,6 +3081,16 @@
       "to": null
     },
     {
+      "id": "html-renderer",
+      "rule": "CUMK-073",
+      "reason": "CUMK-071, CUMK-072, CUMK-073: the HTML renderer package becomes operations of the core; the view renderers take the interface language instead of a message table, and the outline view takes the history state as two flags instead of a snapshot",
+      "symbol": "renderFormView, renderOutline, renderOutlineView, renderData, renderDataPanel",
+      "from": {
+        "node": "renderFormView(fields, buttons, messages, options?, description?); renderOutlineView(state, messages); renderDataPanel(data, messages); renderOutline(form); renderData(form) of @polyspec/crudui-generator-html"
+      },
+      "to": "generator.render_form_view"
+    },
+    {
       "id": "description-messages",
       "rule": "C-10",
       "reason": "C-10: formDescription and formMessages read the template and the interface text; formDescription is the property description of the instance, and the message table waits for the core",
@@ -2933,6 +3140,21 @@
     {
       "member": "generator.build_outline",
       "file": "tests/fixtures/form-outline/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.render_outline_view",
+      "file": "tests/fixtures/form-outline/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.render_data_panel",
+      "file": "tests/fixtures/form-outline/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.render_form_view",
+      "file": "tests/fixtures/form-complete/cases.json",
       "group": "cases"
     },
     {

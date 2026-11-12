@@ -78,6 +78,51 @@ pub(crate) fn json_text(value: &Value) -> String {
     out
 }
 
+/// The JSON text of a value as ECMAScript `JSON.stringify(value, null, 2)` writes it (CUMK-071): the
+/// tokens of [`json_text`], each item and member on its own line indented by two spaces per level,
+/// `": "` after a member name, and `[]` and `{}` for an empty array and object.
+pub(crate) fn pretty_json_text(value: &Value) -> String {
+    let mut out = String::new();
+    write_pretty(&mut out, value, 0);
+    out
+}
+
+fn write_pretty(out: &mut String, value: &Value, level: usize) {
+    let indent = |out: &mut String, level: usize| {
+        out.push('\n');
+        out.push_str(&"  ".repeat(level));
+    };
+    match value {
+        Value::Array(items) if !items.is_empty() => {
+            out.push('[');
+            for (index, item) in items.iter().enumerate() {
+                if index > 0 {
+                    out.push(',');
+                }
+                indent(out, level + 1);
+                write_pretty(out, item, level + 1);
+            }
+            indent(out, level);
+            out.push(']');
+        }
+        Value::Object(members) if !members.is_empty() => {
+            out.push('{');
+            for (index, (key, member)) in members.iter().enumerate() {
+                if index > 0 {
+                    out.push(',');
+                }
+                indent(out, level + 1);
+                out.push_str(&string_token(key));
+                out.push_str(": ");
+                write_pretty(out, member, level + 1);
+            }
+            indent(out, level);
+            out.push('}');
+        }
+        other => write_json(out, other),
+    }
+}
+
 /// The string token of a text, as ordered-json writes it.
 pub(crate) fn string_token(text: &str) -> String {
     polyspec_ordered_json::Value::string(text).raw().to_owned()

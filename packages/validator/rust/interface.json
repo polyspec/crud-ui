@@ -666,6 +666,52 @@
           "core": "polyspec_crudui_validator::validate_list"
         },
         {
+          "id": "validator.hidden_paths",
+          "name": [
+            "hidden",
+            "paths"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": {
+            "list": "text"
+          },
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_validator::hidden_paths"
+        },
+        {
           "id": "validator.validate_detail",
           "name": [
             "validate",
@@ -776,16 +822,21 @@
     },
     {
       "id": "hidden-paths",
-      "rule": "CURP-029",
-      "reason": "CURP-029: hiddenPaths serves the browser form binding, a browser layer; the hidden paths are the member hidden of the validation result",
+      "rule": "CUVR-093",
+      "reason": "CUVR-093: hiddenPaths is an operation of every runtime, the hidden paths that the browser form binding reads; the PHP, Go and Python libraries had none",
       "symbol": "hiddenPaths",
       "from": {
         "node": "hiddenPaths(spec, data): string[]"
       },
-      "to": null
+      "to": "validator.hidden_paths"
     }
   ],
   "cases": [
+    {
+      "member": "validator.hidden_paths",
+      "file": "tests/fixtures/validate/cases.json",
+      "group": "cases"
+    },
     {
       "member": "validator.validate",
       "file": "tests/fixtures/validate/cases.json",

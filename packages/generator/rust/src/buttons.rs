@@ -130,19 +130,3 @@ pub(crate) fn buttons_markup(buttons: &[Value]) -> FormResult<String> {
 
 /// The attribute names an evaluated button can carry, in output order.
 const BUTTON_ATTRIBUTES: [&str; 7] = ["type", "class", "style", "name", "value", "href", "onclick"];
-
-/// Render the form buttons for a record.
-pub(crate) fn form_buttons_html(
-    buttons: &[Map<String, Value>],
-    data: &Value,
-    language: &str,
-    messages: &Messages,
-) -> String {
-    #[allow(
-        clippy::expect_used,
-        reason = "R-1: button_models writes only the buttons that buttons_markup accepts"
-    )]
-    let markup = buttons_markup(&button_models(buttons, data, language, messages))
-        .expect("evaluated buttons are valid");
-    markup
-}

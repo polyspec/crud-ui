@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b371337be4340fefee841689df34cd9737f4260bf89d4e58fb870d19d5ebd551 -->
+<!-- source-sha256: 74426dce73daf86acd8eaa94d365084ff551522eb61a6fc4e9a98ef1211b3500 -->
 
 ## Unreleased
 
+- C-10: Rust generator가 HTML 렌더러 패키지에만 있던 구조 맵(`render_outline`, `render_outline_view`, CUMK-072), 데이터 보기(`render_data`, `render_data_panel`, CUMK-071), 계산된 노드의 폼 보기(`render_form_view`, CUMK-073)를 렌더링한다. 폼 footer는 인스턴스의 계산된 버튼으로 쓰고, 계약은 이 연산들과 `hidden_paths`를 선언한다(C-10).
 - CUVR-093: Rust validator에 브라우저 폼 바인딩을 위한 `hidden_paths(spec, data)`가 생겼다. 파일 없이 합성한 검증의 숨은 경로이며, 검증 적합성 시험이 파일 없는 모든 결과의 `hidden`과 비교한다(CUVR-093).
 - P-4: Rust 검증은 문자열이 아닌 `messages` 멤버와 객체가 아닌 `messages`(CUVR-089), 합성 뒤 객체인 `properties`가 없는 루트(CUVR-091), 텍스트 진입점의 객체가 아닌 `files`와 문자열이 아닌 `basepath`(CUVR-092)를 건너뛰지 않고 거부한다. 없는 값은 규칙 CUVR-090으로 `null`로 검증하고, 코어가 읽는 기본값은 CUMK-070, CURT-094, CUSC-091, CUDF-089, CUDF-090을 가리킨다(P-4).
 - C-1: Rust crate는 JSON 텍스트를 ordered-json의 읽기로 읽고, 쓰는 JSON 텍스트의 문자열·숫자 토큰과 유일한 실수 텍스트를 ordered-json에서 가져온다. 라이브러리는 더는 serde_json으로 입력 텍스트를 읽지 않으므로 ordered-json이 켜는 feature(`unbounded_depth`, `raw_value`)가 입력에 닿지 않는다(C-1).
