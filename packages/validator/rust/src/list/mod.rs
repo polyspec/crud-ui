@@ -21,6 +21,7 @@ use serde_json::{Map, Value};
 
 use crate::compose::{compose_spec, ComposeLoadError, ComposeOptions, FileLoader};
 use crate::structure::{compose_map_slot, compose_root, validate_structure};
+use crate::{FormInputError, ValidateError};
 
 /// Options for a list-spec validation run (the form `ValidateOptions` shape —
 /// no data, so no `data` field).
@@ -48,17 +49,21 @@ pub struct ValidateListOptions<'a> {
 /// form `properties` recursion. `columns` is a properties-shaped map →
 /// `compose_properties` (the SAME code that composes form `properties`).
 /// `search` is a form-spec reference (input, §9.1) → `compose_spec`.
-pub fn validate_list(spec: &Value, options: &ValidateListOptions) -> Result<(), ComposeLoadError> {
+pub fn validate_list(spec: &Value, options: &ValidateListOptions) -> Result<(), ValidateError> {
+    // CUDF-091: a specification that is no object fails before the composition (CUDF-024).
+    if !spec.is_object() {
+        return Err(FormInputError::new("List specification must be an object").into());
+    }
     // Load-path forbidden-scan (§6) runs over the WHOLE composed list tree, with
     // the trace seeded at the list root (no `properties` prefix — a list is not a
     // Field).
-    validate_structure(
+    Ok(validate_structure(
         spec,
         options.files.as_ref(),
         options.loader,
         options.basepath.as_deref(),
         compose_list,
-    )
+    )?)
 }
 
 /// Compose a list-spec into a single composition-free tree: expand the root
@@ -100,8 +105,16 @@ mod tests {
     use crate::compose::ComposeErrorCode;
     use serde_json::json;
 
+    /// The load failure of a structure check; another failure fails the test.
+    fn load(error: ValidateError) -> ComposeLoadError {
+        match error {
+            ValidateError::Load(error) => error,
+            other => panic!("not a load failure: {other}"),
+        }
+    }
+
     fn run(spec: &Value) -> Result<(), ComposeLoadError> {
-        validate_list(spec, &ValidateListOptions::default())
+        validate_list(spec, &ValidateListOptions::default()).map_err(load)
     }
 
     fn run_with_files(spec: &Value, files: Value) -> Result<(), ComposeLoadError> {
@@ -110,7 +123,7 @@ mod tests {
             loader: None,
             basepath: None,
         };
-        validate_list(spec, &opts)
+        validate_list(spec, &opts).map_err(load)
     }
 
     #[test]

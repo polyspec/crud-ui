@@ -365,7 +365,7 @@ pub fn validate_list_with_loader(
             loader: Some(&bridge),
             basepath,
         };
-        Ok::<(), ValidateError>(crate::validate_list(&spec, &options)?)
+        crate::validate_list(&spec, &options)
     })();
     bridge.settle(result)
 }
@@ -388,7 +388,7 @@ pub fn validate_detail_with_loader(
             loader: Some(&bridge),
             basepath,
         };
-        Ok::<(), ValidateError>(crate::validate_detail(&spec, &options)?)
+        crate::validate_detail(&spec, &options)
     })();
     bridge.settle(result)
 }

@@ -553,7 +553,7 @@ macro_rules! structure_text_validator {
         ) -> Result<(), ValidateError> {
             structure_text(spec, files, basepath, |spec, files, basepath| {
                 let options = $options { files, loader: None, basepath };
-                Ok(crate::$validate(spec, &options)?)
+                crate::$validate(spec, &options)
             })
         }
     };

@@ -69,7 +69,9 @@ fn detail_engine_case_failures(case: &Value) -> Vec<String> {
                 Ok(()) => {}
                 Err(e) => failures.push(format!(
                     "[{}] the case raises nothing but was rejected: {} ({})",
-                    name, e.code, e.message
+                    name,
+                    e.code(),
+                    e.message()
                 )),
             },
             Some(want) => {
@@ -82,8 +84,8 @@ fn detail_engine_case_failures(case: &Value) -> Vec<String> {
                         name, want_code, want_at
                     )),
                     Err(e) => {
-                        let got_code = e.code.as_str();
-                        let got_at = e.trace.join(".");
+                        let got_code = e.code();
+                        let got_at = e.at();
                         if got_code != want_code {
                             failures.push(format!(
                                 "[{}] LOAD code mismatch: want {} got {}",

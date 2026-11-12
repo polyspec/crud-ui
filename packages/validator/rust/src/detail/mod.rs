@@ -19,6 +19,7 @@ use serde_json::{Map, Value};
 
 use crate::compose::{ComposeLoadError, ComposeOptions, FileLoader};
 use crate::structure::{compose_map_slot, compose_root, validate_structure};
+use crate::{FormInputError, ValidateError};
 
 /// Options for a detail-spec validation run (no data, so no `data` field).
 #[derive(Default)]
@@ -37,17 +38,18 @@ pub struct ValidateDetailOptions<'a> {
 /// Returns `Err(ComposeLoadError)` for an unresolved composition (`$ref`/`$patch`)
 /// or a forbidden meta key at any depth (`FORBIDDEN_META_KEY`). Both are LOAD
 /// failures, never a `valid:false` result.
-pub fn validate_detail(
-    spec: &Value,
-    options: &ValidateDetailOptions,
-) -> Result<(), ComposeLoadError> {
-    validate_structure(
+pub fn validate_detail(spec: &Value, options: &ValidateDetailOptions) -> Result<(), ValidateError> {
+    // CUDF-091: a specification that is no object fails before the composition (CUDF-032).
+    if !spec.is_object() {
+        return Err(FormInputError::new("Detail specification must be an object").into());
+    }
+    Ok(validate_structure(
         spec,
         options.files.as_ref(),
         options.loader,
         options.basepath.as_deref(),
         compose_detail,
-    )
+    )?)
 }
 
 /// Compose a detail-spec: expand the root `$ref`/`$patch`, then the `fields` map.
@@ -77,10 +79,24 @@ mod tests {
         assert!(validate_detail(&v, &ValidateDetailOptions::default()).is_ok());
     }
 
+    /// CUDF-091: a specification that is no object fails before the composition.
+    #[test]
+    fn a_specification_that_is_no_object_fails() {
+        let Err(ValidateError::InvalidFormInput(error)) =
+            validate_detail(&json!([]), &ValidateDetailOptions::default())
+        else {
+            panic!("a list is no specification");
+        };
+        assert_eq!(error.message, "Detail specification must be an object");
+    }
+
     #[test]
     fn forbidden_field_key_is_load_error() {
         let v = json!({ "fields": { "name": { "field": "name", "show_if": ".admin" } } });
-        let err = validate_detail(&v, &ValidateDetailOptions::default()).unwrap_err();
+        let Err(ValidateError::Load(err)) = validate_detail(&v, &ValidateDetailOptions::default())
+        else {
+            panic!("a forbidden key is a load failure");
+        };
         assert_eq!(err.code, ComposeErrorCode::ForbiddenMetaKey);
         assert_eq!(err.trace.join("."), "fields.name.show_if");
     }
