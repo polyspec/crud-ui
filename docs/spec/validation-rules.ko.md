@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: 5006fc3167a206beb2dea613207ca577ae724f3294ecfb3cb6272806fa64eb9a -->
+<!-- source-sha256: 555098ba5a9662a8f659382125992a2f56bb254fb650cb3b1c802ae7b71131af -->
 
 [English](validation-rules.md).
 
@@ -354,9 +354,9 @@ POSIX 클래스, 소유·중첩 수량자, `\uHHHH`, 8진수·제어 문자 이�
   코드는 `INVALID_FORM_INPUT`, 메시지는 `Submitted data exceeds the {limit} limit of {n}`이며 `{limit}`은
   `depth` 또는 `values`, `{n}`은 그 한도이고, 위치는 비어 있습니다.
 - **CUVR-083** `dataLimits`가 없거나 그 멤버가 없으면 기본값을 씁니다: `depth` 64, `values` 100000.
-- **CUVR-084** 객체가 아니거나, `depth`와 `values` 이외의 멤버를 가지거나, `depth`가 1부터 512까지의
+- **CUVR-084** 객체가 아니거나, `depth`와 `values` 이외의 멤버를 가지거나, `depth`가 1부터 256까지의
   정수가 아니거나, `values`가 1부터 1000000까지의 정수가 아닌 `dataLimits`는 금지 키 검사 뒤, 규칙 이름과
-  매개변수 검사 전에 로드에 실패합니다 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid dataLimits parameter: expected depth from 1 to 512 and values from 1 to 1000000`; 위치: 빈 경로.
+  매개변수 검사 전에 로드에 실패합니다 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid dataLimits parameter: expected depth from 1 to 256 and values from 1 to 1000000`; 위치: 빈 경로.
 
 ## 조건부 매개변수
 

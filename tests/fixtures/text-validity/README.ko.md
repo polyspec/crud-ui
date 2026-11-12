@@ -1,6 +1,6 @@
 # 입력 텍스트 픽스처
 <!-- doc-id: tests-fixtures-text-validity-readme -->
-<!-- source-sha256: 67f343047e7ec8a812e2c0f7643a983ac4523303597fca5fe7e67f679e3c0b5c -->
+<!-- source-sha256: c88389a94a5a12844166a847e523122901d6d3e1dc3b59cecc9ac865d087d45f -->
 
 [English](README.md).
 
@@ -31,7 +31,7 @@
 ## 값 그래프
 
 `value-graphs.json`에는 값 한도 케이스가 있습니다. 값을 그 값이 나타내는 트리로 순회할 때 노드는
-최대 1,000,000개, 중첩은 최대 512단계이며, 자기 자신을 담는 값은 한도를 넘습니다. JSON 텍스트는
+최대 1,000,000개, 중첩은 최대 256단계이며, 자기 자신을 담는 값은 한도를 넘습니다. JSON 텍스트는
 컨테이너를 공유할 수 없으므로 각 케이스는 값 그래프를 `graph`에 기술합니다. 각 테스트는 자기
 컨테이너로 그래프를 만들어 케이스의 `validate` 입력에서 `graph.at` 위치에 둡니다. 이 경로는 `spec`,
 `files`, `data` 중 하나로 시작합니다. 모양은 다음과 같습니다.
@@ -42,7 +42,7 @@
 - `self-twice`: 멤버 `self`와 `again`이 객체 자신인 객체. PHP에서는 자기 자신에 대한 참조 두 개를
   담은 배열입니다
 
-Native 경계에서 허용되는 case는 `dataLimits.depth` 512 또는 `dataLimits.values` 1000000을 선언하므로 더 작은 기본 submission budget이 native value limit 검사를 먼저 거부하지 않습니다.
+Native 경계에서 허용되는 case는 `dataLimits.depth` 256 또는 `dataLimits.values` 1000000을 선언하므로 더 작은 기본 submission budget이 native value limit 검사를 먼저 거부하지 않습니다.
 
 모든 케이스는 실행기의 테스트별 제한 시간 안에서 테스트 하나로 실행됩니다. 값이 나타내는 트리에 비례해
 커지는 순회(40단계 공유 목록이면 2^40개 노드)는 그 안에 끝나지 않습니다. 절대 시간 기준은 기계 속도에 따라

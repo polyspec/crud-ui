@@ -664,7 +664,7 @@ button; a `button` or `link` needs `text` and a `link` needs `href` (see the
 - **CUSC-052** `messages`: Object of registered rule name to message string
 - **CUSC-053** `buttons`: List of buttons (`type`: `submit`, `reset`, `button` or `link`); the form root only
 - **CUSC-054** `action`: Object with string `method`, `url` and `enctype`; the form root only
-- **CUSC-087** `dataLimits`: Object with integer `depth` (1 to 512) and `values` (1 to 1000000); the form root only ([data limits](validation-rules.md#data-limits))
+- **CUSC-087** `dataLimits`: Object with integer `depth` (1 to 256) and `values` (1 to 1000000); the form root only ([data limits](validation-rules.md#data-limits))
 - **CUSC-055** `design.show`: Expression, boolean or condition map
 - **CUSC-056** `design.class`, `design.style`: String or condition map
 - **CUSC-057** `design.label`, `design.wrapper`, `design.group`, `design.prepend`: Object

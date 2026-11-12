@@ -60,7 +60,9 @@ beyond its limits when:
 
 - **CUIT-021** it holds more than 1,000,000 nodes, where each array, object, string, number, boolean and
   `null` of the tree is a node, the value itself included; or
-- **CUIT-022** it nests more than 512 levels of arrays and objects, the value itself being the first level.
+- **CUIT-022** it nests more than 256 levels of arrays and objects, the value itself being the first level. 256 is the
+  reading limit of the JSON reader ([ordered-json](https://github.com/polyspec/ordered-json)), so every value that a runtime
+  accepts can also be written and read as JSON text.
 
 A value that contains itself nests without end, so it is always beyond them. The walk stops at
 the first failure in its order, so it visits at most 1,000,001 nodes whatever tree a value

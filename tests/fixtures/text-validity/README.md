@@ -31,7 +31,7 @@ check that valid text passes and that members follow code point order.
 ## Value graphs
 
 `value-graphs.json` holds the cases of the value limits: a value walked as the tree it denotes
-holds at most 1,000,000 nodes and nests at most 512 levels, and a value that contains itself is
+holds at most 1,000,000 nodes and nests at most 256 levels, and a value that contains itself is
 beyond them. JSON text cannot share a container, so each case describes its value graph in
 `graph`, and each test builds it with its own containers and places it at `graph.at`, a path
 that starts with `spec`, `files` or `data`, in the case's `validate` inputs. The shapes are:
@@ -42,7 +42,7 @@ that starts with `spec`, `files` or `data`, in the case's `validate` inputs. The
 - `self-twice`: an object whose members `self` and `again` are the object itself, a PHP array
   that holds two references to itself.
 
-The accepted native boundary cases declare `dataLimits.depth` 512 or `dataLimits.values` 1000000, so the smaller default submission budget does not preempt the native value limit.
+The accepted native boundary cases declare `dataLimits.depth` 256 or `dataLimits.values` 1000000, so the smaller default submission budget does not preempt the native value limit.
 
 Every case runs as one test within the runner's per-test limit; a walk that grows with the tree a
 value denotes (2^40 nodes for a shared list forty levels deep) does not finish within it. Wall-clock

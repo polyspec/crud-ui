@@ -430,9 +430,9 @@ request, never a field error.
 - **CUVR-083** A missing `dataLimits`, or a missing member of it, takes the default: `depth` 64 and
   `values` 100000.
 - **CUVR-084** A `dataLimits` that is not an object, that has a member other than `depth` and
-  `values`, whose `depth` is not an integer from 1 to 512 or whose `values` is not an integer from 1
+  `values`, whose `depth` is not an integer from 1 to 256 or whose `values` is not an integer from 1
   to 1000000 fails the load after the forbidden-key scan and before the rule names and parameters
-  are checked — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid dataLimits parameter: expected depth from 1 to 512 and values from 1 to 1000000`; location: the empty path.
+  are checked — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid dataLimits parameter: expected depth from 1 to 256 and values from 1 to 1000000`; location: the empty path.
 
 ## Conditional parameters
 
