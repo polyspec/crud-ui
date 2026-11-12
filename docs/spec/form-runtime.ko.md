@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: fcb12050fadfdd6586b6d61510108b9ec1aa690f3905dd1971b748c728022294 -->
+<!-- source-sha256: 18a7d6015718b8703fa9a814db3ac077f721434faac2b39251b7435ec8738ad8 -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -78,7 +78,13 @@ HTML 렌더러(`@polyspec/crudui-generator-html`), PHP, PHP 확장, Go, Rust 생
 요소에 `connectForm`을 호출할 수 있습니다. `renderFormView(fields, buttons, messages, options,
 description)`는 React, Vue, Svelte의 `FormFields`처럼, 직접 관리하는 데이터를 위해
 `bindForm`, `bindButtons`와 `options.language`로 번역한 루트 설명을 반환하는
-`formDescription(template, options)`로 같은 내용을 렌더링합니다. `renderList(spec, rows, options)`는 선언된
+`formDescription(template, options)`로 같은 내용을 렌더링합니다.
+
+- **CUMK-073** `renderFormView(fields, buttons, messages, options, description)`는 같은 노드·버튼·설명을 가지고 템플릿
+  action이 없는 인스턴스에 `renderForm`이 쓰는 마크업을 씁니다. Rust 코어는 `language`의 인터페이스 텍스트를 받는
+  `render_form_view(fields, buttons, language, options, description)`로 씁니다.
+
+`renderList(spec, rows, options)`는 선언된
 table 또는 card layout을 반환합니다. 이 패키지는 DOM 연결, 검증, 데이터 로드,
 위젯 실행을 수행하지 않습니다.
 

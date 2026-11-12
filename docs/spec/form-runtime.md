@@ -85,7 +85,14 @@ the [complete form](#complete-form); it is inserted into a page, which may then 
 options, description)` renders the same content from `bindForm`, `bindButtons` and
 `formDescription(template, options)`, which returns the root description translated for
 `options.language`, for data owned outside the instance, as React, Vue and Svelte provide
-`FormFields`. `renderList(spec, rows, options)`
+`FormFields`.
+
+- **CUMK-073** `renderFormView(fields, buttons, messages, options, description)` writes the markup that `renderForm`
+  writes for an instance with the same nodes, buttons and description and no template action. The Rust core
+  writes it as `render_form_view(fields, buttons, language, options, description)`, which takes the interface
+  text of `language`.
+
+`renderList(spec, rows, options)`
 returns the declared table or card layout. The package performs no DOM binding,
 validation, data loading or widget execution.
 
