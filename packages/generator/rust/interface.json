@@ -3389,21 +3389,6 @@
   ],
   "cases": [
     {
-      "member": "generator.compile_form",
-      "file": "tests/fixtures/compose/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.render_form",
-      "file": "tests/fixtures/form-render/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.bind_buttons",
-      "file": "tests/fixtures/buttons/cases.json",
-      "group": "cases"
-    },
-    {
       "member": "generator.build_list",
       "file": "tests/fixtures/list-render/cases.json",
       "group": "cases"
@@ -3421,56 +3406,6 @@
     {
       "member": "generator.render_detail",
       "file": "tests/fixtures/detail-render/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.build_outline",
-      "file": "tests/fixtures/form-outline/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.render_outline_view",
-      "file": "tests/fixtures/form-outline/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.render_data_panel",
-      "file": "tests/fixtures/form-outline/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.render_form_view",
-      "file": "tests/fixtures/form-complete/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.run_action",
-      "file": "tests/fixtures/form-actions/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.toggle_row_view",
-      "file": "tests/fixtures/view-functions/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "generator.record_change",
-      "file": "tests/fixtures/history-functions/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "form.constructor",
-      "file": "tests/fixtures/form-state/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "form.set_value",
-      "file": "tests/fixtures/form-state/cases.json",
-      "group": "cases"
-    },
-    {
-      "member": "form.undo",
-      "file": "tests/fixtures/form-history/cases.json",
       "group": "cases"
     }
   ]

@@ -5,6 +5,9 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { parseFragment } from 'parse5';
 
+import { readFileSync } from 'node:fs';
+
+import { caseGroup, caseValue } from '../case-values.mts';
 import { readJson, type JTDSchemaType } from '../json.mts';
 
 /** A case of a render fixture; a case without expected HTML expects an error. */
@@ -27,11 +30,17 @@ interface MarkupNode { nodeName: string; attrs?: { name: string; value: string }
 function read<Case>(path: string, schema: JTDSchemaType<Case[]>): Case[] {
   return readJson(new URL(path, import.meta.url), schema);
 }
+/** The cases of every group of a file in the case form of binding (G-5), with the specification decoded. */
+function readGroups(path: string): RenderCase[] {
+  const document = JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as Record<string, unknown>;
+  return Object.keys(document).flatMap(group => caseGroup(document, group))
+    .map(item => ({ ...item, name: String(item.name), ...(typeof item.expected_html === 'string' ? { expected_html: item.expected_html } : {}), spec: caseValue(item.spec) }));
+}
 const rendered = (item: RenderCase): item is RenderCase & { expected_html: string } => Boolean(item.expected_html);
 const fixtures: [label: string, html: string, spec: unknown][] = [
   ...read('../fixtures/form-render/cases.json', renderCases).filter(rendered).map((item): [string, string, unknown] => [`form-render/${item.name}`, item.expected_html, item.spec]),
-  ...read('../fixtures/list-render/cases.json', renderCases).filter(rendered).map((item): [string, string, unknown] => [`list-render/${item.name}`, item.expected_html, item.spec]),
-  ...read('../fixtures/detail-render/cases.json', renderCases).filter(rendered).map((item): [string, string, unknown] => [`detail-render/${item.name}`, item.expected_html, item.spec]),
+  ...readGroups('../fixtures/list-render/cases.json').filter(rendered).map((item): [string, string, unknown] => [`list-render/${item.name}`, item.expected_html, item.spec]),
+  ...readGroups('../fixtures/detail-render/cases.json').filter(rendered).map((item): [string, string, unknown] => [`detail-render/${item.name}`, item.expected_html, item.spec]),
   ...read('../fixtures/form-outline/cases.json', outlineCases).flatMap((item): [string, string, unknown][] => [
     [`form-outline/${item.name}/outline`, item.expected_outline_html, item.spec],
     [`form-outline/${item.name}/data`, item.expected_data_html, item.spec],

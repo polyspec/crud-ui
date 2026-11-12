@@ -3,9 +3,15 @@
 
 [한국어](README.ko.md).
 
-`cases.json` contains the shared list layout cases for React, Vue, Svelte and the HTML renderer.
-Each case provides `name`, `spec`, `rows`, optional `options`, and either
-`expected_html` or `expectError`.
+`cases.json` holds the shared list layout cases of the Rust core in the case form of binding's generated tests (G-5): the
+group `cases` lists the cases of `build_list and render_list`, and each case gives `id`, `name`, `note`, `requirements`, the arguments
+`spec` and `rows` and the record `options` with every field (`files`, `basepath`, `language`, `data`, `page`,
+`total`), and either `expected_html` or `raises` with its `kind`, `status`, `category` and optional `message`. `spec`,
+every row, every file and `data` are values of `json_value`, written as `{ "kind", "value" }` as in the
+[validation fixtures](../validate/README.md). The suites of React, Vue, Svelte and the legacy renderers read the copy
+under `legacy/tests/fixtures`.
+The group `row_shapes` holds the cases whose rows are no list, which the type of `rows` cannot give; the contract does
+not name it.
 
 These cases check table and card layouts, column formats, the list description before the
 actions, actions, visibility, empty rows and pagination markup, the input errors and the declaration errors of the
@@ -32,15 +38,7 @@ The cases are read by the list conformance tests in
 [HTML renderer](../../../legacy/packages/html/src/list-conformance.test.ts).
 Composition error cases require the recorded error code.
 
-## Regeneration
+## Authoring
 
-Run from the repository root after building the packages:
-
-```sh
-node tests/fixtures/list-render/generate.mts \
-  > tests/fixtures/list-render/cases.json
-npm run test:forms
-```
-
-The generator derives normalized list bodies from React. Review changes against
-the specification before accepting them. Regeneration alone is not verification.
+`cases.json` is data that is edited directly. [`generate.mts`](generate.mts) wrote it from the React renderer in the
+form of the legacy copy; it is a tool of the legacy implementations and is not run.

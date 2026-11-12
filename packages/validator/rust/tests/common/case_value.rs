@@ -44,6 +44,14 @@ fn text_depth(text: &str) -> usize {
 
 /// The cases of the group `cases` of the fixture at `path`.
 pub fn read_cases(path: &Path) -> Vec<Value> {
+    match read_file(path).get("cases") {
+        Some(Value::Array(cases)) => cases.clone(),
+        _ => panic!("fixture {:?} has no group cases", path),
+    }
+}
+
+/// The case file at `path`, an object of groups.
+pub fn read_file(path: &Path) -> Value {
     let raw =
         std::fs::read_to_string(path).unwrap_or_else(|e| panic!("read fixture {:?}: {}", path, e));
     // The case form nests a value three levels per level of the value, so a value of 256 levels is beyond the
@@ -59,10 +67,7 @@ pub fn read_cases(path: &Path) -> Vec<Value> {
     reader.disable_recursion_limit();
     let parsed: Value = serde::Deserialize::deserialize(&mut reader)
         .unwrap_or_else(|e| panic!("parse fixture {:?}: {}", path, e));
-    match parsed.get("cases") {
-        Some(Value::Array(cases)) => cases.clone(),
-        _ => panic!("fixture {:?} has no group cases", path),
-    }
+    parsed
 }
 
 /// The JSON value of a value in the case form.

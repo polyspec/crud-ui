@@ -9,6 +9,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { normalizeHtml } from '../../tests/fixtures/form-render/normalize.mts';
 import { equalModels, equalOrdered } from '../native-generators/protocol.mts';
 import { runRustCommand } from '../../../scripts/run-rust-command.mts';
+import { caseGroup, caseValue } from '../../../tests/case-values.mts';
 
 // The records of the Rust generator compared with the legacy TypeScript implementation (plan V-6): only the cases that
 // the shared fixtures and the copy under legacy/ hold alike, so that both read the same input.
@@ -31,10 +32,27 @@ try {
   });
   const native = JSON.parse(await readFile(output, 'utf8'));
   // The positions of the shared cases whose copy under legacy/ is the same case.
+  // A shared file in the case form of binding (G-5) is read as the cases of the copy: its arguments decoded and its
+  // failure as expectError, so that a case alike in both compares equal.
+  const legacyForm = item => {
+    const { id: _id, raises, spec, rows, options, ...rest } = item;
+    const { files = {}, data, basepath, language, page, total, ...other } = options ?? {};
+    return {
+      ...rest, spec: caseValue(spec), rows: Array.isArray(rows) ? rows.map(caseValue) : caseValue(rows),
+      options: { ...other, ...(Object.keys(files).length ? { files: Object.fromEntries(Object.entries(files).map(([name, file]) => [name, caseValue(file)])) } : {}), ...(data === null || data === undefined ? {} : { data: caseValue(data) }), ...(basepath ? { basepath } : {}), language, ...(page === null ? {} : { page }), ...(total === null ? {} : { total }) },
+      ...(raises ? { expectError: { code: raises.kind.toUpperCase(), ...(raises.message === undefined ? {} : { message: raises.message }) } } : {}),
+    };
+  };
   const alike = async family => {
-    const shared = JSON.parse(await readFile(join(repositoryRoot, `tests/fixtures/${family}/cases.json`), 'utf8'));
-    const pinned = new Map(JSON.parse(await readFile(join(repositoryRoot, `legacy/tests/fixtures/${family}/cases.json`), 'utf8')).map(item => [item.name, JSON.stringify(item)]));
-    return { shared, picked: shared.flatMap((item, index) => pinned.get(item.name) === JSON.stringify(item) ? [index] : []) };
+    const document = JSON.parse(await readFile(join(repositoryRoot, `tests/fixtures/${family}/cases.json`), 'utf8'));
+    const shared = Array.isArray(document) ? document : [...caseGroup(document), ...(document.row_shapes ? caseGroup(document, 'row_shapes') : [])].map(legacyForm);
+    // Cases are alike when they hold the same members, in any order, with the default language and empty options written or not.
+    const canonical = value => Array.isArray(value) ? `[${value.map(canonical).join(',')}]`
+      : value !== null && typeof value === 'object'
+        ? `{${Object.keys(value).sort().filter(key => !(key === 'language' && value[key] === 'ko') && !(key === 'options' && canonical(value[key]) === '{}')).map(key => `${JSON.stringify(key)}:${canonical(value[key])}`).join(',')}}`
+        : JSON.stringify(value);
+    const pinned = new Map(JSON.parse(await readFile(join(repositoryRoot, `legacy/tests/fixtures/${family}/cases.json`), 'utf8')).map(item => [item.name, canonical(item)]));
+    return { shared, picked: shared.flatMap((item, index) => pinned.get(item.name) === canonical(item) ? [index] : []) };
   };
   const formFamily = await alike('form-render');
   const listFamily = await alike('list-render');

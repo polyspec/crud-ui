@@ -26,10 +26,13 @@ static PRELOAD: LazyLock<Regex> =
 fn options(case: &Value) -> ListOptions<'static> {
     let options = &case["options"];
     ListOptions {
-        files: options["files"].as_object().cloned().unwrap_or_default(),
+        files: support::case_files(case).unwrap_or_default(),
         basepath: options["basepath"].as_str().unwrap_or("").into(),
         language: options["language"].as_str().unwrap_or("ko").into(),
-        data: options.get("data").cloned().unwrap_or(Value::Null),
+        data: match options.get("data") {
+            Some(Value::Null) | None => Value::Null,
+            Some(data) => support::case_value(data),
+        },
         page: options.get("page").cloned().unwrap_or(Value::Null),
         total: options.get("total").cloned().unwrap_or(Value::Null),
         layout: options.get("layout").cloned().unwrap_or(Value::Null),
@@ -40,13 +43,19 @@ fn options(case: &Value) -> ListOptions<'static> {
 /// One case renders the recorded layout, or fails with the recorded code and message.
 fn check_case(case: &Value) {
     let name = case["name"].as_str().unwrap();
-    let rows = list_rows(case.get("rows"));
-    let result = rows.and_then(|rows| render_list(&case["spec"], rows, &options(case)));
-    if let Some(expected) = case.get("expectError") {
+    // The rows of a case are a list of values; a case of the group row_shapes gives one value in their place.
+    let rows = case.get("rows").map(|rows| match rows {
+        Value::Array(items) => Value::Array(items.iter().map(support::case_value).collect()),
+        other => support::case_value(other),
+    });
+    let spec = support::case_value(&case["spec"]);
+    let rows = list_rows(rows.as_ref());
+    let result = rows.and_then(|rows| render_list(&spec, rows, &options(case)));
+    if let Some(expected) = case.get("raises") {
         let error = result.err().unwrap_or_else(|| panic!("{name} must fail"));
         assert_eq!(
             error.code,
-            expected["code"].as_str().unwrap(),
+            support::raised_code(case).unwrap().as_str(),
             "{name}: code"
         );
         if let Some(message) = expected.get("message").and_then(Value::as_str) {
@@ -72,7 +81,7 @@ fn check_case(case: &Value) {
 }
 
 fn main() {
-    let cases = support::cases("list-render");
+    let cases = support::case_groups("list-render", &["cases", "row_shapes"]);
     assert_eq!(cases.len(), 165, "list-render holds 165 cases");
     let trials = cases.into_iter().map(|case| {
         let name = case["name"].as_str().unwrap().to_string();

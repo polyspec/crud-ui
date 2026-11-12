@@ -26,10 +26,13 @@ static PRELOAD: LazyLock<Regex> =
 fn options(case: &Value) -> DetailOptions<'static> {
     let options = &case["options"];
     DetailOptions {
-        files: options["files"].as_object().cloned().unwrap_or_default(),
+        files: support::case_files(case).unwrap_or_default(),
         basepath: options["basepath"].as_str().unwrap_or("").into(),
         language: options["language"].as_str().unwrap_or("ko").into(),
-        data: options.get("data").cloned().unwrap_or(Value::Null),
+        data: match options.get("data") {
+            Some(Value::Null) | None => Value::Null,
+            Some(data) => support::case_value(data),
+        },
         page: options.get("page").cloned().unwrap_or(Value::Null),
         total: options.get("total").cloned().unwrap_or(Value::Null),
         layout: options.get("layout").cloned().unwrap_or(Value::Null),
@@ -40,13 +43,17 @@ fn options(case: &Value) -> DetailOptions<'static> {
 /// One case renders the recorded layout, or fails with the recorded code and message.
 fn check_case(case: &Value) {
     let name = case["name"].as_str().unwrap();
-    let record = case.get("record").cloned().unwrap_or(json!({}));
-    let result = render_detail(&case["spec"], &record, &options(case));
-    if let Some(expected) = case.get("expectError") {
+    let record = case
+        .get("record")
+        .map(support::case_value)
+        .unwrap_or(json!({}));
+    let spec = support::case_value(&case["spec"]);
+    let result = render_detail(&spec, &record, &options(case));
+    if let Some(expected) = case.get("raises") {
         let error = result.err().unwrap_or_else(|| panic!("{name} must fail"));
         assert_eq!(
             error.code,
-            expected["code"].as_str().unwrap(),
+            support::raised_code(case).unwrap().as_str(),
             "{name}: code"
         );
         if let Some(message) = expected.get("message").and_then(Value::as_str) {
@@ -72,7 +79,7 @@ fn check_case(case: &Value) {
 }
 
 fn main() {
-    let cases = support::cases("detail-render");
+    let cases = support::case_groups("detail-render", &["cases"]);
     assert_eq!(cases.len(), 68, "detail-render holds 68 cases");
     let trials = cases.into_iter().map(|case| {
         let name = case["name"].as_str().unwrap().to_string();

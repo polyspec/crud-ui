@@ -670,16 +670,72 @@ fn settled(case: &Value, result: FormResult<Value>) -> Value {
     }
 }
 
+/// A value in the case form of binding (G-5) as the JSON value it names.
+fn case_value(value: &Value) -> Value {
+    match value["kind"].as_str().unwrap() {
+        "null" => Value::Null,
+        "number" => serde_json::from_str(value["value"].as_str().unwrap()).unwrap(),
+        "list" => Value::Array(
+            value["value"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(case_value)
+                .collect(),
+        ),
+        "map" => Value::Object(
+            value["value"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|pair| (pair[0].as_str().unwrap().to_owned(), case_value(&pair[1])))
+                .collect(),
+        ),
+        _ => value["value"].clone(),
+    }
+}
+
+/// A list case of the case form with its specification, rows, files and data decoded and its failure as `expectError`.
+fn decoded_list_case(case: &Value) -> Value {
+    let mut decoded = case.clone();
+    decoded["spec"] = case_value(&case["spec"]);
+    decoded["rows"] = match &case["rows"] {
+        Value::Array(rows) => Value::Array(rows.iter().map(case_value).collect()),
+        other => case_value(other),
+    };
+    let options = &mut decoded["options"];
+    let files: serde_json::Map<String, Value> = case["options"]["files"]
+        .as_object()
+        .unwrap()
+        .iter()
+        .map(|(name, file)| (name.clone(), case_value(file)))
+        .collect();
+    options["files"] = Value::Object(files);
+    if !case["options"]["data"].is_null() {
+        options["data"] = case_value(&case["options"]["data"]);
+    }
+    if let Some(raises) = case.get("raises") {
+        decoded["expectError"] = json!({"code": raises["kind"].as_str().unwrap().to_uppercase()});
+    }
+    decoded
+}
+
 #[test]
 fn native_fixture_records() {
     let forms: Vec<Value> = serde_json::from_str(include_str!(
         "../../../../tests/fixtures/form-render/cases.json"
     ))
     .unwrap();
-    let lists: Vec<Value> = serde_json::from_str(include_str!(
+    // The list cases are in the case form of binding (G-5): their arguments are decoded into the values they name.
+    let list_file: Value = serde_json::from_str(include_str!(
         "../../../../tests/fixtures/list-render/cases.json"
     ))
     .unwrap();
+    let lists: Vec<Value> = ["cases", "row_shapes"]
+        .iter()
+        .flat_map(|group| list_file[*group].as_array().cloned().unwrap_or_default())
+        .map(|case| decoded_list_case(&case))
+        .collect();
     let form_records = forms
         .iter()
         .map(|case| {

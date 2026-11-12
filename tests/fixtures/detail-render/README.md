@@ -3,9 +3,13 @@
 
 [한국어](README.ko.md).
 
-`cases.json` contains the shared read-only detail cases for every string renderer and every
-framework renderer. Each case provides `name`, `note`, `spec`, `record`, optional `options`, and
-either `expected_html` or `expectError` with its `code` and `message`.
+`cases.json` holds the shared read-only detail cases of the Rust core in the case form of binding's generated tests (G-5): the
+group `cases` lists the cases of `build_detail and render_detail`, and each case gives `id`, `name`, `note`, `requirements`, the arguments
+`spec` and `record` and the record `options` with every field (`files`, `basepath`, `language`, `data`, `page`,
+`total`), and either `expected_html` or `raises` with its `kind`, `status`, `category` and optional `message`. `spec`,
+every record, every file and `data` are values of `json_value`, written as `{ "kind", "value" }` as in the
+[validation fixtures](../validate/README.md). The suites of React, Vue, Svelte and the legacy renderers read the copy
+under `legacy/tests/fixtures`.
 
 These cases check translated labels, every cell format, an absent value, the detail and field
 designs, a hidden field, composed fields, an empty declaration, the detail actions before the
@@ -37,14 +41,7 @@ The cases are read by the detail conformance tests in
 [Svelte](../../../packages/svelte/tests/detail-render.conformance.test.mjs) and the
 [HTML renderer](../../../legacy/packages/html/src/detail-conformance.test.ts).
 
-## Regeneration
+## Authoring
 
-Run from the repository root:
-
-```sh
-node tests/fixtures/detail-render/generate.mts \
-  > tests/fixtures/detail-render/cases.json
-```
-
-The generator derives normalized detail bodies from React. Review changes against the
-specification before accepting them. Regeneration alone is not verification.
+`cases.json` is data that is edited directly. [`generate.mts`](generate.mts) wrote it from the React renderer in the
+form of the legacy copy; it is a tool of the legacy implementations and is not run.

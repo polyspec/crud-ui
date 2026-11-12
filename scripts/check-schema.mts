@@ -64,18 +64,20 @@ function decodedCase(item: Record<string, unknown>): Record<string, unknown> {
   const { id: _id, options: _options, raises, spec, data, ...rest } = item;
   const files = caseFiles(item);
   const failure = OBJECT(raises) ? { code: String(raises.kind).toUpperCase(), at: raises.at } : undefined;
+  const failureKey = 'expect' in rest ? 'engine' : 'expected_html' in rest || 'rows' in item || 'record' in item ? 'expectError' : 'expectFailure';
   return {
     ...rest,
     ...(spec === undefined ? {} : { spec: caseValue(spec) }),
     ...(data === undefined ? {} : { data: caseValue(data) }),
     ...(files === undefined ? {} : { files }),
-    ...('expect' in rest ? { engine: failure ?? 'pass' } : failure === undefined ? {} : { expectFailure: { ...failure, message: (raises as Record<string, unknown>).message } }),
+    ...(failureKey === 'engine' ? { engine: failure ?? 'pass' } : failure === undefined ? {} : { [failureKey]: { ...failure, message: (raises as Record<string, unknown>).message } }),
   };
 }
 /** The cases of a fixture: the group `cases` of a file in the case form, decoded, or the list of a file of its own form. */
 const fixtureItems = (path: string): unknown[] => {
   const document = read(path);
-  return Array.isArray(document) ? document : caseGroup(document).map(decodedCase);
+  return Array.isArray(document) ? document
+    : Object.keys(OBJECT(document) ? document : {}).flatMap((group) => caseGroup(document, group)).map(decodedCase);
 };
 const readCases = (path: string): (Record<string, unknown> & { name: string })[] =>
   checkedShape(ARRAY, fixtureItems(path), path).map((item, index) => {

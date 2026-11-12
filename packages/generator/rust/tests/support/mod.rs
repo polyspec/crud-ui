@@ -4,7 +4,41 @@
 use serde_json::{json, Value};
 use std::path::Path;
 
+#[path = "../../../../validator/rust/tests/common/case_value.rs"]
+mod case_value;
+#[allow(
+    unused_imports,
+    reason = "each test crate of the package uses the readers that its fixtures need"
+)]
+pub use case_value::*;
+
+/// The cases of the groups `groups` of a fixture family in the case form of binding (G-5), in group order.
+#[allow(
+    dead_code,
+    reason = "each test crate of the package uses the readers that its fixtures need"
+)]
+pub fn case_groups(family: &str, groups: &[&str]) -> Vec<Value> {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../tests/fixtures")
+        .join(family)
+        .join("cases.json");
+    let file = read_file(&path);
+    let mut cases = Vec::new();
+    for group in groups {
+        match file.get(*group) {
+            Some(Value::Array(items)) => cases.extend(items.iter().cloned()),
+            _ => panic!("{} has no group {group}", path.display()),
+        }
+    }
+    assert!(!cases.is_empty(), "{family} holds no case");
+    cases
+}
+
 /// The cases of one fixture family, read from `tests/fixtures/<family>/cases.json`; a family holds at least one case.
+#[allow(
+    dead_code,
+    reason = "each test crate of the package uses the readers that its fixtures need"
+)]
 pub fn cases(family: &str) -> Vec<Value> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../../tests/fixtures")
