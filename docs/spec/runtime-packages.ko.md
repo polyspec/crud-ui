@@ -1,6 +1,6 @@
 # 런타임 패키지
 <!-- doc-id: docs-spec-runtime-packages -->
-<!-- source-sha256: 8b281a51cbe51505dc5935f165a94aa8e48f2598aa1fa6040752d66943bf9e85 -->
+<!-- source-sha256: db2f0aba76d6f6f05d25cdc877b003a7e070628fb57ff7e57f8a8b476047b40b -->
 
 [English](runtime-packages.md).
 구현과 검증 결과는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -103,6 +103,12 @@ Composer가 PHP 클래스를 자동 로드합니다. 예제는 두 설정에서 
   (`subscribe`)은 규칙의 연산이 아닙니다. 인스턴스를 React, Vue, Svelte로 렌더링하는 브라우저 층이
   인스턴스를 호출하고, 성공한 연산마다 자기 리스너에 알리고, `snapshot()`을 다시 읽습니다. 인스턴스는
   리스너를 갖지 않고 호스트 코드를 호출하지 않습니다.
+- **CURP-030** 바인딩은 명세, 템플릿, 데이터, 옵션의 모든 JSON 값을 ordered-json `Value`로 넘기고, Rust 코어는 공개
+  경계(각 crate의 `boundary`)에서 그런 값을 받고 줍니다. 들어오는 값은 그 인수로서 입력 텍스트 규칙(CUIT-021~CUIT-031,
+  연산의 인수 이름)으로 검사한 뒤, 멤버를 순서대로, 각 숫자를 ECMAScript가 그 토큰으로 읽는 double로 읽습니다(CURP-028).
+  나가는 값은 멤버를 순서대로, 각 숫자를 그 double의 `Number::toString`으로 씁니다. 256단계보다 깊이 중첩된 나가는 값은
+  `INVALID_FORM_INPUT`와 `Recursive or excessively nested value: result`로 실패하고, 들어오는 값은 CUIT-029~CUIT-031대로
+  실패합니다.
 
 ## 구현 패키지
 

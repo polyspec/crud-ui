@@ -1,6 +1,6 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: 2e4124fb4eca9851b40ad69e57d80b5e02e191e1d6bd392aaaa5a602ba34ac1f -->
+<!-- source-sha256: 42ddb607382a39611b498b00bb8f6c8a176be73f558a4f02f5f385baab0b927d -->
 
 [English](README.md).
 
@@ -67,3 +67,9 @@ node tests/fixtures/validate/generate.mts > tests/fixtures/validate/cases.json
 전체 결과 기록을 명시하며, 둘 다 `visibility.mts`의 기본 규칙 메시지를 사용합니다. 생성기가 JSON 문자열로 가진
 명세는 `cases.json`에서도 멤버 순서를 유지합니다. 변경을 반영하기 전에 명세와 비교하여 검토하고 모든
 사용처를 실행합니다. 재생성만으로 검증이 완료되지는 않습니다.
+
+## 작성
+
+`cases.json`은 직접 고치는 데이터입니다. TypeScript 런타임이 기준이던 동안에는 TypeScript 생성기 `generate.mts`가
+이 파일을 썼습니다. 그 런타임이 legacy 런타임이 되면 어떤 프로그램도 기대값을 생성하지 않으며, 케이스가 결과를
+시험하는 Rust 코어도 기대값을 쓰지 않습니다.

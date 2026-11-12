@@ -109,6 +109,14 @@ structure or validation rules.
   rules: a browser layer that renders the instance with React, Vue or Svelte calls the instance,
   notifies its listeners after each operation that succeeded, and reads `snapshot()` again; the
   instance keeps no listener and calls no host code.
+- **CURP-030** The bindings pass every JSON value of a specification, a template, data or an option as an
+  ordered-json `Value`, and the Rust core takes and gives such values at its public boundary (`boundary` of each
+  crate). A value that enters is checked as its argument by the input text rules (CUIT-021 to CUIT-031, with the
+  argument name of the operation), then read with its members in their order and each number as the double that
+  ECMAScript reads for its token (CURP-028). A value that leaves is written with its members in their order and
+  each number as `Number::toString` writes its double. A value that leaves nested deeper than 256 levels fails with
+  `INVALID_FORM_INPUT` and `Recursive or excessively nested value: result`; a value that enters fails as CUIT-029 to
+  CUIT-031 state.
 
 ## Implementation packages
 

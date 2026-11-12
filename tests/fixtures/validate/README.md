@@ -82,3 +82,9 @@ the default rule messages in `visibility.mts`.
 Specifications that the generator holds as JSON text keep their member order in `cases.json`.
 Review changes against the specification and run every test that reads them before accepting them.
 Regeneration alone is not verification.
+
+## Authoring
+
+`cases.json` is data that is edited directly. The TypeScript generator `generate.mts` wrote it while the TypeScript
+runtime was the reference; once that runtime is a legacy runtime, no program generates the expected values, and the
+Rust core, whose results the cases test, never writes them.
