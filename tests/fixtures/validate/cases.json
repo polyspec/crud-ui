@@ -1995,7 +1995,8 @@
     },
     "requirements": [
       "CURP-018",
-      "CURP-022"
+      "CURP-022",
+      "CUVR-094"
     ]
   },
   {
@@ -25900,7 +25901,7 @@
   },
   {
     "name": "validate-not-object",
-    "note": "a validate member that is no object fails the load at the field (CUVR-094).",
+    "note": "a validate member that is neither an object nor false fails the load at the field (CUVR-094).",
     "spec": {
       "type": "group",
       "properties": {
