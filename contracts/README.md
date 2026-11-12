@@ -13,7 +13,8 @@ cases of the members of the interface contracts (`packages/<component>/rust/inte
 `tests/fixtures` are a rule corpus of another form: sessions of steps, field maps or specifications that an instance
 renders. Each group, named after its member, calls the member once per case with the arguments that the case names by
 their parameter names, each `json_value` written as `{ "kind", "value" }` (binding G-5): a few cases that succeed and one
-case for each kind that the member raises, under `raises`. They are no copy of the rule corpus, which stays in
+case for each kind that the member raises, under `raises`. A case of a failure of the environment, which no argument gives, names the failure that the test feature of the
+core injects in `inject` (`random_source`: the random source fails, with the feature `random-failure-test`). They are no copy of the rule corpus, which stays in
 `tests/fixtures`, and the Rust test `contract_cases` of each crate runs them at the boundary.
 
 Validate the manifest from the repository root:

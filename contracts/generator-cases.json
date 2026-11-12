@@ -850,6 +850,16 @@
     {
       "id": "creates_a_row_key",
       "note": "a row key of 13 hexadecimal digits; the failure of the random source cannot be given by a case."
+    },
+    {
+      "id": "random_unavailable",
+      "note": "the random source of the system fails (CURT-095); the failure is injected by the test feature random-failure-test, which no release build has.",
+      "inject": "random_source",
+      "raises": {
+        "kind": "random_unavailable",
+        "status": null,
+        "category": "io"
+      }
     }
   ],
   "from_json": [

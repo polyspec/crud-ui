@@ -1,6 +1,6 @@
 # CRUDUI 계약 manifest
 <!-- doc-id: contracts-readme -->
-<!-- source-sha256: ff26193c237c3a29d50063aabdf767c9479e70d0142847883bcb428fdbd94b58 -->
+<!-- source-sha256: bddbeb9511cf68b874f2b3167bfa20134e04c2c429e1945d7c860c610fa0a97c -->
 
 [English](README.md).
 
@@ -12,7 +12,8 @@
 (`packages/<component>/rust/interface.json`)의 member 가운데 `tests/fixtures`의 fixture가 다른 형식의 규칙 corpus(단계의 세션,
 field map, 인스턴스가 렌더링하는 명세)인 member의 계약 case입니다. member 이름을 딴 각 group은 case마다 member를 한 번
 부르며, 인수는 매개변수 이름으로 적고 각 `json_value`는 `{ "kind", "value" }`로 씁니다(binding G-5). 성공하는 case 몇 건과
-member가 내는 kind마다 `raises`를 가진 case 한 건씩입니다. 이 case는 `tests/fixtures`에 남는 규칙 corpus의 사본이 아니며, 각
+member가 내는 kind마다 `raises`를 가진 case 한 건씩입니다. 어떤 인수로도 줄 수 없는 환경 실패의 case는 코어의 시험 feature가 주입하는 실패를 `inject`에 적습니다(`random_source`: feature
+`random-failure-test`로 난수 원천이 실패). 이 case는 `tests/fixtures`에 남는 규칙 corpus의 사본이 아니며, 각
 crate의 Rust 시험 `contract_cases`가 경계에서 실행합니다.
 
 저장소 루트에서 manifest를 검사합니다.
