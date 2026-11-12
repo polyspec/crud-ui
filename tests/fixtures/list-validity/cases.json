@@ -1883,6 +1883,28 @@
           ]
         ]
       }
+    },
+    {
+      "id": "specification_not_an_object",
+      "name": "specification-not-an-object",
+      "note": "a specification that is no object fails before the composition (CUDF-091, CUDF-024).",
+      "requirements": [
+        "CUDF-091",
+        "CUDF-024"
+      ],
+      "spec": {
+        "kind": "list",
+        "value": []
+      },
+      "expect": "fail",
+      "reason": "type",
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value",
+        "message": "List specification must be an object",
+        "at": ""
+      }
     }
   ]
 }

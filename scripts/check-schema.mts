@@ -301,7 +301,8 @@ function validityCase(family: string, test: unknown): ValidityCase {
   const label = `${family}:${test.name}`;
   for (const key of Object.keys(test)) assert.ok(caseKeys.has(key), `${label}: unknown member ${key}`);
   assert.ok(typeof test.note === 'string', `${label}: note is a string`);
-  assert.ok(OBJECT(test.spec), `${label}: spec is an object`);
+  // A fail case may give a specification that is no object (CUDF-091); every other specification is an object.
+  assert.ok(OBJECT(test.spec) || test.expect === 'fail', `${label}: spec is an object`);
   if ('files' in test) assert.ok(OBJECT(test.files), `${label}: files is an object`);
   if ('requirements' in test) {
     const ids = test.requirements;
