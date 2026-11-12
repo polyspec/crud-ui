@@ -88,3 +88,32 @@ impl From<FormInputError> for ValidateError {
         ValidateError::Input(error)
     }
 }
+
+impl bindgen_core::Kinds for FormInputError {
+    fn kind(&self) -> &'static str {
+        "invalid_form_input"
+    }
+    fn status(&self) -> Option<u16> {
+        None
+    }
+    fn errno(&self) -> Option<i32> {
+        None
+    }
+}
+
+/// The kind of a validation failure (bindgen design E-1): the kind of the load failure or of the
+/// input failure that it holds.
+impl bindgen_core::Kinds for ValidateError {
+    fn kind(&self) -> &'static str {
+        match self {
+            ValidateError::Load(error) => error.kind(),
+            ValidateError::Input(error) => error.kind(),
+        }
+    }
+    fn status(&self) -> Option<u16> {
+        None
+    }
+    fn errno(&self) -> Option<i32> {
+        None
+    }
+}

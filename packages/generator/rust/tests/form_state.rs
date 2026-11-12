@@ -214,7 +214,14 @@ fn perform(form: &mut Form, spec: &Value, op: &str, args: &[Value]) -> FormResul
                 &polyspec_crudui_validator::validate::ValidateOptions::default(),
             )
             .map_err(|error| FormError {
-                code: error.code().to_string(),
+                code: match &error {
+                    polyspec_crudui_validator::ValidateError::Load(load) => {
+                        polyspec_crudui_generator::FormErrorCode::Compose(load.code)
+                    }
+                    polyspec_crudui_validator::ValidateError::Input(_) => {
+                        polyspec_crudui_generator::FormErrorCode::InvalidFormInput
+                    }
+                },
                 message: error.message().to_string(),
                 at: String::new(),
                 trace: Vec::new(),

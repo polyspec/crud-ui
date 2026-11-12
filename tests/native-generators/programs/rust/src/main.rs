@@ -23,7 +23,7 @@ use serde_json::{json, Value};
 
 fn input(message: impl Into<String>) -> FormError {
     FormError {
-        code: "INVALID_FORM_INPUT".into(),
+        code: polyspec_crudui_generator::FormErrorCode::InvalidFormInput,
         message: message.into(),
         at: String::new(),
         trace: Vec::new(),

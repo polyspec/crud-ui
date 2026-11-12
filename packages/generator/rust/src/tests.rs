@@ -1289,7 +1289,7 @@ fn closed_buckets_report_unknown_keys_in_member_order() {
 
 fn display_error(result: FormResult<Value>) -> (String, String, String) {
     let error = result.unwrap_err();
-    (error.code, error.message, error.at)
+    (error.code.as_str().to_owned(), error.message, error.at)
 }
 
 fn invalid(message: &str) -> (String, String, String) {

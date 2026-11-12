@@ -31,7 +31,7 @@ pub use actions::{
 };
 pub use binding::{bind_buttons, bind_form, form_buttons_html, BindOptions};
 pub use detail::{build_detail, render_detail, DetailOptions};
-pub use error::{FormError, FormResult};
+pub use error::{FormError, FormErrorCode, FormResult};
 pub use history::{
     can_redo, can_undo, empty_history, record_change, redo_change, undo_change, History,
     HistoryResult, HISTORY_LIMIT,

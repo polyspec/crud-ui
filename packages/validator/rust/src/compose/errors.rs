@@ -76,6 +76,39 @@ impl ComposeErrorCode {
     }
 }
 
+impl ComposeErrorCode {
+    /// The kind of the failure (bindgen design E-1): the code in lower snake case.
+    pub fn kind(self) -> &'static str {
+        match self {
+            ComposeErrorCode::RefFileNotFound => "ref_file_not_found",
+            ComposeErrorCode::RefFormatError => "ref_format_error",
+            ComposeErrorCode::RefDetectKeyNotFound => "ref_detect_key_not_found",
+            ComposeErrorCode::RefCycle => "ref_cycle",
+            ComposeErrorCode::RefValueType => "ref_value_type",
+            ComposeErrorCode::PatchShape => "patch_shape",
+            ComposeErrorCode::PatchPathConflict => "patch_path_conflict",
+            ComposeErrorCode::PatchRemoveTargetMissing => "patch_remove_target_missing",
+            ComposeErrorCode::ForbiddenMetaKey => "forbidden_meta_key",
+            ComposeErrorCode::InvalidRuleParameter => "invalid_rule_parameter",
+            ComposeErrorCode::InvalidRulePattern => "invalid_rule_pattern",
+            ComposeErrorCode::UnknownRule => "unknown_rule",
+            ComposeErrorCode::InvalidText => "invalid_text",
+        }
+    }
+}
+
+impl bindgen_core::Kinds for ComposeLoadError {
+    fn kind(&self) -> &'static str {
+        self.code.kind()
+    }
+    fn status(&self) -> Option<u16> {
+        None
+    }
+    fn errno(&self) -> Option<i32> {
+        None
+    }
+}
+
 impl fmt::Display for ComposeErrorCode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(self.as_str())

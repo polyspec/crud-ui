@@ -446,7 +446,7 @@ impl Binding<'_> {
             Some(widget) => Ok(widget),
             None if self.unsupported == "marker" => Ok(json!({"unsupported": true, "type": kind})),
             None => Err(FormError {
-                code: "UNSUPPORTED_FIELD_TYPE".into(),
+                code: crate::error::FormErrorCode::UnsupportedFieldType,
                 message: format!("Unsupported field type \"{kind}\" at \"{path}\""),
                 at: path.into(),
                 trace: Vec::new(),
