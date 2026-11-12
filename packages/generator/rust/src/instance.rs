@@ -255,7 +255,7 @@ pub struct FormSnapshot {
 }
 
 /// Identity and insertion position of a copied row (CURT-005). The key of the copy is `new_key`, since
-/// the key of the copied row is an argument of `copy_row` itself (bindgen design T-4).
+/// the key of the copied row is an argument of `copy_row` itself (binding design T-4).
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CopyRowOptions {

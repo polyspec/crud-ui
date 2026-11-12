@@ -5,7 +5,7 @@ edition = "2021"
 rust-version = "1.99.0"
 license = "MIT"
 # The package holds the interface contract of the bindings beside the source, so that a repository that depends on
-# this crate reads the contract from the package that Cargo resolved (bindgen design I-1, T-3).
+# this crate reads the contract from the package that Cargo resolved (binding design I-1, T-3).
 include = ["/src/**/*.rs", "/interface.json", "/README.md"]
 
 [lib]
@@ -13,11 +13,11 @@ name = "polyspec_crud_ui_validator"
 path = "src/lib.rs"
 
 [dependencies]
-# The kind interface that the generated bindings read from the core errors (bindgen design E-1, I-2 (3)). The git
-# source is the bindgen repository; Cargo.lock pins its commit, the same source as the generated binding crates.
-polyspec-bindgen-core = { git = "https://github.com/polyspec/bindgen.git", branch = "v1/rust-core" }
+# The kind interface that the generated bindings read from the core errors (binding design E-1, I-2 (3)). The git
+# source is the binding repository; Cargo.lock pins its commit, the same source as the generated binding crates.
+polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", branch = "v1/rust-core" }
 # The owner of the value type json_value of the interface contract (F-1 (a), C-10): Cargo resolves the package whose
-# interface.json the contract check reads (bindgen design I-1, T-3). The JSON reading and writing of the crate move to it
+# interface.json the contract check reads (binding design I-1, T-3). The JSON reading and writing of the crate move to it
 # in the C-1 change of C-10.
 polyspec-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
 serde = { version = "1", features = ["derive"] }

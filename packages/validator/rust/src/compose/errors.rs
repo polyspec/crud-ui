@@ -77,7 +77,7 @@ impl ComposeErrorCode {
 }
 
 impl ComposeErrorCode {
-    /// The kind of the failure (bindgen design E-1): the code in lower snake case.
+    /// The kind of the failure (binding design E-1): the code in lower snake case.
     pub fn kind(self) -> &'static str {
         match self {
             ComposeErrorCode::RefFileNotFound => "ref_file_not_found",
@@ -97,7 +97,7 @@ impl ComposeErrorCode {
     }
 }
 
-impl bindgen_core::Kinds for ComposeLoadError {
+impl binding_core::Kinds for ComposeLoadError {
     fn kind(&self) -> &'static str {
         self.code.kind()
     }

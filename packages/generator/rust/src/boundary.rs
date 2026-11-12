@@ -4,7 +4,7 @@
 //! written with its members in order and its numbers as `Number::toString` writes their doubles.
 //! Every operation here runs the operation of the same name of the crate.
 
-use bindgen_core::OrderedMap;
+use binding_core::OrderedMap;
 use polyspec_crud_ui_validator::boundary::{input, output, specification};
 use polyspec_crud_ui_validator::{FormInputError, ValidateError};
 use polyspec_json::Value as JsonValue;

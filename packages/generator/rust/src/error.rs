@@ -22,7 +22,7 @@ impl FormErrorCode {
         }
     }
 
-    /// The kind of the failure (bindgen design E-1): the code in lower snake case.
+    /// The kind of the failure (binding design E-1): the code in lower snake case.
     pub fn kind(self) -> &'static str {
         match self {
             FormErrorCode::Compose(code) => code.kind(),
@@ -92,7 +92,7 @@ impl From<ComposeLoadError> for FormError {
     }
 }
 
-impl bindgen_core::Kinds for FormError {
+impl binding_core::Kinds for FormError {
     fn kind(&self) -> &'static str {
         self.code.kind()
     }

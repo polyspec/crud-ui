@@ -3,7 +3,7 @@
 //! their members in order and their numbers as ECMAScript doubles; results leave as polyspec-json
 //! values. Every operation here runs the operation of the same name of the crate.
 
-use bindgen_core::OrderedMap;
+use binding_core::OrderedMap;
 use polyspec_json::Value as JsonValue;
 use serde_json::Value;
 

@@ -3003,7 +3003,7 @@
     {
       "id": "init",
       "rule": "P-5",
-      "reason": "P-5 (bindgen design): the WASM binding is initialized asynchronously, so the browser entry has await init()",
+      "reason": "P-5 (binding design): the WASM binding is initialized asynchronously, so the browser entry has await init()",
       "symbol": "init",
       "from": {},
       "to": null
