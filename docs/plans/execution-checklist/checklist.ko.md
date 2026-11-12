@@ -1,6 +1,6 @@
 # Execution checklist
 <!-- doc-id: docs-plans-execution-checklist -->
-<!-- source-sha256: 6e6660c21ecf74f4d3887d5f62688549465649b47ca2106bf4b99f8ac6a1b968 -->
+<!-- source-sha256: 7517ea5eaa9e2ed5494315a0d38bae73c4e4a3a9df832fbd1738119201246df6 -->
 
 ## [Wave 1](plan.ko.md#wave-1) — 좁은 viewport를 위한 stylesheet와 stylesheet의 Tailwind 버전
 
@@ -349,5 +349,5 @@
 | ID | Task | Deliverables | Verification | State |
 |---|---|---|---|---|
 | C16.1 | Rust crate를 바인딩의 코어로 만든다. 언어 구현을 예전 경로 그대로 `legacy/`로 옮기고 고정 사본 `legacy/tests/fixtures`를 두며, 배포 대상에서 빼고, 루트에 Cargo workspace 하나를 만들고, 각 component의 바인딩 package를 scaffold한다. | `legacy/packages/**`, `legacy/tests/fixtures/**`, `Cargo.toml`, `Cargo.lock`, `packages/{validator,generator}/{ts,python,php-ext}`, recipe `bindings`, `bindings-check`, `lint-bindings`, `test-bindings`, `config/layout.yml`, `config/release.json`, `config/owner-checks.json`, `AGENTS.md` | `make bindings-check BINDING=<binding의 cli>`가 지적 없이 끝난다. `cargo test --locked -p polyspec-crud-ui-validator -p polyspec-crud-ui-generator`. `make owner-validate`. `make release-coverage` | [o] |
-| C16.2 | 각 legacy package는 그 바인딩 package가 공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거하고(계획 V-6 (5)), `config/layout.yml`, `config/release.json`, `config/owner-checks.json`의 항목도 함께 지운다. `legacy/tests/fixtures`는 마지막 package와 함께 지우고, legacy TypeScript package의 의존인 루트 `package.json`의 release asset `@polyspec/ordered-json`도 함께 지운다. | `legacy/` 아래 경로 없음, `package.json`에 `@polyspec/ordered-json` 없음 | 예외 `!legacy` 없이 `make layout-check` | [ ] |
+| C16.2 | 각 legacy package는 그 바인딩 package가 공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거하고(계획 V-6 (5)), `config/layout.yml`, `config/release.json`, `config/owner-checks.json`의 항목도 함께 지운다. `legacy/tests/fixtures`와 구현끼리 비교하는 도구(`legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`, `legacy/examples/cross-check-console`)는 마지막 package와 함께 지우고, legacy TypeScript package의 의존인 루트 `package.json`의 release asset `@polyspec/ordered-json`도 함께 지운다. | `legacy/` 아래 경로 없음, `package.json`에 `@polyspec/ordered-json` 없음 | 예외 `!legacy` 없이 `make layout-check` | [ ] |
 | C16.3 | C16.1이 손으로 쓴 것을 기록된 도구가 있는 machine에서 검증한다. npm 12.2.0으로 다시 쓴 `package-lock.json`이 추적 파일과 다르지 않고, 새 `config/layout.yml`로 alint의 `make layout-check`가 통과한다. | `package-lock.json` 차이 없음, `make layout-check` 결과 | npm 12.2.0으로 `npm install --package-lock-only` 뒤 `git diff --exit-code package-lock.json`, `make layout-check` | [ ] |

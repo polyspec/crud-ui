@@ -1,6 +1,6 @@
 # 완전한 폼 고정 데이터
 <!-- doc-id: tests-fixtures-form-complete-readme -->
-<!-- source-sha256: 2035bf0cc25fbb27f16ff4b60b33b993a957cc8f20f8be7f15316d7ffa233a1c -->
+<!-- source-sha256: 4f802c5b7e7c9e738d8881b05cffc68c30377804af13f041a18d46b4f2aa5936 -->
 
 [English](README.md).
 
@@ -19,7 +19,7 @@ JavaScript URL, 빈 옵션, 폼 요소 없는 오류, 폼 오류 순서, 컬렉�
 ([`form-complete.conformance.test.ts`](../../../packages/react/src/tests/form-complete.conformance.test.ts)),
 HTML renderer
 ([`form-complete.conformance.test.ts`](../../../legacy/packages/html/src/form-complete.conformance.test.ts)),
-그리고 [네이티브 생성기 검사](../../native-generators/README.ko.md)를 통한 PHP, PHP 확장, Go, Rust
+그리고 [네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)를 통한 PHP, PHP 확장, Go, Rust
 생성기입니다. Vue
 ([`form-complete.conformance.test.mjs`](../../../packages/vue/tests/form-complete.conformance.test.mjs))와
 Svelte

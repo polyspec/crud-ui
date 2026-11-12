@@ -190,7 +190,7 @@ test('Rust generator fixture validation uses one resolved toolchain', t => {
   const root = fixture(t, 'crudui-rust-generator-fixtures-', []);
   const tools = rustEnvironment(root);
   const result = spawnSync(process.execPath, [
-    path.join(repository, 'packages/generator/rust/verify-fixtures.mjs'),
+    path.join(repository, 'legacy/tests/rust-generator-fixtures/verify-fixtures.mjs'),
   ], {
     cwd: repository,
     encoding: 'utf8',
@@ -211,21 +211,21 @@ test('Rust generator fixture validation uses one resolved toolchain', t => {
 });
 
 test('native generator integration uses the shared Rust command entry point', () => {
-  const source = readFileSync(path.join(repository, 'tests/native-generators/run.mts'), 'utf8');
+  const source = readFileSync(path.join(repository, 'legacy/tests/native-generators/run.mts'), 'utf8');
   assert.match(source, /runRustCommand/);
   assert.doesNotMatch(source, /process\.env\.CARGO|globalThis\.process\.env\.CARGO/);
 });
 
 test('cross-check server builds Rust through its module-located entry point', t => {
-  const manifest = readManifest(path.join(repository, 'examples/cross-check-console/server/package.json'));
+  const manifest = readManifest(path.join(repository, 'legacy/examples/cross-check-console/server/package.json'));
   assert.equal(script(manifest, 'build:rust'), 'node build-rust.mjs');
 
   const root = fixture(t, 'crudui-rust-cross-check-', []);
   const tools = rustEnvironment(root);
   const result = spawnSync(process.execPath, [
-    path.join(repository, 'examples/cross-check-console/server/build-rust.mjs'),
+    path.join(repository, 'legacy/examples/cross-check-console/server/build-rust.mjs'),
   ], {
-    cwd: path.join(repository, 'examples/cross-check-console/server'),
+    cwd: path.join(repository, 'legacy/examples/cross-check-console/server'),
     encoding: 'utf8',
     env: tools.environment,
   });
@@ -233,7 +233,7 @@ test('cross-check server builds Rust through its module-located entry point', t 
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.deepEqual(commands(tools.commandLog), [{
     args: ['build', '--locked', '--release'],
-    cwd: path.join(repository, 'examples/cross-check-console/validators/rust'),
+    cwd: path.join(repository, 'legacy/examples/cross-check-console/validators/rust'),
     rustc: tools.rustc,
     rustdoc: tools.rustdoc,
   }]);

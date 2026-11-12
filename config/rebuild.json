@@ -30,51 +30,51 @@
       "kind": "policy",
       "reason": "the orchestrator of the validator benchmark, which measures the four validators on one protocol; no ecosystem tool defines this protocol"
     },
-    "examples/cross-check-console/client/app.js": {
+    "legacy/examples/cross-check-console/client/app.js": {
       "kind": "ecosystem",
       "tool": "js-yaml reads the YAML text of a specification in the page of the cross-check console"
     },
-    "examples/cross-check-console/client/doc.js": {
+    "legacy/examples/cross-check-console/client/doc.js": {
       "kind": "policy",
       "reason": "the the syntax document of the cross-check-console example, an application of CRUDUI; it implements no tool of an ecosystem"
     },
-    "examples/cross-check-console/client/examples.js": {
+    "legacy/examples/cross-check-console/client/examples.js": {
       "kind": "policy",
       "reason": "the the example specifications of the cross-check-console example, an application of CRUDUI; it implements no tool of an ecosystem"
     },
-    "examples/cross-check-console/client/fixture-export.js": {
+    "legacy/examples/cross-check-console/client/fixture-export.js": {
       "kind": "policy",
       "reason": "the the fixture export of the cross-check-console example, an application of CRUDUI; it implements no tool of an ecosystem"
     },
-    "examples/cross-check-console/server/build-rust.mjs": {
+    "legacy/examples/cross-check-console/server/build-rust.mjs": {
       "kind": "ecosystem",
       "tool": "cargo build --locked --release, through scripts/run-rust-command.mts"
     },
-    "examples/cross-check-console/server/engine.mjs": {
+    "legacy/examples/cross-check-console/server/engine.mjs": {
       "kind": "ecosystem",
       "tool": "a Vite SSR environment loads the HTML, React, Vue and Svelte render entries"
     },
-    "examples/cross-check-console/server/render-runner.mjs": {
+    "legacy/examples/cross-check-console/server/render-runner.mjs": {
       "kind": "policy",
       "reason": "the render runner that compares the HTML of four renderers of the cross-check-console example, an application of CRUDUI; it implements no tool of an ecosystem"
     },
-    "examples/cross-check-console/server/server.mjs": {
+    "legacy/examples/cross-check-console/server/server.mjs": {
       "kind": "ecosystem",
       "tool": "node:http serves the gateway and js-yaml reads the YAML requests"
     },
-    "examples/cross-check-console/server/validate-runner.mjs": {
+    "legacy/examples/cross-check-console/server/validate-runner.mjs": {
       "kind": "ecosystem",
       "tool": "node:child_process runs the validator processes of five languages"
     },
-    "examples/cross-check-console/validators/js/validate.mjs": {
+    "legacy/examples/cross-check-console/validators/js/validate.mjs": {
       "kind": "policy",
       "reason": "the JavaScript validator process of the cross-check console: it reads one JSON request, calls the public API of the validator and writes one JSON response, an application of CRUDUI that implements no tool of an ecosystem"
     },
-    "examples/cross-check-console/validators/php/validate.php": {
+    "legacy/examples/cross-check-console/validators/php/validate.php": {
       "kind": "policy",
       "reason": "the PHP validator process of the cross-check console: it reads one JSON request, calls the public API of the validator and writes one JSON response, an application of CRUDUI that implements no tool of an ecosystem"
     },
-    "examples/cross-check-console/validators/python/validate.py": {
+    "legacy/examples/cross-check-console/validators/python/validate.py": {
       "kind": "policy",
       "reason": "the Python validator process of the cross-check console: it reads one JSON request, calls the public API of the validator and writes one JSON response, an application of CRUDUI that implements no tool of an ecosystem"
     },

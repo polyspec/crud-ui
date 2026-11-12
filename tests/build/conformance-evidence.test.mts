@@ -188,7 +188,7 @@ test('the JavaScript recorder appends one line per case only when an evidence di
 
 const suites = [
   { name: 'validator PHP', run: { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/validator/php' }, runtimes: ['php'] },
-  { name: 'native generators', run: { program: 'tests/native-generators/run.mts' }, runtimes: ['php', 'go'] },
+  { name: 'native generators', run: { program: 'legacy/tests/native-generators/run.mts' }, runtimes: ['php', 'go'] },
   { name: 'PHP extension', run: { program: 'tests/conformance/run-suite.mts', tool: 'node', argument: 'legacy/packages/php-ext/tests/engine/engine.test.mjs' }, runtimes: ['php-native'] },
   { name: 'Svelte renderer', run: { program: 'tests/conformance/run-suite.mts', tool: 'vitest', cwd: 'packages/svelte' }, runtimes: ['svelte'] },
 ];
@@ -204,7 +204,7 @@ test('the check reads the evidence and the run records of every subdirectory', a
     for (const [job, name] of [['conformance-evidence-php-api-8.4', 'a'], ['conformance-evidence-php-api-8.5', 'b']] as const) {
       await mkdir(path.join(directory, job, 'runs'), { recursive: true });
       await writeFile(path.join(directory, job, 'php-1234.jsonl'), `${JSON.stringify(record('php', name))}\n`);
-      await writeFile(path.join(directory, job, 'runs', '1234-0a.json'), `${JSON.stringify(run({ program: 'tests/native-generators/run.mts' }, '2026-10-07T10:00:00.000Z', 0))}\n`);
+      await writeFile(path.join(directory, job, 'runs', '1234-0a.json'), `${JSON.stringify(run({ program: 'legacy/tests/native-generators/run.mts' }, '2026-10-07T10:00:00.000Z', 0))}\n`);
       await writeFile(path.join(directory, job, 'runs', '1234-0b.json.partial'), '{');
     }
     await writeFile(path.join(directory, 'javascript-1234.jsonl'), `${JSON.stringify(record('javascript', 'a'))}\n`);
@@ -280,15 +280,15 @@ test('the suite runner and the native suite leave a run record with their exit s
       spawnSync(process.execPath, [path.join(ROOT, 'tests/conformance/run-suite.mts'), 'node', '--', file], { cwd: ROOT, env, encoding: 'utf8' });
     }
     // The native suite records its run before it reads its arguments, so a usage error ends the run.
-    spawnSync(process.execPath, [path.join(ROOT, 'tests/native-generators/run.mts'), '--unknown'], { cwd: ROOT, env, encoding: 'utf8' });
+    spawnSync(process.execPath, [path.join(ROOT, 'legacy/tests/native-generators/run.mts'), '--unknown'], { cwd: ROOT, env, encoding: 'utf8' });
     const runs = await Promise.all((await readdir(path.join(evidence, 'runs'))).map(async file => (
       parseJson(await readFile(path.join(evidence, 'runs', file), 'utf8'), runSchema, file))));
     const summary = runs.map(({ program, tool, cwd, args, status }) => ({ program, tool, cwd, args, status }))
       .sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
     assert.deepEqual(summary, [
+      { program: 'legacy/tests/native-generators/run.mts', tool: null, cwd: '.', args: ['--unknown'], status: 1 },
       { program: 'tests/conformance/run-suite.mts', tool: 'node', cwd: '.', args: [failing], status: 1 },
       { program: 'tests/conformance/run-suite.mts', tool: 'node', cwd: '.', args: [passing], status: 0 },
-      { program: 'tests/native-generators/run.mts', tool: null, cwd: '.', args: ['--unknown'], status: 1 },
     ]);
     assert.ok(runs.every(item => !Number.isNaN(Date.parse(item.started))));
   } finally {
@@ -296,3 +296,20 @@ test('the suite runner and the native suite leave a run record with their exit s
   }
 });
 
+
+// A legacy runtime proves the copy of a fixture under legacy/ (plan V-6), and the Rust core the shared fixture.
+test('a legacy runtime is checked against the copy of the fixture under legacy/', () => {
+  const problems = checkConformance({
+    features: [{ id: 'f', support: { rust: 'pass', go: 'pass' }, fixtures: ['tests/fixtures/x/cases.json'] }],
+    registry: [{ path: 'tests/fixtures/x/cases.json', kind: 'cases' }],
+    cases: { 'tests/fixtures/x/cases.json': ['old', 'new'] },
+    legacyCases: { 'legacy/tests/fixtures/x/cases.json': ['old'] },
+    families: ['tests/fixtures/x'],
+    evidence: [
+      { feature: 'f', fixture: 'tests/fixtures/x/cases.json', runtime: 'rust', case: 'old', passed: true },
+      { feature: 'f', fixture: 'tests/fixtures/x/cases.json', runtime: 'rust', case: 'new', passed: true },
+      { feature: 'f', fixture: 'legacy/tests/fixtures/x/cases.json', runtime: 'go', case: 'old', passed: true },
+    ],
+  });
+  assert.deepEqual([problems.missing, problems.failed, problems.undeclaredEvidence], [[], [], []]);
+});

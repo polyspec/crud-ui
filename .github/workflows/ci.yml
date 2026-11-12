@@ -328,7 +328,7 @@ jobs:
       - name: Cargo cache
         uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
-          workspaces: examples/cross-check-console/validators/rust
+          workspaces: legacy/examples/cross-check-console/validators/rust
       - name: Download the modules that the Go workspace requires
         run: make crudui-install-go-modules
       # The suites and programs import the Python packages installed in var/python (S3).
@@ -811,7 +811,7 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: go-${{ runner.os }}-${{ hashFiles('legacy/packages/generator/go/go.mod', 'tests/native-generators/programs/go/go.mod', 'benchmarks/validators/go/go.mod') }}
+          key: go-${{ runner.os }}-${{ hashFiles('legacy/packages/generator/go/go.mod', 'legacy/tests/native-generators/programs/go/go.mod', 'benchmarks/validators/go/go.mod') }}
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node go rust php composer python uv"
       - name: Cargo cache
@@ -819,7 +819,7 @@ jobs:
         with:
           workspaces: |
             packages/generator/rust
-            tests/native-generators/programs/rust
+            legacy/tests/native-generators/programs/rust
             benchmarks/validators/rust
       - name: Download the modules that the Go workspace requires
         run: make crudui-install-go-modules

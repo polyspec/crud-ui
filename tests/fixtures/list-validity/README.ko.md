@@ -1,6 +1,6 @@
 # 목록 유효성 고정 데이터
 <!-- doc-id: tests-fixtures-list-validity-readme -->
-<!-- source-sha256: abc1a0c875dca782df1c7764196c36a3836c8a9b681a7fe0eadc2be99d8feb01 -->
+<!-- source-sha256: 708bedd19282c6ca7d9a2d167098a09e8d23ac4525223a09ff8fda231d5f87a8 -->
 
 [English](README.md).
 
@@ -44,8 +44,8 @@
 [Rust](../../../packages/validator/rust/tests/list_validity_conformance.rs)의 목록 검증 검사,
 [PHP 확장 엔진 검사](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs),
 [PHP 확장 실행기](../../../legacy/packages/php-ext/tests/ValidateReport.php), 교차 검증 콘솔의
-[목록 실행기 검사](../../../examples/cross-check-console/server/validate-list-runner.test.mjs)와
-[검증기 프로세스 검사](../../../examples/cross-check-console/server/validator-processes.test.mjs)가 런타임
+[목록 실행기 검사](../../../legacy/examples/cross-check-console/server/validate-list-runner.test.mjs)와
+[검증기 프로세스 검사](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs)가 런타임
 사용처입니다.
 
 [렌더 유효성 검사](../../../legacy/packages/generator/ts/src/display-validity.test.ts)는 모든 사례를

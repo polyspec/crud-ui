@@ -7,17 +7,17 @@
       "scripts/**/*.{ts,mts,cts,mjs,cjs,js}",
       "benchmarks/**/*.{ts,mts,cts,mjs,cjs,js}",
       // client/index.html loads it as its module script; the gateway (server/server.mjs) serves client/
-      "examples/cross-check-console/client/app.js",
+      "legacy/examples/cross-check-console/client/app.js",
       // client/index.html links it as its stylesheet
-      "examples/cross-check-console/client/styles.css",
+      "legacy/examples/cross-check-console/client/styles.css",
       // server/validate-runner.mjs spawns it by path as the JavaScript validator process
-      "examples/cross-check-console/validators/js/validate.mjs",
+      "legacy/examples/cross-check-console/validators/js/validate.mjs",
       // examples/form-structure/index.html loads it as its module script
       "examples/form-structure/main.js",
       // writes src/messages/interface_messages.rs; the crate test embedded_messages_match_the_contract names `node tools/generate-interface-messages.mjs` as its fix
       "packages/generator/rust/tools/generate-interface-messages.mjs",
-      // the README of packages/generator/rust runs it by path (`node packages/generator/rust/verify-fixtures.mjs`); tests/build/rust-node-entry-points.test.mts checks it
-      "packages/generator/rust/verify-fixtures.mjs",
+      // the README of packages/generator/rust runs it by path (`node legacy/tests/rust-generator-fixtures/verify-fixtures.mjs`); tests/build/rust-node-entry-points.test.mts checks it
+      "legacy/tests/rust-generator-fixtures/verify-fixtures.mjs",
       // scripts/docs-web/build.mts copies it to assets/docs.css of the documentation site
       "scripts/docs-web/docs.css",
       // tests/build/public-packages.test.mts compiles them with tsc by path
@@ -33,7 +33,7 @@
       // writes tests/fixtures/form-complete/cases.json; its header names the command (`node tests/fixtures/form-complete/generate.mts`)
       "tests/fixtures/form-complete/generate.mts",
       // make crudui-test-native-generators and make crudui-test-php-api run it, and scripts/check-conformance.mts runs it as the native generators suite
-      "tests/native-generators/run.mts",
+      "legacy/tests/native-generators/run.mts",
       // writes number-text.json, which NumberTextTest.php reads; its header names the command (`node number-text.generate.mjs > number-text.json`) and NumberTextTest.php names it
       "legacy/packages/validator/php/tests/Values/number-text.generate.mjs",
       // writes tests/data/number-text.tsv, which the crate test numbers_match_the_ecmascript_table (src/validate/canonical.rs) reads and names as its writer
@@ -59,7 +59,7 @@
     ]
   },
   "ignoreBinaries": [
-    // the Go of mise.toml: the build:go script of examples/cross-check-console/server builds the Go validator process with it
+    // the Go of mise.toml: the build:go script of legacy/examples/cross-check-console/server builds the Go validator process with it
     "go",
     // the PHP of the machine (config/toolchain.json): the cross-check console tests run the PHP validator processes with it, and scripts/install-phpdocumentor.mts checks the phpDocumentor phar with it
     "php",
@@ -79,8 +79,8 @@
     "tailwindcss"
   ],
   "workspaces": {
-    // the cross-check gateway, a project of its own outside the npm workspaces: make crudui-test-cross-check runs `npm test --prefix examples/cross-check-console/server`
-    "examples/cross-check-console/server": {
+    // the cross-check gateway, a project of its own outside the npm workspaces: make crudui-test-cross-check runs `npm test --prefix legacy/examples/cross-check-console/server`
+    "legacy/examples/cross-check-console/server": {
     },
     // the tools of packages/svelte that need the TypeScript 6 API, a project of its own outside the npm workspaces (its package.json description); packages/svelte runs them with `npm exec --prefix tools`
     "packages/svelte/tools": {

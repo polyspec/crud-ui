@@ -3,7 +3,7 @@
 
 [한국어](examples.ko.md).
 
-Current examples use unversioned public APIs. `examples/cross-check-console`
+Current examples use unversioned public APIs. `legacy/examples/cross-check-console`
 compares validation and rendering results across implementations. Form usage is
 defined in [form operations](forms.md).
 

@@ -1,6 +1,6 @@
 # 목록과 상세 개발과 검증
 <!-- doc-id: docs-operations-displays -->
-<!-- source-sha256: 8a33c3bd008468511ac241fabe08e9b121a59a11f1d8c40959d330146af65260 -->
+<!-- source-sha256: e354c4ef027b4d1c2b9bb153022d3d8bd736c040a35e67feafec1a145aa54015 -->
 
 [English](displays.md). [표시 형식](../spec/display-formats.ko.md)은 각 형식, 허용 입력과
 마크업을 정의합니다. [명세 구조](../spec/schema.ko.md)는 목록과 상세 필드와
@@ -237,7 +237,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 | [Go 서버](../../legacy/packages/generator/go/examples/server/main.go) | `/`는 폼을, `/list`는 저장된 레코드를 `RenderList`로, `/detail`은 `RenderDetail`로 렌더링합니다. |
 | [PHP 페이지](../../legacy/packages/generator/php/examples/index.php) | `/`는 폼을, `?view=list`는 저장된 레코드를 `Generator::renderList`로, `?view=detail`은 `Generator::renderDetail`로 렌더링합니다. 이 파일은 PHP 구현과 확장에서 모두 실행됩니다. |
 | [Rust 프로그램](../../packages/generator/rust/examples/form.rs) | 폼을 렌더링하고 각 회사 행을 목록 행으로 바꿔 `render_list`로 목록을, `render_detail`로 회사별 상세를 렌더링한 뒤 HTML 문서 하나를 출력합니다. |
-| [교차 검사 콘솔](../../examples/cross-check-console/README.md) | 목록 탭은 4개 언어로 목록 구조를 검증하고 React, Vue, Svelte로 행을 렌더링합니다. 상세 탭은 4개 언어로 상세 구조를 검증하고 세 프레임워크로 레코드를 렌더링합니다. |
+| [교차 검사 콘솔](../../legacy/examples/cross-check-console/README.md) | 목록 탭은 4개 언어로 목록 구조를 검증하고 React, Vue, Svelte로 행을 렌더링합니다. 상세 탭은 4개 언어로 상세 구조를 검증하고 세 프레임워크로 레코드를 렌더링합니다. |
 
 ```sh
 (cd legacy/packages/generator/go && go run ./examples/server -data /tmp/crudui-go-record.json)
@@ -263,13 +263,13 @@ Go 서버는 `127.0.0.1:8087`에서 수신합니다. Go와 PHP 예제는 레코�
 ```sh
 npm run test:forms
 make crudui-test-native
-(cd examples/cross-check-console/server && npm test)
+(cd legacy/examples/cross-check-console/server && npm test)
 make docs-check
 ```
 
 `test:forms`는 React, Vue, Svelte, HTML 렌더러의 목록과 상세 적합성 테스트를 실행하며, 이 테스트는
 정규화한 본문을 렌더 fixture와 비교합니다. `make crudui-test-native`는 PHP, Go, Rust 패키지 테스트와
-[네이티브 생성기 테스트 모음](../../tests/native-generators/README.ko.md)을 실행하며, 이 모음은
+[네이티브 생성기 테스트 모음](../../legacy/tests/native-generators/README.ko.md)을 실행하며, 이 모음은
 JavaScript, HTML 렌더러, PHP, PHP 확장, Go, Rust의 원본 목록과 상세 HTML 전체와 상세 모델을
 비교합니다. 콘솔 테스트 모음은 Go와 Rust 검증기 프로그램을 빌드하고 목록과 상세 엔드포인트를
 포함한 게이트웨이를 테스트합니다.

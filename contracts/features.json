@@ -374,7 +374,7 @@
       "kind": "detail-html"
     },
     {
-      "path": "tests/native-generators/cases.mts",
+      "path": "legacy/tests/native-generators/cases.mts",
       "kind": "form-instance",
       "export": "formScenarios"
     },
@@ -914,7 +914,7 @@
         "FormInputError"
       ],
       "fixtures": [
-        "tests/native-generators/cases.mts",
+        "legacy/tests/native-generators/cases.mts",
         "tests/fixtures/text-validity/createForm/cases.json",
         "tests/fixtures/form-choices/cases.json",
         "tests/fixtures/template-shape/cases.json"
@@ -1147,7 +1147,7 @@
         "packages/generator/rust/src/detail.rs",
         "legacy/packages/php-ext/tests/comparison/comparison.test.mjs",
         "legacy/packages/php-ext/tests/ApiReport.php",
-        "tests/native-generators/run.mts",
+        "legacy/tests/native-generators/run.mts",
         "legacy/packages/generator/ts/src/input-text.test.ts"
       ],
       "docs": [
@@ -1202,7 +1202,7 @@
         "legacy/packages/generator/php/tests/DetailTest.php",
         "legacy/packages/generator/go/detail_test.go",
         "packages/generator/rust/src/detail.rs",
-        "tests/native-generators/run.mts"
+        "legacy/tests/native-generators/run.mts"
       ],
       "docs": [
         "docs/spec/schema.md",
@@ -1252,7 +1252,7 @@
         "packages/validator/rust/tests/detail_validity_conformance.rs",
         "legacy/packages/php-ext/tests/ValidateReport.php",
         "legacy/packages/php-ext/tests/engine/engine.test.mjs",
-        "examples/cross-check-console/server/validate-detail-runner.test.mjs",
+        "legacy/examples/cross-check-console/server/validate-detail-runner.test.mjs",
         "legacy/packages/validator/ts/src/text/text-validity.conformance.test.ts"
       ],
       "docs": [
@@ -1434,7 +1434,7 @@
         "legacy/packages/generator/go/outline_test.go",
         "packages/generator/rust/src/tests.rs",
         "legacy/packages/generator/python/tests/test_outline.py",
-        "tests/native-generators/run.mts"
+        "legacy/tests/native-generators/run.mts"
       ],
       "docs": [
         "docs/spec/form-markup.md"
@@ -1450,7 +1450,7 @@
         },
         {
           "id": "test-3",
-          "command": "node tests/native-generators/run.mts --extension \"$PWD/var/php-ext/polyspec_crudui.so\" --check outline"
+          "command": "node legacy/tests/native-generators/run.mts --extension \"$PWD/var/php-ext/polyspec_crudui.so\" --check outline"
         }
       ]
     },

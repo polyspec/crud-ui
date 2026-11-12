@@ -240,7 +240,7 @@ declaration rules.
 | [Go server](../../legacy/packages/generator/go/examples/server/main.go) | `/` renders the form, `/list` renders the stored record with `RenderList` and `/detail` renders it with `RenderDetail`. |
 | [PHP pages](../../legacy/packages/generator/php/examples/index.php) | `/` renders the form, `?view=list` renders the stored record with `Generator::renderList` and `?view=detail` with `Generator::renderDetail`. The file runs with the PHP implementation or the extension. |
 | [Rust program](../../packages/generator/rust/examples/form.rs) | Renders a form, turns each company row into a list row, renders the list with `render_list` and each company with `render_detail`, and prints one HTML document. |
-| [Cross-check console](../../examples/cross-check-console/README.md) | The list tab validates list structure in four languages and renders rows in React, Vue and Svelte. The detail tab validates detail structure in four languages and renders a record in the three frameworks. |
+| [Cross-check console](../../legacy/examples/cross-check-console/README.md) | The list tab validates list structure in four languages and renders rows in React, Vue and Svelte. The detail tab validates detail structure in four languages and renders a record in the three frameworks. |
 
 ```sh
 (cd legacy/packages/generator/go && go run ./examples/server -data /tmp/crudui-go-record.json)
@@ -266,14 +266,14 @@ Shared fixtures define the expected results in every runtime:
 ```sh
 npm run test:forms
 make crudui-test-native
-(cd examples/cross-check-console/server && npm test)
+(cd legacy/examples/cross-check-console/server && npm test)
 make docs-check
 ```
 
 `test:forms` runs the list and detail conformance tests of React, Vue, Svelte and the HTML
 renderer, which compare normalized bodies with the render fixtures. `make crudui-test-native` runs the
 PHP, Go and Rust package tests and the
-[native generator suite](../../tests/native-generators/README.md), which compares complete
+[native generator suite](../../legacy/tests/native-generators/README.md), which compares complete
 original list and detail HTML and detail models from JavaScript, the HTML renderer, PHP, the PHP
 extension, Go and Rust. The console suite builds the Go and Rust validator programs and tests the
 gateway, including the list and detail endpoints.

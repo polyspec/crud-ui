@@ -1,6 +1,6 @@
 # 목록 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-list-render-readme -->
-<!-- source-sha256: 498e4a4a38af68d1afdceb4bdefe6d61ceef0590de6e517e6e313ec70e34c51d -->
+<!-- source-sha256: 870e6347fc1639da385a6e246f8c91424f4fbc654435c0f98f93f696f8ce46f2 -->
 
 [English](README.md).
 
@@ -20,7 +20,7 @@
 [`preload-links.mjs`](../preload-links.mts)가 이를 제거하므로 본문 기대값은 목록 본문만 다룹니다.
 이 비교로 전체 원본 HTML의 동일성을 확인할 수는 없습니다.
 
-[네이티브 생성기 검사](../../native-generators/README.ko.md)는 같은 입력으로 모든 문자열
+[네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)는 같은 입력으로 모든 문자열
 렌더러의 이미지 preload 링크를 포함한 전체 원본 HTML을 React와 비교합니다. 리소스 힌트를
 제거하거나 속성과 CSS를 정규화하지 않습니다.
 

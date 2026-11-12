@@ -36,7 +36,7 @@ rules:
       - "!tests/fixtures"
       - "!tests/form-inspector"
       - "!tests/form-markup"
-      - "!tests/native-generators"
+      - "!legacy/tests/native-generators"
       - "!tests/php"
       - "!tests/release-install"
 
@@ -84,9 +84,9 @@ rules:
   #   and Python suites record in their own language;
   # - scripts/generator-contract.php and scripts/go: the shared steps of the table generators that run in their own
   #   language (`php` and `go generate`), which several packages of that language use;
-  # - tests/native-generators/python.py and programs/{go,php,rust}: the programs of the native generator runner, one per
+  # - legacy/tests/native-generators/python.py and programs/{go,php,rust}: the programs of the native generator runner, one per
   #   language, which drive the generator of that language;
-  #   the test of the Go program (tests/native-generators/programs/go/main_test.go), which drives the Go generator
+  #   the test of the Go program (legacy/tests/native-generators/programs/go/main_test.go), which drives the Go generator
   #   as main.go does;
   - id: layout-infrastructure-typescript
     paths:
@@ -102,15 +102,15 @@ rules:
       - "!scripts/go/**"
       - "!tests/conformance/php/Evidence.php"
       - "!tests/conformance/python/**"
-      - "!tests/native-generators/python.py"
-      - "!tests/native-generators/programs/go/main.go"
-      - "!tests/native-generators/programs/go/main_test.go"
-      - "!tests/native-generators/programs/php/generate.php"
-      - "!tests/native-generators/programs/rust/src/main.rs"
+      - "!legacy/tests/native-generators/python.py"
+      - "!legacy/tests/native-generators/programs/go/main.go"
+      - "!legacy/tests/native-generators/programs/go/main_test.go"
+      - "!legacy/tests/native-generators/programs/php/generate.php"
+      - "!legacy/tests/native-generators/programs/rust/src/main.rs"
 
   - id: layout-infrastructure-shebang
     paths:
       - "scripts/**"
       - "tests/**"
       - "!tests/kit/fixture/**"
-      - "!tests/native-generators/python.py"
+      - "!legacy/tests/native-generators/python.py"

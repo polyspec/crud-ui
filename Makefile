@@ -424,7 +424,7 @@ BENCH_ITERS  ?= 50000
 BENCH_WARMUP ?= 5000
 PHP_EXTENSION ?= $(CURDIR)/var/php-ext/polyspec_crudui.so
 # Reports live in the Git directory, which is a file-referenced directory in a worktree: NATIVE_REPORT of the JavaScript,
-# HTML, Go and Rust targets and PHP_NATIVE_REPORT of the PHP and native PHP targets of tests/native-generators/run.mts.
+# HTML, Go and Rust targets and PHP_NATIVE_REPORT of the PHP and native PHP targets of legacy/tests/native-generators/run.mts.
 NATIVE_REPORT ?= $(shell git rev-parse --git-path native-generators/report.json)
 PHP_NATIVE_REPORT ?= $(shell git rev-parse --git-path native-generators/report-php.json)
 CONFORMANCE_EVIDENCE ?= $(abspath $(shell git rev-parse --git-path conformance-evidence))
@@ -616,7 +616,7 @@ crudui-test-validator-python: python-tables ## The Python validator suite
 crudui-test-generator-python: python-tables ## The Python generator suite
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd legacy/packages/generator/python -- discover -s tests -t .
 crudui-test-cross-check: python-tables ## The cross-check console gateway conformance
-	$(NPM) test --prefix examples/cross-check-console/server
+	$(NPM) test --prefix legacy/examples/cross-check-console/server
 manifest-test: ## The verification commands of the feature contracts
 	$(NPM) run manifest:test
 require-build: ## Build the packages when their sources or output changed
@@ -767,7 +767,7 @@ crudui-test-generator-rust:
 
 crudui-test-generator-js: require-build
 	@status=0; \
-	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node -- --test-concurrency=1 tests/native-generators/protocol.test.mts || status=1; \
+	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node -- --test-concurrency=1 legacy/tests/native-generators/protocol.test.mts || status=1; \
 	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node -- --test-concurrency=1 tests/widget-scripts.test.mts || status=1; \
 	exit $$status
 
@@ -788,8 +788,8 @@ crudui-test-php-api: php-tables require-build build-php-ext
 # Compare every declared generator runtime independently of the language unit suites.
 crudui-test-cross-language-equivalence: python-tables require-build build-php-ext
 	@status=0; \
-	$(NODE) tests/native-generators/run.mts --target javascript,html,go,rust,python --report "$(NATIVE_REPORT)" || status=1; \
-	$(NODE) tests/native-generators/run.mts --extension "$(PHP_EXTENSION)" --target php,php-native --report "$(PHP_NATIVE_REPORT)" || status=1; \
+	$(NODE) legacy/tests/native-generators/run.mts --target javascript,html,go,rust,python --report "$(NATIVE_REPORT)" || status=1; \
+	$(NODE) legacy/tests/native-generators/run.mts --extension "$(PHP_EXTENSION)" --target php,php-native --report "$(PHP_NATIVE_REPORT)" || status=1; \
 	exit $$status
 
 crudui-test-native:
@@ -825,7 +825,7 @@ conformance:
 	$(MAKE) --no-print-directory crudui-test-validators || status=1; \
 	$(MAKE) --no-print-directory crudui-test-native || status=1; \
 	$(NPM) run test:forms || status=1; \
-	$(NPM) test --prefix examples/cross-check-console/server || status=1; \
+	$(NPM) test --prefix legacy/examples/cross-check-console/server || status=1; \
 	$(NODE) scripts/check-conformance.mts || status=1; \
 	exit $$status
 

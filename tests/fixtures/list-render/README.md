@@ -21,7 +21,7 @@ links before the list; [`preload-links.mjs`](../preload-links.mts) removes them,
 expectations cover the list body only. This comparison does not establish equality of
 complete original HTML.
 
-The [native generator suite](../../native-generators/README.md) uses the same
+The [native generator suite](../../../legacy/tests/native-generators/README.md) uses the same
 inputs and compares complete original HTML of every string renderer with React, including
 image preload links. It does not remove resource hints or normalize attributes and CSS.
 

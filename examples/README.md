@@ -5,7 +5,7 @@
 
 | Example | Purpose |
 | --- | --- |
-| [Cross-check console](cross-check-console/) | Form, list and detail validation comparisons in JavaScript, PHP, Go and Rust, and form, list and detail rendering comparisons in React, Vue and Svelte |
+| [Cross-check console](../legacy/examples/cross-check-console) | Form, list and detail validation comparisons in JavaScript, PHP, Go and Rust, and form, list and detail rendering comparisons in React, Vue and Svelte |
 | [Form comparison page](form-comparison/) | Nested keyed form verification through PHP, the PHP extension, Go and Rust, with React, Vue, Svelte and HTML renderer initialization paths compared side by side |
 | [Form structure preview](form-structure/) | Local Vite preview of a five-level reference form with its structure outline and data panel, rendered by the HTML renderer |
 | [Product forms](product-forms/) | An option form with generated combinations (`multiple: only`) and sections switched by `design.show`, and a large product form composed from it, validated and rendered by a test |

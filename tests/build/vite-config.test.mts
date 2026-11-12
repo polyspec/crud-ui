@@ -36,7 +36,7 @@ test('Vite configuration discovery does not require Git metadata', (t) => {
 });
 
 test('cross-check renderer resolves build tools by package name', () => {
-  const filename = path.join(root, 'examples/cross-check-console/server/engine.mjs');
+  const filename = path.join(root, 'legacy/examples/cross-check-console/server/engine.mjs');
   const source = readFileSync(filename, 'utf8');
 
   assert.match(source, /import\(\s*['"]vite['"]\s*\)/);

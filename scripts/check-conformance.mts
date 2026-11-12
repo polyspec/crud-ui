@@ -73,7 +73,16 @@ export interface ConformanceInput {
   cases: Record<string, readonly string[] | undefined>;
   families: readonly string[];
   evidence: readonly EvidenceRecord[];
+  /**
+   * The case names of the copies of the declared case fixtures under legacy/, which the legacy runtimes read (plan V-6);
+   * none checks every runtime against the shared fixtures.
+   */
+  legacyCases?: Record<string, readonly string[] | undefined>;
 }
+
+/** The runtime of the Rust core; every other runtime is a legacy implementation, which reads the copy under legacy/. */
+export const CORE_RUNTIME = 'rust';
+const LEGACY = 'legacy/';
 
 /** A suite that records evidence, with the command that runs it and the runtimes it proves. */
 export interface EvidenceSuite {
@@ -113,9 +122,15 @@ export interface SummaryGroup {
  * @param {Array<{feature: string, fixture: string, runtime: string, case: string, passed: boolean}>} input.evidence
  */
 export function checkConformance(
-  { features, registry, cases, families, evidence }: ConformanceInput,
+  { features, registry, cases, families, evidence: recordedEvidence, legacyCases }: ConformanceInput,
 ): ConformanceProblems {
   const key = (feature: string, fixture: string, runtime: string, name: string): string => JSON.stringify([feature, fixture, runtime, name]);
+  // A legacy runtime proves the copy of a fixture under legacy/, which is the shared fixture of its declaration.
+  const legacy = (runtime: string): boolean => legacyCases !== undefined && runtime !== CORE_RUNTIME;
+  const evidence = recordedEvidence.map(item => legacy(item.runtime) && item.fixture.startsWith(LEGACY)
+    ? { ...item, fixture: item.fixture.slice(LEGACY.length) } : item);
+  const caseNames = (fixture: string, runtime: string): readonly string[] | undefined =>
+    legacy(runtime) ? legacyCases?.[`${LEGACY}${fixture}`] : cases[fixture];
   const recorded = new Map<string, boolean>();
   for (const item of evidence) {
     const id = key(item.feature, item.fixture, item.runtime, item.case);
@@ -179,10 +194,12 @@ export function checkConformance(
         continue;
       }
       const registration = fixtures.get(fixture);
-      const selected = registration?.featureCases ? registration.featureCases[feature.id] ?? [] : names;
       for (const [runtime, support] of Object.entries(feature.support)) {
         if (support !== 'pass' || (registration?.runtimes && !registration.runtimes.includes(runtime))
           || (registration?.featureRuntimes?.[feature.id] && !registration.featureRuntimes[feature.id]?.includes(runtime))) continue;
+        const runtimeNames = caseNames(fixture, runtime) ?? [];
+        const selected = registration?.featureCases
+          ? (registration.featureCases[feature.id] ?? []).filter(name => runtimeNames.includes(name)) : runtimeNames;
         for (const name of selected) {
           const id = key(feature.id, fixture, runtime, name);
           required.add(id);
@@ -246,7 +263,7 @@ export const evidenceSuites: EvidenceSuite[] = [
   { name: 'PHP extension', run: { program: 'tests/conformance/run-suite.mts', tool: 'node', argument: 'legacy/packages/php-ext/tests/engine/engine.test.mjs' }, runtimes: ['php-native'] },
   { name: 'PHP extension API', run: { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/php-ext' }, runtimes: ['php-native'] },
   { name: 'generator Python', run: { program: 'tests/conformance/run-suite.mts', tool: 'python', cwd: 'legacy/packages/generator/python' }, runtimes: ['python'] },
-  { name: 'native generators', run: { program: 'tests/native-generators/run.mts' }, runtimes: ['javascript', 'javascript-html', 'php', 'go', 'rust', 'php-native'] },
+  { name: 'native generators', run: { program: 'legacy/tests/native-generators/run.mts' }, runtimes: ['javascript', 'javascript-html', 'php', 'go', 'rust', 'php-native'] },
 ];
 
 /**
@@ -310,15 +327,16 @@ export function summarize(
  * Case names of a registered fixture: the `name` of every case in a cases.json or in the module
  * export the registry names, or the module's declared cases.
  */
-async function fixtureCases(fixture: RegisteredFixture): Promise<string[] | undefined> {
+async function fixtureCases(fixture: RegisteredFixture, root = ''): Promise<string[] | undefined> {
+  const file = `${root}${fixture.path}`;
   if (fixture.path.endsWith('/cases.json')) {
-    const cases = checkedShape(ARRAY, JSON.parse(await readFile(path.join(ROOT, fixture.path), 'utf8')), fixture.path);
-    return cases.map((item, index) => checkedShape(STRING, checkedShape(OBJECT, item, `${fixture.path}[${index}]`).name, `${fixture.path}[${index}].name`));
+    const cases = checkedShape(ARRAY, JSON.parse(await readFile(path.join(ROOT, file), 'utf8')), file);
+    return cases.map((item, index) => checkedShape(STRING, checkedShape(OBJECT, item, `${file}[${index}]`).name, `${file}[${index}].name`));
   }
   if (fixture.export) {
     // The registry names an export of the module that holds its cases.
-    const module: unknown = await import(pathToFileURL(path.join(ROOT, fixture.path)).href);
-    const what = `${fixture.export} of ${fixture.path}`;
+    const module: unknown = await import(pathToFileURL(path.join(ROOT, file)).href);
+    const what = `${fixture.export} of ${file}`;
     const cases = checkedShape(ARRAY, checkedShape(OBJECT, module, fixture.path)[fixture.export], what);
     return cases.map((item, index) => checkedShape(STRING, checkedShape(OBJECT, item, `${what}[${index}]`).name, `${what}[${index}].name`));
   }
@@ -381,16 +399,21 @@ async function main(): Promise<void> {
   const features = standard.features.map(({ id, support, fixtures }) => ({ id, support, fixtures }));
   const registry = standard.fixtures;
   const cases: Record<string, string[] | undefined> = {};
+  const legacyCases: Record<string, string[] | undefined> = {};
   for (const fixture of registry) {
     if (fixture.kind === 'support-module') {
       if (!(await readFile(path.join(ROOT, fixture.path), 'utf8')).trim()) throw new Error(`${fixture.path}: a support module must contain source`);
-    } else cases[fixture.path] = await fixtureCases(fixture);
+    } else {
+      cases[fixture.path] = await fixtureCases(fixture);
+      if (fixture.path.startsWith('tests/fixtures/')) legacyCases[`${LEGACY}${fixture.path}`] = await fixtureCases(fixture, LEGACY);
+      else legacyCases[`${LEGACY}${fixture.path}`] = cases[fixture.path];
+    }
   }
   const families = (await readdir(path.join(ROOT, 'tests/fixtures'), { withFileTypes: true }))
     .filter(entry => entry.isDirectory()).map(entry => `tests/fixtures/${entry.name}`).sort();
   const { evidence, files } = await readEvidence(path.resolve(directory));
   const runs = await readRuns(path.resolve(directory));
-  const problems = checkConformance({ features, registry, cases, families, evidence });
+  const problems = checkConformance({ features, registry, cases, families, evidence, legacyCases });
   const lines = createProgress({ write: text => process.stdout.write(text) });
   const out = (text: string): unknown => lines.line(text);
   lines.start('conformance: evidence against contracts/features.json', { group: true });

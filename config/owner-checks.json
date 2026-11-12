@@ -96,7 +96,7 @@
         "test:forms"
       ],
       "prefixes": [
-        "examples/cross-check-console/server"
+        "legacy/examples/cross-check-console/server"
       ]
     },
     {
@@ -108,7 +108,7 @@
         "crudui-test-native"
       ],
       "prefixes": [
-        "examples/cross-check-console/server"
+        "legacy/examples/cross-check-console/server"
       ]
     },
     {
@@ -128,7 +128,7 @@
         "crudui-test-native"
       ],
       "prefixes": [
-        "examples/cross-check-console/server"
+        "legacy/examples/cross-check-console/server"
       ]
     },
     {
@@ -140,7 +140,7 @@
         "crudui-test-validators"
       ],
       "prefixes": [
-        "examples/cross-check-console/server"
+        "legacy/examples/cross-check-console/server"
       ]
     },
     {
@@ -151,7 +151,7 @@
         "crudui-test-validator-python"
       ],
       "prefixes": [
-        "examples/cross-check-console/server"
+        "legacy/examples/cross-check-console/server"
       ]
     },
     {
@@ -235,7 +235,7 @@
         "legacy/packages/generator/{php,go}/**",
         "packages/generator/rust/**",
         "legacy/packages/php-ext/**",
-        "tests/native-generators/**"
+        "legacy/tests/native-generators/**"
       ],
       "targets": [
         "crudui-test-native"
@@ -323,10 +323,10 @@
     },
     {
       "paths": [
-        "examples/cross-check-console/**"
+        "legacy/examples/cross-check-console/**"
       ],
       "prefixes": [
-        "examples/cross-check-console/server"
+        "legacy/examples/cross-check-console/server"
       ]
     },
     {
@@ -915,7 +915,7 @@
         "packages/generator/rust/**",
         "legacy/packages/php-ext/**",
         "legacy/packages/validator/php/**",
-        "tests/native-generators/**",
+        "legacy/tests/native-generators/**",
         "tests/fixtures/**",
         "legacy/tests/fixtures/**"
       ]
@@ -947,9 +947,9 @@
       ]
     },
     {
-      "check": "npm test --prefix examples/cross-check-console/server",
+      "check": "npm test --prefix legacy/examples/cross-check-console/server",
       "paths": [
-        "examples/cross-check-console/**",
+        "legacy/examples/cross-check-console/**",
         "legacy/packages/validator/{ts,php,go}/**",
         "packages/validator/rust/**"
       ]

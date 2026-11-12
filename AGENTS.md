@@ -31,10 +31,10 @@ ships as an example; this file states only the rules of crudui.
   their suites read; the copy is fixed and is never brought up to the shared fixtures. They are no release target
   (`config/release.json`) and serve their own tests and the differential tests against the Rust core. Each is removed
   by a change of its own when its binding package passes the shared suite and the package tests (plan V-6 (5)). The
-  runners of the root that compare runtimes (`tests/native-generators`, `examples/cross-check-console`,
-  `scripts/check-conformance.mts`) read the shared fixtures, so the legacy runtimes differ there on the rules that the
-  Rust core implements alone (CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUVR-095, the `accept` values of CUVR-016,
-  CUSC-092, the nesting limit of CUIT-022 and the numbers of CURP-028); these differences are a known state.
+  tools that compare the implementations with each other, `legacy/tests/native-generators`,
+  `legacy/tests/rust-generator-fixtures` and `legacy/examples/cross-check-console`, are tools of the legacy implementations: they read `legacy/tests/fixtures` and
+  are removed with them. `scripts/check-conformance.mts` checks the evidence of a legacy runtime against the copy under
+  `legacy/` and that of the Rust core against `tests/fixtures`.
   Enforced by: `make layout-check`
 - Own: One Cargo workspace at the root holds the core crates `packages/validator/rust` and `packages/generator/rust`
   and the binding crates of `packages/<component>/{ts,python,php-ext}`, which `binding scaffold` writes, with one

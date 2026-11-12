@@ -201,7 +201,7 @@ function rootExampleEntrypoints(): string[] {
     'ls-files', '--',
     'examples/form-comparison/*.mjs',
     'examples/form-comparison/**/*.mjs',
-    'examples/cross-check-console/server/*.mjs',
+    'legacy/examples/cross-check-console/server/*.mjs',
   ]);
   assert.equal(result.status, 0, result.stderr);
   return result.stdout.trim().split('\n').filter((filename) => (

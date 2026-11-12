@@ -1,6 +1,6 @@
 # 데이터 검증
 <!-- doc-id: docs-operations-validation -->
-<!-- source-sha256: ccbec356ec72807ceba47f89a638315ddbe3b4df7b06f4a5f32881d8e17a7117 -->
+<!-- source-sha256: 5cdfc06c4a2629540e948c4e97d1104aef1ca4b7e88707aa375cd73cbb8f2421 -->
 
 [English](validation.md).
 
@@ -174,7 +174,7 @@ make crudui-test-form-binding
 패키지는 이 라이브러리 함수를 제공하며, 어떤 패키지도 검증 명령을 설치하지 않습니다.
 교차 검증 콘솔은 같은 함수를 호출하는 작은 프로그램으로 각 구현을 별도 프로세스에서 실행해 네
 구현을 비교합니다. 그 요청과 응답 계약은 콘솔의
-[검증기 프로세스](../../examples/cross-check-console/validators/README.ko.md) 문서에 있습니다.
+[검증기 프로세스](../../legacy/examples/cross-check-console/validators/README.ko.md) 문서에 있습니다.
 
 제출된 데이터에 대해 `design.show`가 숨기는 필드는 검증하지 않으며 그 값은 데이터에 남습니다.
 [표시 여부](../spec/validation-rules.ko.md#평가)를 참고합니다. 저장할 값은 같은

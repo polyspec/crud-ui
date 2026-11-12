@@ -513,7 +513,7 @@ checkFiles('examples/product-forms/product-form', productForm, productFiles, 'pr
 
 // The console client is a browser module, so it is loaded by its source rather
 // than by path: the nearest package.json does not declare a module type.
-const consoleSource = readText('examples/cross-check-console/client/examples.js');
+const consoleSource = readText('legacy/examples/cross-check-console/client/examples.js');
 const consoleModule: unknown = await import(
   `data:text/javascript;base64,${Buffer.from(consoleSource).toString('base64')}`
 );

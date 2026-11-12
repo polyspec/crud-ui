@@ -62,9 +62,9 @@ The cases are read by the validation conformance tests in
 [PHP extension engine test](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs) and the
 [PHP extension API test](../../../legacy/packages/php-ext/tests/ApiTest.php), which runs the PHP and native
 validators; and the cross-check console
-[validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs),
+[validator process test](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs),
 which sends every case to the five validator processes, and its
-[validation runner test](../../../examples/cross-check-console/server/validate-runner.test.mjs),
+[validation runner test](../../../legacy/examples/cross-check-console/server/validate-runner.test.mjs),
 which compares the four language results.
 
 ## Regeneration

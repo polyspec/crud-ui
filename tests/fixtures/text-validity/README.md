@@ -61,12 +61,12 @@ The validation operations are run by the
 [Rust](../../../packages/validator/rust/tests/text_validity_conformance.rs) tests, the
 [PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) through its
 [API test](../../../legacy/packages/php-ext/tests/ApiTest.php), and the cross-check console
-[validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs),
+[validator process test](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs),
 which sends every case to the five validator processes.
 
 The generation operations are run in process by the
 [generator core test](../../../legacy/packages/generator/ts/src/input-text.test.ts) and through every
-program by the [native generator suite](../../native-generators/README.md), which records the
+program by the [native generator suite](../../../legacy/tests/native-generators/README.md), which records the
 evidence of the JavaScript, PHP, Go, Rust and PHP extension runtimes.
 
 Byte strings that are not UTF-8 cannot be written in JSON text. The PHP, Go, Rust decoder and PHP

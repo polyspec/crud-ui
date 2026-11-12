@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 87b48204c402b0ba02f4631f805c17578592773d8fa0bc5a204deb5a3bf670fa -->
+<!-- source-sha256: 682134e49ad76e272aeacef6fef42ecfc487c2b406e28f43febcc146b3d2a884 -->
 
 ## Unreleased
 
+- C16.1: 구현끼리 비교하는 도구를 `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`(두 fixture 묶음이 같게 가진 case에서 Rust generator와 TypeScript generator를 비교), `legacy/examples/cross-check-console`로 옮기고 `legacy/tests/fixtures`를 읽게 합니다. 적합성 검사는 legacy 런타임의 근거를 `legacy/` 아래 사본과, Rust 코어의 근거를 `tests/fixtures`와 대조합니다(C16.1).
 - C16.1: react, vue, svelte, form-binding package도 배포 대상에서 빠집니다. 어떤 릴리스도 내지 않는 legacy 코어 package에 의존하기 때문입니다(C16.1).
 - C16.1: 언어 구현을 예전 경로 그대로 `legacy/`로 옮기고(`legacy/packages/validator/{ts,php,python,go}`, `legacy/packages/generator/{ts,php,python,go}`, `legacy/packages/php-ext`, `legacy/packages/html`) 배포 대상에서 뺍니다. 그 suite는 Rust 코어만 구현한 규칙 이전의 fixture를 고정한 사본 `legacy/tests/fixtures`를 읽습니다. 루트의 Cargo workspace 하나가 두 코어 crate와 `binding scaffold`가 쓰는 `packages/<component>/{ts,python,php-ext}`의 바인딩 crate를 `Cargo.lock` 하나로 담습니다. `make bindings`, `bindings-check`, `lint-bindings`, `test-bindings`가 binding과 바인딩 crate를 실행하며, 각 legacy package는 그 바인딩이 통과할 때 제거합니다(V-6 (5))(C16.1).
 - CURP-031: Rust 경계는 `validate_with_loader`, `validate_list_with_loader`, `validate_detail_with_loader`, `compile_form_with_loader`, `build_list_with_loader`, `render_list_with_loader`, `build_detail_with_loader`, `render_detail_with_loader`에서 파일 로더, 곧 validator의 callback `file_loader`(`boundary::FileLoader`: `normalize`, `load`)를 받습니다. 각 문서는 로더가 돌려줄 때 파일로서 검사하고, 로더와 함께 준 `files`는 실패하며, 로더의 실패는 호출자에게 그대로 전달됩니다. 계약은 loader todo 대신 callback과 이 연산들을 선언합니다(CURP-031).

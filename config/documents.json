@@ -5,7 +5,7 @@
   ],
   "exclude": [
     "packages/**/etc/*.api.md",
-    "examples/cross-check-console/client/README.md",
+    "legacy/examples/cross-check-console/client/README.md",
     "benchmarks/validators/README.md"
   ],
   "statusTables": [

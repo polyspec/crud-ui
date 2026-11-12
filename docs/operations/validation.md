@@ -179,7 +179,7 @@ is empty. Do not convert a failure into a validation result.
 The packages provide these library functions; no package installs a validation
 command. The cross-check console compares the four implementations by running each
 one in its own process through small programs that call the same functions; its
-[validator processes](../../examples/cross-check-console/validators/README.md)
+[validator processes](../../legacy/examples/cross-check-console/validators/README.md)
 document that request and response contract.
 
 A field that `design.show` hides for the submitted data is not validated, and its value stays in

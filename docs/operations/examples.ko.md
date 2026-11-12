@@ -1,10 +1,10 @@
 # 예제
 <!-- doc-id: docs-operations-examples -->
-<!-- source-sha256: d11445d850cbf4a9d3a028aede9405ec90b9a718a6d89c5183a88ecd54b1a03f -->
+<!-- source-sha256: 387c8fdd35d76ad41b56f7e19f79fa8cf36bb98bdfff636b705b782dbee7c345 -->
 
 [English](examples.md).
 
-현재 예제는 버전 없는 공개 API를 사용합니다. `examples/cross-check-console`은
+현재 예제는 버전 없는 공개 API를 사용합니다. `legacy/examples/cross-check-console`은
 구현별 검증·렌더링 결과를 비교합니다. 폼 사용법은
 [폼 작업 절차](forms.ko.md)에서 정의합니다.
 

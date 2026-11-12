@@ -20,7 +20,7 @@ The tests compare the exact bytes: React's server rendering
 the HTML renderer
 ([`form-complete.conformance.test.ts`](../../../legacy/packages/html/src/form-complete.conformance.test.ts))
 and the PHP, PHP extension, Go and Rust generators through the
-[native generator suite](../../native-generators/README.md). Vue
+[native generator suite](../../../legacy/tests/native-generators/README.md). Vue
 ([`form-complete.conformance.test.mjs`](../../../packages/vue/tests/form-complete.conformance.test.mjs))
 and Svelte
 ([`form-complete.conformance.test.mjs`](../../../packages/svelte/tests/form-complete.conformance.test.mjs))

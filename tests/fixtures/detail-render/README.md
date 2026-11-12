@@ -25,7 +25,7 @@ the [form HTML normalizer](../form-render/README.md#normalization). The string r
 [`preload-links.mjs`](../preload-links.mts) removes them, so the body expectations cover the
 detail body only. Error cases require the recorded message.
 
-The [native generator suite](../../native-generators/README.md) sends every case to every
+The [native generator suite](../../../legacy/tests/native-generators/README.md) sends every case to every
 runtime at both levels a runtime exposes: `buildDetail` must return the same model with members
 in the same order, and `renderDetail` must return the same complete original HTML as React,
 image preload links included. A field's `value` is `null` when the record has no value at its

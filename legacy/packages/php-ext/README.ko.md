@@ -1,6 +1,6 @@
 # PHP 네이티브 생성과 검증
 <!-- doc-id: packages-php-ext-readme -->
-<!-- source-sha256: b26457a38350fdcb8df842bd7d34ed4b945bb62ccc4a60614a74a638de0b2661 -->
+<!-- source-sha256: ee65a1a17df403e66e58f893f97593689a252eefac05d0968f0eb48d68289b76 -->
 
 [English](README.md).
 
@@ -34,7 +34,7 @@ make build-php-ext
 composer install
 node node_modules/@polyspec/kit/scripts/kit/run-tests.mts phpunit --cwd legacy/packages/php-ext
 npm run build
-node tests/native-generators/run.mts \
+node legacy/tests/native-generators/run.mts \
   --extension "$(pwd)/var/php-ext/polyspec_crudui.so" \
   --report .git/native-generators/report.json
 ```

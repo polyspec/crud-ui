@@ -1,6 +1,6 @@
 # 상세 유효성 고정 데이터
 <!-- doc-id: tests-fixtures-detail-validity-readme -->
-<!-- source-sha256: 9eb027146579b99a98a1dbad6a392bd289a3af18ad4182e64a0ca837d36624e6 -->
+<!-- source-sha256: 80ecf9402ccffa41156992a4326a23d997e1e9dfaed663f40617a1d839b66117 -->
 
 [English](README.md).
 
@@ -43,8 +43,8 @@ API는 `"pass"`에 대해 `{ valid: true, errors: [] }`에 해당하는 `Ok(())`
 [Rust](../../../packages/validator/rust/tests/detail_validity_conformance.rs)의 상세 검증 검사,
 [PHP 확장 엔진 검사](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs),
 [PHP 확장 실행기](../../../legacy/packages/php-ext/tests/ValidateReport.php), 교차 검증 콘솔의
-[상세 실행기 검사](../../../examples/cross-check-console/server/validate-detail-runner.test.mjs)와
-[검증기 프로세스 검사](../../../examples/cross-check-console/server/validator-processes.test.mjs)가 런타임
+[상세 실행기 검사](../../../legacy/examples/cross-check-console/server/validate-detail-runner.test.mjs)와
+[검증기 프로세스 검사](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs)가 런타임
 사용처입니다.
 
 [렌더 유효성 검사](../../../legacy/packages/generator/ts/src/display-validity.test.ts)는 모든 사례를

@@ -34,7 +34,7 @@ make build-php-ext
 composer install
 node node_modules/@polyspec/kit/scripts/kit/run-tests.mts phpunit --cwd legacy/packages/php-ext
 npm run build
-node tests/native-generators/run.mts \
+node legacy/tests/native-generators/run.mts \
   --extension "$(pwd)/var/php-ext/polyspec_crudui.so" \
   --report .git/native-generators/report.json
 ```

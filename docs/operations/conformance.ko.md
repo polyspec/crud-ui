@@ -1,6 +1,6 @@
 # 적합성 증거
 <!-- doc-id: docs-operations-conformance -->
-<!-- source-sha256: 33ee0fc8da9a0b4551633bd066ca033feffa1ba89a23caf23052f17193a71b13 -->
+<!-- source-sha256: 7a8bc5cbc843c8804bae253bef5fe30b7f6956ce854af827bf2f3c7d4297ff1f -->
 
 [English](conformance.md).
 
@@ -67,7 +67,7 @@ Generator PHP source 실행과 extension 실행은 case 인자가 같아도 별�
 suite의 실행은 증거 디렉터리의 `runs/`에 실행 기록도 남깁니다.
 [`tests/conformance/run-suite.mts`](../../tests/conformance/run-suite.mts)는
 `node_modules/@polyspec/kit/dist/run-tests.mjs`로 시작하는 suite의 테스트 명령 기록을,
-[`tests/native-generators/run.mts`](../../tests/native-generators/run.mts)는 자신의 기록을
+[`legacy/tests/native-generators/run.mts`](../../legacy/tests/native-generators/run.mts)는 자신의 기록을
 [`tests/conformance/runs.mts`](../../tests/conformance/runs.mts)로 씁니다. 기록
 `{"program", "tool", "cwd", "args", "started", "status"}`는 실행이 시작할 때 `status`를 `null`로 써지고,
 process가 끝날 때 종료 상태로 다시 써지므로 멈춘 실행은 `null`을 유지합니다. Python suite도
@@ -81,7 +81,7 @@ process가 끝날 때 종료 상태로 다시 써지므로 멈춘 실행은 `nul
 `ended with failure (exit <status>)`나 `passed`입니다. 맞는 명령마다 가장 최근 기록이 결정하고, 여러 명령으로
 실행되는 suite는 그중 가장 나쁜 상태를 가집니다. 기능이 지원하는 모든 런타임은 선언된 suite가 증명합니다.
 
-서버 런타임은 [`tests/native-generators/run.mts`](../../tests/native-generators/run.mts)가 JavaScript
+서버 런타임은 [`legacy/tests/native-generators/run.mts`](../../legacy/tests/native-generators/run.mts)가 JavaScript
 기준 출력과 바이트 단위로 비교합니다. 클라이언트 렌더러는 fixture의 정규화된 HTML과 비교하며, 정규화는
 프레임워크 자체가 만드는 차이에만 적용합니다.
 

@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: 39b348ce5d105365a4b7231032754da7442ca94ee5f9117dd3807b340ce6642f -->
+<!-- source-sha256: ece04432caa758cb61a6978c44546feb375c2d0f35dd2e859725c045dae8a4f4 -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -29,10 +29,10 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   `legacy/packages/generator/{ts,php,python,go}`, `legacy/packages/php-ext`, `legacy/packages/html`), 그 suite가 읽는
   `tests/fixtures`의 사본 `legacy/tests/fixtures`를 담습니다. 사본은 고정이며 공유 fixture에 맞춰 올리지 않습니다. 이들은
   배포 대상이 아니고(`config/release.json`) 자기 시험과 Rust 코어와의 차등 시험에만 쓰입니다. 각각은 그 바인딩 package가
-  공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거합니다(계획 V-6 (5)). 런타임을 비교하는 루트의 실행기
-  (`tests/native-generators`, `examples/cross-check-console`, `scripts/check-conformance.mts`)는 공유 fixture를 읽으므로,
-  legacy 런타임은 Rust 코어만 구현한 규칙(CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUVR-095, CUVR-016의 `accept` 값,
-  CUSC-092, CUIT-022의 중첩 한도, CURP-028 숫자)에서 다릅니다. 이 차이는 알려진 상태입니다.
+  공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거합니다(계획 V-6 (5)). 구현끼리 비교하는 도구
+  `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`, `legacy/examples/cross-check-console`은 legacy 구현의 도구이며 `legacy/tests/fixtures`를
+  읽고 legacy와 함께 제거합니다. `scripts/check-conformance.mts`는 legacy 런타임의 근거를 `legacy/` 아래 사본과, Rust 코어의
+  근거를 `tests/fixtures`와 대조합니다.
   Enforced by: `make layout-check`
 - Own: 루트의 Cargo workspace 하나가 코어 crate `packages/validator/rust`, `packages/generator/rust`와 `binding scaffold`가
   쓰는 `packages/<component>/{ts,python,php-ext}`의 바인딩 crate를 `Cargo.lock` 하나로 담습니다. `make bindings`는 바인딩

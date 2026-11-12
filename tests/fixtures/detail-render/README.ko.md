@@ -1,6 +1,6 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: 353fb208d410117166db26634b07a1cb43b1396922fe17ef97976fe5ef51a1bb -->
+<!-- source-sha256: ba05b1753d53746a9a46601b2ba0d0d1235b45dfcc1ee7bf34292a40ee555387 -->
 
 [English](README.md).
 
@@ -23,7 +23,7 @@
 preload 링크를 쓰며, [`preload-links.mjs`](../preload-links.mts)가 이를 제거하므로 본문 기대값은 상세
 본문만 다룹니다. 오류 사례는 기록된 메시지를 확인합니다.
 
-[네이티브 생성기 검사](../../native-generators/README.ko.md)는 모든 사례를 모든 런타임에 두 수준으로
+[네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)는 모든 사례를 모든 런타임에 두 수준으로
 보냅니다. `buildDetail`은 멤버 순서까지 같은 모델을, `renderDetail`은 이미지 preload 링크를 포함해
 React와 같은 전체 원본 HTML을 반환해야 합니다. 필드의 `value`는 레코드의 해당 경로에 값이 없으면
 `null`입니다.

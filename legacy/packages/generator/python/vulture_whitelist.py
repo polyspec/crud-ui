@@ -1,7 +1,7 @@
 """The code of the package that only its consumers or the standard library use, for vulture (make lint-python)."""
 
 # The public API of Generator and Form (docs/spec/form-runtime.md), which an application calls; the native generator
-# program of tests/native-generators/python.py calls each of them.
+# program of legacy/tests/native-generators/python.py calls each of them.
 _.bindButtons
 _.formButtonsHtml
 _.getRevision

@@ -47,8 +47,8 @@ The cases are read at runtime by the detail validation tests in
 [Rust](../../../packages/validator/rust/tests/detail_validity_conformance.rs), the
 [PHP extension engine test](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs), the
 [PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) and the cross-check console
-[detail runner test](../../../examples/cross-check-console/server/validate-detail-runner.test.mjs) and
-[validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs).
+[detail runner test](../../../legacy/examples/cross-check-console/server/validate-detail-runner.test.mjs) and
+[validator process test](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs).
 
 The [render validity test](../../../legacy/packages/generator/ts/src/display-validity.test.ts) builds
 every case with `buildDetail`: a case builds only when `expect` is `"ok"` and `engine` is `"pass"`, an

@@ -1,12 +1,12 @@
 # CRUDUI 예제
 <!-- doc-id: examples-readme -->
-<!-- source-sha256: 5b302c2d74ef344ff9025a496aae6b774787a4b7f530174c9819b387e73d4d9f -->
+<!-- source-sha256: f831b80f973ae1aba79df97c9ae5fcc271c03f3719ea81c25259d48e08a35e4c -->
 
 [English](README.md).
 
 | 예제 | 용도 |
 | --- | --- |
-| [교차 검사 콘솔](cross-check-console/) | JavaScript·PHP·Go·Rust의 폼·목록·상세 검증 비교와 React·Vue·Svelte의 폼·목록·상세 렌더링 비교 |
+| [교차 검사 콘솔](../legacy/examples/cross-check-console) | JavaScript·PHP·Go·Rust의 폼·목록·상세 검증 비교와 React·Vue·Svelte의 폼·목록·상세 렌더링 비교 |
 | [폼 비교 페이지](form-comparison/) | PHP·PHP 확장·Go·Rust를 통한 중첩 키 폼 검증과 React·Vue·Svelte·HTML 렌더러 초기화 경로의 나란한 비교 |
 | [폼 구조 미리보기](form-structure/) | HTML 렌더러로 렌더링한 5단계 기준 폼과 구조 개요, 데이터 패널의 로컬 Vite 미리보기 |
 | [상품 폼](product-forms/) | 생성된 조합(`multiple: only`)과 `design.show`로 전환하는 영역이 있는 옵션 폼, 이를 합성한 대형 상품 폼, 이를 검증하고 렌더링하는 테스트 |

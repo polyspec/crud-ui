@@ -1,6 +1,6 @@
 # 입력 텍스트 픽스처
 <!-- doc-id: tests-fixtures-text-validity-readme -->
-<!-- source-sha256: bd04a466f175218de6696755a6509c8569fe14b7bd60e804a900cbcf1ced0833 -->
+<!-- source-sha256: 7a7d502d782f4aef2229e6d4cb2c4013f0da195a42fc4c63a09db1c06d95e72a -->
 
 [English](README.md).
 
@@ -60,11 +60,11 @@ TypeScript, PHP, Go, PHP 확장 테스트가 실행합니다. Rust 값은 노드
 [API 테스트](../../../legacy/packages/php-ext/tests/ApiTest.php)가 실행하는
 [PHP 확장 러너](../../../legacy/packages/php-ext/tests/ValidateReport.php), 그리고 모든 케이스를 다섯 검증
 프로세스에 보내는 교차 검증 콘솔
-[검증 프로세스 테스트](../../../examples/cross-check-console/server/validator-processes.test.mjs)가
+[검증 프로세스 테스트](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs)가
 실행합니다.
 
 생성 연산은 [generator core 테스트](../../../legacy/packages/generator/ts/src/input-text.test.ts)가
-프로세스 안에서 실행하고, [네이티브 생성기 스위트](../../native-generators/README.ko.md)가 모든
+프로세스 안에서 실행하고, [네이티브 생성기 스위트](../../../legacy/tests/native-generators/README.ko.md)가 모든
 프로그램으로 실행하며 JavaScript, PHP, Go, Rust, PHP 확장 런타임의 증거를 기록합니다.
 
 UTF-8이 아닌 바이트 문자열은 JSON 텍스트로 쓸 수 없습니다. PHP, Go, Rust 디코더, PHP 확장 테스트가

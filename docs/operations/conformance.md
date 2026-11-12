@@ -70,7 +70,7 @@ A missing case does not tell whether its suite failed, did not finish or did not
 a suite that records evidence also leaves a run record in `runs/` of the evidence directory:
 [`tests/conformance/run-suite.mts`](../../tests/conformance/run-suite.mts) for the test command of a suite that it
 starts through `node_modules/@polyspec/kit/dist/run-tests.mjs` and
-[`tests/native-generators/run.mts`](../../tests/native-generators/run.mts) for itself, through
+[`legacy/tests/native-generators/run.mts`](../../legacy/tests/native-generators/run.mts) for itself, through
 [`tests/conformance/runs.mts`](../../tests/conformance/runs.mts). A record
 `{"program", "tool", "cwd", "args", "started", "status"}` is written with `status` `null` when the run
 starts and again with the exit status when its process exits, so a stopped run keeps `null`. The
@@ -86,7 +86,7 @@ latest record of each matching command decides, and a suite run by several comma
 state of them. Every runtime that a feature supports is proven by a declared suite.
 
 Server runtimes are compared byte for byte with the JavaScript reference output by
-[`tests/native-generators/run.mts`](../../tests/native-generators/run.mts); client renderers are
+[`legacy/tests/native-generators/run.mts`](../../legacy/tests/native-generators/run.mts); client renderers are
 compared with the fixture's normalized HTML, where only differences a framework itself causes are
 normalized.
 

@@ -1,6 +1,6 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: c674ac3d73c0487c43884f998e219ae9ace979d2aeb7fdf998642e9df3d37639 -->
+<!-- source-sha256: de3e269d244b107e828a39d9cb0cf0a2fe5cbdd75f99790c56e02080c4079e15 -->
 
 [English](README.md).
 
@@ -50,8 +50,8 @@ Go·Rust·PHP는 숫자를 값으로 비교하므로 `5`와 `5.0`은 같습니�
 [PHP 확장 엔진 검사](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs)와
 PHP 검증기와 네이티브 검증기를 실행하는 [PHP 확장 API 검사](../../../legacy/packages/php-ext/tests/ApiTest.php),
 모든 사례를 다섯 검증기 프로세스에 보내는 교차 검증 콘솔의
-[검증기 프로세스 검사](../../../examples/cross-check-console/server/validator-processes.test.mjs)와
-네 언어 결과를 비교하는 [검증 실행기 검사](../../../examples/cross-check-console/server/validate-runner.test.mjs)가
+[검증기 프로세스 검사](../../../legacy/examples/cross-check-console/server/validator-processes.test.mjs)와
+네 언어 결과를 비교하는 [검증 실행기 검사](../../../legacy/examples/cross-check-console/server/validate-runner.test.mjs)가
 사용합니다.
 
 ## 재생성

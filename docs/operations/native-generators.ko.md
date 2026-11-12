@@ -1,6 +1,6 @@
 # 네이티브 생성기 검사
 <!-- doc-id: docs-operations-native-generators -->
-<!-- source-sha256: d15646be65ee7f3bf0238fcc3012333915bcc8bb9afac4c51993b170c5a018ea -->
+<!-- source-sha256: d6418d890e93e1ef9095eca58c2d93e438b8e3ea4a7001bae6a17c0eb9ede8c1 -->
 
 [English](native-generators.md).
 
@@ -34,7 +34,7 @@ Go, Rust, 네이티브 PHP 비교를 실행합니다. CI가 세 job으로 실행
 공용 검사를 실행하며 PHP가 필요 없습니다. `make crudui-test-php-api`는 확장을 빌드하고 로드한 뒤 API 검사,
 PHP 생성기 검사, PHP·네이티브 PHP 대상의 공용 검사를 실행하며, CI에서는 PHP 릴리스마다 한 번 실행합니다.
 각 런타임은 패키지의 공개 API를 호출하는
-[`tests/native-generators/programs`](../../tests/native-generators/README.ko.md#프로그램)의
+[`legacy/tests/native-generators/programs`](../../legacy/tests/native-generators/README.ko.md#프로그램)의
 프로그램으로 응답하며, 패키지는 라이브러리만 배포합니다.
 `make build-php-ext`는 `phpize`로 `legacy/packages/php-ext/src`의 extension을
 `var/php-ext/polyspec_crudui.so`에 빌드합니다. `PATH`의 `phpize`와 `php-config`가 PHP 릴리스를
@@ -51,7 +51,7 @@ HTML과 각 거부의 코드·메시지·위치 전체를 비교합니다. 실�
 결정하므로 worktree에서도 동작합니다. `NATIVE_REPORT`와 `PHP_NATIVE_REPORT`로 다른 보고서 경로를 지정합니다.
 `make crudui-test-php-api`는 어떤 PHP 검사보다 먼저 `legacy/packages/generator/php`의 검증기 복사본을 다시 설치하므로
 PHP 검사가 소스보다 오래된 복사본을 읽지 않습니다. 통과한 실행은 임시 빌드 디렉터리를 삭제합니다. 실패한
-실행은 디렉터리를 남기고 경로를 출력하며 보고서의 `buildDirectory`에 기록합니다. [검사 절차](../../tests/native-generators/README.ko.md)는
+실행은 디렉터리를 남기고 경로를 출력하며 보고서의 `buildDirectory`에 기록합니다. [검사 절차](../../legacy/tests/native-generators/README.ko.md)는
 명시적인 확장 경로를 사용하는 직접 실행과 비교 프로토콜을 설명합니다. 실행 파일이나
 네이티브 클래스가 없거나 응답 형식이 잘못되면 검사가 실패합니다.
 

@@ -77,7 +77,7 @@ Run these commands from the repository root:
 cargo run --locked --manifest-path packages/generator/rust/Cargo.toml --example form
 node node_modules/@polyspec/kit/scripts/kit/run-tests.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml
 cargo clippy --locked --all-targets --manifest-path packages/generator/rust/Cargo.toml -- -D warnings
-node packages/generator/rust/verify-fixtures.mjs
+node legacy/tests/rust-generator-fixtures/verify-fixtures.mjs
 make docs-check
 ```
 

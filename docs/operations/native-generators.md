@@ -35,7 +35,7 @@ generator tests, the protocol and widget tests and the shared suite for the Java
 and Rust targets and needs no PHP; `make crudui-test-php-api` builds and loads the extension and runs its
 API tests, the PHP generator tests and the shared suite for the PHP and native PHP
 targets, in CI once for each PHP release. Each runtime answers through
-a program in [`tests/native-generators/programs`](../../tests/native-generators/README.md#programs)
+a program in [`legacy/tests/native-generators/programs`](../../legacy/tests/native-generators/README.md#programs)
 that calls its package's public API; the packages publish libraries only.
 `make build-php-ext` builds the extension with `phpize` from `legacy/packages/php-ext/src`
 into `var/php-ext/polyspec_crudui.so`; the `phpize` and `php-config` on `PATH` select
@@ -55,7 +55,7 @@ directory, resolved with `git rev-parse --git-path`, so they also work in a work
 `NATIVE_REPORT` and `PHP_NATIVE_REPORT` select other report paths. Before any PHP check,
 `make crudui-test-php-api` reinstalls the validator copy in
 `legacy/packages/generator/php`, so the PHP checks never load a copy older than its source. A passing run removes its temporary build directory. A failing
-run keeps it, prints its path and records it as `buildDirectory` in the report. The [suite procedure](../../tests/native-generators/README.md)
+run keeps it, prints its path and records it as `buildDirectory` in the report. The [suite procedure](../../legacy/tests/native-generators/README.md)
 describes direct invocation with an explicit extension path and the comparison
 protocol. Missing executables, missing native classes and malformed responses
 fail the checks.
