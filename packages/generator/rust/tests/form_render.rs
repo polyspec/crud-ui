@@ -11,6 +11,8 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
+#[path = "support/evidence.rs"]
+mod evidence;
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
@@ -70,6 +72,11 @@ fn check_failure(case: &Value) {
     );
 }
 
+/// The name of a case.
+fn name_of(case: &Value) -> String {
+    case["name"].as_str().unwrap().to_string()
+}
+
 fn main() {
     let cases = support::cases("form-render");
     let results: Vec<Value> = cases
@@ -97,8 +104,21 @@ fn main() {
         Trial::test(
             format!("form_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
             move || {
-                check(&case);
-                Ok(())
+                evidence::prove_all(
+                    &[
+                        "compileForm",
+                        "bindForm",
+                        "bindButtons",
+                        "formButtonsHtml",
+                        "renderForm",
+                    ],
+                    "tests/fixtures/form-render/cases.json",
+                    &name_of(&case),
+                    || {
+                        check(&case);
+                        Ok(())
+                    },
+                )
             },
         )
     };

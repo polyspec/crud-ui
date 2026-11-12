@@ -266,7 +266,8 @@ export function checkContractManifest(root: string): ManifestCheck {
       if (entry.visibility === 'internal') internal.add(subpath === '.' ? pkg.name : pkg.name + subpath.slice(1));
     }
   }
-  const packageCode = (file: string): boolean => file.startsWith('packages/') && !file.endsWith('.md');
+  // The legacy packages under legacy/packages are packages of CRUDUI too (plan V-6).
+  const packageCode = (file: string): boolean => /^(legacy\/)?packages\//.test(file) && !file.endsWith('.md');
   for (const file of scannedFiles(root).sort(byCodeUnit)) {
     if (packageCode(file)) continue;
     const text = readFileSync(resolve(root, file), 'utf8');

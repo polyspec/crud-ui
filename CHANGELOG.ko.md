@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 4d80021161164520033a1c7e9c3259b50822f98b160dbb1cc51260ccaf7d1cc3 -->
+<!-- source-sha256: 654e1f4814af1b521948347ae5a324c728f92a6e0a8bcaea074c6f05b3bda36c -->
 
 ## Unreleased
 
+- C16.1: generator의 form-render, list-render, detail-render, form-outline, form-complete, text-validity family의 Rust 시험이 적합성 근거를 기록합니다. 이전에는 `legacy/` 아래 네이티브 생성기 검사기가 Rust 근거를 기록했습니다. list-render와 detail-render는 각 case의 모델도 만듭니다. `legacy/tests/native-generators/cases.mts`의 폼 시나리오는 legacy 런타임만 증명하며, manifest 검사는 `legacy/packages`의 코드를 package 코드로 봅니다(C16.1).
 - G-5: 계약의 각 연산의 raises는 그 연산이 내는 kind만 적고 kind마다 계약 case가 있습니다: `validate` 14개, `hidden_paths` 9개(파일 없이 조합하므로 파일이 필요한 kind는 없음), `validate_list`와 `validate_detail` 11개, `build_list`, `render_list`, `build_detail`, `render_detail` 11개(선언에 규칙이 없음). 로더를 받는 연산은 확장하는 연산의 kind를 받습니다(G-5).
 - CUDF-091: Rust `validate_list`와 `validate_detail`은 객체가 아닌 명세를 멤버 없는 선언으로 통과시키던 대신 조합 전에 `INVALID_FORM_INPUT`와 CUDF-024 또는 CUDF-032의 메시지로 거절하며, `ValidateError`를 반환합니다(CUDF-091).
 - E-1: Rust validator의 입력 실패는 변형 `ValidateError::InvalidFormInput`이며, 그 kind `invalid_form_input`은 인터페이스 계약이 그 이름에서 이끌어 내는 kind와 같습니다. legacy 구현은 같은 실패를 코드 `INVALID_FORM_INPUT`으로 냅니다(E-1).

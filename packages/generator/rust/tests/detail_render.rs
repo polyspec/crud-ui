@@ -12,10 +12,12 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
+#[path = "support/evidence.rs"]
+mod evidence;
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crud_ui_generator::{render_detail, DetailOptions};
+use polyspec_crud_ui_generator::{build_detail, render_detail, DetailOptions};
 use regex::Regex;
 use serde_json::{json, Value};
 use std::sync::LazyLock;
@@ -48,7 +50,20 @@ fn check_case(case: &Value) {
         .map(support::case_value)
         .unwrap_or(json!({}));
     let spec = support::case_value(&case["spec"]);
+    // build_detail gives the model of the same case and fails with the same code.
+    let built = build_detail(&spec, &record, &options(case));
     let result = render_detail(&spec, &record, &options(case));
+    match (&built, &result) {
+        (Ok(_), Ok(_)) => {}
+        (Err(built), Err(rendered)) => {
+            assert_eq!(built.code, rendered.code, "{name}: build_detail code")
+        }
+        (built, rendered) => panic!(
+            "{name}: build_detail {:?} and render_detail {:?} differ",
+            built.is_ok(),
+            rendered.is_ok()
+        ),
+    }
     if let Some(expected) = case.get("raises") {
         let error = result.err().unwrap_or_else(|| panic!("{name} must fail"));
         assert_eq!(
@@ -86,8 +101,15 @@ fn main() {
         Trial::test(
             format!("detail_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
             move || {
-                check_case(&case);
-                Ok(())
+                evidence::prove_all(
+                    &["buildDetail", "renderDetail"],
+                    "tests/fixtures/detail-render/cases.json",
+                    &name,
+                    || {
+                        check_case(&case);
+                        Ok(())
+                    },
+                )
             },
         )
     });

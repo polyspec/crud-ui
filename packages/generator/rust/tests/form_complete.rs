@@ -12,6 +12,9 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
+#[path = "support/evidence.rs"]
+mod evidence;
+
 use libtest_mimic::{Arguments, Trial};
 use polyspec_crud_ui_generator::{
     compile_form, render_form, render_form_view, BindOptions, CompileOptions, Form,
@@ -122,8 +125,15 @@ fn main() {
         Trial::test(
             format!("form_complete_cases_render_the_recorded_bytes_or_failures::{name}"),
             move || {
-                check_case(&case);
-                Ok(())
+                evidence::prove_all(
+                    &["renderForm"],
+                    "tests/fixtures/form-complete/cases.json",
+                    &name,
+                    || {
+                        check_case(&case);
+                        Ok(())
+                    },
+                )
             },
         )
     });

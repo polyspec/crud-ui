@@ -376,7 +376,14 @@
     {
       "path": "legacy/tests/native-generators/cases.mts",
       "kind": "form-instance",
-      "export": "formScenarios"
+      "export": "formScenarios",
+      "runtimes": [
+        "javascript",
+        "php",
+        "go",
+        "php-native",
+        "python"
+      ]
     },
     {
       "path": "tests/fixtures/form-session/scenario.mts",

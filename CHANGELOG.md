@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- C16.1: the Rust tests of form-render, list-render, detail-render, form-outline, form-complete and the text-validity families of the generator record their conformance evidence, which the native generator suite under `legacy/` recorded for Rust before; list-render and detail-render also build the model of each case. The form scenarios of `legacy/tests/native-generators/cases.mts` are proven by the legacy runtimes alone, and the manifest check takes the code of `legacy/packages` as package code (C16.1).
 - G-5: the raises of each operation of the contracts name only the kinds that the operation raises, each with a contract case: `validate` 14 kinds, `hidden_paths` 9 (it composes without files, so no kind that needs a file), `validate_list` and `validate_detail` 11 and `build_list`, `render_list`, `build_detail` and `render_detail` 11 (a declaration holds no rule); the operations with a loader take the kinds of the operation they extend (G-5).
 - CUDF-091: Rust `validate_list` and `validate_detail` refuse a specification that is no object with `INVALID_FORM_INPUT` and the message of CUDF-024 or CUDF-032 before the composition, where they used to pass it as a declaration without members; they return `ValidateError` (CUDF-091).
 - E-1: the input failure of the Rust validator is the variant `ValidateError::InvalidFormInput`, whose kind, `invalid_form_input`, is the one that the interface contract derives from its name; the legacy implementations raise the same failure with the code `INVALID_FORM_INPUT` (E-1).

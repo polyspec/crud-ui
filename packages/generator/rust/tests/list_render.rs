@@ -12,10 +12,12 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
+#[path = "support/evidence.rs"]
+mod evidence;
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crud_ui_generator::{list_rows, render_list, ListOptions};
+use polyspec_crud_ui_generator::{build_list, list_rows, render_list, ListOptions};
 use regex::Regex;
 use serde_json::Value;
 use std::sync::LazyLock;
@@ -50,7 +52,24 @@ fn check_case(case: &Value) {
     });
     let spec = support::case_value(&case["spec"]);
     let rows = list_rows(rows.as_ref());
+    // build_list gives the model of the same case: it fails with the code of the case, or it succeeds where only the
+    // rendering refuses the case (the layout).
+    let built = rows
+        .clone()
+        .and_then(|rows| build_list(&spec, rows, &options(case)));
     let result = rows.and_then(|rows| render_list(&spec, rows, &options(case)));
+    match (&built, &result) {
+        (Ok(_), Ok(_)) | (Ok(_), Err(_)) => {}
+        // render_list checks the layout before the composition, so its failure may come first.
+        (Err(built), Err(rendered)) if !rendered.message.contains("layout") => {
+            assert_eq!(built.code, rendered.code, "{name}: build_list code");
+        }
+        (Err(_), Err(_)) => {}
+        (Err(built), Ok(_)) => panic!(
+            "{name}: build_list fails with {} where render_list renders",
+            built.code
+        ),
+    }
     if let Some(expected) = case.get("raises") {
         let error = result.err().unwrap_or_else(|| panic!("{name} must fail"));
         assert_eq!(
@@ -88,8 +107,15 @@ fn main() {
         Trial::test(
             format!("list_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
             move || {
-                check_case(&case);
-                Ok(())
+                evidence::prove_all(
+                    &["buildList", "renderList"],
+                    "tests/fixtures/list-render/cases.json",
+                    &name,
+                    || {
+                        check_case(&case);
+                        Ok(())
+                    },
+                )
             },
         )
     });

@@ -12,6 +12,8 @@
 )]
 
 use libtest_mimic::{Arguments, Trial};
+#[path = "support/evidence.rs"]
+mod evidence;
 mod support;
 
 use polyspec_crud_ui_generator::{
@@ -72,8 +74,15 @@ fn main() {
                 .expect("a case has a name")
                 .to_string();
             Trial::test(format!("native_outline_fixture::{name}"), move || {
-                check_case(&case);
-                Ok(())
+                evidence::prove_all(
+                    &["compileForm", "bindForm", "buildOutline"],
+                    "tests/fixtures/form-outline/cases.json",
+                    &name,
+                    || {
+                        check_case(&case);
+                        Ok(())
+                    },
+                )
             })
         })
         .collect();

@@ -15,6 +15,9 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
+#[path = "support/evidence.rs"]
+mod evidence;
+
 use libtest_mimic::{Arguments, Failed, Trial};
 use polyspec_crud_ui_generator::text::{
     check_bind, check_compile_form, check_display, check_form_method,
@@ -259,17 +262,20 @@ fn main() {
                 .and_then(JsonText::to_value)
                 .and_then(|value| value.as_str().map(str::to_owned))
                 .expect("a case has a name");
+            let fixture = format!("tests/fixtures/text-validity/{feature}/cases.json");
             trials.push(Trial::test(format!("{symbol}::{name}"), move || {
-                let expected = case
-                    .get("expect")
-                    .and_then(JsonText::to_value)
-                    .expect("a case has an expectation");
-                let observed = outcome(run_case(feature, &case));
-                if observed == expected {
-                    Ok(())
-                } else {
-                    Err(Failed::from(format!("\n got {observed}\nwant {expected}")))
-                }
+                evidence::prove_all(&[feature], &fixture, &name, || {
+                    let expected = case
+                        .get("expect")
+                        .and_then(JsonText::to_value)
+                        .expect("a case has an expectation");
+                    let observed = outcome(run_case(feature, &case));
+                    if observed == expected {
+                        Ok(())
+                    } else {
+                        Err(Failed::from(format!("\n got {observed}\nwant {expected}")))
+                    }
+                })
             }));
         }
     }
