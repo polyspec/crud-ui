@@ -5,44 +5,11 @@
   "changelogTranslations": [
     "CHANGELOG.ko.md"
   ],
-  "packages": [
-    {
-      "kind": "npm",
-      "directory": "packages/form-binding",
-      "name": "@polyspec/crudui-form-binding",
-      "product": "crudui-form-binding",
-      "runtime": "ts"
-    },
-    {
-      "kind": "npm",
-      "directory": "packages/react",
-      "name": "@polyspec/crudui-generator-react",
-      "product": "crudui-generator-react",
-      "runtime": "ts"
-    },
-    {
-      "kind": "npm",
-      "directory": "packages/svelte",
-      "name": "@polyspec/crudui-generator-svelte",
-      "product": "crudui-generator-svelte",
-      "runtime": "ts"
-    },
-    {
-      "kind": "npm",
-      "directory": "packages/vue",
-      "name": "@polyspec/crudui-generator-vue",
-      "product": "crudui-generator-vue",
-      "runtime": "ts"
-    }
-  ],
+  "packages": [],
   "manifests": {
     "package.json": "version",
     "packages/cli/package.json": "version",
     "examples/cross-check-console/server/package.json": "version",
-    "packages/form-binding/package.json": "archive",
-    "packages/react/package.json": "archive",
-    "packages/svelte/package.json": "archive",
-    "packages/vue/package.json": "archive",
     "packages/generator/rust/Cargo.toml": "git-tag",
     "packages/validator/rust/Cargo.toml": "git-tag",
     "examples/cross-check-console/validators/rust/Cargo.toml": "version",
@@ -83,7 +50,11 @@
     "packages/generator/python/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
     "packages/generator/python/pyproject.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
     "packages/generator/ts/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
-    "packages/generator/ts/package.json": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)"
+    "packages/generator/ts/package.json": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/form-binding/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/react/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/svelte/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/vue/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)"
   },
   "goModules": {},
   "annotatedTags": true,
