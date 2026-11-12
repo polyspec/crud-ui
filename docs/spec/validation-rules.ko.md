@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: ddf9e411c209b710e3eb4ae429f57be86c3720f7db5e16a4fa6ba52d55866083 -->
+<!-- source-sha256: ad6d42c5093e1b2485af397726ad62b133cb0040f674ec54de0525931e2083b4 -->
 
 [English](validation-rules.md).
 
@@ -297,7 +297,7 @@ POSIX 클래스, 소유·중첩 수량자, `\uHHHH`, 8진수·제어 문자 이�
 `.`로 이은 값이며 행 키를 포함하지 않습니다. 모든 런타임은 같은 코드와 메시지를 보고합니다.
 
 - **CUVR-041** 등록된 규칙이 아닌 `validate` 또는 `messages` 키 — 코드: `UNKNOWN_RULE`; 메시지: `Unknown rule: {name}`
-- **CUVR-094** 객체가 아닌 `validate`(규칙보다 먼저 검사) — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid validate at {path}: expected an object`. 멤버의 타입이 달라서 필드의 규칙을 건너뛰는 일은 없습니다.
+- **CUVR-094** 객체도 아니고 필드의 규칙을 끄는 `false`도 아닌 `validate`(규칙보다 먼저 검사) — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid validate at {path}: expected an object`. 멤버의 타입이 달라서 필드의 규칙을 건너뛰는 일은 없습니다.
 - **CUVR-089** 객체가 아닌 `messages`, 또는 값이 문자열이 아닌 `messages` 멤버(멤버의 키 다음에 검사) — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid messages.{rule} at {path}: expected a string`(멤버 전체는 `Invalid messages at {path}: expected an object`). 메시지를 건너뛰지 않습니다. 텍스트가 아닌 재정의는 아무 표시 없이 기본 메시지로 돌아가기 때문입니다.
 - **CUVR-042** `minlength`, `maxlength` 제한값 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid {rule} parameter: expected an integer from 0 to 9007199254740991`
 - **CUVR-043** `rangelength` 제한값 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid rangelength parameter: expected [minimum, maximum] integers with minimum not above maximum`

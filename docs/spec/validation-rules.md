@@ -359,7 +359,7 @@ is the field's declaration path: the property names from the root joined with `.
 without row keys. Every runtime reports the same code and message:
 
 - **CUVR-041** `validate` or `messages` key that is not a registered rule — Code: `UNKNOWN_RULE`; Message: `Unknown rule: {name}`
-- **CUVR-094** `validate` that is not an object, checked before its rules — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid validate at {path}: expected an object`. A field's rules are never skipped because their member has another type.
+- **CUVR-094** `validate` that is neither an object nor `false`, which turns the field's rules off, checked before its rules — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid validate at {path}: expected an object`. A field's rules are never skipped because their member has another type.
 - **CUVR-089** `messages` that is not an object, or a `messages` member whose value is not a string, checked after the member's key — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid messages.{rule} at {path}: expected a string` (`Invalid messages at {path}: expected an object` for the whole member). A message is never skipped: an override that is not text would fall back to the default without a sign.
 - **CUVR-042** `minlength`, `maxlength` limit — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid {rule} parameter: expected an integer from 0 to 9007199254740991`
 - **CUVR-043** `rangelength` limits — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid rangelength parameter: expected [minimum, maximum] integers with minimum not above maximum`
