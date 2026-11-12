@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: b1bd6fb382b48ed2f248c791de9dfefc9f40d71989dc229651bdbcebc51c5fa7 -->
+<!-- source-sha256: 8a4aa83d30a2920753aae625b5d5c2d94cbf50b457bfc60a65d47956af93e6c3 -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -114,6 +114,11 @@ form[companies][__0000000000001__][stores][__0000000000042__][name]
 `sequenceRowKey(seq)`는 `__` + 십진수 seq를 13자리까지 0으로 채운 값 + `__`를
 생성합니다. 최대 13자리의 십진수 문자열과 음수가 아닌 정수를 받습니다.
 `createRowKey()`는 같은 구분자로 감싼 13자리 임의의 16진수 키를 생성합니다.
+
+- **CURT-095** 시스템 난수 원천의 실패는 입력 실패가 아닙니다. `createRowKey`, 그리고 이것으로 키를 만드는 `addRow`, `copyRow`, 행을 추가하거나
+  복사하는 동작은 `RANDOM_UNAVAILABLE`(kind `random_unavailable`, category io)과 메시지 `Unable to generate a row key: {cause}`로
+  실패하며 아무것도 바꾸지 않습니다.
+
 런타임은 키의 내용으로 저장 여부를 판단하지 않습니다. 서버가 저장 후 키의
 대응 관계를 제공합니다.
 

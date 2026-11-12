@@ -124,7 +124,12 @@ form[companies][__0000000000001__][stores][__0000000000042__][name]
 `sequenceRowKey(seq)` produces `__` + a decimal sequence padded to 13 digits +
 `__`. It accepts decimal strings and nonnegative integers of at most 13 digits.
 `createRowKey()` creates a random 13-character hexadecimal key with the same
-delimiters. The runtime never decides whether a row is persisted by inspecting
+delimiters.
+
+- **CURT-095** A failure of the random source of the system is no input failure: `createRowKey`, and `addRow`,
+  `copyRow` and the actions that add or copy a row, which create keys with it, fail with `RANDOM_UNAVAILABLE` (kind
+  `random_unavailable`, category io) and the message `Unable to generate a row key: {cause}`, and change nothing.
+ The runtime never decides whether a row is persisted by inspecting
 the key. The server provides the correspondence after saving.
 
 Instances preserve nonnumeric object key insertion order in memory. Native form
