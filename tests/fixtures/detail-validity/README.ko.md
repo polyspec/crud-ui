@@ -1,19 +1,20 @@
 # 상세 유효성 고정 데이터
 <!-- doc-id: tests-fixtures-detail-validity-readme -->
-<!-- source-sha256: 80ecf9402ccffa41156992a4326a23d997e1e9dfaed663f40617a1d839b66117 -->
+<!-- source-sha256: b321a1d4c3ac37442ecbfa092e363680e4e657295e94c0c4895836f76d1cb83c -->
 
 [English](README.md).
 
-`cases.json`의 사례는 다른 구조 유효성 고정 데이터([폼](../spec-validity/README.ko.md),
-[목록](../list-validity/README.ko.md), [상세](README.ko.md))와 같은
-`{ name, note, spec, files?, expect, reason?, engine }` 형태를 사용합니다.
+`cases.json`은 binding 생성 시험의 case 형식(G-5)으로 사례를 담습니다. group `cases`가 사례를 나열하고, 각 사례는
+`{ id, name, note, spec, options?, expect, reason?, raises?, requirements? }`입니다. `spec`과 모든 파일은 `json_value` 값이며
+[검증 고정 데이터](../validate/README.ko.md)처럼 `{ "kind", "value" }`로 씁니다. 다른 구조 유효성 고정 데이터인
+[폼](../spec-validity/README.ko.md)은 평범한 `spec`, `files`, `engine`을 가진 자기 형식을 유지합니다.
 
 - `expect`는 [메타 스키마](../../../contracts/schema/crudui.schema.json)의 `#/definitions/Detail`에 대한 메타 스키마 결과인 `"ok"` 또는 `"fail"`입니다.
 - `reason`은 `"fail"` 사례에만 있으며 그 사례에는 반드시 있어야 합니다. 오류 중에 나타나야 하는 Ajv
   키워드를 지정합니다.
-- `engine`은 런타임 구조 검증 결과입니다. `"pass"`는 로드 실패가 없고 결과가 `{ valid: true, errors: [] }`임을
-  뜻하며, `{ code, at }`은 로드 실패 코드와 합성 경로를 `.`으로 이은 값입니다.
-- `files`는 모든 런타임 사용처가 엔진에 전달하는 합성 파일 묶음입니다. 메타 스키마는 `spec`만 읽습니다.
+- `raises`는 `validate_detail`의 런타임 구조 검증 실패인 `{ kind, status, category, at }`이며, 소문자 로드 실패 코드와 합성 경로를
+  `.`으로 이은 값입니다. `raises`가 없는 사례는 로드 실패가 없고 결과가 `{ valid: true, errors: [] }`입니다.
+- `options.files`는 모든 런타임 사용처가 엔진에 전달하는 합성 파일 묶음입니다. 메타 스키마는 `spec`만 읽습니다.
 
 두 결과는 서로 독립적입니다. 모든 사용처는 자신이 담당하는 모든 멤버를 적용하며, 사례를 스스로 분류하거나
 자체 파일을 제공하는 사용처는 없습니다. `npm run spec:schema`로 실행하는
@@ -32,7 +33,7 @@
 [상세 메타 스키마 검사](../../../legacy/packages/validator/ts/src/detail-metaschema.conformance.test.ts)와
 `check-schema.mts`는 상세 진입점을 컴파일해 `expect`와 `reason`을 확인합니다.
 
-런타임 검사는 `spec`을 `files`와 함께 검증하고 레코드 데이터는 읽지 않으며 `engine`과 비교합니다. Rust 구조
+런타임 검사는 `spec`을 `options.files`와 함께 검증하고 레코드 데이터는 읽지 않으며 `raises`와 비교합니다. Rust 구조
 API는 `"pass"`에 대해 `{ valid: true, errors: [] }`에 해당하는 `Ok(())`를 반환합니다.
 교차 검증 콘솔은 모든 사례를 다섯 검증기 프로세스에 보내며, 각 프로세스는 깨끗한 결과와 함께 종료 코드
 `0`, 또는 `{ error, code, at }`과 함께 종료 코드 `2`로 끝나고 모두 같은 결과, 코드, 위치를 내야 합니다.
@@ -48,12 +49,12 @@ API는 `"pass"`에 대해 `{ valid: true, errors: [] }`에 해당하는 `Ok(())`
 사용처입니다.
 
 [렌더 유효성 검사](../../../legacy/packages/generator/ts/src/display-validity.test.ts)는 모든 사례를
-`buildDetail`로 만듭니다. `expect`가 `"ok"`이고 `engine`이 `"pass"`인 사례만 만들어지고, `engine` 실패는
+`buildDetail`로 만듭니다. `expect`가 `"ok"`이고 `raises`가 없는 사례만 만들어지고, `raises`의 실패는
 렌더 실패와 같으며, 그 밖의 사례는 `INVALID_FORM_INPUT`으로 실패합니다
 ([표시 형식 선언](../../../docs/spec/display-formats.ko.md#선언)).
 
 ## 재생성
 
-생성기는 없으며 사례는 직접 작성합니다. `expect`와 `reason`은 메타 스키마의 상세 정의와, `engine`은 모든
+생성기는 없으며 사례는 직접 작성합니다. `expect`와 `reason`은 메타 스키마의 상세 정의와, `raises`는 모든
 런타임의 합성 및 금지 키 검사와 일치해야 합니다. 합성 사례는 참조하는 모든 파일을 `files`에 담아야 합니다.
 사례를 변경한 뒤 메타 스키마 검사와 모든 런타임 사용처를 실행합니다.

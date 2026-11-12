@@ -6,6 +6,13 @@
 //! Nothing is written when the variable is unset or empty.
 //! scripts/check-conformance.mts reads these files.
 
+mod case_value;
+#[allow(
+    unused_imports,
+    reason = "each test crate of the package uses the readers that its fixtures need"
+)]
+pub use case_value::*;
+
 use serde_json::{Map, Value};
 use std::fs::{create_dir_all, OpenOptions};
 use std::io::Write;

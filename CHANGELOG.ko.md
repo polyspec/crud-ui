@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 682134e49ad76e272aeacef6fef42ecfc487c2b406e28f43febcc146b3d2a884 -->
+<!-- source-sha256: f0610b92d3e200373f3f36396b1b2b75e58648b5173ddf407132d57de891196d -->
 
 ## Unreleased
 
+- G-5: validator 계약의 case인 `tests/fixtures/validate`, `list-validity`, `detail-validity`를 binding 생성 시험의 case 형식으로 씁니다. group `cases`의 각 case는 `id`, 매개변수 이름으로 쓴 인수(각 `json_value`는 `{ kind, value }`), `options`의 파일, 실패를 나타내는 `raises: { kind, status, category, message?, at }`를 가집니다. Rust 시험과 스키마 검사는 디코더 하나씩(`tests/common/case_value.rs`, `tests/case-values.mts`)으로 이 형식을 읽습니다. 계약은 `validate`와 실패가 다른 `hidden_paths`에 검증 case를 더 이상 붙이지 않습니다(G-5).
 - C16.1: 구현끼리 비교하는 도구를 `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`(두 fixture 묶음이 같게 가진 case에서 Rust generator와 TypeScript generator를 비교), `legacy/examples/cross-check-console`로 옮기고 `legacy/tests/fixtures`를 읽게 합니다. 적합성 검사는 legacy 런타임의 근거를 `legacy/` 아래 사본과, Rust 코어의 근거를 `tests/fixtures`와 대조합니다(C16.1).
 - C16.1: react, vue, svelte, form-binding package도 배포 대상에서 빠집니다. 어떤 릴리스도 내지 않는 legacy 코어 package에 의존하기 때문입니다(C16.1).
 - C16.1: 언어 구현을 예전 경로 그대로 `legacy/`로 옮기고(`legacy/packages/validator/{ts,php,python,go}`, `legacy/packages/generator/{ts,php,python,go}`, `legacy/packages/php-ext`, `legacy/packages/html`) 배포 대상에서 뺍니다. 그 suite는 Rust 코어만 구현한 규칙 이전의 fixture를 고정한 사본 `legacy/tests/fixtures`를 읽습니다. 루트의 Cargo workspace 하나가 두 코어 crate와 `binding scaffold`가 쓰는 `packages/<component>/{ts,python,php-ext}`의 바인딩 crate를 `Cargo.lock` 하나로 담습니다. `make bindings`, `bindings-check`, `lint-bindings`, `test-bindings`가 binding과 바인딩 crate를 실행하며, 각 legacy package는 그 바인딩이 통과할 때 제거합니다(V-6 (5))(C16.1).

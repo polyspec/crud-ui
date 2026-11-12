@@ -1,14 +1,17 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: de3e269d244b107e828a39d9cb0cf0a2fe5cbdd75f99790c56e02080c4079e15 -->
+<!-- source-sha256: 731d60c0fc1fb4c34c732f895b7ddb2eca753de68c15c8db1d83ad6bced39dfb -->
 
 [English](README.md).
 
-`cases.json`은 TypeScript, PHP, PHP 확장, Go, Rust가 공유하는 폼 검증 사례입니다. 각 사례는 `name`,
-`note`, `spec`, `data`, 선택적인 `files`, 그리고 `expected` 또는 `expectFailure`를 제공합니다.
-`expected`는 `{ valid, errors, hidden }` 전체 결과이며 모든 오류는 `path`, `field`, `rule`, `message`,
-`value`를 가집니다. `expectFailure`는 `{ code, message, at }`입니다. 합성 실패의 `at`은 합성 경로를
-`.`으로 이은 값이고 입력 실패의 `at`은 빈 문자열입니다.
+`cases.json`은 binding 생성 시험의 case 형식(G-5)으로 Rust 코어의 공유 폼 검증 사례를 담습니다. group `cases`가 사례를
+나열하고, 각 사례는 `id`, `name`, `note`, `requirements`, `validate`의 인수 `spec`, `data`, `files`를 담은 선택적인
+`options`, 그리고 `expected` 또는 `raises`를 제공합니다. `spec`, `data`와 모든 파일은 `json_value` 값이며
+`{ "kind", "value" }`로 씁니다(`null`, `bool`, 리터럴을 텍스트로 담은 `number`, `text`, `list`, `[이름, 값]` 쌍을 순서대로 담은
+`map`). `expected`는 `{ valid, errors, hidden }` 전체 결과이며 모든 오류는 `path`, `field`, `rule`, `message`, `value`를
+가집니다. `raises`는 `{ kind, status, category, message, at }`입니다. `kind`는 실패 코드의 소문자이고, 합성 실패의 `at`은
+합성 경로를 `.`으로 이은 값이며 입력 실패의 `at`은 빈 문자열입니다. legacy 구현은
+[legacy/tests/fixtures/validate](../../../legacy/tests/fixtures/validate/README.ko.md) 아래 사본을 그 사본의 형식으로 읽습니다.
 
 규칙 안의 상대·부모·필드 경로, 삼항식과 조건맵 제한값, 조건부 필수 입력, 키를 가진 그룹과 스칼라, 반복
 필드 경로, `unique`, `mincount`, `equalTo`, `containedIn`, `typeFrom`, `minFrom`, `maxFrom`, `equalTo`·`containedIn`·`typeFrom`·`minFrom`·`maxFrom`·`enddate`·`notEqual`·`unique` 매개변수의 형식, 정규식과 `accept` 값, 번역한 라벨과 빈 라벨을 가진 선택지
@@ -38,7 +41,7 @@ id, id가 없는 form, 매개변수 오류를 확인합니다.
 Go·Rust·PHP는 숫자를 값으로 비교하므로 `5`와 `5.0`은 같습니다.
 [PHP 확장 실행기](../../../legacy/packages/php-ext/tests/ValidateReport.php)는 JSON 문자열을 비교하므로 멤버 순서도
 비교합니다. 실패 사례는 `code`, `message`, `at`을 정확히 비교하며, 모든 사례는 `expected`와
-`expectFailure` 중 정확히 하나를 선언해야 합니다. [빈 collection](../../../docs/spec/empty-collections.ko.md) 또는 [검증 규칙](../../../docs/spec/validation-rules.ko.md)의 requirement를 시험하는 case는 `requirements`에 id를 나열하며, 이는 `generate.mts`의 `REQUIREMENTS` map에서 지정합니다.
+`raises` 중 정확히 하나를 선언해야 합니다. [빈 collection](../../../docs/spec/empty-collections.ko.md) 또는 [검증 규칙](../../../docs/spec/validation-rules.ko.md)의 requirement를 시험하는 case는 `requirements`에 id를 나열합니다.
 
 교차 검증 콘솔의 검증기 프로세스는 각 사례를 표준 입력으로 받습니다. 결과 사례는 종료 코드 `0`과 함께
 결과를 표준 출력에 쓰고, 실패 사례는 종료 코드 `2`와 함께 `{ error, code, at }`을 씁니다.
@@ -54,22 +57,8 @@ PHP 검증기와 네이티브 검증기를 실행하는 [PHP 확장 API 검사](
 네 언어 결과를 비교하는 [검증 실행기 검사](../../../legacy/examples/cross-check-console/server/validate-runner.test.mjs)가
 사용합니다.
 
-## 재생성
-
-저장소 루트에서 실행합니다.
-
-```sh
-node tests/fixtures/validate/generate.mts > tests/fixtures/validate/cases.json
-```
-
-생성기는 TypeScript 검증기를 실행해 각 결과 또는 실패 기록을 기록합니다. 다만 명세에서 작성한 두
-묶음은 예외입니다. [`value-rules.mts`](value-rules.mts)는 필드별 결과를, [`visibility.mts`](visibility.mts)는
-전체 결과 기록을 명시하며, 둘 다 `visibility.mts`의 기본 규칙 메시지를 사용합니다. 생성기가 JSON 문자열로 가진
-명세는 `cases.json`에서도 멤버 순서를 유지합니다. 변경을 반영하기 전에 명세와 비교하여 검토하고 모든
-사용처를 실행합니다. 재생성만으로 검증이 완료되지는 않습니다.
-
 ## 작성
 
-`cases.json`은 직접 고치는 데이터입니다. TypeScript 런타임이 기준이던 동안에는 TypeScript 생성기 `generate.mts`가
-이 파일을 썼습니다. 그 런타임이 legacy 런타임이 되면 어떤 프로그램도 기대값을 생성하지 않으며, 케이스가 결과를
-시험하는 Rust 코어도 기대값을 쓰지 않습니다.
+`cases.json`은 직접 고치는 데이터입니다. TypeScript 런타임이 기준이던 동안에는 TypeScript 생성기 `generate.mts`와 그
+모듈이 legacy 사본의 형식으로 이 파일을 썼습니다. 이들은 legacy 구현의 도구이며 실행하지 않습니다. 어떤 프로그램도
+기대값을 생성하지 않으며, 케이스가 결과를 시험하는 Rust 코어도 기대값을 쓰지 않습니다.

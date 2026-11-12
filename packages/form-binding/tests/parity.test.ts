@@ -56,7 +56,7 @@ function readCases(text: string): Case[] {
   });
 }
 
-const cases = readCases(readFileSync(new URL('../../../tests/fixtures/validate/cases.json', import.meta.url), 'utf8'));
+const cases = readCases(readFileSync(new URL('../../../legacy/tests/fixtures/validate/cases.json', import.meta.url), 'utf8'));
 const formErrors = (result: ValidationResult) => (result.valid ? [] : ['Check the marked fields.']);
 
 /** The form of a case, parsed, when the case's data renders and a rendered form holds it exactly. */

@@ -3,12 +3,15 @@
 
 [한국어](README.ko.md).
 
-`cases.json` contains the shared form validation cases for TypeScript, PHP, the PHP extension, Go
-and Rust. Each case provides `name`, `note`, `spec`, `data`, optional `files`, and either
-`expected` or `expectFailure`. `expected` is the complete `{ valid, errors, hidden }` result, and every
-error has `path`, `field`, `rule`, `message` and `value`. `expectFailure` is
-`{ code, message, at }`: a composition failure's `at` is its trace joined with `.`, and an input
-failure's `at` is empty.
+`cases.json` holds the shared form validation cases of the Rust core in the case form of binding's generated tests
+(G-5): the group `cases` lists the cases, and each case gives `id`, `name`, `note`, `requirements`, the arguments `spec`
+and `data` of `validate`, optional `options` with `files`, and either `expected` or `raises`. `spec`, `data` and every
+file are values of `json_value`, written as `{ "kind", "value" }` (`null`, `bool`, `number` with its literal as text,
+`text`, `list` and `map` with its `[name, value]` pairs in order). `expected` is the complete `{ valid, errors, hidden }`
+result, and every error has `path`, `field`, `rule`, `message` and `value`. `raises` is `{ kind, status, category,
+message, at }`: `kind` is the code of the failure in lower case, a composition failure's `at` is its trace joined with
+`.`, and an input failure's `at` is empty. The legacy implementations read the copy of these cases under
+[legacy/tests/fixtures/validate](../../../legacy/tests/fixtures/validate/README.md), in the form of that copy.
 
 These cases check relative, parent and field paths in rules, ternary and condition-map limits,
 conditional requiredness, keyed groups and scalars, repeated-field paths, `unique`, `mincount`,
@@ -46,10 +49,9 @@ Each test runs the validator and compares the complete result or failure record.
 array is compared in order. Go, Rust and PHP compare numbers by value, so `5` and `5.0` are equal.
 The [PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) compares JSON text, so
 member order is compared there as well. A failure case compares `code`, `message` and `at`
-exactly, and every case must declare exactly one of `expected` and `expectFailure`. A case that tests a requirement of
+exactly, and every case must declare exactly one of `expected` and `raises`. A case that tests a requirement of
 [empty collections](../../../docs/spec/empty-collections.md) or of [validation rules](../../../docs/spec/validation-rules.md)
-lists its ids in `requirements`; `generate.mts` names those
-cases in its `REQUIREMENTS` map, which is how they are added.
+lists its ids in `requirements`.
 
 The cross-check console's validator processes receive each case on standard input. A result case
 exits `0` with the result on standard output; a failure case exits `2` with `{ error, code, at }`.
@@ -67,24 +69,9 @@ which sends every case to the five validator processes, and its
 [validation runner test](../../../legacy/examples/cross-check-console/server/validate-runner.test.mjs),
 which compares the four language results.
 
-## Regeneration
-
-Run from the repository root:
-
-```sh
-node tests/fixtures/validate/generate.mts > tests/fixtures/validate/cases.json
-```
-
-The generator runs the TypeScript validator and records each result or failure record, except
-for two groups written from the specification: [`value-rules.mts`](value-rules.mts) states each
-field's outcome, and [`visibility.mts`](visibility.mts) states the complete result record. Both use
-the default rule messages in `visibility.mts`.
-Specifications that the generator holds as JSON text keep their member order in `cases.json`.
-Review changes against the specification and run every test that reads them before accepting them.
-Regeneration alone is not verification.
-
 ## Authoring
 
-`cases.json` is data that is edited directly. The TypeScript generator `generate.mts` wrote it while the TypeScript
-runtime was the reference; once that runtime is a legacy runtime, no program generates the expected values, and the
-Rust core, whose results the cases test, never writes them.
+`cases.json` is data that is edited directly. The TypeScript generator `generate.mts` and its modules wrote it in the
+form of the legacy copy while the TypeScript runtime was the reference; they are tools of the legacy implementations
+and are not run. No program generates the expected values, and the Rust core, whose results the cases test, never
+writes them.

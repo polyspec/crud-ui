@@ -19,27 +19,28 @@ use polyspec_crud_ui_generator::{build_detail, build_list, DetailOptions, FormEr
 use serde_json::{json, Map, Value};
 use std::path::Path;
 
+#[path = "../../../validator/rust/tests/common/case_value.rs"]
+mod case_value;
+
 /// The cases of one fixture family, read from `tests/fixtures/<family>/cases.json`.
 fn cases(family: &str) -> Vec<Value> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../../tests/fixtures")
         .join(family)
         .join("cases.json");
-    let text = match std::fs::read_to_string(&path) {
-        Ok(value) => value,
-        Err(error) => panic!("read {}: {error}", path.display()),
-    };
-    let cases: Vec<Value> = match serde_json::from_str(&text) {
-        Ok(value) => value,
-        Err(error) => panic!("parse {}: {error}", path.display()),
-    };
+    let cases = case_value::read_cases(&path);
     assert!(!cases.is_empty(), "{family} holds no case");
     cases
 }
 
 /// The files of a case, the composition file set that every runtime passes to the engine.
 fn files(case: &Value) -> Map<String, Value> {
-    case["files"].as_object().cloned().unwrap_or_default()
+    case_value::case_files(case).unwrap_or_default()
+}
+
+/// The specification of a case.
+fn spec(case: &Value) -> Value {
+    case_value::case_argument(case, "spec").unwrap_or(Value::Null)
 }
 
 /// The outcome of a case in the shape of its engine record: "pass", or the code and the composition trace.
@@ -59,15 +60,15 @@ fn outcome(result: Result<(), FormError>) -> Value {
 
 /// Checks the outcome of a case: its recorded engine failure, the INVALID_FORM_INPUT refusal of a rejected declaration, or a build.
 fn check(case: &Value, observed: Value) -> Result<(), Failed> {
-    let expected = match case["engine"].as_str() {
-        Some("pass") => {
+    let expected = match case.get("raises") {
+        None => {
             if case["expect"] == "ok" {
                 json!("pass")
             } else {
                 json!({"code": "INVALID_FORM_INPUT", "at": ""})
             }
         }
-        _ => case["engine"].clone(),
+        Some(raises) => json!({"code": case_value::raised_code(case), "at": raises["at"]}),
     };
     if observed == expected {
         Ok(())
@@ -90,7 +91,7 @@ fn main() {
                     files: files(&case),
                     ..Default::default()
                 };
-                let result = build_list(&case["spec"], &[], &options).map(|_| ());
+                let result = build_list(&spec(&case), &[], &options).map(|_| ());
                 check(&case, outcome(result))
             },
         ));
@@ -107,7 +108,7 @@ fn main() {
                     files: files(&case),
                     ..Default::default()
                 };
-                let result = build_detail(&case["spec"], &json!({}), &options).map(|_| ());
+                let result = build_detail(&spec(&case), &json!({}), &options).map(|_| ());
                 check(&case, outcome(result))
             },
         ));

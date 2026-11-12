@@ -59,19 +59,7 @@ fn normalize(v: &Value) -> Value {
 }
 
 fn load_cases() -> Vec<Value> {
-    let path = fixture_path();
-    let raw = match std::fs::read_to_string(&path) {
-        Ok(raw) => raw,
-        Err(e) => panic!("read fixture {:?}: {}", path, e),
-    };
-    let parsed: Value = match serde_json::from_str(&raw) {
-        Ok(parsed) => parsed,
-        Err(e) => panic!("parse fixture {:?}: {}", path, e),
-    };
-    parsed
-        .as_array()
-        .unwrap_or_else(|| panic!("fixture root is not an array"))
-        .clone()
+    common::read_cases(&fixture_path())
 }
 
 /// Build the `{ valid, errors, hidden }` value shape from a result for ordered comparison.
@@ -90,10 +78,10 @@ fn result_to_value(result: &polyspec_crud_ui_validator::validate::ValidationResu
 /// The failures of one fixture case; the case passes when it has none.
 fn check_case(case: &Value, name: &str) -> Vec<String> {
     let mut failures: Vec<String> = Vec::new();
-    let spec = case.get("spec").expect("case missing spec");
-    let data = case.get("data").cloned().unwrap_or(Value::Null);
+    let spec = &common::case_argument(case, "spec").expect("case missing spec");
+    let data = common::case_argument(case, "data").unwrap_or(Value::Null);
 
-    let files = case.get("files").and_then(Value::as_object).cloned();
+    let files = common::case_files(case);
     let options = ValidateOptions {
         files,
         loader: None,
@@ -102,7 +90,11 @@ fn check_case(case: &Value, name: &str) -> Vec<String> {
 
     let result = validate(spec, &data, &options);
 
-    match (case.get("expected"), case.get("expectFailure")) {
+    // The failure of a case: its code, the kind of `raises` in capitals, its message and its location.
+    let expect_failure = case.get("raises").map(|raises| {
+        json!({ "code": common::raised_code(case), "message": raises["message"], "at": raises["at"] })
+    });
+    match (case.get("expected"), expect_failure.as_ref()) {
         (Some(expected), None) => match result {
             Ok(actual) => {
                 let actual_v = result_to_value(&actual);
@@ -113,7 +105,7 @@ fn check_case(case: &Value, name: &str) -> Vec<String> {
                     ));
                 }
                 // CUVR-093: hidden_paths, composed without files, gives the hidden paths of the result.
-                if case.get("files").is_none() {
+                if common::case_files(case).is_none() {
                     match hidden_paths(spec, &data) {
                         Ok(hidden) if hidden == actual.hidden => {}
                         other => failures.push(format!(
@@ -139,7 +131,7 @@ fn check_case(case: &Value, name: &str) -> Vec<String> {
             )),
             Err(e) => {
                 let got = json!({ "code": e.code(), "message": e.message(), "at": e.at() });
-                if &got != expect_failure {
+                if got != *expect_failure {
                     failures.push(format!(
                         "[{}] failure mismatch\n  expected: {}\n  actual:   {}",
                         name, expect_failure, got
@@ -148,7 +140,7 @@ fn check_case(case: &Value, name: &str) -> Vec<String> {
             }
         },
         _ => failures.push(format!(
-            "[{}] case must declare exactly one of expected/expectFailure",
+            "[{}] case must declare exactly one of expected/raises",
             name
         )),
     }

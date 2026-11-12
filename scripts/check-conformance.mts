@@ -330,7 +330,9 @@ export function summarize(
 async function fixtureCases(fixture: RegisteredFixture, root = ''): Promise<string[] | undefined> {
   const file = `${root}${fixture.path}`;
   if (fixture.path.endsWith('/cases.json')) {
-    const cases = checkedShape(ARRAY, JSON.parse(await readFile(path.join(ROOT, file), 'utf8')), file);
+    // A case file in the case form of binding (G-5) holds its cases in the group `cases`.
+    const document: unknown = JSON.parse(await readFile(path.join(ROOT, file), 'utf8'));
+    const cases = checkedShape(ARRAY, Array.isArray(document) ? document : checkedShape(OBJECT, document, file).cases, file);
     return cases.map((item, index) => checkedShape(STRING, checkedShape(OBJECT, item, `${file}[${index}]`).name, `${file}[${index}].name`));
   }
   if (fixture.export) {

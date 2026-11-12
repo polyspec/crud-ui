@@ -1,8 +1,8 @@
 //! CRUDUI list-spec structure conformance for SPEC §9.
 //!
 //! `tests/fixtures/list-validity/cases.json` contains independent meta-schema and
-//! runtime expectations. This test reads `engine` and passes the case `files`:
-//! `"pass"` requires successful composition and forbidden-key scanning; `{ code, at }` requires the declared
+//! runtime expectations. This test reads `raises` and passes the files of the case options:
+//! a case without `raises` requires successful composition and forbidden-key scanning; `raises` requires the declared
 //! load-error code and complete dotted trace. Row validation does not apply.
 
 #![allow(
@@ -41,19 +41,7 @@ fn fixture_path() -> PathBuf {
 }
 
 fn load_cases() -> Vec<Value> {
-    let path = fixture_path();
-    let raw = match std::fs::read_to_string(&path) {
-        Ok(raw) => raw,
-        Err(e) => panic!("read fixture {:?}: {}", path, e),
-    };
-    let parsed: Value = match serde_json::from_str(&raw) {
-        Ok(parsed) => parsed,
-        Err(e) => panic!("parse fixture {:?}: {}", path, e),
-    };
-    parsed
-        .as_array()
-        .unwrap_or_else(|| panic!("fixture root is not an array"))
-        .clone()
+    common::read_cases(&fixture_path())
 }
 
 /// One case of the list-validity fixture, run through `prove_case`; returns its failure messages (none when it passes).
@@ -65,37 +53,32 @@ fn list_engine_case_failures(case: &Value) -> Vec<String> {
     common::prove_case(FEATURE, FIXTURE, name, || {
         let mut failures: Vec<String> = Vec::new();
 
-        let spec = case.get("spec").cloned().unwrap_or(Value::Null);
+        let spec = common::case_argument(case, "spec").unwrap_or(Value::Null);
         let options = ValidateListOptions {
-            files: case.get("files").and_then(Value::as_object).cloned(),
+            files: common::case_files(case),
             loader: None,
             basepath: None,
         };
 
         let result = validate_list(&spec, &options);
 
-        let engine = case
-            .get("engine")
-            .unwrap_or_else(|| panic!("[{}] fixture case missing the `engine` channel", name));
-
-        match engine {
-            // engine:"pass" — the structure check completes with no load failure.
-            // The Rust structure API returns `Ok(())` for that result, the
-            // equivalent of `{ valid: true, errors: [] }` in the other runtimes.
-            Value::String(s) if s == "pass" => match &result {
+        // A case without `raises` composes and passes the forbidden-key scan; `raises` names the load failure and its
+        // complete dotted trace.
+        match case.get("raises") {
+            None => match &result {
                 Ok(()) => {}
                 Err(e) => failures.push(format!(
-                    "[{}] engine:\"pass\" but rejected: {} ({})",
+                    "[{}] the case raises nothing but was rejected: {} ({})",
                     name, e.code, e.message
                 )),
             },
-            // engine:{code,at} — the load path must reject with this code + trace.
-            Value::Object(want) => {
-                let want_code = want.get("code").and_then(Value::as_str).unwrap_or("?");
+            Some(want) => {
+                let want_code = common::raised_code(case).unwrap_or_default();
+                let want_code = want_code.as_str();
                 let want_at = want.get("at").and_then(Value::as_str).unwrap_or("?");
                 match &result {
                     Ok(()) => failures.push(format!(
-                        "[{}] engine expected LOAD failure {} at {} but the spec passed",
+                        "[{}] the case raises the LOAD failure {} at {} but the spec passed",
                         name, want_code, want_at
                     )),
                     Err(e) => {
@@ -116,34 +99,9 @@ fn list_engine_case_failures(case: &Value) -> Vec<String> {
                     }
                 }
             }
-            other => failures.push(format!(
-                "[{}] `engine` must be \"pass\" or {{code, at}}, got {}",
-                name, other
-            )),
         }
         failures
     })
-}
-
-fn every_case_declares_an_engine_channel() {
-    // Every fixture must declare a valid runtime expectation.
-    let cases = load_cases();
-    for case in &cases {
-        let name = case.get("name").and_then(Value::as_str).unwrap_or("?");
-        let engine = case
-            .get("engine")
-            .unwrap_or_else(|| panic!("[{}] missing `engine` channel", name));
-        let ok = matches!(engine, Value::String(s) if s == "pass")
-            || matches!(engine, Value::Object(m)
-                if m.get("code").and_then(Value::as_str).is_some()
-                    && m.get("at").and_then(Value::as_str).is_some());
-        assert!(
-            ok,
-            "[{}] `engine` must be \"pass\" or {{code, at}}, got {}",
-            name, engine
-        );
-    }
-    assert!(!cases.is_empty(), "fixture is empty");
 }
 
 fn main() {
@@ -152,7 +110,7 @@ fn main() {
         !cases.is_empty(),
         "no list-validity fixture cases were loaded"
     );
-    let mut trials: Vec<Trial> = cases
+    let trials: Vec<Trial> = cases
         .into_iter()
         .map(|case| {
             let name = case
@@ -170,9 +128,5 @@ fn main() {
             })
         })
         .collect();
-    trials.push(Trial::test("every_case_declares_an_engine_channel", || {
-        every_case_declares_an_engine_channel();
-        Ok(())
-    }));
     libtest_mimic::run(&Arguments::from_args(), trials).exit();
 }

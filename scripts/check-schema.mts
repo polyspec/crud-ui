@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { caseFiles, caseGroup, caseValue } from '../tests/case-values.mts';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -55,8 +56,29 @@ const readText = (relative: string): string => readFileSync(at(relative), 'utf8'
 /** A JSON file of this repository, relative to this script, as an unknown value that its caller checks. */
 const read = (path: string): unknown => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
 /** The cases of the JSON file `path`: an array of objects, each with a string name. */
+/**
+ * A case of a family in the case form of binding (G-5), with its specification, data and files decoded and its failure
+ * as the record of the family: `expectFailure` of the validation cases and `engine` of the structure-validity cases.
+ */
+function decodedCase(item: Record<string, unknown>): Record<string, unknown> {
+  const { id: _id, options: _options, raises, spec, data, ...rest } = item;
+  const files = caseFiles(item);
+  const failure = OBJECT(raises) ? { code: String(raises.kind).toUpperCase(), at: raises.at } : undefined;
+  return {
+    ...rest,
+    ...(spec === undefined ? {} : { spec: caseValue(spec) }),
+    ...(data === undefined ? {} : { data: caseValue(data) }),
+    ...(files === undefined ? {} : { files }),
+    ...('expect' in rest ? { engine: failure ?? 'pass' } : failure === undefined ? {} : { expectFailure: { ...failure, message: (raises as Record<string, unknown>).message } }),
+  };
+}
+/** The cases of a fixture: the group `cases` of a file in the case form, decoded, or the list of a file of its own form. */
+const fixtureItems = (path: string): unknown[] => {
+  const document = read(path);
+  return Array.isArray(document) ? document : caseGroup(document).map(decodedCase);
+};
 const readCases = (path: string): (Record<string, unknown> & { name: string })[] =>
-  checkedShape(ARRAY, read(path), path).map((item, index) => {
+  checkedShape(ARRAY, fixtureItems(path), path).map((item, index) => {
     const test = checkedShape(OBJECT, item, `${path}[${index}]`);
     return { ...test, name: checkedShape(STRING, test.name, `${path}[${index}].name`) };
   });
@@ -306,8 +328,8 @@ for (const [family, validate] of [
   ['list-validity', validateList],
   ['detail-validity', validateDetail],
 ] satisfies [string, ValidateFunction][]) {
-  const document = read(`../tests/fixtures/${family}/cases.json`);
-  assert.ok(Array.isArray(document) && document.length > 0, `${family}: cases is a nonempty array`);
+  const document = fixtureItems(`../tests/fixtures/${family}/cases.json`);
+  assert.ok(document.length > 0, `${family}: cases is a nonempty array`);
   const cases = document.map((test: unknown) => validityCase(family, test));
   assert.equal(new Set(cases.map((test) => test.name)).size, cases.length, `${family}: case names are unique`);
   for (const test of cases) {
@@ -444,7 +466,7 @@ for (const [family, slot] of [
   ['list-validity', 'properties'],
   ['detail-validity', 'fields'],
 ] satisfies [string, Slot][]) {
-  for (const test of checkedShape(ARRAY, read(`../tests/fixtures/${family}/cases.json`), family).map((item) => validityCase(family, item))) {
+  for (const test of checkedShape(ARRAY, fixtureItems(`../tests/fixtures/${family}/cases.json`), family).map((item) => validityCase(family, item))) {
     if (test.expect !== 'ok') continue;
     checkFiles(`${family}:${test.name}`, test.spec, test.files, slot);
   }
@@ -469,7 +491,7 @@ for (const test of readCases('../tests/fixtures/compose/cases.json')) {
 }
 
 // Requests that the cross-check console's validator processes accept.
-for (const test of readCases('../examples/cross-check-console/validators/requests.json')) {
+for (const test of readCases('../legacy/examples/cross-check-console/validators/requests.json')) {
   const label = `validator-request:${test.name}`;
   if (checkedShape(OBJECT, test.expected, `${label}: expected`).exit !== 0) continue;
   let request: unknown;

@@ -922,11 +922,6 @@
   ],
   "cases": [
     {
-      "member": "validator.hidden_paths",
-      "file": "tests/fixtures/validate/cases.json",
-      "group": "cases"
-    },
-    {
       "member": "validator.validate",
       "file": "tests/fixtures/validate/cases.json",
       "group": "cases"
