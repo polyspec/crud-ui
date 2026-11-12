@@ -55,17 +55,17 @@ and the cases of `doubled` and `self-twice` are cases of the walk of the binding
 ## Tests that read the cases
 
 The validation operations are run by the
-[TypeScript](../../../packages/validator/ts/src/text/text-validity.conformance.test.ts),
-[PHP](../../../packages/validator/php/tests/Validate/TextValidityConformanceTest.php),
-[Go](../../../packages/validator/go/validator/validate/text_conformance_test.go) and
+[TypeScript](../../../legacy/packages/validator/ts/src/text/text-validity.conformance.test.ts),
+[PHP](../../../legacy/packages/validator/php/tests/Validate/TextValidityConformanceTest.php),
+[Go](../../../legacy/packages/validator/go/validator/validate/text_conformance_test.go) and
 [Rust](../../../packages/validator/rust/tests/text_validity_conformance.rs) tests, the
-[PHP extension runner](../../../packages/php-ext/tests/ValidateReport.php) through its
-[API test](../../../packages/php-ext/tests/ApiTest.php), and the cross-check console
+[PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) through its
+[API test](../../../legacy/packages/php-ext/tests/ApiTest.php), and the cross-check console
 [validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs),
 which sends every case to the five validator processes.
 
 The generation operations are run in process by the
-[generator core test](../../../packages/generator/ts/src/input-text.test.ts) and through every
+[generator core test](../../../legacy/packages/generator/ts/src/input-text.test.ts) and through every
 program by the [native generator suite](../../native-generators/README.md), which records the
 evidence of the JavaScript, PHP, Go, Rust and PHP extension runtimes.
 

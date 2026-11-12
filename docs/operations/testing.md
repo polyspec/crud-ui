@@ -129,8 +129,8 @@ The individual commands are:
 composer install
 npm run build
 npm test --workspace @polyspec/crudui-validator
-composer --working-dir=packages/validator/php test
-node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd packages/validator/go -- ./...
+composer --working-dir=legacy/packages/validator/php test
+node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd legacy/packages/validator/go -- ./...
 node node_modules/@polyspec/kit/dist/run-tests.mjs cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml
 npm test --workspace @polyspec/crudui-cli
 npm run test:forms
@@ -207,7 +207,7 @@ test timeout.
 A type assertion (`expectTypeOf`) lives in a `*.test-d.ts` file, which the typecheck mode of Vitest
 (`test.typecheck` with `enabled: true` in the Vitest configuration of the package) checks with `tsc` and the
 `tsconfig.json` of the package in the same run as the runtime tests; a runtime test file does not evaluate
-`expectTypeOf`. `packages/validator/ts` checks the authoring types this way (`src/types.test-d.ts`).
+`expectTypeOf`. `legacy/packages/validator/ts` checks the authoring types this way (`src/types.test-d.ts`).
 
 ## Time and load
 

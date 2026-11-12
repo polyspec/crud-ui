@@ -21,8 +21,8 @@ const C_CLOCK = /\btimespec_get\(|\bclock_gettime\(|\bgettimeofday\(|\bclock\(\)
  * fixtures, which the JavaScript test files hold as strings and whose runner reports elapsed time.
  */
 const SOURCES: [RegExp, RegExp][] = [
-  [/^packages\/validator\/ts\/.*\.test\.ts$|^packages\/validator\/php\/tests\/.*\.php$|^packages\/validator\/go\/.*_test\.go$|^packages\/validator\/rust\/(src|tests)\/.*\.rs$/, CLOCK],
-  [/^packages\/php-ext\/tests\/.*\.(c|mjs)$/, C_CLOCK],
+  [/^legacy\/packages\/validator\/ts\/.*\.test\.ts$|^legacy\/packages\/validator\/php\/tests\/.*\.php$|^legacy\/packages\/validator\/go\/.*_test\.go$|^packages\/validator\/rust\/(src|tests)\/.*\.rs$/, CLOCK],
+  [/^legacy\/packages\/php-ext\/tests\/.*\.(c|mjs)$/, C_CLOCK],
 ];
 
 export function clockReads(file: string, text: string, clock: RegExp = CLOCK): string[] {
@@ -44,7 +44,7 @@ test('each clock call is found', () => {
 });
 
 test('no validator test or engine fixture reads a clock', () => {
-  const files = execFileSync('git', ['ls-files', 'packages/validator/ts', 'packages/validator/php', 'packages/validator/go', 'packages/validator/rust', 'packages/php-ext/tests'], { cwd: ROOT, encoding: 'utf8' })
+  const files = execFileSync('git', ['ls-files', 'legacy/packages/validator/ts', 'legacy/packages/validator/php', 'legacy/packages/validator/go', 'packages/validator/rust', 'legacy/packages/php-ext/tests'], { cwd: ROOT, encoding: 'utf8' })
     .split('\n').filter(Boolean);
   const reads: string[] = [];
   for (const [source, clock] of SOURCES) {

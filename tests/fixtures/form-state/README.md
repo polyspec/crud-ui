@@ -30,7 +30,7 @@ keys, so every implementation can compare its observation with `expected`.
 
 ## Comparisons
 
-The TypeScript test [form-state.test.ts](../../../packages/generator/ts/src/form-state.test.ts) runs the reference in
+The TypeScript test [form-state.test.ts](../../../legacy/packages/generator/ts/src/form-state.test.ts) runs the reference in
 [harness.mts](harness.mts) on the source of the package; the other implementations run the same steps on their own form.
 The cases of view functions and history functions call the pure functions of the view and the history.
 

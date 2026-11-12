@@ -20,7 +20,7 @@ The page has three columns:
 `main.js` compiles the specification with `compileForm`, creates the form with
 `createForm` in Korean and renders the three views again on every form change.
 The form, structure map and data view take every style from
-`packages/generator/ts/styles/crudui.css`; the inline style in `index.html`
+`legacy/packages/generator/ts/styles/crudui.css`; the inline style in `index.html`
 only lays out the columns.
 
 | File | Contents |

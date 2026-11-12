@@ -17,15 +17,15 @@ source = { editable = "tests/conformance/python" }
 [[package]]
 name = "polyspec-crudui-generator"
 version = "0.0.20"
-source = { editable = "packages/generator/python" }
+source = { editable = "legacy/packages/generator/python" }
 dependencies = [
     { name = "polyspec-crudui-validator" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "polyspec-crudui-validator", editable = "packages/validator/python" }]
+requires-dist = [{ name = "polyspec-crudui-validator", editable = "legacy/packages/validator/python" }]
 
 [[package]]
 name = "polyspec-crudui-validator"
 version = "0.0.20"
-source = { editable = "packages/validator/python" }
+source = { editable = "legacy/packages/validator/python" }

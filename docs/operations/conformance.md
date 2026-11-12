@@ -46,7 +46,7 @@ of that case succeeded. The recorders are
 [`tests/conformance/evidence.mts`](../../tests/conformance/evidence.mts),
 the class `Polyspec\Crudui\Conformance\Evidence` of
 [`tests/conformance/php/Evidence.php`](../../tests/conformance/php/Evidence.php), the Go package
-`packages/validator/go/testsupport/conformance` and the Rust test module `tests/common`. They write only when
+`legacy/packages/validator/go/testsupport/conformance` and the Rust test module `tests/common`. They write only when
 `CRUDUI_CONFORMANCE_EVIDENCE` names a directory.
 
 [`scripts/check-conformance.mts`](../../scripts/check-conformance.mts) reads that directory and

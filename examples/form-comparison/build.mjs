@@ -33,7 +33,7 @@ await cp(path.join(exampleDirectory, 'benchmark'), path.join(publicDirectory, 'b
 await cp(path.join(exampleDirectory, 'src/runtime-paths.json'),
   path.join(publicDirectory, 'runtime-paths.json'));
 // Frames and SSR documents style the form with crudui.css alone, so computed CSS is compared with the real styles.
-await cp(path.join(source, 'packages/generator/ts/styles/crudui.css'),
+await cp(path.join(source, 'legacy/packages/generator/ts/styles/crudui.css'),
   path.join(publicDirectory, 'crudui.css'));
 await cp(path.join(exampleDirectory, 'fixtures/records.json'),
   path.join(publicDirectory, 'records.json'));
@@ -49,10 +49,10 @@ await writeFile(path.join(publicDirectory, 'spec.json'), JSON.stringify(spec, nu
 // imports (#html, #react/*, #vue/*, #svelte/*) of the root package.json, and these packages through these aliases.
 const packageAliases = {
   // Each internal entry precedes its main entry, whose alias also matches its subpaths.
-  '@polyspec/crudui-generator-core/internal': path.join(source, 'packages/generator/ts/src/internal.ts'),
-  '@polyspec/crudui-generator-core': path.join(source, 'packages/generator/ts/src/index.ts'),
-  '@polyspec/crudui-validator/internal': path.join(source, 'packages/validator/ts/src/internal.ts'),
-  '@polyspec/crudui-validator': path.join(source, 'packages/validator/ts/src/index.ts'),
+  '@polyspec/crudui-generator-core/internal': path.join(source, 'legacy/packages/generator/ts/src/internal.ts'),
+  '@polyspec/crudui-generator-core': path.join(source, 'legacy/packages/generator/ts/src/index.ts'),
+  '@polyspec/crudui-validator/internal': path.join(source, 'legacy/packages/validator/ts/src/internal.ts'),
+  '@polyspec/crudui-validator': path.join(source, 'legacy/packages/validator/ts/src/index.ts'),
 };
 // The subpath imports #adapter and #stage of the root package.json map one module per condition; each build adds its
 // own condition to the default conditions of Vite.

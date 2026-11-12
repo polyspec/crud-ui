@@ -297,7 +297,7 @@ final class FormGenerationTest extends TestCase
             var_export(self::sourceRoot(), true),
             var_export(json_encode(self::source(), JSON_THROW_ON_ERROR), true),
         ), ['FORM_PHP_SERVER' => 'php'])->json();
-        self::assertSame(self::sourceRoot() . '/packages/validator/php/src/Public/Validator.php', $file);
+        self::assertSame(self::sourceRoot() . '/legacy/packages/validator/php/src/Public/Validator.php', $file);
     }
 
     /** @return iterable<string, array{string, stdClass, ?string, string}> */

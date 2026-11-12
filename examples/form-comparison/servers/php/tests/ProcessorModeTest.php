@@ -113,7 +113,7 @@ final class ProcessorModeTest extends TestCase
 
     public function testThePhpExtensionModeRefusesAClassThatPhpLoadedFromSource(): void
     {
-        $source = dirname(__DIR__, 5) . '/packages/validator/php/src/Support/JsonText.php';
+        $source = dirname(__DIR__, 5) . '/legacy/packages/validator/php/src/Support/JsonText.php';
         $result = self::extensionProcess(
             'require ' . var_export($source, true) . ';' . self::generation() . '::assertNativeClasses();',
         );

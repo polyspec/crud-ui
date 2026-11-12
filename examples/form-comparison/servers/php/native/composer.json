@@ -13,9 +13,9 @@
     "psr-4": {
       "Polyspec\\Crudui\\FormComparison\\": "../src/",
       "Polyspec\\CruduiTestSupport\\": "../../../../../tests/php/",
-      "Polyspec\\Crudui\\Generator\\Tests\\": "../../../../../packages/generator/php/tests/",
-      "Polyspec\\Crudui\\Validator\\Tests\\": "../../../../../packages/validator/php/tests/",
-      "Polyspec\\Crudui\\Extension\\Tests\\": "../../../../../packages/php-ext/tests/",
+      "Polyspec\\Crudui\\Generator\\Tests\\": "../../../../../legacy/packages/generator/php/tests/",
+      "Polyspec\\Crudui\\Validator\\Tests\\": "../../../../../legacy/packages/validator/php/tests/",
+      "Polyspec\\Crudui\\Extension\\Tests\\": "../../../../../legacy/packages/php-ext/tests/",
       "Polyspec\\Crudui\\FormComparison\\Tests\\": "../tests/",
       "Polyspec\\Crudui\\Conformance\\": "../../../../../tests/conformance/php/"
     }

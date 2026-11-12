@@ -8,7 +8,7 @@ Implementation, verification and publication are recorded in
 ## Scope and modules
 
 The `crudui` PHP extension provides form generation and validation in the PHP
-process. Its package is `packages/php-ext`; its Composer manifest records the version.
+process. Its package is `legacy/packages/php-ext`; its Composer manifest records the version.
 The extension implements the form generator and validator in C.
 
 Generation separates structure compilation, data binding, form instances and
@@ -151,7 +151,7 @@ earlier build before compiling the current source with the current PHP
 development headers. Repeated builds do not reuse generated configuration or
 output and do not require those generated paths to be writable. Cleanup is
 limited to generated configuration and build output. It retains the tracked PHP
-test sources in `packages/php-ext/tests`. The build command creates every output
+test sources in `legacy/packages/php-ext/tests`. The build command creates every output
 directory before compilation starts.
 
 The build command uses `php-config` metadata to compile and link the C module

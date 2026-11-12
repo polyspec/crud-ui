@@ -1,0 +1,819 @@
+[
+  {
+    "name": "ok-plain-spec",
+    "note": "A specification with role settings and nested fields passes the forbidden-key check.",
+    "requirements": [
+      "CUSC-001"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "design": { "label": { "class": "required" } },
+          "validate": { "required": false, "maxlength": 80 }
+        },
+        "age": {
+          "type": "number",
+          "validate": { "required": false }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-conditional-required-expression",
+    "note": "G1 conditional requiredness is required:'<expr>', never an if/when key",
+    "requirements": [
+      "CUSC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "kind": { "type": "text" },
+        "detail": {
+          "type": "text",
+          "validate": { "required": ".kind == 'other'" }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-condition-map-true-default-key",
+    "note": "a condition map with the literal 'true' default key is allowed (not forbidden)",
+    "requirements": [
+      "CUSC-055"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "tier": { "type": "text" },
+        "limit": {
+          "type": "number",
+          "validate": {
+            "max": { ".tier == 'pro'": 1000, "true": 10 }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-deep-nested-group-clean",
+    "note": "arbitrarily deep clean nesting (group in group in multiple) passes",
+    "requirements": [
+      "CUSC-001"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "outer": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "inner": {
+              "type": "group",
+              "properties": {
+                "leaf": {
+                  "type": "text",
+                  "options": { "items": ["a", "b"] }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-static-items-langmap-labels",
+    "note": "G3 static value→label map with LangMap labels passes the scan (ko/en keys + value keys are not forbidden)",
+    "requirements": [
+      "CUSC-002",
+      "CUSC-020"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "toggle": {
+          "type": "select",
+          "label": { "ko": "사용 여부", "en": "Enabled" },
+          "items": {
+            "0": { "ko": "미사용", "en": "Off" },
+            "1": { "ko": "사용", "en": "On" }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-static-items-langmap-labels-4lang",
+    "note": "G3 static value→label map with 4-language LangMap labels {ko,en,ja,zh} passes the scan (language keys + value keys are not forbidden)",
+    "requirements": [
+      "CUSC-002",
+      "CUSC-020"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "toggle": {
+          "type": "select",
+          "label": { "ko": "사용 여부", "en": "Enabled", "ja": "有効", "zh": "启用" },
+          "items": {
+            "0": { "ko": "미사용", "en": "Off", "ja": "オフ", "zh": "关闭" },
+            "1": { "ko": "사용", "en": "On", "ja": "オン", "zh": "开启" }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-items-4lang-null-label-slot-and-null-content",
+    "note": "G3 — a 4-language items map with a partial-null label slot (ja:null) and a fully null label key, plus a 4-language content map with a null slot and label:null, all pass the scan with no effect",
+    "requirements": [
+      "CUSC-002",
+      "CUSC-051"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "nickname": {
+          "type": "text",
+          "label": null,
+          "description": { "ko": "별명", "en": "Nickname", "ja": null, "zh": "昵称" },
+          "validate": { "required": false }
+        },
+        "grade": {
+          "type": "select",
+          "items": {
+            "1": { "ko": "동", "en": "Bronze", "ja": "ブロンズ", "zh": "青铜" },
+            "2": { "ko": "은", "en": "Silver", "ja": null, "zh": "白银" },
+            "3": null,
+            "4": { "ko": "금", "en": "Gold", "ja": "ゴールド", "zh": "黄金" }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-lang-only-per-language-override-map",
+    "note": "SPEC §3 C — lang.only as a per-language override map {ja:{validate},en:{validate}} (not just the [ko,en] allowlist) passes the scan; language-code keys and slot bodies are not forbidden",
+    "requirements": [
+      "CUSC-048",
+      "CUSC-049"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "title": {
+          "type": "text",
+          "lang": {
+            "mode": "append",
+            "only": {
+              "ja": { "validate": { "required": true } },
+              "en": { "validate": { "required": false } }
+            }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-null-content-and-null-label-slot",
+    "note": "G3 empty content as null (label:null) and a null LangMap slot pass the scan with no effect",
+    "requirements": [
+      "CUSC-002",
+      "CUSC-051"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "nickname": {
+          "type": "text",
+          "label": null,
+          "description": { "ko": "별명", "en": null },
+          "validate": { "required": false }
+        },
+        "grade": {
+          "type": "select",
+          "items": { "1": "Bronze", "2": null, "3": { "ko": "금", "en": "Gold" } }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-items-choice-list",
+    "note": "A choice list declares choices whose integer-like values keep the written order, as items and as in.",
+    "requirements": [
+      "CUSC-020",
+      "CUSC-021"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "answer": {
+          "type": "select",
+          "items": [{ "value": 1, "label": "Yes" }, { "value": 0, "label": { "en": "No", "ko": "아니요" } }],
+          "validate": { "in": [{ "value": 1, "label": "Yes" }, { "value": 0, "label": { "en": "No", "ko": "아니요" } }] }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "err-top-level-if",
+    "note": "a forbidden key at the top of a field body is rejected",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "text",
+          "if": ".other == 1"
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.if" }
+  },
+  {
+    "name": "err-validate-required-nested-if",
+    "note": "if nested under validate.required (one below a slot body) is rejected",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "text",
+          "validate": {
+            "required": { "if": ".other == 1" }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "anyOf",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.validate.required.if" }
+  },
+  {
+    "name": "err-options-display-switch",
+    "note": "display_switch nested under an open bucket (options) body is rejected",
+    "requirements": [
+      "CUSC-006"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "choice": {
+          "type": "select",
+          "options": {
+            "items": ["x", "y"],
+            "display_switch": ".toggle"
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.choice.options.display_switch" }
+  },
+  {
+    "name": "err-design-label-nested-when",
+    "note": "when nested under design.label (deep design subtree) is rejected",
+    "requirements": [
+      "CUSC-004",
+      "CUSC-057"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "text",
+          "design": {
+            "label": { "when": ".flag", "text": "Label" }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.design.label.when" }
+  },
+  {
+    "name": "err-child-validate-show-if",
+    "note": "show_if under a deeply nested child's validate slot is rejected",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "parent": {
+          "type": "group",
+          "properties": {
+            "child": {
+              "type": "text",
+              "validate": {
+                "required": true,
+                "show_if": ".sibling != ''"
+              }
+            }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.parent.properties.child.validate.show_if" }
+  },
+  {
+    "name": "err-magic-underscore-default-key",
+    "note": "the magic '_' default symbol (R4) is forbidden anywhere, here in a condition map",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "number",
+          "validate": {
+            "max": { ".tier == 'pro'": 1000, "_": 10 }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.validate.max._" }
+  },
+  {
+    "name": "err-x-comment-survived",
+    "note": "an x{key} comment that survived x-strip is rejected (xstyle deep under design)",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "text",
+          "design": {
+            "wrapper": { "xstyle": "color:red" }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.design.wrapper.xstyle" }
+  },
+  {
+    "name": "err-x-prefixed-arbitrary",
+    "note": "any x-prefixed key (not only xclass/xstyle) is rejected by the x{key} pattern",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "text",
+          "xnote": "author comment"
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.xnote" }
+  },
+  {
+    "name": "err-seqtokey-in-multiple",
+    "note": "the seqtokey meta key is forbidden, here under a multiple settings body",
+    "requirements": [
+      "CUSC-041"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "rows": {
+          "type": "group",
+          "multiple": { "seqtokey": true },
+          "properties": {
+            "cell": { "type": "text" }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.rows.multiple.seqtokey" }
+  },
+  {
+    "name": "err-inside-array-element",
+    "note": "a forbidden key inside an array element (items sub-spec) is caught too",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "field": {
+          "type": "select",
+          "options": {
+            "items": [
+              { "value": "a", "label": "A" },
+              { "value": "b", "display_target": ".x" }
+            ]
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.options.items.1.display_target" }
+  },
+  {
+    "name": "err-after-compose-ref-base-leak",
+    "note": "a forbidden key inherited via $ref base is caught after compose expansion",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "spec": {
+      "$ref": "base.yml"
+    },
+    "files": {
+      "base.yml": {
+        "properties": {
+          "field": {
+            "type": "text",
+            "validate": {
+              "required": { "when": ".flag" }
+            }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "required",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "properties.field.validate.required.when" }
+  },
+  {
+    "name": "ok-form-buttons-and-action",
+    "note": "Root buttons and action are form declarations; the forbidden-key check covers them and finds nothing.",
+    "requirements": [
+      "CUSC-053",
+      "CUSC-054"
+    ],
+    "spec": {
+      "type": "group",
+      "action": { "method": "post", "url": "/save" },
+      "buttons": [
+        { "type": "submit", "text": { "ko": "저장", "en": "Save" }, "design": { "class": "primary" } },
+        { "type": "link", "text": "List", "href": "../", "behavior": { "onclick": "history.back()" } }
+      ],
+      "properties": {
+        "name": { "type": "text" }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "err-form-button-forbidden-key",
+    "note": "A forbidden meta key inside a root button is rejected at its button path.",
+    "requirements": [
+      "CUSC-053"
+    ],
+    "spec": {
+      "type": "group",
+      "buttons": [
+        { "type": "submit", "design": { "when": ".flag" } }
+      ],
+      "properties": {
+        "name": { "type": "text" }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "buttons.0.design.when" }
+  },
+  {
+    "name": "err-form-action-forbidden-key",
+    "note": "A forbidden meta key inside the root action is rejected at its action path.",
+    "requirements": [
+      "CUSC-054"
+    ],
+    "spec": {
+      "type": "group",
+      "action": { "url": "/save", "if": ".flag" },
+      "properties": {
+        "name": { "type": "text" }
+      }
+    },
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "action.if" }
+  },
+  {
+    "name": "ok-multiple-only",
+    "note": "multiple: only declares rows that exist only in the data; missing data is zero rows, so empty data loads and validates.",
+    "requirements": [
+      "CUSC-041",
+      "CUSC-042"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "variants": {
+          "type": "group",
+          "multiple": "only",
+          "properties": {
+            "name": {
+              "type": "text",
+              "validate": {
+                "required": true
+              }
+            },
+            "price": {
+              "type": "number",
+              "validate": {
+                "min": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-multiple-only-object",
+    "note": "multiple.only: true combines with title and header; missing data is zero rows.",
+    "requirements": [
+      "CUSC-041",
+      "CUSC-042",
+      "CUSC-045",
+      "CUSC-047"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "variants": {
+          "type": "group",
+          "multiple": {
+            "only": true,
+            "title": "name",
+            "header": "sticky"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "validate": {
+                "required": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-multiple-keys",
+    "note": "multiple.keys beside only: true names a repeated group: the keyed maps of the schema example load, and empty data has no key to check.",
+    "requirements": [
+      "CUSC-076",
+      "CUSC-077"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "characters": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": { "type": "text" },
+            "relation_notes": { "type": "text", "multiple": { "only": true, "keys": "..characters" } }
+          }
+        },
+        "facts": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "truth": { "type": "text" },
+            "holders": {
+              "type": "select",
+              "items": { "knows": "Knows", "suspects": "Suspects" },
+              "multiple": { "only": true, "keys": "..characters" }
+            }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-design-attributes",
+    "note": "A form field declares data-* and aria-* attributes for its control and its node root; validation loads the specification.",
+    "requirements": [
+      "CUSC-004",
+      "CUSC-011",
+      "CUSC-050",
+      "CUSC-059"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "theme": {
+          "type": "text",
+          "design": {
+            "attributes": {
+              "data-setting": "theme",
+              "aria-describedby": "theme-help"
+            },
+            "wrapper": {
+              "class": "row",
+              "attributes": {
+                "data-section": "look"
+              }
+            }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "err-design-attributes-owned-name",
+    "note": "A declared attribute name that crudui writes fails the meta-schema; the runtime structure check does not read design and passes.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "theme": {
+          "type": "text",
+          "design": {
+            "attributes": {
+              "data-rule-name": "theme"
+            }
+          }
+        }
+      }
+    },
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-range-field",
+    "note": "A range field declares literal validate.range and validate.step, its bounds and increment; validation loads the specification.",
+    "requirements": [
+      "CUSC-008",
+      "CUSC-009",
+      "CUSC-010"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "volume": { "type": "range", "label": "Volume", "default": 50, "append": "%", "validate": { "range": [0, 100], "step": 5 } }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-condition-field",
+    "note": "A condition field declares the literal validate.conditionTree true or judge; validation loads the specification.",
+    "requirements": [
+      "CUSC-070"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "opens_when": { "type": "condition", "label": "Opens when", "validate": { "conditionTree": true } },
+        "pass": { "type": "condition", "label": "Pass", "default": { "all": [] }, "validate": { "conditionTree": "judge" } }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-condition-editor",
+    "note": "A condition field may declare design.editor text or structured, and a structured one options.fields; validation loads the specification.",
+    "requirements": [
+      "CUSC-083",
+      "CUSC-084"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "opens_when": { "type": "condition", "label": "Opens when", "validate": { "conditionTree": true }, "design": { "editor": "structured" }, "options": { "fields": ["episodes.e1.status", "clues.size"] } },
+        "pass": { "type": "condition", "label": "Pass", "validate": { "conditionTree": "judge" }, "design": { "editor": "text" } }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-choice-appearance",
+    "note": "The choices of a choice field declare a label class and style and input attributes; validation loads the specification.",
+    "requirements": [
+      "CUSC-023",
+      "CUSC-024",
+      "CUSC-026",
+      "CUSC-056",
+      "CUSC-058"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "accent": {
+          "type": "choice",
+          "design": { "group": { "class": "swatches" } },
+          "items": [
+            { "value": "blue", "label": "Blue", "class": "swatch", "style": "--swatch-bg: #1d4ed8", "attributes": { "aria-label": "Blue accent" } },
+            { "value": "green", "label": "Green", "class": "swatch" }
+          ],
+          "validate": { "in": [{ "value": "blue", "label": "Blue" }, { "value": "green", "label": "Green" }] }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-design-layout",
+    "note": "A group declares the inline layout and a child group the line layout; validation loads the specification.",
+    "requirements": [
+      "CUSC-004",
+      "CUSC-014",
+      "CUSC-015",
+      "CUSC-060"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "look": {
+          "type": "group",
+          "design": { "layout": "inline" },
+          "properties": {
+            "theme": { "type": "text", "label": "Theme" },
+            "font": { "type": "group", "design": { "layout": "line" }, "properties": { "family": { "type": "text" } } }
+          }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "ok-choice-groups",
+    "note": "The choice list of a select field holds a plain choice and a group, under items and in; validation loads the specification.",
+    "requirements": [
+      "CUSC-001"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "region": {
+          "type": "select",
+          "items": [{ "value": "auto", "label": "Automatic" }, { "label": "Europe", "choices": [{ "value": "eu-west", "label": "West" }] }],
+          "validate": { "in": [{ "value": "auto", "label": "Automatic" }, { "label": "Europe", "choices": [{ "value": "eu-west", "label": "West" }] }] }
+        }
+      }
+    },
+    "expect": "ok",
+    "engine": "pass"
+  },
+  {
+    "name": "err-items-choice-list-extra-member",
+    "note": "A choice list element has only value and label. The runtime structure check does not read items; binding the field fails.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "answer": { "type": "select", "items": [{ "value": 1, "label": "Yes", "id": 1 }] }
+      }
+    },
+    "expect": "fail",
+    "reason": "anyOf",
+    "engine": "pass"
+  },
+  {
+    "name": "err-in-choice-list-boolean-value",
+    "note": "A choice list value under in is a string or a finite number.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "answer": { "type": "select", "validate": { "in": [{ "value": true, "label": "Yes" }] } }
+      }
+    },
+    "expect": "fail",
+    "reason": "anyOf",
+    "engine": { "code": "INVALID_RULE_PARAMETER", "at": "answer" }
+  }
+]

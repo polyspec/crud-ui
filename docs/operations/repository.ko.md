@@ -1,6 +1,6 @@
 # 저장소
 <!-- doc-id: docs-operations-repository -->
-<!-- source-sha256: 595d5fa51a50532ef9e202f7566b3017d80ab1ce8d38a1ca63c7aed1e37da330 -->
+<!-- source-sha256: 9107178f03725785ccb7dbfa02fdfd973dc706b620f84add0f00909e63f5b6fc -->
 
 [English](repository.md).
 
@@ -49,13 +49,13 @@ workflow는 다음과 같습니다.
 
 ## Release
 
-release는 `main` commit의 tag입니다. 저장소는 `vX.Y.Z`이고, 디렉터리의 Go module(`packages/generator/go`,
-`packages/validator/go`)은 `<디렉터리>/vX.Y.Z`이며 그 module path는 `github.com/polyspec/crudui/<디렉터리>`입니다
+release는 `main` commit의 tag입니다. 저장소는 `vX.Y.Z`이고, 디렉터리의 Go module(`legacy/packages/generator/go`,
+`legacy/packages/validator/go`)은 `<디렉터리>/vX.Y.Z`이며 그 module path는 `github.com/polyspec/crudui/<디렉터리>`입니다
 (`tests/build/package-names.test.mts`). `main`의 모든 commit은 tag 전에 CI의 전체 suite를 통과했으므로 release는 test를 다시
 실행하지 않습니다. tag는 maintainer만 만들어 push합니다. tag가 release하는 package, 덮는 manifest, Go module은
 `config/release.json`(`node_modules/@polyspec/kit/dist/schema/release.schema.json`)에 선언합니다.
 
-Native PHP extension은 전체 저장소에서 build합니다. `packages/php-ext/composer.json`은 `config/release.json`의
+Native PHP extension은 전체 저장소에서 build합니다. `legacy/packages/php-ext/composer.json`은 `config/release.json`의
 version-only manifest이므로 version 변경은 `src/config.m4`가 읽는 version을 갱신하며 published asset에 Composer archive나
 platform별 binary를 추가하지 않습니다.
 
@@ -128,7 +128,7 @@ polyspec archive는 이름과 version으로만(npm은 `integrity` 없이, Compos
   다른 polyspec 저장소의 package는 이 root에서만 공급합니다. `@polyspec/ordered-json`은 tag `v0.0.25`의 release asset
   `polyspec-ordered-json-0.0.25.tgz`를 root devDependency로 두며, `@polyspec/kit`처럼 URL과 integrity로 고정하고,
   `make link`가 `.links`가 선언한 checkout에 연결합니다.
-- private root `composer.json`은 `packages/validator/php`와 `packages/generator/php`를 native symlink와 configuration
+- private root `composer.json`은 `legacy/packages/validator/php`와 `legacy/packages/generator/php`를 native symlink와 configuration
   reference를 사용하는 path repository로, OrderedJSON release의 packages.json 저장소와 함께 선언합니다. CRUDUI
   package는 checkout의 정확한 version을 사용하며 OrderedJSON 제약은 0.0.x release를 허용합니다. `composer.lock`은 선택한
   source version, 요구와 autoload를 기록합니다. PHPUnit, PHP check와 PHP server는 설치한 package를

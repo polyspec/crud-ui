@@ -18,7 +18,7 @@ collection, row, group, field and hidden field errors, and every option failure 
 The tests compare the exact bytes: React's server rendering
 ([`form-complete.conformance.test.ts`](../../../packages/react/src/tests/form-complete.conformance.test.ts)),
 the HTML renderer
-([`form-complete.conformance.test.ts`](../../../packages/html/src/form-complete.conformance.test.ts))
+([`form-complete.conformance.test.ts`](../../../legacy/packages/html/src/form-complete.conformance.test.ts))
 and the PHP, PHP extension, Go and Rust generators through the
 [native generator suite](../../native-generators/README.md). Vue
 ([`form-complete.conformance.test.mjs`](../../../packages/vue/tests/form-complete.conformance.test.mjs))

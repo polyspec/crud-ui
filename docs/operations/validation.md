@@ -61,7 +61,7 @@ if ($result->valid || $result->errors[0]['rule'] !== 'required') {
 The `validator/validate` package provides `Validate` for an ordered specification value
 and `ValidateJSON` for JSON bytes. `ValidateJSON` accepts specification bytes,
 data bytes, virtual-file bytes and a base path. Run the example in the
-`packages/validator/go` module. Its result exposes `Valid` and `Errors`.
+`legacy/packages/validator/go` module. Its result exposes `Valid` and `Errors`.
 
 ```go
 package main

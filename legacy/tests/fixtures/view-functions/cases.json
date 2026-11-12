@@ -1,0 +1,554 @@
+[
+  {
+    "name": "initial-view",
+    "note": "The initial view has no collapsed row.",
+    "requirements": [
+      "CURT-070",
+      "CURT-068"
+    ],
+    "op": "initialView",
+    "args": [],
+    "expected": {
+      "result": {
+        "collapsed": []
+      }
+    }
+  },
+  {
+    "name": "toggle-collapses-and-appends",
+    "note": "A toggled expanded row is appended to the collapsed rows.",
+    "requirements": [
+      "CURT-071"
+    ],
+    "op": "toggleRowView",
+    "args": [
+      {
+        "collapsed": [
+          "teams.__0000000000001__.members.__0000000000011__"
+        ]
+      },
+      "teams.__0000000000001__"
+    ],
+    "expected": {
+      "result": {
+        "collapsed": [
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__"
+        ]
+      }
+    }
+  },
+  {
+    "name": "toggle-expands",
+    "note": "A toggled collapsed row leaves the others in order.",
+    "requirements": [
+      "CURT-071"
+    ],
+    "op": "toggleRowView",
+    "args": [
+      {
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000002__"
+        ]
+      },
+      "teams.__0000000000001__.members.__0000000000011__"
+    ],
+    "expected": {
+      "result": {
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000002__"
+        ]
+      }
+    }
+  },
+  {
+    "name": "collapsible-rows-depth-first",
+    "note": "The collapsible rows of the evaluated nodes in node order, depth first.",
+    "requirements": [
+      "CURT-072"
+    ],
+    "op": "collapsibleRows",
+    "args": [
+      {
+        "type": "group",
+        "properties": {
+          "teams": {
+            "type": "group",
+            "label": "Team",
+            "multiple": {
+              "min": 1,
+              "max": 5,
+              "sortable": true,
+              "copy": true,
+              "title": "name"
+            },
+            "properties": {
+              "name": {
+                "type": "text",
+                "label": "Name"
+              },
+              "members": {
+                "type": "group",
+                "label": "Member",
+                "multiple": {
+                  "title": "name"
+                },
+                "properties": {
+                  "name": {
+                    "type": "text",
+                    "label": "Name"
+                  }
+                }
+              }
+            }
+          },
+          "note": {
+            "type": "text",
+            "label": "Note"
+          }
+        }
+      },
+      {
+        "teams": {
+          "__0000000000001__": {
+            "name": "Alpha",
+            "members": {
+              "__0000000000011__": {
+                "name": "One"
+              },
+              "__0000000000012__": {
+                "name": "Two"
+              }
+            }
+          },
+          "__0000000000002__": {
+            "name": "Beta",
+            "members": {
+              "__0000000000013__": {
+                "name": "Three"
+              }
+            }
+          }
+        },
+        "note": ""
+      }
+    ],
+    "expected": {
+      "result": [
+        "teams.__0000000000001__",
+        "teams.__0000000000001__.members.__0000000000011__",
+        "teams.__0000000000001__.members.__0000000000012__",
+        "teams.__0000000000002__",
+        "teams.__0000000000002__.members.__0000000000013__"
+      ]
+    }
+  },
+  {
+    "name": "collapsible-rows-without-collections",
+    "note": "A form without repeated fields has no collapsible row.",
+    "requirements": [
+      "CURT-072"
+    ],
+    "op": "collapsibleRows",
+    "args": [
+      {
+        "type": "group",
+        "properties": {
+          "a": {
+            "type": "text"
+          }
+        }
+      },
+      {}
+    ],
+    "expected": {
+      "result": []
+    }
+  },
+  {
+    "name": "set-all-collapsed",
+    "note": "Collapsing all collapses the collapsible rows of the nodes.",
+    "requirements": [
+      "CURT-073"
+    ],
+    "op": "setAllExpandedView",
+    "args": [
+      {
+        "type": "group",
+        "properties": {
+          "teams": {
+            "type": "group",
+            "label": "Team",
+            "multiple": {
+              "min": 1,
+              "max": 5,
+              "sortable": true,
+              "copy": true,
+              "title": "name"
+            },
+            "properties": {
+              "name": {
+                "type": "text",
+                "label": "Name"
+              },
+              "members": {
+                "type": "group",
+                "label": "Member",
+                "multiple": {
+                  "title": "name"
+                },
+                "properties": {
+                  "name": {
+                    "type": "text",
+                    "label": "Name"
+                  }
+                }
+              }
+            }
+          },
+          "note": {
+            "type": "text",
+            "label": "Note"
+          }
+        }
+      },
+      {
+        "teams": {
+          "__0000000000001__": {
+            "name": "Alpha",
+            "members": {
+              "__0000000000011__": {
+                "name": "One"
+              },
+              "__0000000000012__": {
+                "name": "Two"
+              }
+            }
+          },
+          "__0000000000002__": {
+            "name": "Beta",
+            "members": {
+              "__0000000000013__": {
+                "name": "Three"
+              }
+            }
+          }
+        },
+        "note": ""
+      },
+      false
+    ],
+    "expected": {
+      "result": {
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__.members.__0000000000012__",
+          "teams.__0000000000002__",
+          "teams.__0000000000002__.members.__0000000000013__"
+        ]
+      }
+    }
+  },
+  {
+    "name": "set-all-expanded",
+    "note": "Expanding all returns the view with no collapsed row.",
+    "requirements": [
+      "CURT-073"
+    ],
+    "op": "setAllExpandedView",
+    "args": [
+      {
+        "type": "group",
+        "properties": {
+          "teams": {
+            "type": "group",
+            "label": "Team",
+            "multiple": {
+              "min": 1,
+              "max": 5,
+              "sortable": true,
+              "copy": true,
+              "title": "name"
+            },
+            "properties": {
+              "name": {
+                "type": "text",
+                "label": "Name"
+              },
+              "members": {
+                "type": "group",
+                "label": "Member",
+                "multiple": {
+                  "title": "name"
+                },
+                "properties": {
+                  "name": {
+                    "type": "text",
+                    "label": "Name"
+                  }
+                }
+              }
+            }
+          },
+          "note": {
+            "type": "text",
+            "label": "Note"
+          }
+        }
+      },
+      {
+        "teams": {
+          "__0000000000001__": {
+            "name": "Alpha",
+            "members": {
+              "__0000000000011__": {
+                "name": "One"
+              },
+              "__0000000000012__": {
+                "name": "Two"
+              }
+            }
+          },
+          "__0000000000002__": {
+            "name": "Beta",
+            "members": {
+              "__0000000000013__": {
+                "name": "Three"
+              }
+            }
+          }
+        },
+        "note": ""
+      },
+      true
+    ],
+    "expected": {
+      "result": {
+        "collapsed": []
+      }
+    }
+  },
+  {
+    "name": "remove-row-drops-inner-paths",
+    "note": "Removing a row drops its path and the paths inside it, not a path that only starts with the same text.",
+    "requirements": [
+      "CURT-074"
+    ],
+    "op": "removeRowView",
+    "args": [
+      {
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__x",
+          "teams.__0000000000002__"
+        ]
+      },
+      "teams.__0000000000001__"
+    ],
+    "expected": {
+      "result": {
+        "collapsed": [
+          "teams.__0000000000001__x",
+          "teams.__0000000000002__"
+        ]
+      }
+    }
+  },
+  {
+    "name": "rekey-row-renames-prefix",
+    "note": "Rekeying replaces the prefix of the row path and of the paths inside it and keeps the order.",
+    "requirements": [
+      "CURT-075"
+    ],
+    "op": "rekeyRowView",
+    "args": [
+      {
+        "collapsed": [
+          "teams.__0000000000002__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__",
+          "teams.__0000000000001__x"
+        ]
+      },
+      "teams.__0000000000001__",
+      "teams.__0000000000003__"
+    ],
+    "expected": {
+      "result": {
+        "collapsed": [
+          "teams.__0000000000002__",
+          "teams.__0000000000003__.members.__0000000000011__",
+          "teams.__0000000000003__",
+          "teams.__0000000000001__x"
+        ]
+      }
+    }
+  },
+  {
+    "name": "bind-form-collapsed-option",
+    "note": "The bindForm option collapsed renders the listed collapsible rows collapsed and the others expanded.",
+    "requirements": [
+      "CURT-069"
+    ],
+    "op": "bindCollapsed",
+    "args": [
+      {
+        "type": "group",
+        "properties": {
+          "teams": {
+            "type": "group",
+            "label": "Team",
+            "multiple": {
+              "min": 1,
+              "max": 5,
+              "sortable": true,
+              "copy": true,
+              "title": "name"
+            },
+            "properties": {
+              "name": {
+                "type": "text",
+                "label": "Name"
+              },
+              "members": {
+                "type": "group",
+                "label": "Member",
+                "multiple": {
+                  "title": "name"
+                },
+                "properties": {
+                  "name": {
+                    "type": "text",
+                    "label": "Name"
+                  }
+                }
+              }
+            }
+          },
+          "note": {
+            "type": "text",
+            "label": "Note"
+          }
+        }
+      },
+      {
+        "teams": {
+          "__0000000000001__": {
+            "name": "Alpha",
+            "members": {
+              "__0000000000011__": {
+                "name": "One"
+              },
+              "__0000000000012__": {
+                "name": "Two"
+              }
+            }
+          },
+          "__0000000000002__": {
+            "name": "Beta",
+            "members": {
+              "__0000000000013__": {
+                "name": "Three"
+              }
+            }
+          }
+        },
+        "note": ""
+      },
+      [
+        "teams.__0000000000001__",
+        "teams.__0000000000001__.members.__0000000000011__",
+        "teams.__missing__"
+      ]
+    ],
+    "expected": {
+      "result": [
+        "teams.__0000000000001__",
+        "teams.__0000000000001__.members.__0000000000011__"
+      ]
+    }
+  },
+  {
+    "name": "bind-form-without-collapsed-option",
+    "note": "Without the option every row is expanded.",
+    "requirements": [
+      "CURT-069",
+      "CURT-068"
+    ],
+    "op": "bindCollapsed",
+    "args": [
+      {
+        "type": "group",
+        "properties": {
+          "teams": {
+            "type": "group",
+            "label": "Team",
+            "multiple": {
+              "min": 1,
+              "max": 5,
+              "sortable": true,
+              "copy": true,
+              "title": "name"
+            },
+            "properties": {
+              "name": {
+                "type": "text",
+                "label": "Name"
+              },
+              "members": {
+                "type": "group",
+                "label": "Member",
+                "multiple": {
+                  "title": "name"
+                },
+                "properties": {
+                  "name": {
+                    "type": "text",
+                    "label": "Name"
+                  }
+                }
+              }
+            }
+          },
+          "note": {
+            "type": "text",
+            "label": "Note"
+          }
+        }
+      },
+      {
+        "teams": {
+          "__0000000000001__": {
+            "name": "Alpha",
+            "members": {
+              "__0000000000011__": {
+                "name": "One"
+              },
+              "__0000000000012__": {
+                "name": "Two"
+              }
+            }
+          },
+          "__0000000000002__": {
+            "name": "Beta",
+            "members": {
+              "__0000000000013__": {
+                "name": "Three"
+              }
+            }
+          }
+        },
+        "note": ""
+      },
+      null
+    ],
+    "expected": {
+      "result": []
+    }
+  }
+]

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit defaultTestSuite="public" bootstrap="../../../../vendor/autoload.php" colors="true" failOnRisky="true" failOnWarning="true" failOnNotice="true" failOnDeprecation="true" cacheDirectory=".phpunit.cache">
+  <testsuites>
+    <testsuite name="public">
+      <directory>tests</directory>
+      <exclude>tests/Internal/InterfaceMessagesTest.php</exclude>
+      <exclude>tests/Internal/NumberFormattingTest.php</exclude>
+      <exclude>tests/Internal/StyleTest.php</exclude>
+    </testsuite>
+    <testsuite name="php-source-internal">
+      <file>tests/Internal/InterfaceMessagesTest.php</file>
+      <file>tests/Internal/NumberFormattingTest.php</file>
+      <file>tests/Internal/StyleTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

@@ -1,0 +1,12 @@
+{
+  "name": "polyspec/crud-ui-generator",
+  "description": "The crud-ui-generator library of polyspec as a PHP extension",
+  "type": "php-ext",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.4"
+  },
+  "php-ext": {
+    "extension-name": "polyspec_crud_ui_generator"
+  }
+}

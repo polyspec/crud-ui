@@ -1,0 +1,966 @@
+[
+  {
+    "name": "default-submit-only",
+    "note": "A spec without buttons has one submit button with the interface text of its type.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      }
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "submit",
+          "tag": "button",
+          "text": "Save",
+          "attrs": {
+            "type": "submit",
+            "class": "crudui-action crudui-action--text"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "declared-buttons-en",
+    "note": "Declared buttons keep their order, text, design, behavior and link.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "action": {
+        "method": "post",
+        "url": "/save"
+      },
+      "buttons": [
+        {
+          "type": "submit",
+          "name": "__submitted__",
+          "value": "go",
+          "text": {
+            "ko": "저장하기",
+            "en": "Save now"
+          },
+          "design": {
+            "class": "primary"
+          }
+        },
+        {
+          "type": "reset"
+        },
+        {
+          "type": "button",
+          "text": "Cancel",
+          "behavior": {
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "text": "List",
+          "href": "../?a=1&b=\"2\""
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "submit",
+          "tag": "button",
+          "text": "Save now",
+          "attrs": {
+            "type": "submit",
+            "class": "crudui-action crudui-action--text primary",
+            "name": "__submitted__",
+            "value": "go"
+          }
+        },
+        {
+          "type": "reset",
+          "tag": "button",
+          "text": "Reset",
+          "attrs": {
+            "type": "reset",
+            "class": "crudui-action crudui-action--text"
+          }
+        },
+        {
+          "type": "button",
+          "tag": "button",
+          "text": "Cancel",
+          "attrs": {
+            "type": "button",
+            "class": "crudui-action crudui-action--text",
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "tag": "a",
+          "text": "List",
+          "attrs": {
+            "class": "crudui-action crudui-action--text",
+            "href": "../?a=1&b=\"2\""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "declared-buttons-ko",
+    "note": "The interface text of the submit and reset buttons follows the language option.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "action": {
+        "method": "post",
+        "url": "/save"
+      },
+      "buttons": [
+        {
+          "type": "submit",
+          "name": "__submitted__",
+          "value": "go",
+          "text": {
+            "ko": "저장하기",
+            "en": "Save now"
+          },
+          "design": {
+            "class": "primary"
+          }
+        },
+        {
+          "type": "reset"
+        },
+        {
+          "type": "button",
+          "text": "Cancel",
+          "behavior": {
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "text": "List",
+          "href": "../?a=1&b=\"2\""
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "ko"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "submit",
+          "tag": "button",
+          "text": "저장하기",
+          "attrs": {
+            "type": "submit",
+            "class": "crudui-action crudui-action--text primary",
+            "name": "__submitted__",
+            "value": "go"
+          }
+        },
+        {
+          "type": "reset",
+          "tag": "button",
+          "text": "초기화",
+          "attrs": {
+            "type": "reset",
+            "class": "crudui-action crudui-action--text"
+          }
+        },
+        {
+          "type": "button",
+          "tag": "button",
+          "text": "Cancel",
+          "attrs": {
+            "type": "button",
+            "class": "crudui-action crudui-action--text",
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "tag": "a",
+          "text": "List",
+          "attrs": {
+            "class": "crudui-action crudui-action--text",
+            "href": "../?a=1&b=\"2\""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "declared-buttons-ja",
+    "note": "The Japanese language option gives the interface text of the reset button.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "action": {
+        "method": "post",
+        "url": "/save"
+      },
+      "buttons": [
+        {
+          "type": "submit",
+          "name": "__submitted__",
+          "value": "go",
+          "text": {
+            "ko": "저장하기",
+            "en": "Save now"
+          },
+          "design": {
+            "class": "primary"
+          }
+        },
+        {
+          "type": "reset"
+        },
+        {
+          "type": "button",
+          "text": "Cancel",
+          "behavior": {
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "text": "List",
+          "href": "../?a=1&b=\"2\""
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "ja"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "submit",
+          "tag": "button",
+          "text": "Save now",
+          "attrs": {
+            "type": "submit",
+            "class": "crudui-action crudui-action--text primary",
+            "name": "__submitted__",
+            "value": "go"
+          }
+        },
+        {
+          "type": "reset",
+          "tag": "button",
+          "text": "リセット",
+          "attrs": {
+            "type": "reset",
+            "class": "crudui-action crudui-action--text"
+          }
+        },
+        {
+          "type": "button",
+          "tag": "button",
+          "text": "Cancel",
+          "attrs": {
+            "type": "button",
+            "class": "crudui-action crudui-action--text",
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "tag": "a",
+          "text": "List",
+          "attrs": {
+            "class": "crudui-action crudui-action--text",
+            "href": "../?a=1&b=\"2\""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "declared-buttons-zh",
+    "note": "The Chinese language option gives the interface text of the reset button.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "action": {
+        "method": "post",
+        "url": "/save"
+      },
+      "buttons": [
+        {
+          "type": "submit",
+          "name": "__submitted__",
+          "value": "go",
+          "text": {
+            "ko": "저장하기",
+            "en": "Save now"
+          },
+          "design": {
+            "class": "primary"
+          }
+        },
+        {
+          "type": "reset"
+        },
+        {
+          "type": "button",
+          "text": "Cancel",
+          "behavior": {
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "text": "List",
+          "href": "../?a=1&b=\"2\""
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "zh"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "submit",
+          "tag": "button",
+          "text": "Save now",
+          "attrs": {
+            "type": "submit",
+            "class": "crudui-action crudui-action--text primary",
+            "name": "__submitted__",
+            "value": "go"
+          }
+        },
+        {
+          "type": "reset",
+          "tag": "button",
+          "text": "重置",
+          "attrs": {
+            "type": "reset",
+            "class": "crudui-action crudui-action--text"
+          }
+        },
+        {
+          "type": "button",
+          "tag": "button",
+          "text": "Cancel",
+          "attrs": {
+            "type": "button",
+            "class": "crudui-action crudui-action--text",
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "tag": "a",
+          "text": "List",
+          "attrs": {
+            "class": "crudui-action crudui-action--text",
+            "href": "../?a=1&b=\"2\""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "record-does-not-change-buttons",
+    "note": "The buttons do not depend on the record.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "action": {
+        "method": "post",
+        "url": "/save"
+      },
+      "buttons": [
+        {
+          "type": "submit",
+          "name": "__submitted__",
+          "value": "go",
+          "text": {
+            "ko": "저장하기",
+            "en": "Save now"
+          },
+          "design": {
+            "class": "primary"
+          }
+        },
+        {
+          "type": "reset"
+        },
+        {
+          "type": "button",
+          "text": "Cancel",
+          "behavior": {
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "text": "List",
+          "href": "../?a=1&b=\"2\""
+        }
+      ]
+    },
+    "data": {
+      "name": "Ada"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "submit",
+          "tag": "button",
+          "text": "Save now",
+          "attrs": {
+            "type": "submit",
+            "class": "crudui-action crudui-action--text primary",
+            "name": "__submitted__",
+            "value": "go"
+          }
+        },
+        {
+          "type": "reset",
+          "tag": "button",
+          "text": "Reset",
+          "attrs": {
+            "type": "reset",
+            "class": "crudui-action crudui-action--text"
+          }
+        },
+        {
+          "type": "button",
+          "tag": "button",
+          "text": "Cancel",
+          "attrs": {
+            "type": "button",
+            "class": "crudui-action crudui-action--text",
+            "onclick": "history.back()"
+          }
+        },
+        {
+          "type": "link",
+          "tag": "a",
+          "text": "List",
+          "attrs": {
+            "class": "crudui-action crudui-action--text",
+            "href": "../?a=1&b=\"2\""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "link-href-is-kept-verbatim",
+    "note": "A link keeps its href text, quotes and ampersands unchanged in the buttons.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "buttons": [
+        {
+          "type": "link",
+          "text": "Open",
+          "href": "/a?x=1&y=\"2\""
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "link",
+          "tag": "a",
+          "text": "Open",
+          "attrs": {
+            "class": "crudui-action crudui-action--text",
+            "href": "/a?x=1&y=\"2\""
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "localized-text-object",
+    "note": "A text object is chosen by the language option.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "buttons": [
+        {
+          "type": "button",
+          "text": {
+            "ko": "확인",
+            "en": "OK"
+          }
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "ko"
+    },
+    "expected": {
+      "result": [
+        {
+          "type": "button",
+          "tag": "button",
+          "text": "확인",
+          "attrs": {
+            "type": "button",
+            "class": "crudui-action crudui-action--text"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "button-without-text-fails",
+    "note": "A button that declares no text fails at compile time.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      },
+      "buttons": [
+        {
+          "type": "button"
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Invalid buttons.0.text at form: expected content for this button type"
+      }
+    }
+  },
+  {
+    "name": "template-not-compiled",
+    "note": "A value that is not a compiled form template is refused before its buttons are read.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "other"
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Unsupported form template"
+      }
+    }
+  },
+  {
+    "name": "template-with-unknown-button-type",
+    "note": "A compiled button whose type is no form button type is refused.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "other",
+          "text": "x"
+        }
+      ]
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Invalid button type: other"
+      }
+    }
+  },
+  {
+    "name": "language-not-a-string",
+    "note": "A language option that is not a string is refused.",
+    "requirements": [
+      "CURP-008"
+    ],
+    "operation": "bindButtons",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      }
+    },
+    "data": {},
+    "options": {
+      "language": 1
+    },
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Language must be a string"
+      }
+    }
+  },
+  {
+    "name": "html-empty-list",
+    "note": "No buttons give an empty string.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [],
+    "expected": {
+      "result": ""
+    }
+  },
+  {
+    "name": "html-one-submit",
+    "note": "One submit button is a button element with its type first.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "submit",
+        "tag": "button",
+        "text": "Save",
+        "attrs": {
+          "type": "submit",
+          "class": "crudui-action crudui-action--text"
+        }
+      }
+    ],
+    "expected": {
+      "result": "<button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button>"
+    }
+  },
+  {
+    "name": "html-link-and-buttons",
+    "note": "A link is an a element with the href attribute after the class; the other types are button elements.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "submit",
+        "tag": "button",
+        "text": "Save",
+        "attrs": {
+          "type": "submit",
+          "class": "crudui-action crudui-action--text"
+        }
+      },
+      {
+        "type": "link",
+        "tag": "a",
+        "text": "List",
+        "attrs": {
+          "class": "crudui-action crudui-action--text",
+          "href": "/items?a=1&b=\"2\""
+        }
+      },
+      {
+        "type": "button",
+        "tag": "button",
+        "text": "Hi <b>&",
+        "attrs": {
+          "type": "button",
+          "class": "crudui-action crudui-action--text wide",
+          "style": "color: red",
+          "onclick": "go(\"x\")"
+        }
+      },
+      {
+        "type": "reset",
+        "tag": "button",
+        "text": "Reset",
+        "attrs": {
+          "type": "reset",
+          "class": "crudui-action crudui-action--text",
+          "name": "r",
+          "value": "v"
+        }
+      }
+    ],
+    "expected": {
+      "result": "<button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button><a class=\"crudui-action crudui-action--text\" href=\"/items?a=1&amp;b=&quot;2&quot;\">List</a><button type=\"button\" class=\"crudui-action crudui-action--text wide\" style=\"color: red\" onclick=\"go(&quot;x&quot;)\">Hi &lt;b&gt;&amp;</button><button type=\"reset\" class=\"crudui-action crudui-action--text\" name=\"r\" value=\"v\">Reset</button>"
+    }
+  },
+  {
+    "name": "html-attributes-in-order",
+    "note": "The attributes of a button follow the order type, class, style, name, value, href, onclick.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "button",
+        "tag": "button",
+        "text": "Hi <b>&",
+        "attrs": {
+          "type": "button",
+          "class": "crudui-action crudui-action--text wide",
+          "style": "color: red",
+          "onclick": "go(\"x\")"
+        }
+      },
+      {
+        "type": "reset",
+        "tag": "button",
+        "text": "Reset",
+        "attrs": {
+          "type": "reset",
+          "class": "crudui-action crudui-action--text",
+          "name": "r",
+          "value": "v"
+        }
+      }
+    ],
+    "expected": {
+      "result": "<button type=\"button\" class=\"crudui-action crudui-action--text wide\" style=\"color: red\" onclick=\"go(&quot;x&quot;)\">Hi &lt;b&gt;&amp;</button><button type=\"reset\" class=\"crudui-action crudui-action--text\" name=\"r\" value=\"v\">Reset</button>"
+    }
+  },
+  {
+    "name": "html-escapes-text-and-attributes",
+    "note": "The text and the attribute values are escaped, the quotes in an attribute included.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "button",
+        "tag": "button",
+        "text": "<&>",
+        "attrs": {
+          "type": "button",
+          "class": "crudui-action",
+          "onclick": "a\"b"
+        }
+      }
+    ],
+    "expected": {
+      "result": "<button type=\"button\" class=\"crudui-action\" onclick=\"a&quot;b\">&lt;&amp;&gt;</button>"
+    }
+  },
+  {
+    "name": "html-not-a-list",
+    "note": "Something other than a list of buttons is refused.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": {},
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Form buttons must be a list"
+      }
+    }
+  },
+  {
+    "name": "html-null-entry",
+    "note": "An entry that is no button object is refused.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      null
+    ],
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Form buttons must be evaluated button objects"
+      }
+    }
+  },
+  {
+    "name": "html-tag-not-element",
+    "note": "An element that is neither a link nor a button is refused.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "submit",
+        "tag": "div",
+        "text": "x",
+        "attrs": {
+          "type": "submit",
+          "class": "crudui-action"
+        }
+      }
+    ],
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Form buttons must be evaluated button objects"
+      }
+    }
+  },
+  {
+    "name": "html-attribute-not-allowed",
+    "note": "An attribute outside the button attributes is refused.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "submit",
+        "tag": "button",
+        "text": "x",
+        "attrs": {
+          "type": "submit",
+          "class": "crudui-action",
+          "onmouseover": "x"
+        }
+      }
+    ],
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Form buttons must be evaluated button objects"
+      }
+    }
+  },
+  {
+    "name": "html-class-not-a-string",
+    "note": "A class that is not a string is refused.",
+    "requirements": [
+      "CURP-009"
+    ],
+    "operation": "formButtonsHtml",
+    "buttons": [
+      {
+        "type": "submit",
+        "tag": "button",
+        "text": "x",
+        "attrs": {
+          "type": "submit",
+          "class": 1
+        }
+      }
+    ],
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Form buttons must be evaluated button objects"
+      }
+    }
+  }
+]

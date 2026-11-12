@@ -35,7 +35,7 @@ The cases are read by the detail conformance tests in
 [React](../../../packages/react/src/tests/detail-render.conformance.test.ts),
 [Vue](../../../packages/vue/src/tests/detail-render.conformance.test.ts),
 [Svelte](../../../packages/svelte/tests/detail-render.conformance.test.mjs) and the
-[HTML renderer](../../../packages/html/src/detail-conformance.test.ts).
+[HTML renderer](../../../legacy/packages/html/src/detail-conformance.test.ts).
 
 ## Regeneration
 

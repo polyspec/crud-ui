@@ -1,0 +1,165 @@
+[
+  {
+    "name": "shared-list-within-limits",
+    "note": "a list that holds the same list twice, ten times over, is the tree it denotes: 2047 nodes under data.list.",
+    "requirements": [
+      "CUIT-021"
+    ],
+    "spec": { "type": "group", "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "doubled", "size": 10, "leaf": "x" },
+    "expect": { "valid": true, "errors": [], "hidden": [] }
+  },
+  {
+    "name": "shared-list-beyond-node-limit",
+    "note": "the same doubling forty times denotes a tree of 2^41 - 1 nodes; the walk stops after 1,000,000.",
+    "requirements": [
+      "CUIT-021",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "doubled", "size": 40, "leaf": "x" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: data", "at": "" }
+  },
+  {
+    "name": "shared-list-invalid-leaf",
+    "note": "invalid text met before the node limit is reported at its path in the tree: the first leaf of the doubled list.",
+    "requirements": [
+      "CUIT-021",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "doubled", "size": 40, "leaf": "\ud800" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Text must be Unicode scalar values: data.list.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0", "at": "" }
+  },
+  {
+    "name": "data-self-reference-twice",
+    "note": "an object whose members self and again are the object itself denotes no tree.",
+    "requirements": [
+      "CUIT-022",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "loop": { "type": "text" } } },
+    "data": { "loop": null },
+    "graph": { "at": ["data", "loop"], "shape": "self-twice" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: data", "at": "" }
+  },
+  {
+    "name": "spec-self-reference-twice",
+    "note": "the limits apply to the specification too, as an input failure that names it.",
+    "requirements": [
+      "CUIT-022",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": {}, "loop": null },
+    "data": {},
+    "graph": { "at": ["spec", "loop"], "shape": "self-twice" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: spec", "at": "" }
+  },
+  {
+    "name": "files-shared-list-beyond-node-limit",
+    "note": "a composition file beyond the node limit fails as the files option, before the data is checked.",
+    "requirements": [
+      "CUIT-021",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "bad": { "type": "text" } } },
+    "files": { "big.yml": { "list": null } },
+    "data": { "bad": "\ud800" },
+    "graph": { "at": ["files", "big.yml", "list"], "shape": "doubled", "size": 40, "leaf": "x" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: files", "at": "" }
+  },
+  {
+    "name": "nesting-at-limit",
+    "note": "data and 511 nested lists are 512 levels of arrays and objects, the most a value may nest.",
+    "requirements": [
+      "CUIT-022"
+    ],
+    "spec": { "type": "group", "dataLimits": { "depth": 512 }, "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "chain", "size": 511, "leaf": "x" },
+    "expect": { "valid": true, "errors": [], "hidden": [] }
+  },
+  {
+    "name": "nesting-beyond-limit",
+    "note": "one more nested list is 513 levels.",
+    "requirements": [
+      "CUIT-022",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "chain", "size": 512, "leaf": "x" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: data", "at": "" }
+  },
+  {
+    "name": "nodes-at-limit",
+    "note": "data, its list and 999,998 items are 1,000,000 nodes, the most a value may hold.",
+    "requirements": [
+      "CUIT-021"
+    ],
+    "spec": { "type": "group", "dataLimits": { "values": 1000000 }, "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "flat", "size": 999998, "leaf": "x" },
+    "expect": { "valid": true, "errors": [], "hidden": [] }
+  },
+  {
+    "name": "nodes-beyond-limit",
+    "note": "one more item is 1,000,001 nodes.",
+    "requirements": [
+      "CUIT-021",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "list": { "type": "text" } } },
+    "data": { "list": null },
+    "graph": { "at": ["data", "list"], "shape": "flat", "size": 999999, "leaf": "x" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: data", "at": "" }
+  },
+  {
+    "name": "text-before-later-limit",
+    "note": "members are walked in code point order of their names: invalid text in a precedes the self-reference in b.",
+    "requirements": [
+      "CUIT-021",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "a": { "type": "text" }, "b": { "type": "text" } } },
+    "data": { "b": null, "a": "\ud800" },
+    "graph": { "at": ["data", "b"], "shape": "self-twice" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Text must be Unicode scalar values: data.a", "at": "" }
+  },
+  {
+    "name": "limit-before-later-text",
+    "note": "the self-reference in a precedes invalid text in b.",
+    "requirements": [
+      "CUIT-021",
+      "CUIT-029",
+      "CUIT-030",
+      "CUIT-031",
+      "CUIT-041"
+    ],
+    "spec": { "type": "group", "properties": { "a": { "type": "text" }, "b": { "type": "text" } } },
+    "data": { "b": "\ud800", "a": null },
+    "graph": { "at": ["data", "a"], "shape": "self-twice" },
+    "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: data", "at": "" }
+  }
+]

@@ -1,0 +1,168 @@
+[
+  {
+    "name": "pass-paired-surrogates",
+    "note": "a surrogate pair is valid text in a specification and in the key prefix.",
+    "requirements": [
+      "CUIT-010",
+      "CURP-001"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "A😀"
+        }
+      }
+    },
+    "options": {
+      "keyPrefix": "p😀"
+    },
+    "expect": "pass"
+  },
+  {
+    "name": "spec-lone-high-in-label",
+    "note": "a lone high surrogate in a label is a load failure.",
+    "requirements": [
+      "CUIT-010"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "\ud800"
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties.name.label"
+    }
+  },
+  {
+    "name": "spec-button-text",
+    "note": "button text is specification text.",
+    "requirements": [
+      "CUIT-010"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      },
+      "buttons": [
+        {
+          "type": "submit",
+          "text": "\udc00"
+        }
+      ]
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "buttons.0.text"
+    }
+  },
+  {
+    "name": "spec-before-shape",
+    "note": "text is checked before the specification shape.",
+    "requirements": [
+      "CUIT-010"
+    ],
+    "spec": {
+      "type": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "type"
+    }
+  },
+  {
+    "name": "file-document",
+    "note": "invalid text in a file is located at the file name and path.",
+    "requirements": [
+      "CUIT-010"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "x": {
+              "type": "text",
+              "label": "\udc00\ud800"
+            }
+          }
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "base.yml.properties.x.label"
+    }
+  },
+  {
+    "name": "options-in-name-order",
+    "note": "options are checked in code point order of their names.",
+    "requirements": [
+      "CUIT-010"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "keyPrefix": "\ud800",
+      "basepath": "\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.basepath",
+      "at": ""
+    }
+  },
+  {
+    "name": "key-prefix",
+    "note": "an invalid key prefix is an input failure.",
+    "requirements": [
+      "CUIT-010"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "keyPrefix": "p\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.keyPrefix",
+      "at": ""
+    }
+  }
+]

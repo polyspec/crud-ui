@@ -103,7 +103,7 @@ source via an in-process Vite SSR loader at gateway startup.
 
 ```bash
 # 1. PHP deps (once)
-cd packages/validator/php && composer install && cd -
+cd legacy/packages/validator/php && composer install && cd -
 
 # 2. workspace dependencies
 npm install                  # at repo root, installs js-yaml + vite/svelte

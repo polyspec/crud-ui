@@ -879,7 +879,7 @@ pub(crate) fn is_group_with_properties(field: &Value) -> Option<&Map<String, Val
 
 /// A condition that does not parse is not a condition: the JS reference
 /// `evaluateCondition` catches the parse error and returns false
-/// (packages/validator/ts/src/validate/validator.ts).
+/// (legacy/packages/validator/ts/src/validate/validator.ts).
 #[allow(
     clippy::disallowed_methods,
     reason = "a condition that does not parse is false"
@@ -895,7 +895,7 @@ fn evaluate_condition(
 
 /// A value expression that does not parse is false: the JS reference
 /// `evaluateExpressionValue` catches the parse error and returns false
-/// (packages/validator/ts/src/validate/validator.ts).
+/// (legacy/packages/validator/ts/src/validate/validator.ts).
 #[allow(
     clippy::disallowed_methods,
     reason = "a value expression that does not parse is false"

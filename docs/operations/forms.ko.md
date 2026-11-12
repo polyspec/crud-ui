@@ -1,6 +1,6 @@
 # 폼 개발과 검증
 <!-- doc-id: docs-operations-forms -->
-<!-- source-sha256: 5a0760faefe0203a83bb39af1dc9f9d81a73f61b259ca85d096d97c077e8e553 -->
+<!-- source-sha256: 804502b13fcebec41345ea973bf7def992229f5b01b4692824c4313a4c865efc -->
 
 [English](forms.md). 계약은 [폼 런타임](../spec/form-runtime.ko.md)에 정의합니다.
 
@@ -24,7 +24,7 @@ npm run build
 기존 설치에서 새로 승인한 스크립트를 실행하려면 `npm rebuild`를 실행합니다.
 
 4개 언어 검증에는 Composer 의존성을 설치한 PHP, Go, Rust가 필요합니다.
-`packages/validator/php`에서 `composer install`로 PHP 의존성을 설치합니다.
+`legacy/packages/validator/php`에서 `composer install`로 PHP 의존성을 설치합니다.
 로컬에 이 도구들이 있으면 컨테이너는 필요하지 않습니다.
 
 ## 데이터 로드 전 구성
@@ -123,8 +123,8 @@ make docs-check
 서버 검증 사례는 저장소 루트에서 실행합니다.
 
 ```sh
-COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd packages/validator/php -- --filter ValidateConformanceTest
-node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd packages/validator/go -- ./validator/validate
+COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd legacy/packages/validator/php -- --filter ValidateConformanceTest
+node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd legacy/packages/validator/go -- ./validator/validate
 node node_modules/@polyspec/kit/dist/run-tests.mjs cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml --test validate_conformance
 ```
 

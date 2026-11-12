@@ -1,6 +1,6 @@
 # 목록과 상세 개발과 검증
 <!-- doc-id: docs-operations-displays -->
-<!-- source-sha256: 7bea483dd562462fe3cfdd7d8a04a860f78d313c049bc169a3a1e20cd0fd919b -->
+<!-- source-sha256: 8a33c3bd008468511ac241fabe08e9b121a59a11f1d8c40959d330146af65260 -->
 
 [English](displays.md). [표시 형식](../spec/display-formats.ko.md)은 각 형식, 허용 입력과
 마크업을 정의합니다. [명세 구조](../spec/schema.ko.md)는 목록과 상세 필드와
@@ -234,14 +234,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 | 예제 | 목록과 상세 |
 | --- | --- |
-| [Go 서버](../../packages/generator/go/examples/server/main.go) | `/`는 폼을, `/list`는 저장된 레코드를 `RenderList`로, `/detail`은 `RenderDetail`로 렌더링합니다. |
-| [PHP 페이지](../../packages/generator/php/examples/index.php) | `/`는 폼을, `?view=list`는 저장된 레코드를 `Generator::renderList`로, `?view=detail`은 `Generator::renderDetail`로 렌더링합니다. 이 파일은 PHP 구현과 확장에서 모두 실행됩니다. |
+| [Go 서버](../../legacy/packages/generator/go/examples/server/main.go) | `/`는 폼을, `/list`는 저장된 레코드를 `RenderList`로, `/detail`은 `RenderDetail`로 렌더링합니다. |
+| [PHP 페이지](../../legacy/packages/generator/php/examples/index.php) | `/`는 폼을, `?view=list`는 저장된 레코드를 `Generator::renderList`로, `?view=detail`은 `Generator::renderDetail`로 렌더링합니다. 이 파일은 PHP 구현과 확장에서 모두 실행됩니다. |
 | [Rust 프로그램](../../packages/generator/rust/examples/form.rs) | 폼을 렌더링하고 각 회사 행을 목록 행으로 바꿔 `render_list`로 목록을, `render_detail`로 회사별 상세를 렌더링한 뒤 HTML 문서 하나를 출력합니다. |
 | [교차 검사 콘솔](../../examples/cross-check-console/README.md) | 목록 탭은 4개 언어로 목록 구조를 검증하고 React, Vue, Svelte로 행을 렌더링합니다. 상세 탭은 4개 언어로 상세 구조를 검증하고 세 프레임워크로 레코드를 렌더링합니다. |
 
 ```sh
-(cd packages/generator/go && go run ./examples/server -data /tmp/crudui-go-record.json)
-CRUDUI_DATA_FILE=/tmp/crudui-php-example.json php -S 127.0.0.1:8082 -t packages/generator/php/examples
+(cd legacy/packages/generator/go && go run ./examples/server -data /tmp/crudui-go-record.json)
+CRUDUI_DATA_FILE=/tmp/crudui-php-example.json php -S 127.0.0.1:8082 -t legacy/packages/generator/php/examples
 cargo run --locked --manifest-path packages/generator/rust/Cargo.toml --example form
 ```
 
@@ -278,8 +278,8 @@ JavaScript, HTML 렌더러, PHP, PHP 확장, Go, Rust의 원본 목록과 상세
 
 ```sh
 npm test -w @polyspec/crudui-validator -- src/validate-list/validate-list.conformance.test.ts src/validate-detail/validate-detail.conformance.test.ts
-COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd packages/validator/php -- --filter 'ListValidateConformanceTest|DetailValidateConformanceTest'
-node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd packages/validator/go -- ./validator/validate -run 'TestValidateListMatchesFixture|TestValidateDetailMatchesFixture'
+COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd legacy/packages/validator/php -- --filter 'ListValidateConformanceTest|DetailValidateConformanceTest'
+node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd legacy/packages/validator/go -- ./validator/validate -run 'TestValidateListMatchesFixture|TestValidateDetailMatchesFixture'
 node node_modules/@polyspec/kit/dist/run-tests.mjs cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml --test list_validity_conformance --test detail_validity_conformance
 ```
 

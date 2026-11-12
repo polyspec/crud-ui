@@ -1,6 +1,6 @@
 # 적합성 증거
 <!-- doc-id: docs-operations-conformance -->
-<!-- source-sha256: e2cf39e0227f07f7f5dcc20789b55b0361b6289624f0457372a66e23ce77e171 -->
+<!-- source-sha256: 33ee0fc8da9a0b4551633bd066ca033feffa1ba89a23caf23052f17193a71b13 -->
 
 [English](conformance.md).
 
@@ -46,7 +46,7 @@ JavaScript는 모델과 문자열 렌더러가 별도 패키지이므로 서버 
 [`tests/conformance/evidence.mts`](../../tests/conformance/evidence.mts),
 [`tests/conformance/php/Evidence.php`](../../tests/conformance/php/Evidence.php)의 class
 `Polyspec\Crudui\Conformance\Evidence`, Go 패키지
-`packages/validator/go/testsupport/conformance`, Rust 테스트 모듈 `tests/common`입니다. `CRUDUI_CONFORMANCE_EVIDENCE`가
+`legacy/packages/validator/go/testsupport/conformance`, Rust 테스트 모듈 `tests/common`입니다. `CRUDUI_CONFORMANCE_EVIDENCE`가
 디렉터리를 지정할 때만 기록합니다.
 
 [`scripts/check-conformance.mts`](../../scripts/check-conformance.mts)는 그 디렉터리를 읽고 다음 경우에

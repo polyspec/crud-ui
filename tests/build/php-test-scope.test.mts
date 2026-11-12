@@ -18,7 +18,7 @@ function listing(component: string, args: string[]): Set<string> {
   try {
     const xml = path.join(directory, 'tests.xml');
     const command = [path.join(root, 'vendor/phpunit/phpunit/phpunit'), '-c', 'phpunit.xml', '--list-tests-xml', xml, ...args];
-    const result = spawnSync(php, command, { cwd: path.join(root, 'packages', component, 'php'), encoding: 'utf8', timeout: 60_000 });
+    const result = spawnSync(php, command, { cwd: path.join(root, 'legacy/packages', component, 'php'), encoding: 'utf8', timeout: 60_000 });
     assert.equal(result.error, undefined, `${php} ${command.join(' ')}: ${result.error?.message ?? ''}`);
     assert.equal(result.status, 0, result.stdout + result.stderr);
     return new Set([...readFileSync(xml, 'utf8').matchAll(/<testMethod id="([^"]+)"/g)].map(match => match[1] ?? ''));
@@ -45,7 +45,7 @@ for (const component of ['generator', 'validator']) {
 
 test('PHP source entry points select public and source-internal suites', { timeout: 10_000 }, () => {
   for (const component of ['generator', 'validator']) {
-    const manifest = readJson<{ scripts: { test: string } }>(path.join(root, 'packages', component, 'php/composer.json'), {
+    const manifest = readJson<{ scripts: { test: string } }>(path.join(root, 'legacy/packages', component, 'php/composer.json'), {
       properties: { scripts: { properties: { test: { type: 'string' } }, additionalProperties: true } }, additionalProperties: true,
     });
     assert.match(manifest.scripts.test, /--testsuite public,php-source-internal/);

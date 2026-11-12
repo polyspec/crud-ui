@@ -1,0 +1,60 @@
+{
+  "name": "@polyspec/crudui-validator",
+  "version": "0.0.20",
+  "description": "Form validation library based on crudui YAML definitions",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./internal": {
+      "types": "./dist/internal.d.ts",
+      "import": "./dist/internal.mjs",
+      "require": "./dist/internal.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "prebuild": "node scripts/generate-unicode-properties.mjs",
+    "build": "node ../../../../scripts/package-dist.mts build 'tsup src/index.ts src/internal.ts --format cjs,esm --splitting --clean --out-dir \"$CRUDUI_DIST\" && tsc --project tsconfig.build.json --outDir \"$CRUDUI_DIST\"'",
+    "dev": "tsup src/index.ts src/internal.ts --format cjs,esm --splitting --watch --onSuccess \"tsc --project tsconfig.build.json\"",
+    "test": "node ../../../../tests/conformance/run-suite.mts vitest --cwd legacy/packages/validator/ts",
+    "typecheck": "status=0; tsc --noEmit || status=1; tsc --noEmit --project tsconfig.scripts.json || status=1; exit $status",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "form",
+    "validation",
+    "validator",
+    "yaml",
+    "spec"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "tsup": "^9.0.0",
+    "typescript": "7.0.2",
+    "vitest": "^5.0.4"
+  },
+  "engines": {
+    "node": ">=26.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  }
+}

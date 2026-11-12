@@ -6,11 +6,11 @@
 //! ERROR (`ComposeLoadError`) — never `valid:true`.
 //!
 //! Byte-for-byte parity with the JS reference engine
-//! (`packages/validator/ts/src/compose`); the shared 4-language fixture
+//! (`legacy/packages/validator/ts/src/compose`); the shared 4-language fixture
 //! `tests/fixtures/compose/cases.json` is the single source of truth.
 
 // Intentional: `compose/compose.rs` mirrors the JS reference layout
-// (`packages/validator/ts/src/compose/compose.ts`), the byte-for-byte parity
+// (`legacy/packages/validator/ts/src/compose/compose.ts`), the byte-for-byte parity
 // source. Renaming would diverge the two engines' file maps; the re-exports
 // below flatten the path for callers (`compose::compose_spec`).
 #[allow(

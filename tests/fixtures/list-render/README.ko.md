@@ -1,6 +1,6 @@
 # 목록 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-list-render-readme -->
-<!-- source-sha256: 0a0d633a28170f4c3d7ccb481b9fc2d35facefced7d49bedb2608c91052e8089 -->
+<!-- source-sha256: 498e4a4a38af68d1afdceb4bdefe6d61ceef0590de6e517e6e313ec70e34c51d -->
 
 [English](README.md).
 
@@ -27,7 +27,7 @@
 [React](../../../packages/react/src/tests/list-render.conformance.test.ts),
 [Vue](../../../packages/vue/tests/list-render.conformance.test.mjs),
 [Svelte](../../../packages/svelte/tests/list-render.conformance.test.mjs),
-[HTML 렌더러](../../../packages/html/src/list-conformance.test.ts)의
+[HTML 렌더러](../../../legacy/packages/html/src/list-conformance.test.ts)의
 목록 적합성 검사가 사용합니다. 합성 오류 사례는 기록된 오류 코드를 확인합니다.
 
 ## 재생성

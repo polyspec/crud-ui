@@ -23,7 +23,7 @@
 //! eligible, so any `x{key}` that survives to this scan is rejected (the strip
 //! belongs to the meta-schema; survival means it was not stripped).
 //!
-//! Byte-for-byte with the JS reference (`packages/validator/ts/src/
+//! Byte-for-byte with the JS reference (`legacy/packages/validator/ts/src/
 //! forbidden-scan.ts`); the shared 4-language fixture
 //! `tests/fixtures/spec-validity/cases.json` is the single source of truth.
 

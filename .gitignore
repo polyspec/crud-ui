@@ -9,8 +9,8 @@ packages/**/package-lock.json
 # Composer dependencies
 examples/**/vendor/
 /vendor/
-packages/generator/php/.phpunit.cache/
-packages/generator/php/.phpunit.result.cache
+legacy/packages/generator/php/.phpunit.cache/
+legacy/packages/generator/php/.phpunit.result.cache
 
 # The temporary API reports of API Extractor in each package (make lint-ts)
 packages/**/var/
@@ -22,24 +22,24 @@ dist.old/
 .svelte-kit/
 *.tsbuildinfo
 
-# The C tables of packages/php-ext, which make php-ext-tables writes from contracts/ (P34)
-packages/php-ext/src/unicode_data.c
-packages/php-ext/src/interface_messages.c
+# The C tables of legacy/packages/php-ext, which make php-ext-tables writes from contracts/ (P34)
+legacy/packages/php-ext/src/unicode_data.c
+legacy/packages/php-ext/src/interface_messages.c
 
-# The PHP tables of packages/validator/php and packages/generator/php, which make php-tables writes from contracts/ (P34)
-packages/validator/php/src/Values/UnicodeData.php
-packages/generator/php/src/Internal/InterfaceMessages.php
+# The PHP tables of legacy/packages/validator/php and legacy/packages/generator/php, which make php-tables writes from contracts/ (P34)
+legacy/packages/validator/php/src/Values/UnicodeData.php
+legacy/packages/generator/php/src/Internal/InterfaceMessages.php
 
-# The Python tables of packages/validator/python and packages/generator/python, which make python-tables writes from contracts/
+# The Python tables of legacy/packages/validator/python and legacy/packages/generator/python, which make python-tables writes from contracts/
 # (P34)
-packages/validator/python/src/polyspec/crudui/validator/unicode_data.py
-packages/generator/python/src/polyspec/crudui/generator/interface_messages.py
+legacy/packages/validator/python/src/polyspec/crudui/validator/unicode_data.py
+legacy/packages/generator/python/src/polyspec/crudui/generator/interface_messages.py
 
-# The TypeScript tables of packages/validator/ts and packages/generator/ts, which the prebuild scripts of the two packages
+# The TypeScript tables of legacy/packages/validator/ts and legacy/packages/generator/ts, which the prebuild scripts of the two packages
 # write from contracts/ (P34)
-packages/validator/ts/src/unicode/properties.ts
-packages/generator/ts/src/interface-messages.ts
-packages/generator/ts/src/form-template-validator.mjs
+legacy/packages/validator/ts/src/unicode/properties.ts
+legacy/packages/generator/ts/src/interface-messages.ts
+legacy/packages/generator/ts/src/form-template-validator.mjs
 
 # Rust build outputs (Cargo.lock is committed for the binary crate)
 target/
@@ -109,8 +109,8 @@ go.work.sum
 /tests/native-generators/programs/go/go.work
 /examples/cross-check-console/validators/go/go.work
 /examples/form-comparison/servers/go/go.work
-/packages/validator/go/go.work
-/packages/generator/go/go.work
+/legacy/packages/validator/go/go.work
+/legacy/packages/generator/go/go.work
 /scripts/go/go.work
 
 # Native Go module builds write platform executables beside their manifests.
@@ -123,3 +123,5 @@ go.work.sum
 /tests/native-generators/programs/go/go
 /tests/native-generators/programs/go/go.exe
 /.links
+# The generated folders of the binding packages, which make bindings writes (binding design L-2)
+/packages/*/*/generated/

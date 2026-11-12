@@ -1,6 +1,6 @@
 # CRUDUI 계약 manifest
 <!-- doc-id: contracts-readme -->
-<!-- source-sha256: 252d2f440b3b8124f9fea65c28370cda2ea9cf73c00204957b74f7b6f42d85db -->
+<!-- source-sha256: a7a5ff7bd6393eecae4fc4aa135fa9a0b0af4caaeb00a68d9c8d0c6abe41d3bc -->
 
 [English](README.md).
 
@@ -53,8 +53,8 @@ CLI는 같은 계약을 도구가 읽을 수 있는 JSON 또는 Markdown으로 �
 다르면 실패하는 테스트를 둡니다. 파일을 고친 뒤에는 모든 런타임의 스크립트를
 실행합니다.
 
-- TypeScript: `packages/generator/ts`의 빌드. 그 prebuild 스크립트가 추적하지 않는 `src/interface-messages.ts`를 씁니다
-- Go: `packages/generator/go`에서 `go generate`
+- TypeScript: `legacy/packages/generator/ts`의 빌드. 그 prebuild 스크립트가 추적하지 않는 `src/interface-messages.ts`를 씁니다
+- Go: `legacy/packages/generator/go`에서 `go generate`
 - Rust: `node packages/generator/rust/tools/generate-interface-messages.mjs`
-- PHP: `make php-tables`. 추적하지 않는 `packages/generator/php`의 `src/Internal/InterfaceMessages.php`를 씁니다
-- PHP 확장: `node packages/php-ext/tools/generate-interface-messages.mjs`
+- PHP: `make php-tables`. 추적하지 않는 `legacy/packages/generator/php`의 `src/Internal/InterfaceMessages.php`를 씁니다
+- PHP 확장: `node legacy/packages/php-ext/tools/generate-interface-messages.mjs`

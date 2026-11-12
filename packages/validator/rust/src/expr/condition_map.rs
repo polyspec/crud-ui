@@ -49,7 +49,7 @@ pub fn resolve(
 
 /// Whether a non-default key holds. A key that does not parse is a literal, not a
 /// condition, so it does not hold: the JS reference `evaluateCondition` catches the
-/// parse error and returns false (packages/validator/ts/src/validate/validator.ts).
+/// parse error and returns false (legacy/packages/validator/ts/src/validate/validator.ts).
 #[allow(
     clippy::disallowed_methods,
     reason = "a key that does not parse is a literal"

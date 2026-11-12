@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "extends": "@polyspec/kit/config/api-extractor.kit.json",
+  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+  "docModel": {
+    "enabled": true,
+    "apiJsonFilePath": "<projectFolder>/../../../../var/api-model/<unscopedPackageName>/<unscopedPackageName>.api.json"
+  },
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/tsconfig.build.json"
+  }
+}

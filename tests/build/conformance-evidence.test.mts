@@ -187,9 +187,9 @@ test('the JavaScript recorder appends one line per case only when an evidence di
 });
 
 const suites = [
-  { name: 'validator PHP', run: { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'packages/validator/php' }, runtimes: ['php'] },
+  { name: 'validator PHP', run: { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/validator/php' }, runtimes: ['php'] },
   { name: 'native generators', run: { program: 'tests/native-generators/run.mts' }, runtimes: ['php', 'go'] },
-  { name: 'PHP extension', run: { program: 'tests/conformance/run-suite.mts', tool: 'node', argument: 'packages/php-ext/tests/engine/engine.test.mjs' }, runtimes: ['php-native'] },
+  { name: 'PHP extension', run: { program: 'tests/conformance/run-suite.mts', tool: 'node', argument: 'legacy/packages/php-ext/tests/engine/engine.test.mjs' }, runtimes: ['php-native'] },
   { name: 'Svelte renderer', run: { program: 'tests/conformance/run-suite.mts', tool: 'vitest', cwd: 'packages/svelte' }, runtimes: ['svelte'] },
 ];
 /** The fields of a run record that a case sets; the others take the values of a run of the native suite. */
@@ -221,12 +221,12 @@ test('the check reads the evidence and the run records of every subdirectory', a
 
 test('missing evidence names each suite of its runtime that did not run, did not finish or failed', () => {
   const runs = [
-    run({ program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'packages/validator/php' }, '2026-10-05T10:00:00.000Z', 1),
-    run({ program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'packages/validator/php' }, '2026-10-05T11:00:00.000Z', 0),
-    run({ program: 'tests/conformance/run-suite.mts', tool: 'node', args: ['packages/php-ext/tests/engine/engine.test.mjs', 'packages/php-ext/tests/api.test.mjs'] }, '2026-10-05T10:00:00.000Z', null),
+    run({ program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/validator/php' }, '2026-10-05T10:00:00.000Z', 1),
+    run({ program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/validator/php' }, '2026-10-05T11:00:00.000Z', 0),
+    run({ program: 'tests/conformance/run-suite.mts', tool: 'node', args: ['legacy/packages/php-ext/tests/engine/engine.test.mjs', 'legacy/packages/php-ext/tests/api.test.mjs'] }, '2026-10-05T10:00:00.000Z', null),
     run({ program: 'tests/conformance/run-suite.mts', tool: 'vitest', cwd: 'packages/svelte' }, '2026-10-05T10:00:00.000Z', 0),
     run({ program: 'tests/conformance/run-suite.mts', tool: 'vitest', cwd: 'packages/svelte', args: ['--config', 'vitest.client.config.ts'] }, '2026-10-05T10:01:00.000Z', 2),
-    run({ program: 'tests/conformance/run-suite.mts', tool: 'go', cwd: 'packages/generator/go' }, '2026-10-05T10:00:00.000Z', 1),
+    run({ program: 'tests/conformance/run-suite.mts', tool: 'go', cwd: 'legacy/packages/generator/go' }, '2026-10-05T10:00:00.000Z', 1),
   ];
   assert.deepEqual(Object.fromEntries(suiteStates(suites, runs)), {
     'validator PHP': 'passed',
@@ -256,7 +256,7 @@ test('PHP source suite runs cannot stand for extension runs and run metadata nev
   const source = evidenceSuites.find(suite => suite.name === 'generator PHP');
   const native = evidenceSuites.find(suite => suite.name === 'generator PHP extension');
   assert.ok(source && native);
-  const record = { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'packages/generator/php',
+  const record = { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/generator/php',
     args: ['tests/FormStateTest.php'], started: '2026-10-27T00:00:00.000Z', status: 0 };
   assert.deepEqual([...suiteStates([source, native], [record])], [['generator PHP', 'passed'], ['generator PHP extension', 'did not run']]);
   const extension = { ...record, phpExtensions: ['var/php-ext/polyspec_crudui.so'] };

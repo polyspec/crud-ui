@@ -54,13 +54,13 @@ applies them.
 ## Releases
 
 A release is a tag of a commit of `main`: `vX.Y.Z` for the repository, or `<directory>/vX.Y.Z` for the Go module of
-that directory (`packages/generator/go` and `packages/validator/go`), whose module path is
+that directory (`legacy/packages/generator/go` and `legacy/packages/validator/go`), whose module path is
 `github.com/polyspec/crudui/<directory>` (`tests/build/package-names.test.mts`). Every commit of `main` passed the full
 suite of CI before the tag, so the release runs no test again. Only the maintainer creates and pushes a tag. The
 packages, the manifests that a tag covers and the Go modules are declared in `config/release.json`
 (`node_modules/@polyspec/kit/dist/schema/release.schema.json`).
 
-The native PHP extension is built from the complete repository. Its `packages/php-ext/composer.json` is a version-only
+The native PHP extension is built from the complete repository. Its `legacy/packages/php-ext/composer.json` is a version-only
 manifest in `config/release.json`, so a version change updates the version that `src/config.m4` reads without adding a
 Composer archive or a platform-specific binary to the published assets.
 
@@ -143,7 +143,7 @@ Development resolution is in the two root manifests, which are never published:
   `@polyspec/ordered-json` is the root dev dependency of the release asset `polyspec-ordered-json-0.0.25.tgz` of the tag
   `v0.0.25` of `polyspec/ordered-json`, pinned by its URL and integrity like `@polyspec/kit`, and `make link` links it
   to a checkout that `.links` declares;
-- the private root `composer.json` declares path repositories for `packages/validator/php` and `packages/generator/php`,
+- the private root `composer.json` declares path repositories for `legacy/packages/validator/php` and `legacy/packages/generator/php`,
   with native symlinks and configuration references, and the packages.json repository of the OrderedJSON release. The
   CRUDUI packages use the checkout's exact version; the OrderedJSON constraint accepts its 0.0.x release. `composer.lock`
   records the selected source versions, requirements and autoload. PHPUnit, PHP checks and PHP servers load the

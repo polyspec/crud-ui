@@ -27,7 +27,7 @@ function run(command: string, args: string[], cwd: string = ROOT): void {
   execFileSync(command, args, { cwd, stdio: 'inherit' });
 }
 
-if (want('go')) for (const pkg of ['validator/go', 'generator/go']) {
+if (want('go')) for (const pkg of ['../legacy/packages/validator/go', '../legacy/packages/generator/go']) {
   check(`go:${pkg}`, () => run(process.env.GO ?? 'go', ['test', './...', '-run', 'DocCoverage', '-count=1'], join(ROOT, 'packages', pkg)));
 }
 if (want('rust')) for (const pkg of ['validator/rust', 'generator/rust']) {

@@ -1,6 +1,6 @@
 # 테스트 실행
 <!-- doc-id: docs-operations-testing -->
-<!-- source-sha256: 31aa5e53fdc09b2c481f329ae6fd0609c42a279893da070023db0add563299ac -->
+<!-- source-sha256: 5ddba42efd29f9627a2677cafdcdbc3f6cb607689979fec9dcee539037af8d6a -->
 
 [English](testing.md).
 
@@ -111,8 +111,8 @@ network와 이력을 읽지 않습니다. 그래서 문서나 checklist 규칙�
 composer install
 npm run build
 npm test --workspace @polyspec/crudui-validator
-composer --working-dir=packages/validator/php test
-node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd packages/validator/go -- ./...
+composer --working-dir=legacy/packages/validator/php test
+node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd legacy/packages/validator/go -- ./...
 node node_modules/@polyspec/kit/dist/run-tests.mjs cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml
 npm test --workspace @polyspec/crudui-cli
 npm run test:forms
@@ -183,7 +183,7 @@ polyspec/kit의 test는 setup이나 teardown이 test timeout보다 오래 걸리
 
 type assertion(`expectTypeOf`)은 `*.test-d.ts` 파일에 있고, Vitest의 typecheck mode(package의 Vitest 설정에서
 `enabled: true`인 `test.typecheck`)가 runtime test와 같은 실행에서 `tsc`와 package의 `tsconfig.json`으로 이를
-검사합니다. runtime test 파일은 `expectTypeOf`를 평가하지 않습니다. `packages/validator/ts`는 이렇게 작성 type을
+검사합니다. runtime test 파일은 `expectTypeOf`를 평가하지 않습니다. `legacy/packages/validator/ts`는 이렇게 작성 type을
 검사합니다(`src/types.test-d.ts`).
 
 ## 시간과 부하

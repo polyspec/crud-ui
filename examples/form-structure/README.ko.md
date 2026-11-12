@@ -1,6 +1,6 @@
 # 폼 구조 미리보기
 <!-- doc-id: examples-form-structure-readme -->
-<!-- source-sha256: 9752b38ea69d246116c0152940ebce1076a5a51fbcc87f9d387de85d94261ed2 -->
+<!-- source-sha256: 2d121b54393660f702eb4eaed3b7c01258a68840d87b50a2048d9441ba889e66 -->
 
 [English](README.md).
 
@@ -19,7 +19,7 @@
 
 `main.js`는 `compileForm`으로 명세를 컴파일하고 `createForm`으로 한국어 폼을 만든
 뒤 폼이 바뀔 때마다 세 화면을 다시 렌더링합니다. 폼, 구조 맵, 데이터 화면의 스타일은
-모두 `packages/generator/ts/styles/crudui.css`에서 가져오며, `index.html`의 인라인
+모두 `legacy/packages/generator/ts/styles/crudui.css`에서 가져오며, `index.html`의 인라인
 스타일은 열 배치만 담당합니다.
 
 | 파일 | 내용 |

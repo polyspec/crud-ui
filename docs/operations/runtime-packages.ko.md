@@ -1,6 +1,6 @@
 # 런타임 패키지 구성과 검증
 <!-- doc-id: docs-operations-runtime-packages -->
-<!-- source-sha256: a8084de710f983b6e679355f17d811cfb9e5668e11fbf32b5b6305e69a881b45 -->
+<!-- source-sha256: e6d2498f9298ff19b43372e70f88d5139d72055ea2f894d47eabd5863a384b66 -->
 
 [English](runtime-packages.md).
 구현과 검증 결과는 [기능 상태](../features.ko.md)에 기록합니다. 모든 패키지가 따르는 규칙은 [런타임 패키지](../spec/runtime-packages.ko.md) 계약에 있습니다.
@@ -9,14 +9,14 @@
 
 | 패키지 | 구현 책임 | 재사용 |
 | --- | --- | --- |
-| `packages/generator/ts` | JavaScript 템플릿, 인스턴스, 계산된 모델 | JavaScript 조합과 표현식 모듈 |
+| `legacy/packages/generator/ts` | JavaScript 템플릿, 인스턴스, 계산된 모델 | JavaScript 조합과 표현식 모듈 |
 | `packages/react`, `generator-vue`, `generator-svelte` | 프레임워크 통합, 브라우저 동작, 렌더링 | 공용 JavaScript 생성기 |
-| `packages/html` | 프레임워크에 독립적인 JavaScript 폼·목록·상세 HTML 렌더링 | 공용 JavaScript 생성기 |
+| `legacy/packages/html` | 프레임워크에 독립적인 JavaScript 폼·목록·상세 HTML 렌더링 | 공용 JavaScript 생성기 |
 | `packages/form-binding` | 서버가 렌더링한 폼의 [브라우저 검증](../spec/form-runtime.ko.md#브라우저-검증) | JavaScript 검증기 |
-| `packages/generator/php` | PHP 템플릿 컴파일, 데이터 바인딩, 폼·목록·상세 HTML | PHP 조합과 표현식 모듈 |
-| `packages/generator/go` | Go 템플릿 컴파일, 데이터 바인딩, 폼·목록·상세 HTML | Go 조합과 표현식 모듈 |
+| `legacy/packages/generator/php` | PHP 템플릿 컴파일, 데이터 바인딩, 폼·목록·상세 HTML | PHP 조합과 표현식 모듈 |
+| `legacy/packages/generator/go` | Go 템플릿 컴파일, 데이터 바인딩, 폼·목록·상세 HTML | Go 조합과 표현식 모듈 |
 | `packages/generator/rust` | Rust 템플릿 컴파일, 데이터 바인딩, 폼·목록·상세 HTML | Rust 조합과 표현식 모듈 |
-| `packages/php-ext` | PHP 네이티브 생성과 검증 | PHP 패키지와 같은 공개 클래스이며 생성과 검증을 네이티브 코드에서 실행 |
+| `legacy/packages/php-ext` | PHP 네이티브 생성과 검증 | PHP 패키지와 같은 공개 클래스이며 생성과 검증을 네이티브 코드에서 실행 |
 | `packages/validator/*` | 데이터와 명세 검증 | 기존 언어별 검증 규칙 구현과 공용 사례 |
 
 각 서버 생성기는 해당 언어의 HTTP 프로세스에서 실행할 수 있는

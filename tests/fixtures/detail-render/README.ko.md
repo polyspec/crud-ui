@@ -1,6 +1,6 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: bc28ccb57e23146ed813e1d24752cab50582d8b286504035e12d08d3d1cfc07e -->
+<!-- source-sha256: 353fb208d410117166db26634b07a1cb43b1396922fe17ef97976fe5ef51a1bb -->
 
 [English](README.md).
 
@@ -31,7 +31,7 @@ React와 같은 전체 원본 HTML을 반환해야 합니다. 필드의 `value`�
 [React](../../../packages/react/src/tests/detail-render.conformance.test.ts),
 [Vue](../../../packages/vue/src/tests/detail-render.conformance.test.ts),
 [Svelte](../../../packages/svelte/tests/detail-render.conformance.test.mjs),
-[HTML 렌더러](../../../packages/html/src/detail-conformance.test.ts)의 상세 적합성 검사가
+[HTML 렌더러](../../../legacy/packages/html/src/detail-conformance.test.ts)의 상세 적합성 검사가
 사용합니다.
 
 ## 재생성

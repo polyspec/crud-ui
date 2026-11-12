@@ -50,7 +50,7 @@ decodes as an array.
 Regenerate from the repository root after building the packages:
 
 ```sh
-node packages/validator/ts/scripts/generate-expr-cases.mts > tests/fixtures/expr/cases.json
+node legacy/packages/validator/ts/scripts/generate-expr-cases.mts > tests/fixtures/expr/cases.json
 ```
 
 The generator records actual TypeScript tokens, ASTs and results, except that a

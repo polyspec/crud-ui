@@ -21,19 +21,19 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Polyspec\\Crudui\\Generator\\Tests\\": "packages/generator/php/tests/",
-            "Polyspec\\Crudui\\Validator\\Tests\\": "packages/validator/php/tests/",
+            "Polyspec\\Crudui\\Generator\\Tests\\": "legacy/packages/generator/php/tests/",
+            "Polyspec\\Crudui\\Validator\\Tests\\": "legacy/packages/validator/php/tests/",
             "Polyspec\\Crudui\\Conformance\\": "tests/conformance/php/",
             "Polyspec\\Crudui\\Docs\\": "tests/docs/php/",
             "Polyspec\\Crudui\\FormComparison\\Tests\\": "examples/form-comparison/servers/php/tests/",
             "Polyspec\\CruduiTestSupport\\": "tests/php/",
-            "Polyspec\\Crudui\\Extension\\Tests\\": "packages/php-ext/tests/"
+            "Polyspec\\Crudui\\Extension\\Tests\\": "legacy/packages/php-ext/tests/"
         }
     },
     "repositories": [
         {
             "type": "path",
-            "url": "packages/validator/php",
+            "url": "legacy/packages/validator/php",
             "options": {
                 "symlink": true,
                 "reference": "config"
@@ -41,7 +41,7 @@
         },
         {
             "type": "path",
-            "url": "packages/generator/php",
+            "url": "legacy/packages/generator/php",
             "options": {
                 "symlink": true,
                 "reference": "config"

@@ -52,7 +52,7 @@ const data = { companies: levelData(0) };
 const siblingData = { companies: { [key]: { ...levelData(0)[key], name: 'ACME', stores: { ...levelData(1), [second]: { name: 'Pangyo', note: '', departments: {} } } } } };
 
 const browserSource = `
-import '/packages/generator/ts/styles/crudui.css';
+import '/legacy/packages/generator/ts/styles/crudui.css';
 import { compileForm, connectForm, connectOutline, createForm, patchContent } from '@polyspec/crudui-generator-core';
 import { renderForm, renderOutline } from '@polyspec/crudui-generator-html';
 

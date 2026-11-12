@@ -4,7 +4,7 @@
   "packages": [
     {
       "name": "@polyspec/crudui-generator-core",
-      "path": "packages/generator/ts",
+      "path": "legacy/packages/generator/ts",
       "layer": "model",
       "entries": {
         ".": {
@@ -96,7 +96,7 @@
     },
     {
       "name": "@polyspec/crudui-generator-html",
-      "path": "packages/html",
+      "path": "legacy/packages/html",
       "layer": "renderer",
       "entries": {
         ".": {
@@ -210,7 +210,7 @@
     },
     {
       "name": "@polyspec/crudui-validator",
-      "path": "packages/validator/ts",
+      "path": "legacy/packages/validator/ts",
       "layer": "validation",
       "entries": {
         ".": {
@@ -274,7 +274,7 @@
   "examples": [
     {
       "id": "form-instance",
-      "input": "packages/html/README.md",
+      "input": "legacy/packages/html/README.md",
       "expected": "tests/fixtures/form-render/cases.json"
     },
     {
@@ -690,10 +690,10 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/form.test.ts",
+        "legacy/packages/generator/ts/src/form.test.ts",
         "packages/react/src/tests/form-render.conformance.test.ts",
-        "packages/generator/ts/src/input-text.test.ts",
-        "packages/generator/python/tests/test_outline.py"
+        "legacy/packages/generator/ts/src/input-text.test.ts",
+        "legacy/packages/generator/python/tests/test_outline.py"
       ],
       "docs": [
         "docs/spec/form-runtime.md",
@@ -703,7 +703,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
@@ -711,7 +711,7 @@
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -742,16 +742,16 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/form.test.ts",
+        "legacy/packages/generator/ts/src/form.test.ts",
         "packages/react/src/tests/form-render.conformance.test.ts",
-        "packages/generator/ts/src/node.test.ts",
-        "packages/generator/ts/src/input-text.test.ts",
-        "packages/generator/ts/src/template-shape.test.ts",
-        "packages/generator/go/template_shape_test.go",
+        "legacy/packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/input-text.test.ts",
+        "legacy/packages/generator/ts/src/template-shape.test.ts",
+        "legacy/packages/generator/go/template_shape_test.go",
         "packages/generator/rust/tests/template_shape.rs",
-        "packages/generator/php/tests/TemplateShapeTest.php",
-        "packages/generator/python/tests/test_template_shape.py",
-        "packages/generator/python/tests/test_outline.py"
+        "legacy/packages/generator/php/tests/TemplateShapeTest.php",
+        "legacy/packages/generator/python/tests/test_template_shape.py",
+        "legacy/packages/generator/python/tests/test_outline.py"
       ],
       "docs": [
         "docs/spec/form-runtime.md",
@@ -762,7 +762,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
@@ -770,11 +770,11 @@
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/input-text.test.ts"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/template-shape.test.ts"
         }
       ]
     },
@@ -803,17 +803,17 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/node.test.ts",
-        "packages/generator/ts/src/buttons.conformance.test.ts",
-        "packages/generator/go/buttons_conformance_test.go",
-        "packages/generator/python/tests/test_buttons.py",
+        "legacy/packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/buttons.conformance.test.ts",
+        "legacy/packages/generator/go/buttons_conformance_test.go",
+        "legacy/packages/generator/python/tests/test_buttons.py",
         "packages/generator/rust/tests/buttons.rs",
-        "packages/generator/php/tests/ButtonsConformanceTest.php",
-        "packages/generator/ts/src/template-shape.test.ts",
-        "packages/generator/go/template_shape_test.go",
+        "legacy/packages/generator/php/tests/ButtonsConformanceTest.php",
+        "legacy/packages/generator/ts/src/template-shape.test.ts",
+        "legacy/packages/generator/go/template_shape_test.go",
         "packages/generator/rust/tests/template_shape.rs",
-        "packages/generator/php/tests/TemplateShapeTest.php",
-        "packages/generator/python/tests/test_template_shape.py"
+        "legacy/packages/generator/php/tests/TemplateShapeTest.php",
+        "legacy/packages/generator/python/tests/test_template_shape.py"
       ],
       "docs": [
         "docs/spec/form-markup.md",
@@ -822,15 +822,15 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/buttons.conformance.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run TestButtonsSuite ."
+          "command": "node scripts/run-tests.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -run TestButtonsSuite ."
         },
         {
           "id": "test-3",
-          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests/test_buttons.py"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd legacy/packages/generator/python -- tests/test_buttons.py"
         },
         {
           "id": "test-4",
@@ -838,11 +838,11 @@
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts phpunit --cwd packages/generator/php -- --filter ButtonsConformanceTest"
+          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --filter ButtonsConformanceTest"
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/template-shape.test.ts"
         }
       ]
     },
@@ -870,12 +870,12 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/node.test.ts",
-        "packages/generator/ts/src/buttons.conformance.test.ts",
-        "packages/generator/go/buttons_conformance_test.go",
-        "packages/generator/python/tests/test_buttons.py",
+        "legacy/packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/buttons.conformance.test.ts",
+        "legacy/packages/generator/go/buttons_conformance_test.go",
+        "legacy/packages/generator/python/tests/test_buttons.py",
         "packages/generator/rust/tests/buttons.rs",
-        "packages/generator/php/tests/ButtonsConformanceTest.php"
+        "legacy/packages/generator/php/tests/ButtonsConformanceTest.php"
       ],
       "docs": [
         "docs/spec/form-markup.md"
@@ -883,15 +883,15 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/buttons.conformance.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/buttons.conformance.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run TestButtonsSuite ."
+          "command": "node scripts/run-tests.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -run TestButtonsSuite ."
         },
         {
           "id": "test-3",
-          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests/test_buttons.py"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd legacy/packages/generator/python -- tests/test_buttons.py"
         },
         {
           "id": "test-4",
@@ -899,7 +899,7 @@
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts phpunit --cwd packages/generator/php -- --filter ButtonsConformanceTest"
+          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --filter ButtonsConformanceTest"
         }
       ]
     },
@@ -930,16 +930,16 @@
       "status": "implemented",
       "state": "instance data, view state and undo history",
       "tests": [
-        "packages/generator/ts/src/form.test.ts",
+        "legacy/packages/generator/ts/src/form.test.ts",
         "tests/fixtures/form-session/scenario.mts",
-        "packages/generator/ts/src/node.test.ts",
-        "packages/generator/ts/src/input-text.test.ts",
-        "packages/generator/ts/src/form-choices.test.ts",
-        "packages/generator/ts/src/template-shape.test.ts",
-        "packages/generator/go/template_shape_test.go",
+        "legacy/packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/input-text.test.ts",
+        "legacy/packages/generator/ts/src/form-choices.test.ts",
+        "legacy/packages/generator/ts/src/template-shape.test.ts",
+        "legacy/packages/generator/go/template_shape_test.go",
         "packages/generator/rust/tests/template_shape.rs",
-        "packages/generator/php/tests/TemplateShapeTest.php",
-        "packages/generator/python/tests/test_template_shape.py"
+        "legacy/packages/generator/php/tests/TemplateShapeTest.php",
+        "legacy/packages/generator/python/tests/test_template_shape.py"
       ],
       "docs": [
         "docs/spec/form-runtime.md",
@@ -950,19 +950,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form.test.ts"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/input-text.test.ts"
         },
         {
           "id": "test-4",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-choices.test.ts src/template-shape.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form-choices.test.ts src/template-shape.test.ts"
         }
       ]
     },
@@ -995,10 +995,10 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/html/src/conformance.test.ts",
+        "legacy/packages/html/src/conformance.test.ts",
         "packages/react/src/tests/form-render.conformance.test.ts",
         "tests/form-inspector/form-snapshot.test.mts",
-        "packages/html/src/form-complete.conformance.test.ts",
+        "legacy/packages/html/src/form-complete.conformance.test.ts",
         "packages/react/src/tests/form-complete.conformance.test.ts",
         "packages/vue/tests/form-complete.conformance.test.mjs",
         "packages/svelte/tests/form-complete.conformance.test.mjs"
@@ -1006,7 +1006,7 @@
       "docs": [
         "docs/spec/form-runtime.md",
         "docs/operations/forms.md",
-        "packages/html/README.md",
+        "legacy/packages/html/README.md",
         "docs/spec/form-markup.md"
       ],
       "verification": [
@@ -1054,13 +1054,13 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/html/src/list-conformance.test.ts",
+        "legacy/packages/html/src/list-conformance.test.ts",
         "packages/react/src/tests/list-render.conformance.test.ts"
       ],
       "docs": [
         "docs/spec/schema.md",
         "docs/spec/form-runtime.md",
-        "packages/html/README.md"
+        "legacy/packages/html/README.md"
       ],
       "verification": [
         {
@@ -1098,8 +1098,8 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/list.test.ts",
-        "packages/generator/ts/src/input-text.test.ts"
+        "legacy/packages/generator/ts/src/list.test.ts",
+        "legacy/packages/generator/ts/src/input-text.test.ts"
       ],
       "docs": [
         "docs/spec/display-formats.md",
@@ -1109,11 +1109,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/list.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/list.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -1141,14 +1141,14 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/detail.test.ts",
-        "packages/generator/php/tests/DetailTest.php",
-        "packages/generator/go/detail_test.go",
+        "legacy/packages/generator/ts/src/detail.test.ts",
+        "legacy/packages/generator/php/tests/DetailTest.php",
+        "legacy/packages/generator/go/detail_test.go",
         "packages/generator/rust/src/detail.rs",
-        "packages/php-ext/tests/comparison/comparison.test.mjs",
-        "packages/php-ext/tests/ApiReport.php",
+        "legacy/packages/php-ext/tests/comparison/comparison.test.mjs",
+        "legacy/packages/php-ext/tests/ApiReport.php",
         "tests/native-generators/run.mts",
-        "packages/generator/ts/src/input-text.test.ts"
+        "legacy/packages/generator/ts/src/input-text.test.ts"
       ],
       "docs": [
         "docs/spec/schema.md",
@@ -1159,11 +1159,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/detail.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/detail.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/input-text.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/input-text.test.ts"
         }
       ]
     },
@@ -1193,14 +1193,14 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/php-ext/tests/engine/engine.test.mjs",
-        "packages/php-ext/tests/ApiReport.php",
-        "packages/html/src/detail-conformance.test.ts",
+        "legacy/packages/php-ext/tests/engine/engine.test.mjs",
+        "legacy/packages/php-ext/tests/ApiReport.php",
+        "legacy/packages/html/src/detail-conformance.test.ts",
         "packages/react/src/tests/detail-render.conformance.test.ts",
         "packages/vue/src/tests/detail-render.conformance.test.ts",
         "packages/svelte/tests/detail-render.conformance.test.mjs",
-        "packages/generator/php/tests/DetailTest.php",
-        "packages/generator/go/detail_test.go",
+        "legacy/packages/generator/php/tests/DetailTest.php",
+        "legacy/packages/generator/go/detail_test.go",
         "packages/generator/rust/src/detail.rs",
         "tests/native-generators/run.mts"
       ],
@@ -1245,15 +1245,15 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/validator/ts/src/detail-metaschema.conformance.test.ts",
-        "packages/validator/ts/src/validate-detail/validate-detail.conformance.test.ts",
-        "packages/validator/go/validator/validate/detail_conformance_test.go",
-        "packages/validator/php/tests/Validate/DetailValidateConformanceTest.php",
+        "legacy/packages/validator/ts/src/detail-metaschema.conformance.test.ts",
+        "legacy/packages/validator/ts/src/validate-detail/validate-detail.conformance.test.ts",
+        "legacy/packages/validator/go/validator/validate/detail_conformance_test.go",
+        "legacy/packages/validator/php/tests/Validate/DetailValidateConformanceTest.php",
         "packages/validator/rust/tests/detail_validity_conformance.rs",
-        "packages/php-ext/tests/ValidateReport.php",
-        "packages/php-ext/tests/engine/engine.test.mjs",
+        "legacy/packages/php-ext/tests/ValidateReport.php",
+        "legacy/packages/php-ext/tests/engine/engine.test.mjs",
         "examples/cross-check-console/server/validate-detail-runner.test.mjs",
-        "packages/validator/ts/src/text/text-validity.conformance.test.ts"
+        "legacy/packages/validator/ts/src/text/text-validity.conformance.test.ts"
       ],
       "docs": [
         "docs/spec/schema.md",
@@ -1303,7 +1303,7 @@
       "status": "implemented",
       "state": "form instance and host controls through owned events",
       "tests": [
-        "packages/generator/ts/src/widget-controls.test.ts",
+        "legacy/packages/generator/ts/src/widget-controls.test.ts",
         "tests/fixtures/form-session/scenario.mts",
         "tests/fixtures/form-session/group-source.mts"
       ],
@@ -1315,11 +1315,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/widget-controls.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/widget-controls.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form.test.ts"
         }
       ]
     },
@@ -1343,9 +1343,9 @@
       "status": "implemented",
       "state": "the mounted DOM",
       "tests": [
-        "packages/generator/ts/src/patch.test.ts",
-        "packages/html/src/form-session.test.ts",
-        "packages/html/src/view-session.test.ts"
+        "legacy/packages/generator/ts/src/patch.test.ts",
+        "legacy/packages/html/src/form-session.test.ts",
+        "legacy/packages/html/src/view-session.test.ts"
       ],
       "docs": [
         "docs/operations/forms.md"
@@ -1353,7 +1353,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/patch.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/patch.test.ts"
         },
         {
           "id": "test-2",
@@ -1382,7 +1382,7 @@
       "status": "implemented",
       "state": "the mounted DOM",
       "tests": [
-        "packages/html/src/view-session.test.ts",
+        "legacy/packages/html/src/view-session.test.ts",
         "packages/react/src/tests/View.test.tsx",
         "packages/vue/tests/view-session.test.mjs",
         "packages/svelte/tests/view-session.client.mjs"
@@ -1429,11 +1429,11 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/generator/ts/src/node.test.ts",
-        "packages/generator/php/tests/OutlineTest.php",
-        "packages/generator/go/outline_test.go",
+        "legacy/packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/php/tests/OutlineTest.php",
+        "legacy/packages/generator/go/outline_test.go",
         "packages/generator/rust/src/tests.rs",
-        "packages/generator/python/tests/test_outline.py",
+        "legacy/packages/generator/python/tests/test_outline.py",
         "tests/native-generators/run.mts"
       ],
       "docs": [
@@ -1442,11 +1442,11 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_outline"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd legacy/packages/generator/python -- tests.test_outline"
         },
         {
           "id": "test-3",
@@ -1476,7 +1476,7 @@
       "status": "implemented",
       "state": "form instance view state through owned events",
       "tests": [
-        "packages/generator/ts/src/node.test.ts"
+        "legacy/packages/generator/ts/src/node.test.ts"
       ],
       "docs": [
         "docs/spec/form-markup.md"
@@ -1484,7 +1484,7 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/node.test.ts"
         }
       ]
     },
@@ -1517,13 +1517,13 @@
       "status": "implemented",
       "state": "form instance data, view state and undo history",
       "tests": [
-        "packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/node.test.ts",
         "tests/fixtures/form-session/scenario.mts",
-        "packages/generator/go/form_state_test.go",
+        "legacy/packages/generator/go/form_state_test.go",
         "packages/generator/rust/tests/form_state.rs",
-        "packages/generator/php/tests/FormStateTest.php",
-        "packages/generator/python/tests/test_form_state.py",
-        "packages/generator/ts/src/form-actions.test.ts"
+        "legacy/packages/generator/php/tests/FormStateTest.php",
+        "legacy/packages/generator/python/tests/test_form_state.py",
+        "legacy/packages/generator/ts/src/form-actions.test.ts"
       ],
       "docs": [
         "docs/spec/form-runtime.md",
@@ -1532,15 +1532,15 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run 'TestFormActions'"
+          "command": "node scripts/run-tests.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -run 'TestFormActions'"
         },
         {
           "id": "test-3",
-          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_state"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd legacy/packages/generator/python -- tests.test_form_state"
         },
         {
           "id": "test-4",
@@ -1548,11 +1548,11 @@
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts phpunit --cwd packages/generator/php -- tests/FormStateTest.php"
+          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- tests/FormStateTest.php"
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-actions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form-actions.test.ts"
         }
       ]
     },
@@ -1585,14 +1585,14 @@
       "status": "implemented",
       "state": "view state owned by a form instance or a bindForm controller",
       "tests": [
-        "packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/node.test.ts",
         "examples/form-comparison/src/bind-form-controller.test.mjs",
-        "packages/generator/ts/src/form-state.test.ts",
-        "packages/generator/go/form_state_test.go",
-        "packages/generator/python/tests/test_form_state.py",
+        "legacy/packages/generator/ts/src/form-state.test.ts",
+        "legacy/packages/generator/go/form_state_test.go",
+        "legacy/packages/generator/python/tests/test_form_state.py",
         "packages/generator/rust/tests/form_state.rs",
-        "packages/generator/php/tests/FormStateTest.php",
-        "packages/generator/ts/src/view-functions.test.ts"
+        "legacy/packages/generator/php/tests/FormStateTest.php",
+        "legacy/packages/generator/ts/src/view-functions.test.ts"
       ],
       "docs": [
         "docs/spec/form-runtime.md"
@@ -1600,19 +1600,19 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-state.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form-state.test.ts"
         },
         {
           "id": "test-3",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run 'TestFormView|TestViewFunctions'"
+          "command": "node scripts/run-tests.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -run 'TestFormView|TestViewFunctions'"
         },
         {
           "id": "test-4",
-          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_state"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd legacy/packages/generator/python -- tests.test_form_state"
         },
         {
           "id": "test-5",
@@ -1620,11 +1620,11 @@
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts phpunit --cwd packages/generator/php -- tests/FormStateTest.php"
+          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- tests/FormStateTest.php"
         },
         {
           "id": "test-7",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/view-functions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/view-functions.test.ts"
         }
       ]
     },
@@ -1657,15 +1657,15 @@
       "status": "implemented",
       "state": "undo history owned by a form instance or a bindForm controller",
       "tests": [
-        "packages/generator/ts/src/node.test.ts",
+        "legacy/packages/generator/ts/src/node.test.ts",
         "examples/form-comparison/src/bind-form-controller.test.mjs",
-        "packages/generator/go/history_test.go",
-        "packages/generator/go/form_state_test.go",
+        "legacy/packages/generator/go/history_test.go",
+        "legacy/packages/generator/go/form_state_test.go",
         "packages/generator/rust/tests/history_functions.rs",
-        "packages/generator/php/tests/HistoryFunctionsTest.php",
-        "packages/generator/python/tests/test_form_history.py",
-        "packages/generator/ts/src/form-history.test.ts",
-        "packages/generator/ts/src/history-functions.test.ts"
+        "legacy/packages/generator/php/tests/HistoryFunctionsTest.php",
+        "legacy/packages/generator/python/tests/test_form_history.py",
+        "legacy/packages/generator/ts/src/form-history.test.ts",
+        "legacy/packages/generator/ts/src/history-functions.test.ts"
       ],
       "docs": [
         "docs/spec/form-runtime.md"
@@ -1673,15 +1673,15 @@
       "verification": [
         {
           "id": "test-1",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/node.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/node.test.ts"
         },
         {
           "id": "test-2",
-          "command": "node scripts/run-tests.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -run 'TestFormHistory|TestHistoryFunctions'"
+          "command": "node scripts/run-tests.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -run 'TestFormHistory|TestHistoryFunctions'"
         },
         {
           "id": "test-3",
-          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd packages/generator/python -- tests.test_form_history"
+          "command": "PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 node scripts/run-tests.mts python --venv var/python --cwd legacy/packages/generator/python -- tests.test_form_history"
         },
         {
           "id": "test-4",
@@ -1689,11 +1689,11 @@
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts phpunit --cwd packages/generator/php -- tests/HistoryFunctionsTest.php"
+          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- tests/HistoryFunctionsTest.php"
         },
         {
           "id": "test-6",
-          "command": "node scripts/run-tests.mts vitest --cwd packages/generator/ts -- src/form-history.test.ts src/history-functions.test.ts"
+          "command": "node scripts/run-tests.mts vitest --cwd legacy/packages/generator/ts -- src/form-history.test.ts src/history-functions.test.ts"
         }
       ]
     },
@@ -1724,9 +1724,9 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/validator/ts/src/validate.conformance.test.ts",
-        "packages/validator/ts/src/forbidden-scan.conformance.test.ts",
-        "packages/validator/ts/src/text/text-validity.conformance.test.ts"
+        "legacy/packages/validator/ts/src/validate.conformance.test.ts",
+        "legacy/packages/validator/ts/src/forbidden-scan.conformance.test.ts",
+        "legacy/packages/validator/ts/src/text/text-validity.conformance.test.ts"
       ],
       "docs": [
         "docs/spec/validation-rules.md",
@@ -1769,8 +1769,8 @@
       "status": "implemented",
       "state": "none",
       "tests": [
-        "packages/validator/ts/src/validate-list/validate-list.conformance.test.ts",
-        "packages/validator/ts/src/text/text-validity.conformance.test.ts"
+        "legacy/packages/validator/ts/src/validate-list/validate-list.conformance.test.ts",
+        "legacy/packages/validator/ts/src/text/text-validity.conformance.test.ts"
       ],
       "docs": [
         "docs/spec/display-formats.md",

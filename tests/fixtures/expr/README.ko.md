@@ -1,6 +1,6 @@
 # 공통 표현식 고정 사례
 <!-- doc-id: tests-fixtures-expr-readme -->
-<!-- source-sha256: 42e5deb9d3eb83dfa013de11be0a0ecda38e7a8bbbfb3bc3382f323e450dddfe -->
+<!-- source-sha256: e1732f958bfc58fd67ebede3e0fb17232bf4447837097927bba147fdfc6d7b4a -->
 
 [English](README.md).
 
@@ -49,7 +49,7 @@ JSON 값으로 비교하는 두 배열이나 두 객체, 문자열 비교에서 
 패키지를 빌드한 후 저장소 루트에서 다시 생성합니다.
 
 ```sh
-node packages/validator/ts/scripts/generate-expr-cases.mts > tests/fixtures/expr/cases.json
+node legacy/packages/validator/ts/scripts/generate-expr-cases.mts > tests/fixtures/expr/cases.json
 ```
 
 생성기는 실제 TypeScript 토큰·AST·결과를 기록합니다. 다만 `expected`가 있는

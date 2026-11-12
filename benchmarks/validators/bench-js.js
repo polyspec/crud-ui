@@ -2,7 +2,7 @@
 /**
  * bench-js.js — in-process throughput benchmark for validator-ts.
  *
- * Loads the Validator class from packages/validator/ts/dist/internal.js (the
+ * Loads the Validator class from legacy/packages/validator/ts/dist/internal.js (the
  * entry CRUDUI's own packages use), builds the Validator once per spec, then
  * loops validate(input) N times. Process startup, module load, spec parse, and
  * fixture I/O all happen BEFORE timing — the measured window is validate-only.
@@ -89,7 +89,7 @@ function benchSpec(Validator, name, iters, warmup) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
-  const { Validator } = require(path.join(__dirname, '..', '..', 'packages', 'validator/ts', 'dist', 'internal.js'));
+  const { Validator } = require(path.join(__dirname, '..', '..', 'legacy', 'packages', 'validator/ts', 'dist', 'internal.js'));
   const specs = args.spec ? [args.spec] : ['contact', 'large'];
   for (const name of specs) {
     const r = benchSpec(Validator, name, args.iters, args.warmup);

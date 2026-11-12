@@ -130,8 +130,8 @@ structure or validation rules.
 ## Implementation packages
 
 The TypeScript implementation consists of the generator core
-(`@polyspec/crudui-generator-core`, `packages/generator/ts`), the validator
-(`@polyspec/crudui-validator`, `packages/validator/ts`) and the HTML renderer
-(`@polyspec/crudui-generator-html`, `packages/html`), which writes the evaluated fields as
+(`@polyspec/crudui-generator-core`, `legacy/packages/generator/ts`), the validator
+(`@polyspec/crudui-validator`, `legacy/packages/validator/ts`) and the HTML renderer
+(`@polyspec/crudui-generator-html`, `legacy/packages/html`), which writes the evaluated fields as
 HTML. The React, Vue and Svelte adapters render the same model natively and are tested as
 integrations of that implementation.

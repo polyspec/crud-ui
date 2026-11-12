@@ -42,7 +42,7 @@ const errorMessage = (error: unknown): string => (error instanceof Error ? error
 const root = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(import.meta.url);
 const directory = mkdtempSync(join(tmpdir(), 'crudui-install-'));
-const packages = ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding'];
+const packages = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding'];
 // contracts/features.json records every published npm package; the install project installs all of them.
 const published = readFeatureManifest(root).packages.map(({ path }) => relative(join(root, 'packages'), join(root, path)));
 const dependencies: Record<string, string> = {};

@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: d2a65036e77d7b04b967490fca33b4afe3f035cdf4cfea0ad3ad9f85a66ce25d -->
+<!-- source-sha256: b1bd6fb382b48ed2f248c791de9dfefc9f40d71989dc229651bdbcebc51c5fa7 -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -352,7 +352,7 @@ client가 `JSON.parse`로 다시 읽는 페이지 state의 `render` 멤버처럼
 
 필드에 선언한 스크립트와 외부 편집기 연동은 기본 입력 바인딩과 별도입니다.
 
-렌더링한 마크업의 스크립트는 [HTML 패키지 문서](../../packages/html/README.ko.md#렌더링한-마크업의-스크립트)에 정의되어 있습니다.
+렌더링한 마크업의 스크립트는 [HTML 패키지 문서](../../legacy/packages/html/README.ko.md#렌더링한-마크업의-스크립트)에 정의되어 있습니다.
 
 브라우저는 조각으로 파싱했거나(`innerHTML`, `<template>`) 복제한 스크립트를 실행하지 않으므로 모든
 렌더러는 새 스크립트를 새 script 요소로 삽입합니다. HTML 렌더러에서는 `patchContent`가 이를 수행하고,
@@ -377,7 +377,7 @@ DB seq 발급이나 배포를 수행하지 않습니다.
 3. **CURT-054** 저장한 seq 키를 적용하고 입력 이름과 규칙 경로를 올바르게 갱신합니다.
 4. **CURT-055** 잘못된 작업은 상태를 변경하지 않고 실패하며, 모든 행을 제거한 뒤에도 추가할 수 있습니다.
 
-프레임워크 화면, 다시 그리기가 유지하는 노드, 브라우저 바인딩의 인수 기준은 해당 패키지 문서에 있습니다([React](../../packages/react/README.ko.md#프레임워크-화면), [Vue](../../packages/vue/README.ko.md#프레임워크-화면), [Svelte](../../packages/svelte/README.ko.md#프레임워크-화면), [HTML](../../packages/html/README.ko.md#다시-그려도-컨트롤-유지), [폼 바인딩](../../packages/form-binding/README.ko.md#브라우저-바인딩-인수-기준)).
+프레임워크 화면, 다시 그리기가 유지하는 노드, 브라우저 바인딩의 인수 기준은 해당 패키지 문서에 있습니다([React](../../packages/react/README.ko.md#프레임워크-화면), [Vue](../../packages/vue/README.ko.md#프레임워크-화면), [Svelte](../../packages/svelte/README.ko.md#프레임워크-화면), [HTML](../../legacy/packages/html/README.ko.md#다시-그려도-컨트롤-유지), [폼 바인딩](../../packages/form-binding/README.ko.md#브라우저-바인딩-인수-기준)).
 
 공용 검증 fixture의 모든 사례를 JavaScript, PHP, Go, Rust로 실행하며, 네 언어는 하나의 멱등 결과 서명을 내야 합니다. 오류 값 내부의 객체 멤버 순서는 의미가 없고 배열 순서는 의미가 있습니다.
 

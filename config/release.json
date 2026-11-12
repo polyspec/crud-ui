@@ -15,20 +15,6 @@
     },
     {
       "kind": "npm",
-      "directory": "packages/generator/ts",
-      "name": "@polyspec/crudui-generator-core",
-      "product": "crudui-generator-core",
-      "runtime": "ts"
-    },
-    {
-      "kind": "npm",
-      "directory": "packages/html",
-      "name": "@polyspec/crudui-generator-html",
-      "product": "crudui-generator-html",
-      "runtime": "ts"
-    },
-    {
-      "kind": "npm",
       "directory": "packages/react",
       "name": "@polyspec/crudui-generator-react",
       "product": "crudui-generator-react",
@@ -47,97 +33,18 @@
       "name": "@polyspec/crudui-generator-vue",
       "product": "crudui-generator-vue",
       "runtime": "ts"
-    },
-    {
-      "kind": "npm",
-      "directory": "packages/validator/ts",
-      "name": "@polyspec/crudui-validator",
-      "product": "crudui-validator",
-      "runtime": "ts"
-    },
-    {
-      "kind": "composer",
-      "directory": "packages/generator/php",
-      "name": "polyspec/crudui-generator",
-      "product": "crudui-generator",
-      "runtime": "php",
-      "generated": [
-        {
-          "kind": "make",
-          "target": "php-tables",
-          "outputs": [
-            "src/Internal/InterfaceMessages.php"
-          ]
-        }
-      ]
-    },
-    {
-      "kind": "composer",
-      "directory": "packages/validator/php",
-      "name": "polyspec/crudui-validator",
-      "product": "crudui-validator",
-      "runtime": "php",
-      "generated": [
-        {
-          "kind": "make",
-          "target": "php-tables",
-          "outputs": [
-            "src/Values/UnicodeData.php"
-          ]
-        }
-      ]
-    },
-    {
-      "kind": "wheel",
-      "directory": "packages/validator/python",
-      "name": "polyspec-crudui-validator",
-      "product": "crudui-validator",
-      "runtime": "python",
-      "generated": [
-        {
-          "kind": "make",
-          "target": "python-tables",
-          "outputs": [
-            "src/polyspec/crudui/validator/unicode_data.py"
-          ]
-        }
-      ]
-    },
-    {
-      "kind": "wheel",
-      "directory": "packages/generator/python",
-      "name": "polyspec-crudui-generator",
-      "product": "crudui-generator",
-      "runtime": "python",
-      "generated": [
-        {
-          "kind": "make",
-          "target": "python-tables",
-          "outputs": [
-            "src/polyspec/crudui/generator/interface_messages.py"
-          ]
-        }
-      ]
     }
   ],
   "manifests": {
     "package.json": "version",
     "packages/cli/package.json": "version",
     "examples/cross-check-console/server/package.json": "version",
-    "packages/php-ext/composer.json": "version",
     "packages/form-binding/package.json": "archive",
-    "packages/generator/ts/package.json": "archive",
-    "packages/html/package.json": "archive",
     "packages/react/package.json": "archive",
     "packages/svelte/package.json": "archive",
     "packages/vue/package.json": "archive",
-    "packages/validator/ts/package.json": "archive",
-    "packages/generator/php/composer.json": "archive",
-    "packages/validator/php/composer.json": "archive",
     "packages/generator/rust/Cargo.toml": "git-tag",
     "packages/validator/rust/Cargo.toml": "git-tag",
-    "packages/generator/python/pyproject.toml": "archive",
-    "packages/validator/python/pyproject.toml": "archive",
     "examples/cross-check-console/validators/rust/Cargo.toml": "version",
     "examples/form-comparison/servers/rust/Cargo.toml": "version",
     "tests/native-generators/programs/rust/Cargo.toml": "version",
@@ -153,12 +60,32 @@
     "benchmarks/validators/go/go.mod": "a benchmark module of this repository, resolved through replace and never tagged",
     "packages/svelte/tools/package.json": "the tools of packages/svelte that need the TypeScript 6 API, a project of its own outside the npm workspaces",
     "pyproject.toml": "the uv workspace of the Python packages (C14.29), never published; it declares no version",
-    "examples/form-comparison/servers/php/native/composer.json": "the native PHP application and PHPUnit profile, never published; it declares no version"
+    "examples/form-comparison/servers/php/native/composer.json": "the native PHP application and PHPUnit profile, never published; it declares no version",
+    "legacy/packages/php-ext/composer.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/generator/ts/package.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/html/package.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/validator/ts/package.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/generator/php/composer.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/validator/php/composer.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/generator/python/pyproject.toml": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/validator/python/pyproject.toml": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
+    "legacy/packages/generator/go/go.mod": "a legacy Go module of the transition to the Rust core (V-6), kept for its tests and never tagged",
+    "legacy/packages/validator/go/go.mod": "a legacy Go module of the transition to the Rust core (V-6), kept for its tests and never tagged",
+    "Cargo.toml": "the root Cargo workspace; the crates are released by packages/validator/rust/Cargo.toml and packages/generator/rust/Cargo.toml",
+    "packages/validator/php-ext/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/php-ext/composer.json": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/php-ext/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/php-ext/composer.json": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/python/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/python/pyproject.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/ts/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/ts/package.json": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/python/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/python/pyproject.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/ts/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/ts/package.json": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)"
   },
-  "goModules": {
-    "packages/generator/go": "github.com/polyspec/crudui/packages/generator/go",
-    "packages/validator/go": "github.com/polyspec/crudui/packages/validator/go"
-  },
+  "goModules": {},
   "annotatedTags": true,
   "packageFiles": [
     "package.json",

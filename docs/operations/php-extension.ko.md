@@ -1,6 +1,6 @@
 # PHP 확장
 <!-- doc-id: docs-operations-php-extension -->
-<!-- source-sha256: 9346e16facd3085f854ed206ccfcce449c356e0670af34bad1164ba5422446de -->
+<!-- source-sha256: 2e3d816c75fcd01d5c8b7dbc728da180c06e11a773a8ba774ae5f433fc9ef5bb -->
 
 [English](php-extension.md).
 구현, 검증, 패키지 게시 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -8,7 +8,7 @@
 ## 범위와 모듈
 
 `crudui` PHP 확장은 PHP 프로세스에서 폼 생성과 검증을 제공합니다.
-패키지 경로는 `packages/php-ext`이며 Composer manifest가 버전을 기록합니다.
+패키지 경로는 `legacy/packages/php-ext`이며 Composer manifest가 버전을 기록합니다.
 확장은 C로 폼 생성기와 검증기를 구현합니다.
 
 생성은 구조 컴파일, 데이터 바인딩, 폼 인스턴스, HTML 렌더링을 분리합니다.
@@ -143,7 +143,7 @@ JSON 전송은 같은 키 기반 레코드를 전송합니다. JSON 파싱과 �
 확장 빌드 명령은 이전 빌드가 생성한 설정과 산출물을 제거한 뒤 현재 PHP 개발
 헤더로 현재 소스를 컴파일합니다. 반복 빌드는 생성된 설정이나 산출물을 재사용하지
 않으며 해당 생성 경로의 쓰기 권한을 요구하지 않습니다. 정리 범위는 생성된 설정과
-빌드 산출물로 제한하며 `packages/php-ext/tests`의 추적 PHP 테스트 소스를 유지합니다.
+빌드 산출물로 제한하며 `legacy/packages/php-ext/tests`의 추적 PHP 테스트 소스를 유지합니다.
 빌드 명령은 컴파일을 시작하기 전에 모든 출력 디렉터리를 생성합니다.
 
 빌드 명령은 `php-config` 메타데이터를 사용해 C 모듈을 직접 컴파일하고 연결합니다.

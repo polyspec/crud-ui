@@ -51,7 +51,7 @@ entry points, load failures and input failures.
   finite number fails; a referenced value that is missing or `null` declares no bound and the rule passes, and one that is
   present but not a finite number fails.
 
-The [TypeScript registry](../../packages/validator/ts/src/rules/index.ts) defines
+The [TypeScript registry](../../legacy/packages/validator/ts/src/rules/index.ts) defines
 built-in names. `crudui describe` derives its catalog from this registry;
 see the [CLI procedure](../operations/cli.md). Every runtime has the same built-in rules and
 no way to register others. A `validate` or `messages` key that is not one of these names fails the

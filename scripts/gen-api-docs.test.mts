@@ -30,8 +30,8 @@ for (const target of ['ts', 'go', 'rust', 'php']) {
       const root = mkdtempSync(join(repository, 'var/tmp/crudui-api-docs-'));
       try {
         for (const path of ['scripts', 'bin', 'node_modules/.bin', 'var/tools/phpdocumentor',
-          'packages/validator/go', 'packages/validator/rust', 'packages/generator/go', 'packages/generator/rust',
-          ...['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding'].map(pkg => `packages/${pkg}`)]) {
+          'legacy/packages/validator/go', 'packages/validator/rust', 'legacy/packages/generator/go', 'packages/generator/rust',
+          ...['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding'].map(pkg => `packages/${pkg}`)]) {
           mkdirSync(join(root, path), { recursive: true });
         }
         for (const file of ['gen-api-docs.mts', 'run-rust-command.mts', 'operation-progress.mts']) {
@@ -39,7 +39,7 @@ for (const target of ['ts', 'go', 'rust', 'php']) {
           copyFileSync(new URL('./' + file, import.meta.url), join(root, 'scripts', file));
         }
         // gen-api-docs names the doc model of a TypeScript package by the name of its package.json.
-        for (const pkg of ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding']) {
+        for (const pkg of ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding']) {
           copyFileSync(join(repository, 'packages', pkg, 'package.json'), join(root, 'packages', pkg, 'package.json'));
         }
         writeFileSync(join(root, 'var/tools/phpdocumentor/phpDocumentor.phar'), '');
@@ -81,7 +81,7 @@ test('successful API generation preserves the enclosing test result', t => {
   mkdirSync(join(repository, 'var/tmp'), { recursive: true });
   const root = mkdtempSync(join(repository, 'var/tmp/crudui-api-operation-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  for (const name of ['scripts', 'bin', 'packages/validator/go', 'packages/generator/go']) mkdirSync(join(root, name), { recursive: true });
+  for (const name of ['scripts', 'bin', 'legacy/packages/validator/go', 'legacy/packages/generator/go']) mkdirSync(join(root, name), { recursive: true });
   for (const file of ['gen-api-docs.mts', 'operation-progress.mts']) copyFileSync(join(repository, 'scripts', file), join(root, 'scripts', file));
   writeFileSync(join(root, 'bin/go'), `#!${process.execPath}\nprocess.stdout.write(process.argv[2] === 'list' ? 'example/package\\n' : 'func Example()\\n');\n`, { mode: 0o755 });
   const resultFile = join(root, 'outer-result.json');

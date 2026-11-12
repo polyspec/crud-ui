@@ -4,12 +4,12 @@ use (
 	./benchmarks/validators/go
 	./examples/cross-check-console/validators/go
 	./examples/form-comparison/servers/go
-	./packages/generator/go
-	./packages/validator/go
+	./legacy/packages/generator/go
+	./legacy/packages/validator/go
 	./scripts/go
 	./tests/native-generators/programs/go
 )
 
-replace github.com/polyspec/crudui/packages/validator/go v0.0.20 => ./packages/validator/go
+replace github.com/polyspec/crudui/packages/validator/go v0.0.20 => ./legacy/packages/validator/go
 
-replace github.com/polyspec/crudui/packages/generator/go v0.0.20 => ./packages/generator/go
+replace github.com/polyspec/crudui/packages/generator/go v0.0.20 => ./legacy/packages/generator/go

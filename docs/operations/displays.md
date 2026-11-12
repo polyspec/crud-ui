@@ -237,14 +237,14 @@ declaration rules.
 
 | Example | List and detail |
 | --- | --- |
-| [Go server](../../packages/generator/go/examples/server/main.go) | `/` renders the form, `/list` renders the stored record with `RenderList` and `/detail` renders it with `RenderDetail`. |
-| [PHP pages](../../packages/generator/php/examples/index.php) | `/` renders the form, `?view=list` renders the stored record with `Generator::renderList` and `?view=detail` with `Generator::renderDetail`. The file runs with the PHP implementation or the extension. |
+| [Go server](../../legacy/packages/generator/go/examples/server/main.go) | `/` renders the form, `/list` renders the stored record with `RenderList` and `/detail` renders it with `RenderDetail`. |
+| [PHP pages](../../legacy/packages/generator/php/examples/index.php) | `/` renders the form, `?view=list` renders the stored record with `Generator::renderList` and `?view=detail` with `Generator::renderDetail`. The file runs with the PHP implementation or the extension. |
 | [Rust program](../../packages/generator/rust/examples/form.rs) | Renders a form, turns each company row into a list row, renders the list with `render_list` and each company with `render_detail`, and prints one HTML document. |
 | [Cross-check console](../../examples/cross-check-console/README.md) | The list tab validates list structure in four languages and renders rows in React, Vue and Svelte. The detail tab validates detail structure in four languages and renders a record in the three frameworks. |
 
 ```sh
-(cd packages/generator/go && go run ./examples/server -data /tmp/crudui-go-record.json)
-CRUDUI_DATA_FILE=/tmp/crudui-php-example.json php -S 127.0.0.1:8082 -t packages/generator/php/examples
+(cd legacy/packages/generator/go && go run ./examples/server -data /tmp/crudui-go-record.json)
+CRUDUI_DATA_FILE=/tmp/crudui-php-example.json php -S 127.0.0.1:8082 -t legacy/packages/generator/php/examples
 cargo run --locked --manifest-path packages/generator/rust/Cargo.toml --example form
 ```
 
@@ -282,8 +282,8 @@ Run the structure validation cases of each validator from the repository root:
 
 ```sh
 npm test -w @polyspec/crudui-validator -- src/validate-list/validate-list.conformance.test.ts src/validate-detail/validate-detail.conformance.test.ts
-COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd packages/validator/php -- --filter 'ListValidateConformanceTest|DetailValidateConformanceTest'
-node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd packages/validator/go -- ./validator/validate -run 'TestValidateListMatchesFixture|TestValidateDetailMatchesFixture'
+COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd legacy/packages/validator/php -- --filter 'ListValidateConformanceTest|DetailValidateConformanceTest'
+node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd legacy/packages/validator/go -- ./validator/validate -run 'TestValidateListMatchesFixture|TestValidateDetailMatchesFixture'
 node node_modules/@polyspec/kit/dist/run-tests.mjs cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml --test list_validity_conformance --test detail_validity_conformance
 ```
 

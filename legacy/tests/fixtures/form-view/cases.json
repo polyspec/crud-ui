@@ -1,0 +1,734 @@
+[
+  {
+    "name": "toggle-row-collapses-and-expands",
+    "note": "A toggle collapses a row, a second toggle expands it again, a nested row collapses after its parent, and an unknown row fails; the revision does not change.",
+    "requirements": [
+      "CUMK-057",
+      "CURP-010",
+      "CURP-012",
+      "CURP-020",
+      "CURT-009",
+      "CURT-067",
+      "CURT-068"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "teams": {
+          "type": "group",
+          "label": "Team",
+          "multiple": {
+            "min": 1,
+            "max": 5,
+            "sortable": true,
+            "copy": true,
+            "title": "name"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "label": "Name"
+            },
+            "members": {
+              "type": "group",
+              "label": "Member",
+              "multiple": {
+                "title": "name"
+              },
+              "properties": {
+                "name": {
+                  "type": "text",
+                  "label": "Name"
+                }
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "text",
+          "label": "Note"
+        }
+      }
+    },
+    "data": {
+      "teams": {
+        "__0000000000001__": {
+          "name": "Alpha",
+          "members": {
+            "__0000000000011__": {
+              "name": "One"
+            },
+            "__0000000000012__": {
+              "name": "Two"
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "Beta",
+          "members": {
+            "__0000000000013__": {
+              "name": "Three"
+            }
+          }
+        }
+      },
+      "note": ""
+    },
+    "steps": [
+      {
+        "op": "toggleRow",
+        "args": [
+          "teams",
+          "__0000000000001__"
+        ]
+      },
+      {
+        "op": "toggleRow",
+        "args": [
+          "teams.__0000000000001__.members",
+          "__0000000000011__"
+        ]
+      },
+      {
+        "op": "toggleRow",
+        "args": [
+          "teams",
+          "__0000000000001__"
+        ]
+      },
+      {
+        "op": "toggleRow",
+        "args": [
+          "teams",
+          "__0000000000009__"
+        ]
+      },
+      {
+        "op": "toggleRow",
+        "args": [
+          "teams",
+          "__0000000000001__"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__.members.__0000000000011__"
+        ]
+      },
+      {
+        "error": {
+          "code": "INVALID_FORM_INPUT",
+          "message": "Unknown row: __0000000000009__"
+        },
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__.members.__0000000000011__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "set-all-expanded-collapses-every-collapsible-row",
+    "note": "Collapsing every row lists the collapsible rows depth first; expanding all clears the view.",
+    "requirements": [
+      "CUMK-057",
+      "CURP-010",
+      "CURP-012",
+      "CURP-020",
+      "CURT-010",
+      "CURT-073"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "teams": {
+          "type": "group",
+          "label": "Team",
+          "multiple": {
+            "min": 1,
+            "max": 5,
+            "sortable": true,
+            "copy": true,
+            "title": "name"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "label": "Name"
+            },
+            "members": {
+              "type": "group",
+              "label": "Member",
+              "multiple": {
+                "title": "name"
+              },
+              "properties": {
+                "name": {
+                  "type": "text",
+                  "label": "Name"
+                }
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "text",
+          "label": "Note"
+        }
+      }
+    },
+    "data": {
+      "teams": {
+        "__0000000000001__": {
+          "name": "Alpha",
+          "members": {
+            "__0000000000011__": {
+              "name": "One"
+            },
+            "__0000000000012__": {
+              "name": "Two"
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "Beta",
+          "members": {
+            "__0000000000013__": {
+              "name": "Three"
+            }
+          }
+        }
+      },
+      "note": ""
+    },
+    "steps": [
+      {
+        "op": "setAllExpanded",
+        "args": [
+          false
+        ]
+      },
+      {
+        "op": "toggleRow",
+        "args": [
+          "teams",
+          "__0000000000002__"
+        ]
+      },
+      {
+        "op": "setAllExpanded",
+        "args": [
+          true
+        ]
+      },
+      {
+        "op": "setAllExpanded",
+        "args": [
+          false
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__.members.__0000000000012__",
+          "teams.__0000000000002__",
+          "teams.__0000000000002__.members.__0000000000013__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__.members.__0000000000012__",
+          "teams.__0000000000002__.members.__0000000000013__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__.members.__0000000000012__",
+          "teams.__0000000000002__",
+          "teams.__0000000000002__.members.__0000000000013__"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "row-removal-drops-and-rekey-moves-view",
+    "note": "Removing a row drops the collapsed state of the row and of its rows; rekeying moves it to the new key.",
+    "requirements": [
+      "CUMK-057",
+      "CURP-010",
+      "CURP-012",
+      "CURP-020",
+      "CURP-027",
+      "CURT-006",
+      "CURT-008",
+      "CURT-066",
+      "CURT-074",
+      "CURT-075"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "teams": {
+          "type": "group",
+          "label": "Team",
+          "multiple": {
+            "min": 1,
+            "max": 5,
+            "sortable": true,
+            "copy": true,
+            "title": "name"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "label": "Name"
+            },
+            "members": {
+              "type": "group",
+              "label": "Member",
+              "multiple": {
+                "title": "name"
+              },
+              "properties": {
+                "name": {
+                  "type": "text",
+                  "label": "Name"
+                }
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "text",
+          "label": "Note"
+        }
+      }
+    },
+    "data": {
+      "teams": {
+        "__0000000000001__": {
+          "name": "Alpha",
+          "members": {
+            "__0000000000011__": {
+              "name": "One"
+            },
+            "__0000000000012__": {
+              "name": "Two"
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "Beta",
+          "members": {
+            "__0000000000013__": {
+              "name": "Three"
+            }
+          }
+        }
+      },
+      "note": ""
+    },
+    "steps": [
+      {
+        "op": "setAllExpanded",
+        "args": [
+          false
+        ]
+      },
+      {
+        "op": "rekeyRow",
+        "args": [
+          "teams",
+          "__0000000000001__",
+          "__0000000000003__"
+        ]
+      },
+      {
+        "op": "removeRow",
+        "args": [
+          "teams",
+          "__0000000000002__"
+        ]
+      },
+      {
+        "op": "rekeyRow",
+        "args": [
+          "teams.__0000000000003__.members",
+          "__0000000000012__",
+          "__0000000000014__"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "data": {
+          "teams": {
+            "__0000000000001__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 0,
+        "collapsed": [
+          "teams.__0000000000001__",
+          "teams.__0000000000001__.members.__0000000000011__",
+          "teams.__0000000000001__.members.__0000000000012__",
+          "teams.__0000000000002__",
+          "teams.__0000000000002__.members.__0000000000013__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000003__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            },
+            "__0000000000002__": {
+              "name": "Beta",
+              "members": {
+                "__0000000000013__": {
+                  "name": "Three"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 1,
+        "collapsed": [
+          "teams.__0000000000003__",
+          "teams.__0000000000003__.members.__0000000000011__",
+          "teams.__0000000000003__.members.__0000000000012__",
+          "teams.__0000000000002__",
+          "teams.__0000000000002__.members.__0000000000013__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000003__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000012__": {
+                  "name": "Two"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 2,
+        "collapsed": [
+          "teams.__0000000000003__",
+          "teams.__0000000000003__.members.__0000000000011__",
+          "teams.__0000000000003__.members.__0000000000012__"
+        ]
+      },
+      {
+        "data": {
+          "teams": {
+            "__0000000000003__": {
+              "name": "Alpha",
+              "members": {
+                "__0000000000011__": {
+                  "name": "One"
+                },
+                "__0000000000014__": {
+                  "name": "Two"
+                }
+              }
+            }
+          },
+          "note": ""
+        },
+        "revision": 3,
+        "collapsed": [
+          "teams.__0000000000003__",
+          "teams.__0000000000003__.members.__0000000000011__",
+          "teams.__0000000000003__.members.__0000000000014__"
+        ]
+      }
+    ]
+  }
+]

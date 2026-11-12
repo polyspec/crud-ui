@@ -1,6 +1,6 @@
 # 스키마 검증
 <!-- doc-id: docs-operations-schema-validation -->
-<!-- source-sha256: 62110d5b815afa5a87f7807db05c4b40e1be985022737b3a18adae46eaf65dda -->
+<!-- source-sha256: 7d4630585c7e95d7ebf0ffa14da7ebc55ac8c3b8d957ea9a3d257db2f2116c74 -->
 
 [English](schema-validation.md).
 
@@ -19,7 +19,7 @@ npm 의존성을 설치한 후 저장소 루트에서 `make docs-schema`를 실�
 합니다. 따라서 검사하지 않는 YAML 명세가 남지 않습니다.
 
 JSON Schema는 허용하는 선언 형태를 정의합니다.
-`packages/validator/ts/src/schema.ts`의 TypeScript 선언은 이에 대응하는 작성용
+`legacy/packages/validator/ts/src/schema.ts`의 TypeScript 선언은 이에 대응하는 작성용
 타입을 제공하며, `@polyspec/crudui-validator`의 entry가 이를 export하고 API report
 `etc/crudui-validator.api.md`가 이를 나열합니다. 선언 계약을 변경하면 둘을 함께 수정하고 검증기 테스트,
 CLI 검사와 `make docs-schema`를 실행합니다. `make docs-clean`은 스키마 파일을

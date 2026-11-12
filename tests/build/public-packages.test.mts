@@ -99,7 +99,7 @@ const load = (folder: string): LoadedPackage => {
   const manifest = readJson(resolve(directory, 'package.json'), packageSchema);
   return { directory, manifest };
 };
-const packages = ['validator/ts', 'generator/ts', 'html', 'react'].map(load);
+const packages = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react'].map(load);
 // Packages that publish only an ES module: the browser validation binding runs only in a browser
 // (docs/spec/form-runtime.md#browser-validation).
 const moduleOnlyPackages = ['form-binding'].map(load);
@@ -337,7 +337,7 @@ test('generator-core exposes the only form stylesheet through the public crudui.
 
 
 // The published packages whose declarations TypeScript builds from tsconfig.build.json.
-const declarationPackages = ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'form-binding'];
+const declarationPackages = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'form-binding'];
 
 test('the declaration build check covers every published package with a declaration build', () => {
   const built = contract.packages

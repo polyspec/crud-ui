@@ -36,7 +36,7 @@ spec declares in `design`.
 - **CUMK-005** `crudui-node`: One data node; see the kinds below.
 - **CUMK-006** `crudui-controls`: A button group with `role="group"` and an accessible name.
 - **CUMK-007** `crudui-action`: A button: an action with `data-crudui-action`, a form button or the button of a [button field](#button-fields); `crudui-action--text` shows its label as text.
-- The structure map (`crudui-outline`) and the current data view (`crudui-data`) are blocks of the TypeScript HTML renderer, documented in `packages/html/README.md`.
+- The structure map (`crudui-outline`) and the current data view (`crudui-data`) are blocks of the TypeScript HTML renderer, documented in `legacy/packages/html/README.md`.
 - The structured condition editor (`crudui-condition`) is a block of the widget of a structured condition field, defined in [structured condition editor](#structured-condition-editor) (CUMK-067, CUMK-068).
 - **CUMK-010** `crudui-widget`: A control with its `__affix` prepend and append texts, a file widget's `__button` and a range widget's `__output`; `--search` holds a search select, `--range` holds a range control, `--condition` holds a [structured condition editor](#structured-condition-editor) and `--unsupported` marks a type without a widget.
 - **CUMK-011** `crudui-input`: A native input, textarea or select; `--select` for a select, `--file` for a file input, `--range` for a range input, `--condition` for the textarea of a [condition field](#condition-fields) and `--switch` for the checkbox input of a [switch](#switches).
@@ -539,7 +539,7 @@ other rule writes a color. A page themes the blocks with a rule that selects the
 sets the properties, for example `.crudui-form, .crudui-list { --crudui-accent: … }`;
 the rule overrides the defaults in any stylesheet order.
 
-- The `--crudui-*` custom properties with their defaults and uses are documented, with the stylesheet `crudui.css`, in `packages/generator/ts/README.md`.
+- The `--crudui-*` custom properties with their defaults and uses are documented, with the stylesheet `crudui.css`, in `legacy/packages/generator/ts/README.md`.
 
 `--crudui-node-header-height`, `--crudui-row-padding`, `--crudui-row-border` and
 `--crudui-form-footer-height` size the sticky rows and the form footer (see above).
@@ -604,7 +604,7 @@ presentation classes.
 
 The reference form that motivated this grammar differs in these deliberate ways:
 
-1. The readiness and scroll behaviour of the TypeScript renderer (synchronization after rendering; sticky headers marked on scroll and resize at most once per animation frame) is documented in `packages/generator/ts/README.md`.
+1. The readiness and scroll behaviour of the TypeScript renderer (synchronization after rendering; sticky headers marked on scroll and resize at most once per animation frame) is documented in `legacy/packages/generator/ts/README.md`.
 
 2. **CUMK-057** Expansion is view state, not record data.
 3. **CUMK-058** Rows are identified by keys, not array positions.

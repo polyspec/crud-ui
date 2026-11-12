@@ -33,15 +33,16 @@ test('docs-verify-idempotent compares the two runs in a directory of its own run
   assert.match(lines, /trap 'rm -rf "\$\$runs"' EXIT/);
 });
 
-const builtPackages = ['validator/ts', 'generator/ts', 'html', 'react', 'vue',
+const builtPackages = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue',
   'svelte', 'form-binding'];
 
 test('every package build runs under the lock of its dist directory', () => {
   for (const folder of builtPackages) {
     const build = script(readManifest(path.join(root, `packages/${folder}/package.json`)), 'build');
-    // The script of the root, named from the package folder ('../../' or, for a port of a component, '../../../').
-    assert.match(build, /^node (?:\.\.\/){2,3}scripts\/package-dist\.mts build '[^']+'$/, folder);
-    assert.ok(build.startsWith(`node ${'../'.repeat(folder.split('/').length + 1)}scripts/package-dist.mts`), folder);
+    // The script of the root, named from the package folder ('../../', for a port of a component '../../../', and one
+    // level more under legacy/).
+    assert.match(build, /^node (?:\.\.\/){2,4}scripts\/package-dist\.mts build '[^']+'$/, folder);
+    assert.ok(build.startsWith(`node ${'../'.repeat(path.normalize(`packages/${folder}`).split(path.sep).length)}scripts/package-dist.mts`), folder);
   }
 });
 

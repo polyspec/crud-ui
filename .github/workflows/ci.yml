@@ -811,7 +811,7 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: go-${{ runner.os }}-${{ hashFiles('packages/generator/go/go.mod', 'tests/native-generators/programs/go/go.mod', 'benchmarks/validators/go/go.mod') }}
+          key: go-${{ runner.os }}-${{ hashFiles('legacy/packages/generator/go/go.mod', 'tests/native-generators/programs/go/go.mod', 'benchmarks/validators/go/go.mod') }}
       - name: Install the selected pinned tools
         run: make install-tools TOOLS="node go rust php composer python uv"
       - name: Cargo cache

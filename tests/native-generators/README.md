@@ -129,8 +129,8 @@ programs; each one calls only its package's public API.
 | Target | Program | Library |
 | --- | --- | --- |
 | `javascript`, `html` | [`javascript.mts`](javascript.mts) (`--renderer html` selects the HTML renderer) | `@polyspec/crudui-generator-core` with `@polyspec/crudui-generator-react` or `@polyspec/crudui-generator-html` |
-| `php`, `php-native` | [`programs/php/generate.php`](programs/php/generate.php) | `polyspec/crudui-generator` through the Composer autoloader of `packages/generator/php`; with the extension loaded, the extension's classes |
-| `go` | [`programs/go`](programs/go/main.go) (module with its own `go.mod`) | `packages/generator/go` |
+| `php`, `php-native` | [`programs/php/generate.php`](programs/php/generate.php) | `polyspec/crudui-generator` through the Composer autoloader of `legacy/packages/generator/php`; with the extension loaded, the extension's classes |
+| `go` | [`programs/go`](programs/go/main.go) (module with its own `go.mod`) | `legacy/packages/generator/go` |
 | `rust` | [`programs/rust`](programs/rust/src/main.rs) (crate `polyspec-crudui-native-generator`) | `polyspec-crudui-generator` |
 
 The suite builds the Go program into its build directory and the Rust program with

@@ -1,0 +1,267 @@
+[
+  {
+    "name": "ok-minimal-columns",
+    "requirements": ["CUDF-027", "CUDF-043", "CUDF-044", "CUDF-046", "CUDF-047", "CUSC-001"],
+    "note": "the smallest valid list-spec — required columns map with one text column.",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "columns": {
+        "name": { "field": "name", "label": { "ko": "이름", "en": "Name" } }
+      }
+    }
+  },
+  {
+    "name": "ok-catalog-formats",
+    "requirements": ["CUDF-048", "CUDF-049", "CUDF-050", "CUDF-051", "CUDF-052", "CUDF-053", "CUDF-054", "CUDF-055", "CUSC-027", "CUSC-028", "CUSC-029", "CUSC-030", "CUSC-031", "CUSC-032", "CUSC-033", "CUSC-034", "CUSC-035"],
+    "note": "every §9.2 cell format passes (date/number/badge/link/choice-label/bool/image/html).",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "columns": {
+        "joined": { "field": "joined", "format": { "type": "date", "pattern": "YYYY-MM-DD" } },
+        "score": { "field": "score", "format": { "type": "number", "decimals": 2, "thousands": true, "prefix": { "en": "$" } } },
+        "status": { "field": "status", "format": { "type": "badge", "map": { "active": "success", "blocked": { "ko": "차단", "en": "Blocked" } } } },
+        "name": { "field": "name", "format": { "type": "link", "href": "/user/{=id}", "target": "_blank", "text": { "en": "Open" } } },
+        "grade": { "field": "grade", "format": { "type": "choice-label", "items": { "A": "Apple", "B": { "ko": "바나나", "en": "Banana" } } } },
+        "admin": { "field": "admin", "format": { "type": "bool", "as": "check", "true": { "en": "Yes" }, "false": { "en": "No" } } },
+        "avatar": { "field": "avatar", "format": { "type": "image", "width": 40, "height": 40, "alt": "avatar {=name}" } },
+        "bio": { "field": "bio", "format": { "type": "html" } }
+      }
+    }
+  },
+  {
+    "name": "ok-shorthand-and-boolean-format",
+    "requirements": ["CUDF-043", "CUDF-048"],
+    "note": "CellFormat polymorphism — a bare type string and a boolean both validate.",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "columns": {
+        "a": { "field": "a", "format": "date" },
+        "b": { "field": "b", "format": false },
+        "c": { "field": "c", "format": true }
+      }
+    }
+  },
+  {
+    "name": "ok-sortable-sort-pagination-actions-empty-design",
+    "requirements": ["CUDF-040", "CUDF-044", "CUDF-047", "CUDF-056", "CUDF-058", "CUDF-059", "CUDF-060", "CUDF-061", "CUDF-062", "CUDF-064", "CUDF-066", "CUDF-068", "CUDF-069", "CUDF-077", "CUDF-079", "CUDF-080", "CUDF-081", "CUDF-082"],
+    "note": "The sort, pagination, actions, empty and design read-structure slots validate together.",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "columns": {
+        "name": { "field": "name", "label": "Name", "sortable": true, "design": { "class": "text-right", "style": "width: 40%" } },
+        "score": { "field": "score", "sortable": ".admin" }
+      },
+      "sort": { "field": "name", "dir": "asc" },
+      "pagination": { "per_page": 20, "mode": "pages" },
+      "actions": {
+        "edit": { "label": { "en": "Edit" }, "format": { "type": "link", "href": "/edit" } },
+        "remove": "confirmDelete(this)"
+      },
+      "empty": { "ko": "데이터 없음", "en": "No data" },
+      "design": { "show": ".admin", "class": "list-bordered" }
+    }
+  },
+  {
+    "name": "ok-compose-ref-patch-columns",
+    "requirements": ["CUSC-007"],
+    "note": "$ref/$patch compose entry on the columns map (the SAME engine as form-spec). files resolve the base for the four-language engine; ajv ignores files and reads only spec.",
+    "expect": "ok",
+    "engine": "pass",
+    "files": {
+      "base-columns.yml": {
+        "properties": {
+          "name": { "field": "name", "label": "Name" },
+          "joined": { "field": "joined", "format": { "type": "date" } }
+        }
+      }
+    },
+    "spec": {
+      "columns": {
+        "$ref": "base-columns.yml",
+        "$patch": { "extra": { "field": "extra", "label": "Extra" } }
+      }
+    }
+  },
+  {
+    "name": "ok-search-form-ref",
+    "requirements": ["CUDF-040", "CUDF-057", "CUSC-007"],
+    "note": "search is input → a form-spec reference ($ref base + $patch overlay). files resolve the base form for the engine; ajv ignores files and reads only spec.",
+    "expect": "ok",
+    "engine": "pass",
+    "files": {
+      "search-form.yml": {
+        "properties": {
+          "q": { "type": "text", "label": "Query" }
+        }
+      }
+    },
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "search": { "$ref": "search-form.yml", "$patch": { "add": { "type": "text", "label": "Add filter" } } }
+    }
+  },
+
+  {
+    "name": "red-missing-columns",
+    "note": "A list specification without required columns is rejected. This shape check is defined only by the meta-schema, so the four-language composition and forbidden-key engine accepts it.",
+    "expect": "fail",
+    "reason": "required",
+    "engine": "pass",
+    "spec": { "sort": { "field": "name", "dir": "asc" } }
+  },
+  {
+    "name": "red-forbidden-column-key",
+    "note": "A forbidden condition meta-key used as a column key is rejected. The four-language engine also rejects the key as a load failure.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "columns.display_switch" },
+    "spec": {
+      "columns": {
+        "name": { "field": "name" },
+        "display_switch": { "field": "x" }
+      }
+    }
+  },
+  {
+    "name": "red-x-prefixed-column-key",
+    "note": "An x-prefixed comment-residue key used as a column key is rejected. The four-language engine also rejects every remaining x{key}.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "columns.xclass" },
+    "spec": {
+      "columns": {
+        "name": { "field": "name" },
+        "xclass": { "field": "x" }
+      }
+    }
+  },
+  {
+    "name": "red-unknown-column-key",
+    "requirements": ["CUDF-044"],
+    "note": "A column with an unregistered key is rejected by additionalProperties:false. The four-language engine also rejects show_if as a forbidden meta-key load failure.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "columns.name.show_if" },
+    "spec": {
+      "columns": {
+        "name": { "field": "name", "show_if": ".admin" }
+      }
+    }
+  },
+  {
+    "name": "red-forbidden-key-in-format-options",
+    "note": "A forbidden meta-key inside the open CellFormat options object is rejected. The four-language engine scans the format object and rejects 'if' as a load failure.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "columns.name.format.if" },
+    "spec": {
+      "columns": {
+        "name": { "field": "name", "format": { "type": "badge", "if": ".admin" } }
+      }
+    }
+  },
+  {
+    "name": "red-bad-sort-dir",
+    "note": "sort.dir accepts only asc or desc. This enum check is defined only by the meta-schema, so the four-language engine accepts the value.",
+    "expect": "fail",
+    "reason": "enum",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "sort": { "field": "name", "dir": "sideways" }
+    }
+  },
+  {
+    "name": "red-unknown-sort-key",
+    "note": "Sort accepts only field and dir, so an extra key is rejected. This object-shape check is defined only by the meta-schema; the four-language engine accepts nulls because it is not a forbidden meta-key.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "sort": { "field": "name", "dir": "asc", "nulls": "last" }
+    }
+  },
+  {
+    "name": "red-unknown-pagination-key",
+    "note": "Pagination accepts only per_page and mode, so an extra key is rejected. This object-shape check is defined only by the meta-schema; the four-language engine accepts limit because it is not a forbidden meta-key.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "pagination": { "per_page": 20, "limit": 99 }
+    }
+  },
+  {
+    "name": "red-bad-pagination-mode",
+    "note": "pagination.mode accepts only pages, offset, cursor or none. This enum check is defined only by the meta-schema, so the four-language engine accepts the value.",
+    "expect": "fail",
+    "reason": "enum",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "pagination": { "mode": "infinite" }
+    }
+  },
+  {
+    "name": "red-unknown-list-top-key",
+    "note": "A list rejects an unregistered top-level key through additionalProperties:false. This object-shape check is defined only by the meta-schema; the four-language engine accepts limit because it is not a forbidden meta-key.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "limit": 10
+    }
+  },
+  {
+    "name": "red-unknown-action-key",
+    "note": "A ListAction object rejects an unregistered action key. This object-shape check is defined only by the meta-schema; the four-language engine accepts onclick because it is not a forbidden meta-key.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "actions": { "edit": { "label": "Edit", "onclick": "x()" } }
+    }
+  },
+  {
+    "name": "red-malformed-format-value",
+    "note": "CellFormat accepts a boolean, string or object, so anyOf rejects an array. This type check is defined only by the meta-schema; the four-language engine accepts the array because it contains no forbidden key.",
+    "expect": "fail",
+    "reason": "anyOf",
+    "engine": "pass",
+    "spec": {
+      "columns": {
+        "name": { "field": "name", "format": ["date"] }
+      }
+    }
+  },
+  {
+    "name": "ok-description",
+    "requirements": ["CUDF-040", "CUDF-078", "CUSC-002"],
+    "note": "a list description is content: a string or a language map.",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "description": { "ko": "회원 목록", "en": "Members" }
+    }
+  },
+  {
+    "name": "red-bad-description",
+    "note": "a list description that is not content fails the meta-schema; the runtime scan passes it.",
+    "expect": "fail",
+    "reason": "anyOf",
+    "engine": "pass",
+    "spec": {
+      "columns": { "name": { "field": "name" } },
+      "description": 5
+    }
+  }
+]

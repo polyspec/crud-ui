@@ -12,7 +12,7 @@ import { setup, teardown } from '@polyspec/kit/test-hooks';
 import { readJson, type JTDSchemaType } from './json.mts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const stylesheet = readFileSync(`${root}packages/generator/ts/styles/crudui.css`, 'utf8');
+const stylesheet = readFileSync(`${root}legacy/packages/generator/ts/styles/crudui.css`, 'utf8');
 const corpora = ['form-render', 'form-complete', 'list-render', 'detail-render'];
 /** A case of a shared render fixture with the HTML it expects; a case that expects an error renders no HTML. */
 interface RenderCase { name: string; expected_html?: string }

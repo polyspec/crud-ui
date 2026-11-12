@@ -21,7 +21,7 @@ if (!['all', 'ts', 'go', 'rust', 'php'].includes(target)) {
   throw new Error('Use all, ts, go, rust or php');
 }
 const want = (name: string): boolean => target === 'all' || target === name;
-const packages = ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding'];
+const packages = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding'];
 
 const lines = createOperationProgress({ write: text => process.stdout.write(text) });
 const shown = (value: string): string => value.startsWith(ROOT) ? relative(ROOT, value) || '.' : value;
@@ -83,7 +83,7 @@ async function genGo(): Promise<void> {
   const output = join(API_DIR, 'go.md');
   rmSync(output, { force: true });
   const sections: string[] = [];
-  for (const pkg of ['validator/go', 'generator/go']) {
+  for (const pkg of ['../legacy/packages/validator/go', '../legacy/packages/generator/go']) {
     const cwd = join(ROOT, 'packages', pkg);
     const go = process.env.GO ?? 'go';
     const listed = (await run(go, ['list', '-f', '{{if ne .Name "main"}}{{.ImportPath}}{{end}}', './...'], cwd, { capture: true })).trim();
@@ -134,7 +134,7 @@ async function genPhp(): Promise<void> {
   const cache = join(ROOT, 'var/phpdocumentor/cache');
   cleanDirectory(output);
   try {
-    await run(process.env.PHP ?? 'php', [phar, 'run', '-d', 'packages/validator/php/src', '-d', 'packages/generator/php/src', '-t', output,
+    await run(process.env.PHP ?? 'php', [phar, 'run', '-d', 'legacy/packages/validator/php/src', '-d', 'legacy/packages/generator/php/src', '-t', output,
       '--cache-folder', cache, '--title', 'CRUDUI PHP API', '--no-interaction']);
     requireOutput(join(output, 'index.html'));
     for (const name of ['Generator', 'Validator', 'Form', 'FormError']) {

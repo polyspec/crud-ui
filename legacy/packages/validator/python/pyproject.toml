@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools==84.2.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "polyspec-crudui-validator"
+version = "0.0.20"
+description = "Form, list and detail validation for CRUDUI specifications"
+readme = "README.md"
+requires-python = ">=3.14"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"polyspec.crudui.validator" = ["py.typed"]

@@ -45,7 +45,7 @@ test('crudui-test-native runs the generator and PHP API parts after the PHP engi
   await writeFile(path.join(commandDirectory, 'node'), [
     '#!/bin/sh',
     'printf \'%s\t%s\n\' "${0##*/}" "$*" >> "$COMMAND_LOG"',
-    'case "$*" in *packages/php-ext/tests/engine/engine.test.mjs*) exit 1 ;; esac',
+    'case "$*" in *legacy/packages/php-ext/tests/engine/engine.test.mjs*) exit 1 ;; esac',
     '',
   ].join('\n'));
   await chmod(path.join(commandDirectory, 'node'), 0o755);

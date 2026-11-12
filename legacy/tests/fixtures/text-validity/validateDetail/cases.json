@@ -1,0 +1,176 @@
+[
+  {
+    "name": "pass-paired-surrogates",
+    "note": "a surrogate pair is valid text in a field label.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-009",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "A😀"
+        }
+      }
+    },
+    "expect": {
+      "valid": true,
+      "errors": []
+    }
+  },
+  {
+    "name": "spec-lone-low-in-label",
+    "note": "a lone low surrogate in a field label is a load failure.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-009",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "\udc00"
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "fields.name.label"
+    }
+  },
+  {
+    "name": "spec-reversed-pair-in-format",
+    "note": "a reversed pair in format options is a load failure at its path.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-009",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "fields": {
+        "state": {
+          "field": "state",
+          "format": {
+            "type": "badge",
+            "map": {
+              "active": "\udc00\ud800"
+            }
+          }
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "fields.state.format.map.active"
+    }
+  },
+  {
+    "name": "file-name",
+    "note": "an invalid file name is located at the empty path.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-009",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "files": {
+      "\ud800": {
+        "properties": {
+          "extra": {
+            "type": "text",
+            "label": "Extra"
+          }
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": ""
+    }
+  },
+  {
+    "name": "basepath",
+    "note": "an invalid base path is an input failure naming the option.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-007",
+      "CUIT-009",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "basepath": "\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.basepath",
+      "at": ""
+    }
+  }
+]

@@ -44,7 +44,7 @@
       "reason": "test: a test states its case in full; the rule separates the concerns of components"
     },
     {
-      "glob": "packages/php-ext/src/polyspec_*.stub.php",
+      "glob": "legacy/packages/php-ext/src/polyspec_*.stub.php",
       "reason": "ecosystem: the S10 stub declares the library under the same names and signatures"
     }
   ]

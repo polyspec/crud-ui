@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit defaultTestSuite="public" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../../../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="../../../../vendor/autoload.php"
+         colors="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         failOnNotice="true"
+         failOnDeprecation="true"
+         cacheDirectory=".phpunit.cache">
+  <testsuites>
+    <testsuite name="public">
+      <directory>tests</directory>
+      <exclude>tests/Compose/ComposeConformanceTest.php</exclude>
+      <exclude>tests/Compose/PatchTest.php</exclude>
+      <exclude>tests/Compose/RefTest.php</exclude>
+      <exclude>tests/Expr/ExprConformanceTest.php</exclude>
+      <exclude>tests/Expr/ExpressionCacheTest.php</exclude>
+      <exclude>tests/Expr/NumberValueTest.php</exclude>
+      <exclude>tests/Expr/VisibilityTest.php</exclude>
+      <exclude>tests/FieldSpecTest.php</exclude>
+      <exclude>tests/Patterns/PatternLanguageTest.php</exclude>
+      <exclude>tests/Support/JsonValueTest.php</exclude>
+      <exclude>tests/Validate/TextInternalsTest.php</exclude>
+      <exclude>tests/Validate/ValidatorConstructionTest.php</exclude>
+      <exclude>tests/Values/NumberTextTest.php</exclude>
+      <exclude>tests/Values/NumericTest.php</exclude>
+      <exclude>tests/Values/UnicodeDataTest.php</exclude>
+      <exclude>tests/Values/ValuesTest.php</exclude>
+    </testsuite>
+    <testsuite name="php-source-internal">
+      <file>tests/Compose/ComposeConformanceTest.php</file>
+      <file>tests/Compose/PatchTest.php</file>
+      <file>tests/Compose/RefTest.php</file>
+      <file>tests/Expr/ExprConformanceTest.php</file>
+      <file>tests/Expr/ExpressionCacheTest.php</file>
+      <file>tests/Expr/NumberValueTest.php</file>
+      <file>tests/Expr/VisibilityTest.php</file>
+      <file>tests/FieldSpecTest.php</file>
+      <file>tests/Patterns/PatternLanguageTest.php</file>
+      <file>tests/Support/JsonValueTest.php</file>
+      <file>tests/Validate/TextInternalsTest.php</file>
+      <file>tests/Validate/ValidatorConstructionTest.php</file>
+      <file>tests/Values/NumberTextTest.php</file>
+      <file>tests/Values/NumericTest.php</file>
+      <file>tests/Values/UnicodeDataTest.php</file>
+      <file>tests/Values/ValuesTest.php</file>
+    </testsuite>
+  </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+</phpunit>

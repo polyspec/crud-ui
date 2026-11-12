@@ -30,7 +30,7 @@ each implementation with `expected_outline_rows` for the nodes of its own `bindF
 [React](../../../packages/react/src/tests/outline.conformance.test.tsx),
 [Vue](../../../packages/vue/tests/outline.conformance.test.mjs),
 [Svelte](../../../packages/svelte/tests/outline.conformance.test.mjs) and the
-[HTML renderer](../../../packages/html/src/outline.conformance.test.ts). The
+[HTML renderer](../../../legacy/packages/html/src/outline.conformance.test.ts). The
 [form markup naming test](../../form-markup/naming.test.mts) checks the class names in both
 expected HTML strings.
 

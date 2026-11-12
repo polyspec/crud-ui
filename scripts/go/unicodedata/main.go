@@ -1,5 +1,5 @@
 // Command unicodedata writes unicode_data.go from contracts/unicode-properties.json, the Unicode data every CRUDUI
-// runtime embeds. Run it with `go generate` in packages/validator/go/validator/validate.
+// runtime embeds. Run it with `go generate` in legacy/packages/validator/go/validator/validate.
 package main
 
 import (

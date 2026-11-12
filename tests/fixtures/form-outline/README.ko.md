@@ -1,6 +1,6 @@
 # 구조 지도와 데이터 보기 고정 데이터
 <!-- doc-id: tests-fixtures-form-outline-readme -->
-<!-- source-sha256: a48062fc6cb95c9235a5d1947569c662c10c615912e9779507035d9053fe93bd -->
+<!-- source-sha256: 5f7c8d54164b403f12aa6815128e3eed7a7cc4a7dffb91f04adb7b970c05aad7 -->
 
 [English](README.md).
 
@@ -29,7 +29,7 @@ node에 적용한 결과와 `expected_outline_rows`를 비교합니다.
 [React](../../../packages/react/src/tests/outline.conformance.test.tsx),
 [Vue](../../../packages/vue/tests/outline.conformance.test.mjs),
 [Svelte](../../../packages/svelte/tests/outline.conformance.test.mjs),
-[HTML 렌더러](../../../packages/html/src/outline.conformance.test.ts)의 구조 지도 적합성 검사가
+[HTML 렌더러](../../../legacy/packages/html/src/outline.conformance.test.ts)의 구조 지도 적합성 검사가
 사용합니다. [폼 마크업 이름 검사](../../form-markup/naming.test.mts)는 두 기대 HTML의 클래스 이름을
 확인합니다.
 

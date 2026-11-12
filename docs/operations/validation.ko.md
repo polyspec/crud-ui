@@ -1,6 +1,6 @@
 # 데이터 검증
 <!-- doc-id: docs-operations-validation -->
-<!-- source-sha256: 55b7bf42efe3c66b07e6fc1a9203e69a19ef4bc31669956100d5c149674f5165 -->
+<!-- source-sha256: ccbec356ec72807ceba47f89a638315ddbe3b4df7b06f4a5f32881d8e17a7117 -->
 
 [English](validation.md).
 
@@ -58,7 +58,7 @@ if ($result->valid || $result->errors[0]['rule'] !== 'required') {
 
 `validator/validate` 패키지는 순서를 보존한 스펙 값에 `Validate`, JSON 바이트에
 `ValidateJSON`을 제공합니다. `ValidateJSON`은 스펙 바이트, 데이터 바이트,
-가상 파일 바이트와 기준 경로를 받습니다. 예제는 `packages/validator/go` 모듈에서
+가상 파일 바이트와 기준 경로를 받습니다. 예제는 `legacy/packages/validator/go` 모듈에서
 실행합니다. 결과는 `Valid`와 `Errors`를 제공합니다.
 
 ```go

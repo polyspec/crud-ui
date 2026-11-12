@@ -19,7 +19,7 @@
       "required": ["name", "path", "layer", "entries"],
       "properties": {
         "name": { "type": "string", "minLength": 1 },
-        "path": { "type": "string", "pattern": "^packages/[^/]+(/[^/]+)?$" },
+        "path": { "type": "string", "pattern": "^(legacy/)?packages/[^/]+(/[^/]+)?$" },
         "layer": { "enum": ["model", "renderer", "validation"] },
         "entries": {
           "description": "Every JavaScript entry of the package.json exports map, keyed by its subpath.",

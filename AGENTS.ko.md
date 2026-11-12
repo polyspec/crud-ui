@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: cce2b8613377cf8b4f220bc169fb1875675946d3eed2dda038b9559ce8a117c6 -->
+<!-- source-sha256: 39b348ce5d105365a4b7231032754da7442ca94ee5f9117dd3807b340ce6642f -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -25,12 +25,21 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   tag는 commit에 대해 CI check `ci-passed`와 push check `push-gate`가 성공한 뒤에만 만들며, release는
   그 tag에서 만듭니다(`docs/operations/repository.md`).
   Enforced by: none, push와 tag의 순서는 어떤 검사도 읽지 않는 절차입니다.
-- Own: `packages/validator/{ts,php,python,go}`, `packages/generator/{ts,php,python,go}`, `packages/php-ext`,
-  `packages/html`의 언어 구현은 `legacy/`로 옮기기 전까지 `tests/fixtures`의 공유 fixture를 읽고, 옮긴 뒤에는 고정한
-  사본을 읽습니다. 옮기기 전까지 그 suite는 Rust 코어만 구현한 규칙(CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUVR-095, CUVR-016의 `accept` 값, CUSC-092,
-  CUIT-022의 중첩 한도, `expr`와 `form-render`의 CURP-028 숫자)의 공유 case에서 실패합니다. 이 실패는 알려진 상태이며
-  따로 작업을 두지 않습니다.
-  Enforced by: none, 알려진 실패는 어떤 검사도 읽지 않는 legacy 이동의 상태입니다.
+- Own: `legacy/`는 생성 바인딩이 대체하는 언어 구현을 예전 경로 그대로 담고(`legacy/packages/validator/{ts,php,python,go}`,
+  `legacy/packages/generator/{ts,php,python,go}`, `legacy/packages/php-ext`, `legacy/packages/html`), 그 suite가 읽는
+  `tests/fixtures`의 사본 `legacy/tests/fixtures`를 담습니다. 사본은 고정이며 공유 fixture에 맞춰 올리지 않습니다. 이들은
+  배포 대상이 아니고(`config/release.json`) 자기 시험과 Rust 코어와의 차등 시험에만 쓰입니다. 각각은 그 바인딩 package가
+  공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거합니다(계획 V-6 (5)). 런타임을 비교하는 루트의 실행기
+  (`tests/native-generators`, `examples/cross-check-console`, `scripts/check-conformance.mts`)는 공유 fixture를 읽으므로,
+  legacy 런타임은 Rust 코어만 구현한 규칙(CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUVR-095, CUVR-016의 `accept` 값,
+  CUSC-092, CUIT-022의 중첩 한도, CURP-028 숫자)에서 다릅니다. 이 차이는 알려진 상태입니다.
+  Enforced by: `make layout-check`
+- Own: 루트의 Cargo workspace 하나가 코어 crate `packages/validator/rust`, `packages/generator/rust`와 `binding scaffold`가
+  쓰는 `packages/<component>/{ts,python,php-ext}`의 바인딩 crate를 `Cargo.lock` 하나로 담습니다. `make bindings`는 바인딩
+  package의 생성 폴더를 쓰고 `make bindings-check`는 각 component의 인터페이스 계약을 검사하며, 둘 다
+  `BINDING=<binding의 cli>`를 받습니다. 바인딩 crate는 `make bindings` 뒤에 `make lint-bindings`, `make test-bindings`로
+  lint하고 시험하며, `make lint-rust`는 나머지를 lint합니다.
+  Enforced by: `make bindings-check`
 
 ## 도구와 의존성
 

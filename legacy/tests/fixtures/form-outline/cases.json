@@ -1,0 +1,696 @@
+[
+  {
+    "name": "outline-rows-ko",
+    "note": "Korean map of top-level and nested rows with undo available; data view escapes markup characters.",
+    "requirements": [
+      "CUMK-031",
+      "CUMK-032",
+      "CURP-006",
+      "CURP-007",
+      "CURP-021"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "teams": {
+          "type": "group",
+          "label": {
+            "ko": "팀",
+            "en": "Team",
+            "ja": "チーム",
+            "zh": "团队"
+          },
+          "multiple": {
+            "min": 1,
+            "max": 3,
+            "sortable": true,
+            "copy": true,
+            "title": "name"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "label": "Name"
+            },
+            "members": {
+              "type": "group",
+              "label": {
+                "ko": "멤버",
+                "en": "Member",
+                "ja": "メンバー",
+                "zh": "成员"
+              },
+              "multiple": {
+                "title": "name"
+              },
+              "properties": {
+                "name": {
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "teams": {
+        "__0000000000001__": {
+          "name": "Sales <b> & \"quotes\"",
+          "members": {
+            "__0000000000001__": {
+              "name": "Kim"
+            },
+            "__0000000000002__": {
+              "name": ""
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "",
+          "members": {}
+        }
+      }
+    },
+    "options": {
+      "language": "ko"
+    },
+    "canUndo": true,
+    "canRedo": false,
+    "expected_outline_rows": [
+      {
+        "path": "teams",
+        "key": "__0000000000001__",
+        "number": "1",
+        "title": "Sales <b> & \"quotes\"",
+        "rows": [
+          {
+            "path": "teams.__0000000000001__.members",
+            "key": "__0000000000001__",
+            "number": "1.1",
+            "title": "Kim",
+            "rows": []
+          },
+          {
+            "path": "teams.__0000000000001__.members",
+            "key": "__0000000000002__",
+            "number": "1.2",
+            "title": "(이름 없음)",
+            "rows": []
+          }
+        ]
+      },
+      {
+        "path": "teams",
+        "key": "__0000000000002__",
+        "number": "2",
+        "title": "(이름 없음)",
+        "rows": []
+      }
+    ],
+    "expected_outline_html": "<div class=\"crudui-outline\"><div class=\"crudui-outline__header\"><div aria-label=\"폼 컨트롤\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"expand-all\" type=\"button\">모두 펼치기</button><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"collapse-all\" type=\"button\">모두 접기</button><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"undo\" type=\"button\">실행취소</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"redo\" type=\"button\">실행복귀</button></div></div><div class=\"crudui-outline__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"teams\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1</span><span class=\"crudui-node__title\">Sales &lt;b&gt; &amp; \"quotes\"</span></button></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"teams.__0000000000001__.members\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.1</span><span class=\"crudui-node__title\">Kim</span></button></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"teams.__0000000000001__.members\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.2</span><span class=\"crudui-node__title\">(이름 없음)</span></button></div></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"teams\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">2</span><span class=\"crudui-node__title\">(이름 없음)</span></button></div></div></div></div>",
+    "expected_data_html": "<div class=\"crudui-data\"><div class=\"crudui-data__header\">현재 데이터</div><pre class=\"crudui-data__body\">{\n  \"teams\": {\n    \"__0000000000001__\": {\n      \"name\": \"Sales &lt;b&gt; &amp; \\\"quotes\\\"\",\n      \"members\": {\n        \"__0000000000001__\": {\n          \"name\": \"Kim\"\n        },\n        \"__0000000000002__\": {\n          \"name\": \"\"\n        }\n      }\n    },\n    \"__0000000000002__\": {\n      \"name\": \"\",\n      \"members\": {}\n    }\n  }\n}</pre></div>"
+  },
+  {
+    "name": "outline-controls-in-map-en",
+    "note": "controls: outline puts every row's controls in the map, where the stylesheet shows those of the current row; empty collection controls stay in the form.",
+    "requirements": [
+      "CUMK-031",
+      "CUMK-032",
+      "CUMK-035",
+      "CUMK-037",
+      "CURP-006",
+      "CURP-007",
+      "CURP-021"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "teams": {
+          "type": "group",
+          "label": {
+            "ko": "팀",
+            "en": "Team",
+            "ja": "チーム",
+            "zh": "团队"
+          },
+          "multiple": {
+            "min": 1,
+            "max": 3,
+            "sortable": true,
+            "copy": true,
+            "title": "name",
+            "controls": "outline"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "label": "Name"
+            },
+            "members": {
+              "type": "group",
+              "label": {
+                "ko": "멤버",
+                "en": "Member",
+                "ja": "メンバー",
+                "zh": "成员"
+              },
+              "multiple": {
+                "title": "name",
+                "controls": "outline"
+              },
+              "properties": {
+                "name": {
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "teams": {
+        "__0000000000001__": {
+          "name": "Sales <b> & \"quotes\"",
+          "members": {
+            "__0000000000001__": {
+              "name": "Kim"
+            },
+            "__0000000000002__": {
+              "name": ""
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "",
+          "members": {}
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "canUndo": false,
+    "canRedo": false,
+    "expected_outline_rows": [
+      {
+        "path": "teams",
+        "key": "__0000000000001__",
+        "number": "1",
+        "title": "Sales <b> & \"quotes\"",
+        "controls": {
+          "placement": "outline",
+          "label": "Row controls",
+          "actions": [
+            {
+              "name": "move-up",
+              "label": "Move up",
+              "disabled": true
+            },
+            {
+              "name": "move-down",
+              "label": "Move down",
+              "disabled": false
+            },
+            {
+              "name": "add-row",
+              "label": "Add",
+              "disabled": false
+            },
+            {
+              "name": "copy-row",
+              "label": "Copy",
+              "disabled": false
+            },
+            {
+              "name": "remove-row",
+              "label": "Remove",
+              "disabled": false
+            }
+          ]
+        },
+        "rows": [
+          {
+            "path": "teams.__0000000000001__.members",
+            "key": "__0000000000001__",
+            "number": "1.1",
+            "title": "Kim",
+            "controls": {
+              "placement": "outline",
+              "label": "Row controls",
+              "actions": [
+                {
+                  "name": "add-row",
+                  "label": "Add",
+                  "disabled": false
+                },
+                {
+                  "name": "remove-row",
+                  "label": "Remove",
+                  "disabled": false
+                }
+              ]
+            },
+            "rows": []
+          },
+          {
+            "path": "teams.__0000000000001__.members",
+            "key": "__0000000000002__",
+            "number": "1.2",
+            "title": "(untitled)",
+            "controls": {
+              "placement": "outline",
+              "label": "Row controls",
+              "actions": [
+                {
+                  "name": "add-row",
+                  "label": "Add",
+                  "disabled": false
+                },
+                {
+                  "name": "remove-row",
+                  "label": "Remove",
+                  "disabled": false
+                }
+              ]
+            },
+            "rows": []
+          }
+        ]
+      },
+      {
+        "path": "teams",
+        "key": "__0000000000002__",
+        "number": "2",
+        "title": "(untitled)",
+        "controls": {
+          "placement": "outline",
+          "label": "Row controls",
+          "actions": [
+            {
+              "name": "move-up",
+              "label": "Move up",
+              "disabled": false
+            },
+            {
+              "name": "move-down",
+              "label": "Move down",
+              "disabled": true
+            },
+            {
+              "name": "add-row",
+              "label": "Add",
+              "disabled": false
+            },
+            {
+              "name": "copy-row",
+              "label": "Copy",
+              "disabled": false
+            },
+            {
+              "name": "remove-row",
+              "label": "Remove",
+              "disabled": false
+            }
+          ]
+        },
+        "rows": []
+      }
+    ],
+    "expected_outline_html": "<div class=\"crudui-outline\"><div class=\"crudui-outline__header\"><div aria-label=\"Form controls\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"expand-all\" type=\"button\">Expand all</button><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"collapse-all\" type=\"button\">Collapse all</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"undo\" type=\"button\">Undo</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"redo\" type=\"button\">Redo</button></div></div><div class=\"crudui-outline__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"teams\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1</span><span class=\"crudui-node__title\">Sales &lt;b&gt; &amp; \"quotes\"</span></button><div aria-label=\"Row controls\" class=\"crudui-controls\" role=\"group\"><button aria-disabled=\"true\" aria-label=\"Move up\" class=\"crudui-action\" data-crudui-action=\"move-up\" type=\"button\"></button><button aria-label=\"Move down\" class=\"crudui-action\" data-crudui-action=\"move-down\" type=\"button\"></button><button aria-label=\"Add\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"Copy\" class=\"crudui-action\" data-crudui-action=\"copy-row\" type=\"button\"></button><button aria-label=\"Remove\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"teams.__0000000000001__.members\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.1</span><span class=\"crudui-node__title\">Kim</span></button><div aria-label=\"Row controls\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"Add\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"Remove\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"teams.__0000000000001__.members\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.2</span><span class=\"crudui-node__title\">(untitled)</span></button><div aria-label=\"Row controls\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"Add\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"Remove\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"teams\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">2</span><span class=\"crudui-node__title\">(untitled)</span></button><div aria-label=\"Row controls\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"Move up\" class=\"crudui-action\" data-crudui-action=\"move-up\" type=\"button\"></button><button aria-disabled=\"true\" aria-label=\"Move down\" class=\"crudui-action\" data-crudui-action=\"move-down\" type=\"button\"></button><button aria-label=\"Add\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"Copy\" class=\"crudui-action\" data-crudui-action=\"copy-row\" type=\"button\"></button><button aria-label=\"Remove\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div></div></div>",
+    "expected_data_html": "<div class=\"crudui-data\"><div class=\"crudui-data__header\">Current data</div><pre class=\"crudui-data__body\">{\n  \"teams\": {\n    \"__0000000000001__\": {\n      \"name\": \"Sales &lt;b&gt; &amp; \\\"quotes\\\"\",\n      \"members\": {\n        \"__0000000000001__\": {\n          \"name\": \"Kim\"\n        },\n        \"__0000000000002__\": {\n          \"name\": \"\"\n        }\n      }\n    },\n    \"__0000000000002__\": {\n      \"name\": \"\",\n      \"members\": {}\n    }\n  }\n}</pre></div>"
+  },
+  {
+    "name": "outline-untitled-rows-ja",
+    "note": "Japanese map with row controls in the map; untitled rows show the untitled message.",
+    "requirements": [
+      "CUMK-031",
+      "CUMK-032",
+      "CUMK-035",
+      "CUMK-037",
+      "CURP-006",
+      "CURP-007",
+      "CURP-021"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "teams": {
+          "type": "group",
+          "label": {
+            "ko": "팀",
+            "en": "Team",
+            "ja": "チーム",
+            "zh": "团队"
+          },
+          "multiple": {
+            "min": 1,
+            "max": 3,
+            "sortable": true,
+            "copy": true,
+            "title": "name",
+            "controls": "outline"
+          },
+          "properties": {
+            "name": {
+              "type": "text",
+              "label": "Name"
+            },
+            "members": {
+              "type": "group",
+              "label": {
+                "ko": "멤버",
+                "en": "Member",
+                "ja": "メンバー",
+                "zh": "成员"
+              },
+              "multiple": {
+                "title": "name",
+                "controls": "outline"
+              },
+              "properties": {
+                "name": {
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "teams": {
+        "__0000000000001__": {
+          "name": "Sales <b> & \"quotes\"",
+          "members": {
+            "__0000000000001__": {
+              "name": "Kim"
+            },
+            "__0000000000002__": {
+              "name": ""
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "",
+          "members": {}
+        }
+      }
+    },
+    "options": {
+      "language": "ja"
+    },
+    "canUndo": false,
+    "canRedo": false,
+    "expected_outline_rows": [
+      {
+        "path": "teams",
+        "key": "__0000000000001__",
+        "number": "1",
+        "title": "Sales <b> & \"quotes\"",
+        "controls": {
+          "placement": "outline",
+          "label": "行の操作",
+          "actions": [
+            {
+              "name": "move-up",
+              "label": "上へ",
+              "disabled": true
+            },
+            {
+              "name": "move-down",
+              "label": "下へ",
+              "disabled": false
+            },
+            {
+              "name": "add-row",
+              "label": "追加",
+              "disabled": false
+            },
+            {
+              "name": "copy-row",
+              "label": "複製",
+              "disabled": false
+            },
+            {
+              "name": "remove-row",
+              "label": "削除",
+              "disabled": false
+            }
+          ]
+        },
+        "rows": [
+          {
+            "path": "teams.__0000000000001__.members",
+            "key": "__0000000000001__",
+            "number": "1.1",
+            "title": "Kim",
+            "controls": {
+              "placement": "outline",
+              "label": "行の操作",
+              "actions": [
+                {
+                  "name": "add-row",
+                  "label": "追加",
+                  "disabled": false
+                },
+                {
+                  "name": "remove-row",
+                  "label": "削除",
+                  "disabled": false
+                }
+              ]
+            },
+            "rows": []
+          },
+          {
+            "path": "teams.__0000000000001__.members",
+            "key": "__0000000000002__",
+            "number": "1.2",
+            "title": "(名前なし)",
+            "controls": {
+              "placement": "outline",
+              "label": "行の操作",
+              "actions": [
+                {
+                  "name": "add-row",
+                  "label": "追加",
+                  "disabled": false
+                },
+                {
+                  "name": "remove-row",
+                  "label": "削除",
+                  "disabled": false
+                }
+              ]
+            },
+            "rows": []
+          }
+        ]
+      },
+      {
+        "path": "teams",
+        "key": "__0000000000002__",
+        "number": "2",
+        "title": "(名前なし)",
+        "controls": {
+          "placement": "outline",
+          "label": "行の操作",
+          "actions": [
+            {
+              "name": "move-up",
+              "label": "上へ",
+              "disabled": false
+            },
+            {
+              "name": "move-down",
+              "label": "下へ",
+              "disabled": true
+            },
+            {
+              "name": "add-row",
+              "label": "追加",
+              "disabled": false
+            },
+            {
+              "name": "copy-row",
+              "label": "複製",
+              "disabled": false
+            },
+            {
+              "name": "remove-row",
+              "label": "削除",
+              "disabled": false
+            }
+          ]
+        },
+        "rows": []
+      }
+    ],
+    "expected_outline_html": "<div class=\"crudui-outline\"><div class=\"crudui-outline__header\"><div aria-label=\"フォームの操作\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"expand-all\" type=\"button\">すべて展開</button><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"collapse-all\" type=\"button\">すべて折りたたむ</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"undo\" type=\"button\">元に戻す</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"redo\" type=\"button\">やり直す</button></div></div><div class=\"crudui-outline__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"teams\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1</span><span class=\"crudui-node__title\">Sales &lt;b&gt; &amp; \"quotes\"</span></button><div aria-label=\"行の操作\" class=\"crudui-controls\" role=\"group\"><button aria-disabled=\"true\" aria-label=\"上へ\" class=\"crudui-action\" data-crudui-action=\"move-up\" type=\"button\"></button><button aria-label=\"下へ\" class=\"crudui-action\" data-crudui-action=\"move-down\" type=\"button\"></button><button aria-label=\"追加\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"複製\" class=\"crudui-action\" data-crudui-action=\"copy-row\" type=\"button\"></button><button aria-label=\"削除\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"teams.__0000000000001__.members\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.1</span><span class=\"crudui-node__title\">Kim</span></button><div aria-label=\"行の操作\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"追加\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"削除\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"teams.__0000000000001__.members\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.2</span><span class=\"crudui-node__title\">(名前なし)</span></button><div aria-label=\"行の操作\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"追加\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"削除\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"teams\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">2</span><span class=\"crudui-node__title\">(名前なし)</span></button><div aria-label=\"行の操作\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"上へ\" class=\"crudui-action\" data-crudui-action=\"move-up\" type=\"button\"></button><button aria-disabled=\"true\" aria-label=\"下へ\" class=\"crudui-action\" data-crudui-action=\"move-down\" type=\"button\"></button><button aria-label=\"追加\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"複製\" class=\"crudui-action\" data-crudui-action=\"copy-row\" type=\"button\"></button><button aria-label=\"削除\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div></div></div>",
+    "expected_data_html": "<div class=\"crudui-data\"><div class=\"crudui-data__header\">現在のデータ</div><pre class=\"crudui-data__body\">{\n  \"teams\": {\n    \"__0000000000001__\": {\n      \"name\": \"Sales &lt;b&gt; &amp; \\\"quotes\\\"\",\n      \"members\": {\n        \"__0000000000001__\": {\n          \"name\": \"Kim\"\n        },\n        \"__0000000000002__\": {\n          \"name\": \"\"\n        }\n      }\n    },\n    \"__0000000000002__\": {\n      \"name\": \"\",\n      \"members\": {}\n    }\n  }\n}</pre></div>"
+  },
+  {
+    "name": "outline-no-collections-zh",
+    "note": "Chinese map for a form without repeated fields has controls and an empty body.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "title": {
+          "type": "text",
+          "label": "Title"
+        }
+      }
+    },
+    "data": {
+      "title": "Plain"
+    },
+    "options": {
+      "language": "zh"
+    },
+    "canUndo": false,
+    "canRedo": false,
+    "expected_outline_rows": [],
+    "expected_outline_html": "<div class=\"crudui-outline\"><div class=\"crudui-outline__header\"><div aria-label=\"表单操作\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"expand-all\" type=\"button\">全部展开</button><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"collapse-all\" type=\"button\">全部折叠</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"undo\" type=\"button\">撤销</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"redo\" type=\"button\">重做</button></div></div><div class=\"crudui-outline__body\"></div></div>",
+    "expected_data_html": "<div class=\"crudui-data\"><div class=\"crudui-data__header\">当前数据</div><pre class=\"crudui-data__body\">{\n  \"title\": \"Plain\"\n}</pre></div>",
+    "requirements": [
+      "CURP-006",
+      "CURP-007",
+      "CURP-021"
+    ]
+  },
+  {
+    "name": "outline-only-rows-en",
+    "note": "Rows of a multiple.only collection appear in the map under their data keys without row controls, while the enclosing rows keep theirs; the second section has no data for the collection and so no nested rows.",
+    "requirements": [
+      "CUMK-031",
+      "CUMK-032",
+      "CUMK-034",
+      "CUMK-035",
+      "CUMK-037",
+      "CURP-006",
+      "CURP-007",
+      "CURP-021"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "sections": {
+          "type": "group",
+          "label": "Section",
+          "multiple": {
+            "title": "name",
+            "controls": "outline"
+          },
+          "properties": {
+            "name": {
+              "type": "text"
+            },
+            "variants": {
+              "type": "group",
+              "label": "Variant",
+              "multiple": {
+                "only": true,
+                "title": "name"
+              },
+              "properties": {
+                "name": {
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "sections": {
+        "__0000000000001__": {
+          "name": "First",
+          "variants": {
+            "__opt_b2__": {
+              "name": "Blue"
+            },
+            "__opt_a1__": {
+              "name": "Red"
+            }
+          }
+        },
+        "__0000000000002__": {
+          "name": "Second"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "canUndo": false,
+    "canRedo": false,
+    "expected_outline_html": "<div class=\"crudui-outline\"><div class=\"crudui-outline__header\"><div aria-label=\"Form controls\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"expand-all\" type=\"button\">Expand all</button><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"collapse-all\" type=\"button\">Collapse all</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"undo\" type=\"button\">Undo</button><button aria-disabled=\"true\" class=\"crudui-action crudui-action--text\" data-crudui-action=\"redo\" type=\"button\">Redo</button></div></div><div class=\"crudui-outline__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000001__\" data-field-path=\"sections\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1</span><span class=\"crudui-node__title\">First</span></button><div aria-label=\"Row controls\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"Add\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"Remove\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__opt_b2__\" data-field-path=\"sections.__0000000000001__.variants\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.1</span><span class=\"crudui-node__title\">Blue</span></button></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__opt_a1__\" data-field-path=\"sections.__0000000000001__.variants\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">1.2</span><span class=\"crudui-node__title\">Red</span></button></div></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"__0000000000002__\" data-field-path=\"sections\"><div class=\"crudui-node__header\"><button class=\"crudui-action crudui-action--text\" data-crudui-action=\"select-row\" type=\"button\"><span class=\"crudui-node__number\">2</span><span class=\"crudui-node__title\">Second</span></button><div aria-label=\"Row controls\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"Add\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"Remove\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div></div></div></div>",
+    "expected_outline_rows": [
+      {
+        "path": "sections",
+        "key": "__0000000000001__",
+        "number": "1",
+        "title": "First",
+        "controls": {
+          "placement": "outline",
+          "label": "Row controls",
+          "actions": [
+            {
+              "name": "add-row",
+              "label": "Add",
+              "disabled": false
+            },
+            {
+              "name": "remove-row",
+              "label": "Remove",
+              "disabled": false
+            }
+          ]
+        },
+        "rows": [
+          {
+            "path": "sections.__0000000000001__.variants",
+            "key": "__opt_b2__",
+            "number": "1.1",
+            "title": "Blue",
+            "rows": []
+          },
+          {
+            "path": "sections.__0000000000001__.variants",
+            "key": "__opt_a1__",
+            "number": "1.2",
+            "title": "Red",
+            "rows": []
+          }
+        ]
+      },
+      {
+        "path": "sections",
+        "key": "__0000000000002__",
+        "number": "2",
+        "title": "Second",
+        "controls": {
+          "placement": "outline",
+          "label": "Row controls",
+          "actions": [
+            {
+              "name": "add-row",
+              "label": "Add",
+              "disabled": false
+            },
+            {
+              "name": "remove-row",
+              "label": "Remove",
+              "disabled": false
+            }
+          ]
+        },
+        "rows": []
+      }
+    ],
+    "expected_data_html": "<div class=\"crudui-data\"><div class=\"crudui-data__header\">Current data</div><pre class=\"crudui-data__body\">{\n  \"sections\": {\n    \"__0000000000001__\": {\n      \"name\": \"First\",\n      \"variants\": {\n        \"__opt_b2__\": {\n          \"name\": \"Blue\"\n        },\n        \"__opt_a1__\": {\n          \"name\": \"Red\"\n        }\n      }\n    },\n    \"__0000000000002__\": {\n      \"name\": \"Second\"\n    }\n  }\n}</pre></div>"
+  }
+]

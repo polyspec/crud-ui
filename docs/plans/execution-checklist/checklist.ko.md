@@ -1,6 +1,6 @@
 # Execution checklist
 <!-- doc-id: docs-plans-execution-checklist -->
-<!-- source-sha256: 2908e754080cbb18ddbff8faa8e4c1a05b9dab84a1ceb133a42fd4127af31f4f -->
+<!-- source-sha256: 9f91eb9bac549b0a354b712b2c8bfeb4ea57c755b9bc2638bc6d02d50627a20e -->
 
 ## [Wave 1](plan.ko.md#wave-1) — 좁은 viewport를 위한 stylesheet와 stylesheet의 Tailwind 버전
 
@@ -343,3 +343,10 @@
 | ID | Task | Deliverables | Verification | State |
 |---|---|---|---|---|
 | C15.1 | 저장소가 기존 외부 도구나 라이브러리가 이미 하는 일을 다시 만들지 않는다는 규칙을 추가한다. `AGENTS.md`와 `AGENTS.ko.md`는 각 생태계의 표준 도구를 있는 그대로 사용한다고 적고(Python interpreter, environment, lock에는 uv, PHP 의존성에는 Composer), 그런 도구가 만드는 symbolic link를 받아들이며, 경로와 symbolic link 규칙을 이 저장소가 만드는 것에만 적용한다고 명시한다 | — | `make docs-check` | [o] |
+
+## [Wave 16](plan.ko.md#wave-16) — Rust 코어와 생성 바인딩
+
+| ID | Task | Deliverables | Verification | State |
+|---|---|---|---|---|
+| C16.1 | Rust crate를 바인딩의 코어로 만든다. 언어 구현을 예전 경로 그대로 `legacy/`로 옮기고 고정 사본 `legacy/tests/fixtures`를 두며, 배포 대상에서 빼고, 루트에 Cargo workspace 하나를 만들고, 각 component의 바인딩 package를 scaffold한다. | `legacy/packages/**`, `legacy/tests/fixtures/**`, `Cargo.toml`, `Cargo.lock`, `packages/{validator,generator}/{ts,python,php-ext}`, recipe `bindings`, `bindings-check`, `lint-bindings`, `test-bindings`, `config/layout.yml`, `config/release.json`, `config/owner-checks.json`, `AGENTS.md` | `make bindings-check BINDING=<binding의 cli>`가 지적 없이 끝난다. `cargo test --locked -p polyspec-crud-ui-validator -p polyspec-crud-ui-generator`. `make owner-validate`. `make release-coverage` | [o] |
+| C16.2 | 각 legacy package는 그 바인딩 package가 공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거하고(계획 V-6 (5)), `config/layout.yml`, `config/release.json`, `config/owner-checks.json`의 항목도 함께 지운다. `legacy/tests/fixtures`는 마지막 package와 함께 지운다. | `legacy/` 아래 경로 없음 | 예외 `!legacy` 없이 `make layout-check` | [ ] |

@@ -44,7 +44,7 @@ that the empty value of the placeholder option of a select or search field with 
 
 Each test runs the validator and compares the complete result or failure record. The `errors`
 array is compared in order. Go, Rust and PHP compare numbers by value, so `5` and `5.0` are equal.
-The [PHP extension runner](../../../packages/php-ext/tests/ValidateReport.php) compares JSON text, so
+The [PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) compares JSON text, so
 member order is compared there as well. A failure case compares `code`, `message` and `at`
 exactly, and every case must declare exactly one of `expected` and `expectFailure`. A case that tests a requirement of
 [empty collections](../../../docs/spec/empty-collections.md) or of [validation rules](../../../docs/spec/validation-rules.md)
@@ -55,12 +55,12 @@ The cross-check console's validator processes receive each case on standard inpu
 exits `0` with the result on standard output; a failure case exits `2` with `{ error, code, at }`.
 
 The cases are read by the validation conformance tests in
-[TypeScript](../../../packages/validator/ts/src/validate.conformance.test.ts),
-[PHP](../../../packages/validator/php/tests/Validate/ValidateConformanceTest.php),
-[Go](../../../packages/validator/go/validator/validate/conformance_test.go) and
+[TypeScript](../../../legacy/packages/validator/ts/src/validate.conformance.test.ts),
+[PHP](../../../legacy/packages/validator/php/tests/Validate/ValidateConformanceTest.php),
+[Go](../../../legacy/packages/validator/go/validator/validate/conformance_test.go) and
 [Rust](../../../packages/validator/rust/tests/validate_conformance.rs); the
-[PHP extension engine test](../../../packages/php-ext/tests/engine/engine.test.mjs) and the
-[PHP extension API test](../../../packages/php-ext/tests/ApiTest.php), which runs the PHP and native
+[PHP extension engine test](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs) and the
+[PHP extension API test](../../../legacy/packages/php-ext/tests/ApiTest.php), which runs the PHP and native
 validators; and the cross-check console
 [validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs),
 which sends every case to the five validator processes, and its

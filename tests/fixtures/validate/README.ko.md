@@ -1,6 +1,6 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: 42ddb607382a39611b498b00bb8f6c8a176be73f558a4f02f5f385baab0b927d -->
+<!-- source-sha256: c674ac3d73c0487c43884f998e219ae9ace979d2aeb7fdf998642e9df3d37639 -->
 
 [English](README.md).
 
@@ -36,19 +36,19 @@ id, id가 없는 form, 매개변수 오류를 확인합니다.
 
 모든 사용처는 검증기를 실행해 결과 또는 실패 기록 전체를 비교합니다. `errors` 배열은 순서대로 비교합니다.
 Go·Rust·PHP는 숫자를 값으로 비교하므로 `5`와 `5.0`은 같습니다.
-[PHP 확장 실행기](../../../packages/php-ext/tests/ValidateReport.php)는 JSON 문자열을 비교하므로 멤버 순서도
+[PHP 확장 실행기](../../../legacy/packages/php-ext/tests/ValidateReport.php)는 JSON 문자열을 비교하므로 멤버 순서도
 비교합니다. 실패 사례는 `code`, `message`, `at`을 정확히 비교하며, 모든 사례는 `expected`와
 `expectFailure` 중 정확히 하나를 선언해야 합니다. [빈 collection](../../../docs/spec/empty-collections.ko.md) 또는 [검증 규칙](../../../docs/spec/validation-rules.ko.md)의 requirement를 시험하는 case는 `requirements`에 id를 나열하며, 이는 `generate.mts`의 `REQUIREMENTS` map에서 지정합니다.
 
 교차 검증 콘솔의 검증기 프로세스는 각 사례를 표준 입력으로 받습니다. 결과 사례는 종료 코드 `0`과 함께
 결과를 표준 출력에 쓰고, 실패 사례는 종료 코드 `2`와 함께 `{ error, code, at }`을 씁니다.
 
-[TypeScript](../../../packages/validator/ts/src/validate.conformance.test.ts),
-[PHP](../../../packages/validator/php/tests/Validate/ValidateConformanceTest.php),
-[Go](../../../packages/validator/go/validator/validate/conformance_test.go),
+[TypeScript](../../../legacy/packages/validator/ts/src/validate.conformance.test.ts),
+[PHP](../../../legacy/packages/validator/php/tests/Validate/ValidateConformanceTest.php),
+[Go](../../../legacy/packages/validator/go/validator/validate/conformance_test.go),
 [Rust](../../../packages/validator/rust/tests/validate_conformance.rs)의 검증 적합성 검사,
-[PHP 확장 엔진 검사](../../../packages/php-ext/tests/engine/engine.test.mjs)와
-PHP 검증기와 네이티브 검증기를 실행하는 [PHP 확장 API 검사](../../../packages/php-ext/tests/ApiTest.php),
+[PHP 확장 엔진 검사](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs)와
+PHP 검증기와 네이티브 검증기를 실행하는 [PHP 확장 API 검사](../../../legacy/packages/php-ext/tests/ApiTest.php),
 모든 사례를 다섯 검증기 프로세스에 보내는 교차 검증 콘솔의
 [검증기 프로세스 검사](../../../examples/cross-check-console/server/validator-processes.test.mjs)와
 네 언어 결과를 비교하는 [검증 실행기 검사](../../../examples/cross-check-console/server/validate-runner.test.mjs)가

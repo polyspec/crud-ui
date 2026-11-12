@@ -1,0 +1,140 @@
+[
+  {
+    "name": "pass-paired-surrogates",
+    "note": "a surrogate pair is valid text in a label and a record value.",
+    "requirements": [
+      "CUIT-013",
+      "CURP-016"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "A😀"
+        }
+      }
+    },
+    "record": {
+      "name": "😀"
+    },
+    "expect": "pass"
+  },
+  {
+    "name": "spec-lone-low-in-label",
+    "note": "a lone low surrogate in a field label is a load failure.",
+    "requirements": [
+      "CUIT-013",
+      "CURP-016"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "\udc00"
+        }
+      }
+    },
+    "record": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "fields.name.label"
+    }
+  },
+  {
+    "name": "spec-before-shape",
+    "note": "text is checked before the declared fields are required.",
+    "requirements": [
+      "CUIT-013",
+      "CURP-016"
+    ],
+    "spec": {
+      "design": {
+        "class": "\ud800"
+      }
+    },
+    "record": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "design.class"
+    }
+  },
+  {
+    "name": "record-value",
+    "note": "a record value is an input failure naming the record path.",
+    "requirements": [
+      "CUIT-013",
+      "CURP-016"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": {
+      "name": "\udc00\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: record.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "record-member-name",
+    "note": "an invalid record member name is reported at the record.",
+    "requirements": [
+      "CUIT-013",
+      "CURP-016"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": {
+      "\udc00": 1
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: record",
+      "at": ""
+    }
+  },
+  {
+    "name": "context",
+    "note": "invalid text in the detail context is an input failure.",
+    "requirements": [
+      "CUIT-013",
+      "CURP-016"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": {},
+    "options": {
+      "data": {
+        "a": {
+          "b": "\ud800"
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.data.a.b",
+      "at": ""
+    }
+  }
+]

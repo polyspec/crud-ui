@@ -1,0 +1,578 @@
+[
+  {
+    "name": "pass-paired-surrogates",
+    "note": "a surrogate pair is valid text in data and in a set value.",
+    "requirements": [
+      "CUIT-011",
+      "CUIT-015"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "😀"
+    },
+    "action": {
+      "method": "setValue",
+      "args": [
+        "name",
+        "y😀"
+      ]
+    },
+    "expect": "pass"
+  },
+  {
+    "name": "data-lone-low-value",
+    "note": "a lone low surrogate in initial data is an input failure.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-before-options",
+    "note": "the data is checked before the options.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "\ud800": 1
+    },
+    "options": {
+      "keyPrefix": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data",
+      "at": ""
+    }
+  },
+  {
+    "name": "key-prefix",
+    "note": "an invalid key prefix is an input failure.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "keyPrefix": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.keyPrefix",
+      "at": ""
+    }
+  },
+  {
+    "name": "template-member-name",
+    "note": "an invalid member name in a template is reported at its object.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text",
+            "label": "Name"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "\udc00\ud800": 1
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: template",
+      "at": ""
+    }
+  },
+  {
+    "name": "set-data",
+    "note": "replacing the record checks its text.",
+    "requirements": [
+      "CUIT-014"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "action": {
+      "method": "setData",
+      "args": [
+        {
+          "rows": {
+            "k1": {
+              "name": "\udc00\ud800"
+            }
+          }
+        }
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.rows.k1.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "set-value-value",
+    "note": "a set value is checked after its path.",
+    "requirements": [
+      "CUIT-015"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "action": {
+      "method": "setValue",
+      "args": [
+        "name",
+        "\ud800"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: value",
+      "at": ""
+    }
+  },
+  {
+    "name": "set-value-path",
+    "note": "an invalid path is an input failure before the path is resolved.",
+    "requirements": [
+      "CUIT-015"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "action": {
+      "method": "setValue",
+      "args": [
+        "name\udc00",
+        "\ud800"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: path",
+      "at": ""
+    }
+  },
+  {
+    "name": "get-value-path",
+    "note": "an invalid read path is an input failure.",
+    "requirements": [
+      "CUIT-016"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "action": {
+      "method": "getValue",
+      "args": [
+        "\ud800"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: path",
+      "at": ""
+    }
+  },
+  {
+    "name": "add-row-key",
+    "note": "an explicit row key is checked with the other row options in name order.",
+    "requirements": [
+      "CUIT-017"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "action": {
+      "method": "addRow",
+      "args": [
+        "rows",
+        {
+          "key": "\ud800",
+          "value": {
+            "name": "\udc00"
+          }
+        }
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.key",
+      "at": ""
+    }
+  },
+  {
+    "name": "add-row-value",
+    "note": "a supplied row value is checked as an option.",
+    "requirements": [
+      "CUIT-017"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "action": {
+      "method": "addRow",
+      "args": [
+        "rows",
+        {
+          "value": {
+            "name": "\udc00"
+          }
+        }
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.value.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "copy-row-key",
+    "note": "the copied row key is an input failure before the collection is resolved.",
+    "requirements": [
+      "CUIT-018"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "rows": {
+        "k1": {
+          "name": "a"
+        }
+      }
+    },
+    "action": {
+      "method": "copyRow",
+      "args": [
+        "rows",
+        "\udc00\ud800"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: key",
+      "at": ""
+    }
+  },
+  {
+    "name": "remove-row-key",
+    "note": "a removed row key is checked after the path.",
+    "requirements": [
+      "CUIT-019"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "rows": {
+        "k1": {
+          "name": "a"
+        }
+      }
+    },
+    "action": {
+      "method": "removeRow",
+      "args": [
+        "rows\ud800",
+        "\udc00"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: path",
+      "at": ""
+    }
+  },
+  {
+    "name": "move-row-key",
+    "note": "a moved row key is an input failure.",
+    "requirements": [
+      "CUIT-019"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "rows": {
+        "k1": {
+          "name": "a"
+        }
+      }
+    },
+    "action": {
+      "method": "moveRow",
+      "args": [
+        "rows",
+        "\ud800",
+        0
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: key",
+      "at": ""
+    }
+  },
+  {
+    "name": "rekey-row-new-key",
+    "note": "the new row key is checked after the old key.",
+    "requirements": [
+      "CUIT-020"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "rows": {
+        "k1": {
+          "name": "a"
+        }
+      }
+    },
+    "action": {
+      "method": "rekeyRow",
+      "args": [
+        "rows",
+        "k1",
+        "k\udc00"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: newKey",
+      "at": ""
+    }
+  }
+]

@@ -76,23 +76,3 @@ harness = false
 
 [lints]
 workspace = true
-
-[workspace]
-
-# make lint-rust runs cargo clippy, which fails on a warning and on the lints that hide an error (P8).
-[workspace.lints.rust]
-warnings = "deny"
-unsafe_code = "deny"
-unused_must_use = "deny"
-
-[workspace.lints.clippy]
-allow_attributes_without_reason = "deny"
-let_underscore_must_use = "deny"
-let_underscore_untyped = "deny"
-map_err_ignore = "deny"
-unwrap_used = "deny"
-expect_used = "deny"
-disallowed_methods = "deny"
-cast_possible_truncation = "deny"
-cast_possible_wrap = "deny"
-cast_sign_loss = "deny"

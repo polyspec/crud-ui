@@ -3,7 +3,7 @@
 # The generator requires the validator of its own release (polyspec-crudui-validator==<version>), whose wheel the release
 # publishes beside it (C14.44); in the workspace the validator of the checkout replaces it.
 [tool.uv.workspace]
-members = ["packages/validator/python", "packages/generator/python", "tests/conformance/python"]
+members = ["legacy/packages/validator/python", "legacy/packages/generator/python", "tests/conformance/python"]
 
 [tool.uv.sources]
 polyspec-crudui-validator = { workspace = true }

@@ -1,6 +1,6 @@
 # 명세 구조
 <!-- doc-id: docs-spec-schema -->
-<!-- source-sha256: 0167726a19904e17eabd07f182246330c67d1ee635e3c5f1f502c6fb535bb938 -->
+<!-- source-sha256: e396a6159331540c835208e9a6c2adc28d13d9cf815689e500a2cce773277306 -->
 
 [English](schema.md). 이 문서는 필드와 목록 선언을 정의합니다.
 폼 인스턴스, 반복 행 키, 캐싱은 [폼 런타임](form-runtime.ko.md)에 정의합니다.
@@ -55,7 +55,7 @@ CRUDUI의 초기 패키지 버전은 `0.0.1`입니다. 파일명·공개 API·�
 설정은 `lang`, 위젯 설정은 `options`, 동적 선택지 설정은 `items`에 작성합니다.
 역할과 구조 설정은 타입 정의가 허용하는 경우 `false`, `true`, 객체를 사용합니다.
 `false`는 설정을 끄고 `true`는 기본 설정을 선택합니다.
-[TypeScript 타입](../../packages/validator/ts/src/schema.ts)이 허용하는 선언 형태를
+[TypeScript 타입](../../legacy/packages/validator/ts/src/schema.ts)이 허용하는 선언 형태를
 정의합니다. 파서는 선언된 키를 보존하며 검증기는 금지된 스키마 키를 제거하지 않고
 오류로 처리합니다.
 

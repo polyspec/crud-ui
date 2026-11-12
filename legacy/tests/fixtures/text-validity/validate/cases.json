@@ -1,0 +1,859 @@
+[
+  {
+    "name": "pass-paired-surrogates",
+    "note": "a surrogate pair and a private use character are Unicode scalar values in a label, a member name and a value.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "n😀": {
+          "type": "text",
+          "label": "A😀"
+        }
+      }
+    },
+    "data": {
+      "n😀": "x😀"
+    },
+    "expect": {
+      "valid": true,
+      "errors": [],
+      "hidden": []
+    }
+  },
+  {
+    "name": "spec-lone-high-in-label",
+    "note": "a lone high surrogate in a label is a load failure at the label path.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "A\ud800"
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties.name.label"
+    }
+  },
+  {
+    "name": "spec-lone-low-in-member-name",
+    "note": "a lone low surrogate in a member name is reported at the object that holds the member.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "n\udc00": {
+          "type": "text"
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties"
+    }
+  },
+  {
+    "name": "spec-reversed-pair-in-array",
+    "note": "a low surrogate followed by a high surrogate is two unpaired code units; array items are located by index.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "validate": {
+            "in": [
+              "a",
+              "b\udc00\ud800"
+            ]
+          }
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties.name.validate.in.1"
+    }
+  },
+  {
+    "name": "spec-member-order",
+    "note": "members are checked in code point order of their names, not in document order.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "b": {
+          "type": "text",
+          "label": "\ud800"
+        },
+        "a": {
+          "type": "text",
+          "label": "\udc00"
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties.a.label"
+    }
+  },
+  {
+    "name": "spec-code-point-order",
+    "note": "U+E000 precedes U+1F600 in code point order although its UTF-16 unit is larger than a surrogate.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "😀": {
+          "type": "text",
+          "label": "\ud800"
+        },
+        "": {
+          "type": "text",
+          "label": "\ud800"
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties..label"
+    }
+  },
+  {
+    "name": "spec-root-member-name",
+    "note": "an invalid member name of the specification root is located at the empty path.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {},
+      "\ud800": 1
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": ""
+    }
+  },
+  {
+    "name": "spec-before-data",
+    "note": "the specification is checked before the data.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-005",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "\ud800"
+        }
+      }
+    },
+    "data": {
+      "name": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties.name.label"
+    }
+  },
+  {
+    "name": "file-name",
+    "note": "an invalid file name is located at the empty path.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "files": {
+      "b\ud800.yml": {
+        "properties": {
+          "extra": {
+            "type": "text",
+            "label": "Extra"
+          }
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": ""
+    }
+  },
+  {
+    "name": "file-document",
+    "note": "invalid text in a file is located at the file name followed by its path, whether or not a reference reads the file.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "files": {
+      "base.yml": {
+        "properties": {
+          "extra": {
+            "type": "text",
+            "label": "\udc00"
+          }
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "base.yml.properties.extra.label"
+    }
+  },
+  {
+    "name": "file-order",
+    "note": "files are checked in code point order of their names.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "files": {
+      "b.yml": {
+        "properties": {
+          "x": "\ud800"
+        }
+      },
+      "a.yml": {
+        "properties": {
+          "y": "\ud800"
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "a.yml.properties.y"
+    }
+  },
+  {
+    "name": "spec-before-files",
+    "note": "the specification is checked before the files.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-005",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "\udc00\ud800"
+        }
+      }
+    },
+    "files": {
+      "a.yml": {
+        "properties": {
+          "y": "\ud800"
+        }
+      }
+    },
+    "data": {},
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "properties.name.label"
+    }
+  },
+  {
+    "name": "data-lone-high-value",
+    "note": "a lone high surrogate in a data value is an input failure naming the data path.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "x\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-member-name",
+    "note": "an invalid data member name is reported at its object.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "\udc00": "x"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-nested-row",
+    "note": "a value in a keyed row is located by its row key.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "rows": {
+        "k1": {
+          "name": "ok"
+        },
+        "k2": {
+          "name": "\udc00\ud800"
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.rows.k2.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-array-item",
+    "note": "a list value is located by item index.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "tags": [
+        "a",
+        "\ud800"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.tags.1",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-member-order",
+    "note": "data members are checked in code point order of their names.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "tags": [
+        "\ud800"
+      ],
+      "name": "\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-before-root-shape",
+    "note": "text is checked before the data shape: a root string with invalid text reports the text.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": "\ud800",
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-before-options",
+    "note": "the data is checked before the options.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-006",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "\ud800"
+    },
+    "options": {
+      "basepath": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "basepath",
+    "note": "an invalid base path is an input failure naming the option.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-007",
+      "CUIT-008",
+      "CUIT-026",
+      "CUIT-027",
+      "CUIT-028",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {},
+    "options": {
+      "basepath": "dir\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.basepath",
+      "at": ""
+    }
+  },
+  {
+    "name": "files-before-data",
+    "note": "the files are checked before the data.",
+    "requirements": [
+      "CUIT-001",
+      "CUIT-002",
+      "CUIT-003",
+      "CUIT-004",
+      "CUIT-005",
+      "CUIT-008",
+      "CUIT-023",
+      "CUIT-024",
+      "CUIT-025",
+      "CUIT-041",
+      "CUIT-037",
+      "CUIT-038",
+      "CUIT-039",
+      "CUIT-040"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "files": {
+      "a.yml": {
+        "properties": {
+          "y": "\ud800"
+        }
+      }
+    },
+    "data": {
+      "name": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_TEXT",
+      "message": "Text must be Unicode scalar values",
+      "at": "a.yml.properties.y"
+    }
+  }
+]

@@ -1,6 +1,6 @@
 # 교차 검사 콘솔
 <!-- doc-id: examples-cross-check-console-readme -->
-<!-- source-sha256: f81117774aa4360ee6c735016c793ad93ce6916c76951390db8dd718d2033fc7 -->
+<!-- source-sha256: 91e0bbfbcdcdd8e4074755ad82b9f954c17a235dce5f87720ca89cf1152adf57 -->
 
 [English](README.md).
 
@@ -101,7 +101,7 @@ JavaScript 패키지 출력이 최신이 아니면 먼저 빌드합니다. 세
 
 ```bash
 # 1. PHP deps (once)
-cd packages/validator/php && composer install && cd -
+cd legacy/packages/validator/php && composer install && cd -
 
 # 2. workspace dependencies
 npm install                  # at repo root, installs js-yaml + vite/svelte

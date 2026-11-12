@@ -187,7 +187,7 @@ test('the copy of the unpacked OrderedJSON extension source puts config.m4 at th
 test('local OrderedJSON native sources come from the Composer provider of the link declaration (C18.18)', async t => {
   const root = await mkdtemp(path.join(tmpdir(), 'crudui-ordered-json-provider-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const provider = path.join(root, 'checkout/packages/php-ext');
+  const provider = path.join(root, 'checkout/legacy/packages/php-ext');
   await mkdir(path.join(provider, 'src'), { recursive: true });
   await writeFile(path.join(provider, 'composer.json'), JSON.stringify({
     name: 'polyspec/ordered-json-php-ext', version: '0.0.10',
@@ -212,7 +212,7 @@ test('local OrderedJSON native sources come from the Composer provider of the li
 });
 
 test('a local and a release OrderedJSON extension build only from their package folder (C18.18)', () => {
-  const provider = { directory: '/links/ordered-json/packages/php-ext', extensionName: 'polyspec_ordered_json', buildPath: 'src', version: '0.0.19' };
+  const provider = { directory: '/links/ordered-json/legacy/packages/php-ext', extensionName: 'polyspec_ordered_json', buildPath: 'src', version: '0.0.19' };
   const local = orderedJsonBuildStages({ ...provider, mode: 'local' }, '/build/ordered-json-php-ext');
   assert.deepEqual(local, orderedJsonBuildStages({ ...provider, mode: 'release' }, '/build/ordered-json-php-ext'));
   for (const item of local.flat()) {

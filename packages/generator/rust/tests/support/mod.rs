@@ -1,5 +1,5 @@
 //! Shared helpers of the rendering suites: the fixture reader and the normalized layout tree that the render runners
-//! compare (the Python runner's `html_tree`, packages/generator/python/tests/conformance.py).
+//! compare (the Python runner's `html_tree`, legacy/packages/generator/python/tests/conformance.py).
 
 use serde_json::{json, Value};
 use std::path::Path;

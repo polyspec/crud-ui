@@ -264,9 +264,9 @@ query of a check, so one tree gives one result at any time. The review covers th
 registry dependencies: the `dependencies` and `devDependencies` of the root
 `package.json` and of each workspace, and the `require` and `require-dev` of the
 Composer manifests that `composerPlatforms` of `config/dependency-policy.json` names
-(the development root `composer.json`, whose lock resolves `packages/validator/php` and `packages/generator/php`) and the
-`build-system.requires` pins of the Python manifests that `pythonManifests` names (`packages/validator/python` and
-`packages/generator/python`). Peer dependencies, URL
+(the development root `composer.json`, whose lock resolves `legacy/packages/validator/php` and `legacy/packages/generator/php`) and the
+`build-system.requires` pins of the Python manifests that `pythonManifests` names (`legacy/packages/validator/python` and
+`legacy/packages/generator/python`). Peer dependencies, URL
 dependencies, packages of this repository and Composer platform requirements are
 outside the review by definition. A polyspec package taken from a GitHub tag is the
 release of that tag: the check requires the root manifest to link it to the checkout of

@@ -1,5 +1,5 @@
 // Command interfacemessages writes interface_messages.go from contracts/interface-messages.json, the interface text
-// every CRUDUI runtime embeds. Run it with `go generate` in packages/generator/go.
+// every CRUDUI runtime embeds. Run it with `go generate` in legacy/packages/generator/go.
 package main
 
 import (

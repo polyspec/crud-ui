@@ -40,22 +40,26 @@ rules:
       - "!tests/php"
       - "!tests/release-install"
 
-  # S5: the components of crudui beside the runtime folder php-ext: the validator and the generator, each a component with
-  # a port per runtime, the renderers of the frameworks (html, react, vue, svelte), the browser validation (form-binding)
+  # S6 exception of the transition to the Rust core: legacy/ holds the language packages that the generated bindings
+  # replace (the ports of the validator and the generator, php-ext and html), under their former paths, and the copy of
+  # tests/fixtures that their suites read, until each is removed by a change of its own (plan V-6 (5)).
+  - id: layout-root-folders
+    paths: ["*", "!packages", "!contracts", "!docs", "!scripts", "!tests", "!examples", "!benchmarks", "!config", "!.github", "!.githooks", "!.kit", "!.mise", "!.claude", "!legacy"]
+
+  # S5: the components of crudui: the validator and the generator, each a component with its Rust core and the binding
+  # package of each runtime, the renderers of the frameworks (react, vue, svelte), the browser validation (form-binding)
   # and the command line (cli).
   - id: layout-packages
     paths:
       - "packages/*"
       - "!packages/go"
       - "!packages/php"
-      - "!packages/php-ext"
       - "!packages/python"
       - "!packages/rust"
       - "!packages/ts"
       - "!packages/js"
       - "!packages/validator"
       - "!packages/generator"
-      - "!packages/html"
       - "!packages/react"
       - "!packages/vue"
       - "!packages/svelte"
@@ -110,12 +114,3 @@ rules:
       - "tests/**"
       - "!tests/kit/fixture/**"
       - "!tests/native-generators/python.py"
-
-  # K244: these Go packages record fixture evidence and contain no test suite. The public test support package is
-  # imported by the validator and generator Go modules; the internal package exposes the writer to validator tests.
-  - id: suites-at-root
-    paths:
-      - "packages/**/integration"
-      - "packages/**/conformance"
-      - "!packages/validator/go/validator/internal/conformance"
-      - "!packages/validator/go/testsupport/conformance"

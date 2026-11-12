@@ -1,6 +1,6 @@
 # Wave 배경
 <!-- doc-id: docs-plans-waves -->
-<!-- source-sha256: 3d03cc93ce0ffdea0abb503af1787542534f60b5bf8010bb4e657427a13a8265 -->
+<!-- source-sha256: 7ebdbe1ae74ed3c49f9364bbe1a1055cd1ca1ab662e647d7913ad997368d20ea -->
 
 [English](plan.md).
 
@@ -65,3 +65,7 @@
 ## Wave 15
 
 의존: 없음. AGENTS의 경로 규칙은 모든 경로에서 symbolic link를 거부했고, 그 규칙이 이 저장소가 만드는 것에만 적용된다고 적지 않았다. 그래서 symbolic link를 만드는 생태계의 표준 도구, 예를 들어 Python 환경에 쓰는 uv가 이 규칙에 걸릴 수 있었다. AGENTS는 외부 도구와 라이브러리를 다시 만들지 않고 있는 그대로 쓴다는 내용도 적지 않았다.
+
+## Wave 16
+
+의존: 없음. validator와 generator는 언어마다 구현이 하나씩 있었다. Rust crate가 코어가 되고 binding이 그 인터페이스 계약에서 언어 package를 생성한다. 예전 언어 구현은 바인딩이 하나씩 대체할 때까지 `legacy/`에 남는다.

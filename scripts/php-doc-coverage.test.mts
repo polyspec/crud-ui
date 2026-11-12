@@ -65,7 +65,7 @@ test('PHP checker rejects a source tree without declarations', () => {
 // Package source documentation belongs to the documentation tool; PHP's source process loads no extension argument.
 for (const packageName of ['generator', 'validator']) {
   test(`${packageName} PHP package source and public documentation match their loaded declarations`, () => {
-    const directory = join(repository, 'packages', packageName, 'php/src');
+    const directory = join(repository, 'legacy/packages', packageName, 'php/src');
     const command = `require ${literal(rootAutoload)}; echo json_encode(\\Polyspec\\Crudui\\Docs\\DocCoverage::gaps(${literal(directory)}));`;
     const result = spawnSync(process.env.PHP ?? 'php', ['-r', command], { cwd: repository, encoding: 'utf8' });
     assert.equal(result.error, undefined, result.error?.message ?? '');

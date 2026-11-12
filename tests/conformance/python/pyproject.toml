@@ -1,5 +1,5 @@
-# The conformance evidence of the Python suites (docs/operations/conformance.md): the tests of packages/validator/python and
-# packages/generator/python import it from the uv workspace of the root pyproject.toml. Never published.
+# The conformance evidence of the Python suites (docs/operations/conformance.md): the tests of legacy/packages/validator/python and
+# legacy/packages/generator/python import it from the uv workspace of the root pyproject.toml. Never published.
 [build-system]
 requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"

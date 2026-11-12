@@ -1,0 +1,30 @@
+{
+    "name": "polyspec/crudui-generator",
+    "version": "0.0.20",
+    "description": "Form templates, editable data and HTML rendering for CRUDUI",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "php-64bit": "^8.2",
+        "ext-mbstring": "*",
+        "polyspec/crudui-validator": "0.0.20"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Polyspec\\Crudui\\Generator\\": "src/Internal/",
+            "Polyspec\\Crudui\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Polyspec\\Crudui\\Generator\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "COMPOSER_VENDOR_DIR=../../../../vendor node ../../../../scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal"
+    }
+}

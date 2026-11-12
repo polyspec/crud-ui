@@ -64,8 +64,8 @@ place the text is written. Each runtime embeds a source generated from it by its
 own script and has a test that fails when the embedded text differs from the file;
 after editing the file, run every runtime's script:
 
-- TypeScript: the build of `packages/generator/ts`, whose prebuild script writes the untracked `src/interface-messages.ts`
-- Go: `go generate` in `packages/generator/go`
+- TypeScript: the build of `legacy/packages/generator/ts`, whose prebuild script writes the untracked `src/interface-messages.ts`
+- Go: `go generate` in `legacy/packages/generator/go`
 - Rust: `node packages/generator/rust/tools/generate-interface-messages.mjs`
-- PHP: `make php-tables`, which writes the untracked `src/Internal/InterfaceMessages.php` of `packages/generator/php`
-- PHP extension: `node packages/php-ext/tools/generate-interface-messages.mjs`
+- PHP: `make php-tables`, which writes the untracked `src/Internal/InterfaceMessages.php` of `legacy/packages/generator/php`
+- PHP extension: `node legacy/packages/php-ext/tools/generate-interface-messages.mjs`

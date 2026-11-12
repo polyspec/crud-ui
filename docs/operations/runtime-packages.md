@@ -8,14 +8,14 @@ Implementation and verification are recorded in [feature status](../features.md)
 
 | Package | Implementation responsibility | Reuse |
 | --- | --- | --- |
-| `packages/generator/ts` | JavaScript templates, instances and evaluated models | JavaScript composition and expression modules |
+| `legacy/packages/generator/ts` | JavaScript templates, instances and evaluated models | JavaScript composition and expression modules |
 | `packages/react`, `generator-vue`, `generator-svelte` | Framework integration, browser operation and rendering | Shared JavaScript generator |
-| `packages/html` | Framework-independent JavaScript form, list and detail HTML rendering | Shared JavaScript generator |
+| `legacy/packages/html` | Framework-independent JavaScript form, list and detail HTML rendering | Shared JavaScript generator |
 | `packages/form-binding` | [Browser validation](../spec/form-runtime.md#browser-validation) of a server-rendered form | JavaScript validator |
-| `packages/generator/php` | PHP template compilation, data binding, form, list and detail HTML | PHP composition and expression modules |
-| `packages/generator/go` | Go template compilation, data binding, form, list and detail HTML | Go composition and expression modules |
+| `legacy/packages/generator/php` | PHP template compilation, data binding, form, list and detail HTML | PHP composition and expression modules |
+| `legacy/packages/generator/go` | Go template compilation, data binding, form, list and detail HTML | Go composition and expression modules |
 | `packages/generator/rust` | Rust template compilation, data binding, form, list and detail HTML | Rust composition and expression modules |
-| `packages/php-ext` | PHP native generation and validation | The same public classes as the PHP packages; generation and validation execute in native code |
+| `legacy/packages/php-ext` | PHP native generation and validation | The same public classes as the PHP packages; generation and validation execute in native code |
 | `packages/validator/*` | Data and specification validation | Existing language rule implementations and shared cases |
 
 Each server generator is a library that can run in its own language's HTTP

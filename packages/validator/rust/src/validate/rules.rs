@@ -2,7 +2,7 @@
 //!
 //! Each rule is a function over a [`RuleContext`] returning the error message
 //! (`Some`) or `None` (pass). The rules mirror the JS reference engine
-//! (`packages/validator/ts/src/rules/*`) function-for-function so the shared
+//! (`legacy/packages/validator/ts/src/rules/*`) function-for-function so the shared
 //! 4-language fixture (`tests/fixtures/validate/cases.json`) holds bit-for-bit:
 //! same skip-on-empty behaviour, same default messages with `{0}`/`{1}`
 //! substitution, same loose comparisons.
@@ -1444,7 +1444,7 @@ fn are_all_unique(values: &[&Value]) -> bool {
 }
 
 /// A condition that does not parse is false: the JS reference `evaluateCondition`
-/// catches the parse error and returns false (packages/validator/ts/src/validate/validator.ts).
+/// catches the parse error and returns false (legacy/packages/validator/ts/src/validate/validator.ts).
 #[allow(
     clippy::disallowed_methods,
     reason = "a condition that does not parse is false"

@@ -109,8 +109,8 @@ const prepared = {
   nativePhpAutoload: '/run/native/vendor/autoload.php',
   nativeComposerManifest: '/checkout/examples/form-comparison/servers/php/native/composer.json',
   nativeComposerVendor: '/run/native/vendor',
-  orderedJsonModule: '/run/sources/ordered-json/packages/php-ext/src/modules/ordered_json.so',
-  cruduiModule: '/checkout/packages/php-ext/modules/polyspec_crudui.so',
+  orderedJsonModule: '/run/sources/ordered-json/legacy/packages/php-ext/src/modules/ordered_json.so',
+  cruduiModule: '/checkout/legacy/packages/php-ext/modules/polyspec_crudui.so',
 };
 
 test('verifies the local stack in stages, against the origin of its public server', () => {

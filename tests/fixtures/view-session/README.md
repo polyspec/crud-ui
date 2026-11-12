@@ -13,7 +13,7 @@ that waits for rendering.
   content and from a model whose `html` value changed, and requires the same element nodes after
   every render and the changed text inside the kept nodes.
 
-The [HTML](../../../packages/html/src/view-session.test.ts),
+The [HTML](../../../legacy/packages/html/src/view-session.test.ts),
 [React](../../../packages/react/src/tests/View.test.tsx),
 [Vue](../../../packages/vue/tests/view-session.test.mjs) and
 [Svelte](../../../packages/svelte/tests/view-session.client.mjs) tests run it. The HTML

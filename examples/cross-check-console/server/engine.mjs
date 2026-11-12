@@ -81,7 +81,7 @@ async function bootEngine() {
   // same server gives the public API and the error classes the renderers throw.
   const [core, htmlMod, reactServer, svelteMod, vueMod, vueListMod, normMod] = await Promise.all([
     vite.ssrLoadModule(realpathSync(fileURLToPath(import.meta.resolve('@polyspec/crudui-generator-core')))),
-    vite.ssrLoadModule(path.resolve(ROOT, 'packages/html/src/index.ts')),
+    vite.ssrLoadModule(path.resolve(ROOT, 'legacy/packages/html/src/index.ts')),
     vite.ssrLoadModule(path.resolve(ROOT, 'packages/react/src/server.ts')),
     vite.ssrLoadModule(path.resolve(ROOT, 'packages/svelte/src/index.ts')),
     vite.ssrLoadModule(path.resolve(ROOT, 'packages/vue/src/index.ts')),

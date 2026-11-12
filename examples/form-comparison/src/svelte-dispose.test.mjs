@@ -47,10 +47,10 @@ const server = await createServer({
   plugins: [stubs, svelte({ configFile: false })],
   resolve: {
     alias: {
-      '@polyspec/crudui-generator-core/internal': path.join(source, 'packages/generator/ts/src/internal.ts'),
-      '@polyspec/crudui-generator-core': path.join(source, 'packages/generator/ts/src/index.ts'),
-      '@polyspec/crudui-validator/internal': path.join(source, 'packages/validator/ts/src/internal.ts'),
-      '@polyspec/crudui-validator': path.join(source, 'packages/validator/ts/src/index.ts'),
+      '@polyspec/crudui-generator-core/internal': path.join(source, 'legacy/packages/generator/ts/src/internal.ts'),
+      '@polyspec/crudui-generator-core': path.join(source, 'legacy/packages/generator/ts/src/index.ts'),
+      '@polyspec/crudui-validator/internal': path.join(source, 'legacy/packages/validator/ts/src/internal.ts'),
+      '@polyspec/crudui-validator': path.join(source, 'legacy/packages/validator/ts/src/index.ts'),
     },
   },
 });

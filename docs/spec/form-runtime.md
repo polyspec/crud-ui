@@ -381,7 +381,7 @@ DOM nodes remain unchanged when a row identity changes.
 Scripts and external editor integrations declared by a field are separate from
 native data binding.
 
-The scripts of rendered markup are specified in [the HTML package documentation](../../packages/html/README.md#scripts-in-rendered-markup).
+The scripts of rendered markup are specified in [the HTML package documentation](../../legacy/packages/html/README.md#scripts-in-rendered-markup).
 
 Browsers never run a script that was parsed as a fragment (`innerHTML`, a `<template>`) or
 cloned, so every renderer inserts each new script as a new script element. `patchContent` does
@@ -409,7 +409,7 @@ installation.
 3. **CURT-054** Apply a saved sequence key and update field names and rule paths correctly.
 4. **CURT-055** Reject invalid operations atomically and permit adding after deleting all rows.
 
-The criteria for the framework views, for the nodes that a re-render keeps, and for the browser binding are in the documentation of their packages ([React](../../packages/react/README.md#framework-views), [Vue](../../packages/vue/README.md#framework-views), [Svelte](../../packages/svelte/README.md#framework-views), [HTML](../../packages/html/README.md#keeping-controls-across-re-renders), [form binding](../../packages/form-binding/README.md#acceptance-of-the-browser-binding)).
+The criteria for the framework views, for the nodes that a re-render keeps, and for the browser binding are in the documentation of their packages ([React](../../packages/react/README.md#framework-views), [Vue](../../packages/vue/README.md#framework-views), [Svelte](../../packages/svelte/README.md#framework-views), [HTML](../../legacy/packages/html/README.md#keeping-controls-across-re-renders), [form binding](../../packages/form-binding/README.md#acceptance-of-the-browser-binding)).
 
 Every shared validation fixture case is verified through JavaScript, PHP, Go and Rust, and the four languages must produce one idempotent result signature. Object member order inside an error value is not semantic; array order remains semantic.
 

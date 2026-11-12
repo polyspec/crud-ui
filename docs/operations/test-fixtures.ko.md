@@ -1,6 +1,6 @@
 # 테스트 사례
 <!-- doc-id: docs-operations-test-fixtures -->
-<!-- source-sha256: 77f3caa81d1239159c1702181d10a3b7c0bf90ee3382af1200eaff3df25cb8b9 -->
+<!-- source-sha256: 10a4756c26cac16e68cb1656221d56bed02eaf453255fffc369a7cb27a1cdffe -->
 
 [English](test-fixtures.md).
 
@@ -37,7 +37,7 @@
 }
 ```
 
-[TypeScript 적합성 검사](../../packages/validator/ts/src/validate.conformance.test.ts)는
+[TypeScript 적합성 검사](../../legacy/packages/validator/ts/src/validate.conformance.test.ts)는
 전체 결과 또는 실패 기록을 엄격하게 비교합니다. 기대값을 정확히 하나 선언하지 않은
 항목은 거부합니다. PHP·C PHP 확장·Go·Rust의 패키지 검사와 CLI 검사도 같은 검증
 사례 파일을 사용합니다. `tests/fixtures/validate/generate.mts`가 TypeScript 엔진으로

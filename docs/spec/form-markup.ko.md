@@ -1,6 +1,6 @@
 # 폼 마크업
 <!-- doc-id: docs-spec-form-markup -->
-<!-- source-sha256: d234630c3d4a2aceecf84a8315ef699aa6576f56ecad934e2938bb799f711455 -->
+<!-- source-sha256: 19d3b7b2b4454cd5685c97b9442d4f8d90ed58839e86b282ccd740bd4d3454de -->
 
 [English](form-markup.md). 이 문서는 평가된 폼 노드의 렌더링 방식을 정의합니다.
 React, Vue, Svelte, HTML 렌더러와 네이티브 렌더러는 같은 마크업을 생성합니다.
@@ -34,7 +34,7 @@ React, Vue, Svelte, HTML 렌더러와 네이티브 렌더러는 같은 마크업
 - **CUMK-005** `crudui-node`: 데이터 노드 하나입니다. 종류는 아래와 같습니다.
 - **CUMK-006** `crudui-controls`: `role="group"`과 접근성 이름을 가진 버튼 묶음입니다.
 - **CUMK-007** `crudui-action`: 버튼입니다. `data-crudui-action`을 가진 조작, 폼 버튼, [버튼 필드](#버튼-필드)의 버튼이 이에 해당합니다. `crudui-action--text`는 레이블을 텍스트로 표시합니다.
-- 구조 맵(`crudui-outline`)과 현재 데이터 보기(`crudui-data`)는 TypeScript HTML 렌더러의 블록이며, `packages/html/README.ko.md`에 문서화되어 있습니다.
+- 구조 맵(`crudui-outline`)과 현재 데이터 보기(`crudui-data`)는 TypeScript HTML 렌더러의 블록이며, `legacy/packages/html/README.ko.md`에 문서화되어 있습니다.
 - 구조 조건 편집기(`crudui-condition`)는 구조 조건 필드의 위젯 안 블록이며 [구조 조건 편집기](#구조-조건-편집기)에 정의합니다(CUMK-067, CUMK-068).
 - **CUMK-010** `crudui-widget`: 앞뒤 텍스트 `__affix`, 파일 위젯의 `__button`, 범위 위젯의 `__output`을 가진 컨트롤입니다. `--search`는 검색 select를, `--range`는 범위 컨트롤을, `--condition`은 [구조 조건 편집기](#구조-조건-편집기)를 담고, `--unsupported`는 위젯이 없는 유형을 표시합니다.
 - **CUMK-011** `crudui-input`: 기본 input, textarea, select입니다. select는 `--select`, 파일 입력은 `--file`, 범위 입력은 `--range`, [조건 필드](#조건-필드)의 textarea는 `--condition`, [스위치](#스위치)의 체크박스 input은 `--switch`를 가집니다.
@@ -491,7 +491,7 @@ href, design, behavior }` 목록이고 `type`은 `submit`, `reset`, `button`, `l
 정하는 규칙으로 블록의 테마를 정합니다. 예: `.crudui-form, .crudui-list { --crudui-accent: … }`.
 이 규칙은 스타일시트 순서와 관계없이 기본값보다 우선합니다.
 
-- `--crudui-*` 사용자 지정 속성과 기본값, 쓰임은 스타일시트 `crudui.css`와 함께 `packages/generator/ts/README.ko.md`에 문서화되어 있습니다.
+- `--crudui-*` 사용자 지정 속성과 기본값, 쓰임은 스타일시트 `crudui.css`와 함께 `legacy/packages/generator/ts/README.ko.md`에 문서화되어 있습니다.
 
 `--crudui-node-header-height`, `--crudui-row-padding`, `--crudui-row-border`,
 `--crudui-form-footer-height`는 고정 행과 폼 바닥글의 크기를 정합니다(위 참조).
@@ -555,7 +555,7 @@ element에 `crudui.css`와 같은 computed style(custom property 제외)을 줍�
 
 이 문법의 기준이 된 폼과 다음을 의도적으로 다르게 정했습니다.
 
-1. TypeScript 렌더러의 준비와 스크롤 동작(렌더링 후 동기화, scroll과 resize에서 애니메이션 프레임당 최대 한 번 표시되는 고정 헤더)은 `packages/generator/ts/README.ko.md`에 문서화되어 있습니다.
+1. TypeScript 렌더러의 준비와 스크롤 동작(렌더링 후 동기화, scroll과 resize에서 애니메이션 프레임당 최대 한 번 표시되는 고정 헤더)은 `legacy/packages/generator/ts/README.ko.md`에 문서화되어 있습니다.
 
 2. **CUMK-057** 펼침 상태는 레코드 데이터가 아닌 뷰 상태입니다.
 3. **CUMK-058** 행은 배열 위치가 아닌 키로 식별합니다.

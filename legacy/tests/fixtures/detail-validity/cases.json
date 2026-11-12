@@ -1,0 +1,252 @@
+[
+  {
+    "name": "ok-basic-detail",
+    "requirements": ["CUDF-032", "CUDF-034", "CUDF-041", "CUDF-043", "CUDF-045", "CUDF-046", "CUDF-047", "CUDF-048", "CUDF-049", "CUDF-051", "CUDF-052", "CUSC-001"],
+    "note": "the smallest valid detail specification with text and badge fields.",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "format": "text"
+        },
+        "state": {
+          "field": "state",
+          "format": {
+            "type": "badge",
+            "map": {
+              "active": "success"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "red-detail-sortable",
+    "note": "sortable is a list column key; the meta-schema rejects it on a detail field, and the four-language engine accepts it because it is not a forbidden key.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": "pass",
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "sortable": true
+        }
+      }
+    }
+  },
+  {
+    "name": "ok-compose-ref-patch-fields",
+    "requirements": ["CUSC-007"],
+    "note": "$ref and $patch on the fields map use the same composition engine as form properties; files resolve the base for the engine.",
+    "expect": "ok",
+    "engine": "pass",
+    "files": {
+      "base-fields.yml": {
+        "properties": {
+          "name": {
+            "field": "name",
+            "label": "Name"
+          }
+        }
+      }
+    },
+    "spec": {
+      "fields": {
+        "$ref": "base-fields.yml",
+        "$patch": {
+          "extra": {
+            "field": "extra",
+            "label": "Extra"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "root-ref-without-own-fields",
+    "note": "a root $ref inherits a base detail specification exposed under a properties layer. The meta-schema reads only spec and requires fields; the four-language engine composes the base and accepts it.",
+    "expect": "fail",
+    "reason": "required",
+    "engine": "pass",
+    "files": {
+      "base-detail.yml": {
+        "properties": {
+          "fields": {
+            "name": {
+              "field": "name"
+            }
+          }
+        }
+      }
+    },
+    "spec": {
+      "$ref": "base-detail.yml"
+    }
+  },
+  {
+    "name": "red-forbidden-field-key",
+    "note": "a forbidden condition meta key used as a field key is a load failure.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": {
+      "code": "FORBIDDEN_META_KEY",
+      "at": "fields.display_switch"
+    },
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        },
+        "display_switch": {
+          "field": "x"
+        }
+      }
+    }
+  },
+  {
+    "name": "red-show-if-on-field",
+    "requirements": ["CUDF-045"],
+    "note": "show_if on a field is a forbidden meta key.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": {
+      "code": "FORBIDDEN_META_KEY",
+      "at": "fields.name.show_if"
+    },
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "show_if": ".admin"
+        }
+      }
+    }
+  },
+  {
+    "name": "red-forbidden-key-in-format-options",
+    "note": "a forbidden meta key inside the open format options object is a load failure.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": {
+      "code": "FORBIDDEN_META_KEY",
+      "at": "fields.name.format.if"
+    },
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "format": {
+            "type": "badge",
+            "if": ".admin"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "patched-field-forbidden-key",
+    "requirements": ["CUSC-007"],
+    "note": "a forbidden key introduced by $patch is rejected by the meta-schema inside the patch and by the four-language engine after composition.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": {
+      "code": "FORBIDDEN_META_KEY",
+      "at": "fields.extra.when"
+    },
+    "files": {
+      "base-fields.yml": {
+        "properties": {
+          "name": {
+            "field": "name"
+          }
+        }
+      }
+    },
+    "spec": {
+      "fields": {
+        "$ref": "base-fields.yml",
+        "$patch": {
+          "extra": {
+            "field": "extra",
+            "when": ".admin"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "red-forbidden-root-key",
+    "requirements": ["CUDF-041"],
+    "note": "a forbidden meta key at the detail root is a load failure.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": {
+      "code": "FORBIDDEN_META_KEY",
+      "at": "if"
+    },
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "if": ".admin"
+    }
+  },
+  {
+    "name": "red-unresolved-fields-ref",
+    "requirements": ["CUSC-007", "CUSC-036"],
+    "note": "an unresolved $ref on the fields map is a load failure.",
+    "expect": "ok",
+    "engine": {
+      "code": "REF_FILE_NOT_FOUND",
+      "at": "missing.yml"
+    },
+    "spec": {
+      "fields": {
+        "$ref": "missing.yml"
+      }
+    }
+  },
+  {
+    "name": "ok-detail-actions",
+    "requirements": ["CUDF-041", "CUDF-062", "CUDF-064", "CUDF-066", "CUDF-068", "CUDF-069"],
+    "note": "a detail declares actions as a list does: a script string or an action object.",
+    "expect": "ok",
+    "engine": "pass",
+    "spec": {
+      "fields": { "name": { "field": "name" } },
+      "actions": {
+        "edit": { "label": { "ko": "수정", "en": "Edit" }, "format": { "type": "link", "href": "/members/7/edit" } },
+        "remove": "remove()"
+      }
+    }
+  },
+  {
+    "name": "red-unknown-detail-action-key",
+    "note": "an unknown key on a detail action fails the meta-schema; the runtime scan passes it.",
+    "expect": "fail",
+    "reason": "additionalProperties",
+    "engine": "pass",
+    "spec": {
+      "fields": { "name": { "field": "name" } },
+      "actions": { "edit": { "label": "Edit", "onclick": "x()" } }
+    }
+  },
+  {
+    "name": "red-forbidden-detail-action-name",
+    "note": "a forbidden key as a detail action name fails the meta-schema and the runtime scan.",
+    "expect": "fail",
+    "reason": "propertyNames",
+    "engine": { "code": "FORBIDDEN_META_KEY", "at": "actions.show_if" },
+    "spec": {
+      "fields": { "name": { "field": "name" } },
+      "actions": { "show_if": "x()" }
+    }
+  }
+]

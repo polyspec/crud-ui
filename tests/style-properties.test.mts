@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-const source = readFileSync(new URL('../packages/generator/ts/styles/crudui.css', import.meta.url), 'utf8')
+const source = readFileSync(new URL('../legacy/packages/generator/ts/styles/crudui.css', import.meta.url), 'utf8')
   .replace(/\/\*[\s\S]*?\*\//g, '');
 
 /** Every rule with a declaration block: its selector, its declarations and its depth in at-rules. */

@@ -8,7 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const PACKAGES: readonly string[] = ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding'];
+export const PACKAGES: readonly string[] = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding'];
 
 export interface BuildOutput {
   path: string;

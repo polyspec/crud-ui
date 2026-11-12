@@ -34,12 +34,12 @@ try {
     resolve: {
       alias: {
         // The internal entry precedes the main entry, whose alias also matches its subpaths.
-        '@polyspec/crudui-validator/internal': join(repositoryRoot, 'packages/validator/ts/src/internal.ts'),
-        '@polyspec/crudui-validator': join(repositoryRoot, 'packages/validator/ts/src/index.ts'),
+        '@polyspec/crudui-validator/internal': join(repositoryRoot, 'legacy/packages/validator/ts/src/internal.ts'),
+        '@polyspec/crudui-validator': join(repositoryRoot, 'legacy/packages/validator/ts/src/index.ts'),
       },
     },
   });
-  const { compileForm, bindForm, bindButtons, formMessages, buildList } = await server.ssrLoadModule(join(repositoryRoot, 'packages/generator/ts/src/index.ts'));
+  const { compileForm, bindForm, bindButtons, formMessages, buildList } = await server.ssrLoadModule(join(repositoryRoot, 'legacy/packages/generator/ts/src/index.ts'));
   const { FormFields } = await server.ssrLoadModule(join(repositoryRoot, 'packages/react/src/components/FormFields.tsx'));
   const { List } = await server.ssrLoadModule(join(repositoryRoot, 'packages/react/src/components/List.tsx'));
   const serializable = value => JSON.parse(JSON.stringify(value));

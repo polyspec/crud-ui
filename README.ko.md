@@ -1,6 +1,6 @@
 # CRUDUI
 <!-- doc-id: readme -->
-<!-- source-sha256: 8d71608a8548d3de3670686c55b9f99140ce0e949911ad9e1c7dda9d7e7b010f -->
+<!-- source-sha256: c4a21ae0f1ff0f003faecb04f7e0ee02434b440fd3e716e3903087e7356bfed5 -->
 
 [English](README.md).
 
@@ -40,7 +40,7 @@ npm run test:forms
 - [목록과 상세 개발](docs/operations/displays.ko.md)
 - [폼 런타임 계약](docs/spec/form-runtime.ko.md)
 - [런타임 패키지와 API](docs/spec/runtime-packages.ko.md)
-- [네이티브 PHP 패키지](packages/php-ext/README.ko.md)
+- [네이티브 PHP 패키지](legacy/packages/php-ext/README.ko.md)
 - [기능과 배포 상태](docs/features.ko.md)
 - [개발과 검증](docs/operations/forms.ko.md)
 - [문서 관리](docs/operations/documentation.ko.md)

@@ -173,7 +173,7 @@ suppression-check: ## Fail on a suppression of a lint finding that states no rea
 	$(NODE) $(KIT)/suppression-check.$(KIT_EXT)
 
 .PHONY: php-ext-tables php-tables python-tables lint test build-go build-php build-python build-rust build-ts test-go test-php test-python test-rust test-ts lint-go lint-php lint-python lint-rust lint-ts build-php-ext lint-php-ext test-php-ext production-dependencies-check
-# build, test and lint run the target <task>-<runtime> of each runtime of packages/ (go, php, php-ext, python, rust, ts), after
+# build, test and lint run the target <task>-<runtime> of each runtime (go, php, php-ext, python, ts of legacy/packages and rust of packages), after
 # the steps of this repository that are their prerequisites (kit K1106).
 build: ## Run build-<runtime> for every runtime of packages/; offline
 	$(MAKE) --no-print-directory build-go build-php build-php-ext build-python build-rust build-ts
@@ -184,27 +184,27 @@ lint: ## Run lint-<runtime> for every runtime of packages/; offline
 
 # The build of each package of a runtime with the build of its ecosystem; a PHP library has none (kit K1106).
 build-go: ## Build each Go package with go build; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/go packages/validator/go -- $(GO) build ./...
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/go legacy/packages/validator/go -- $(GO) build ./...
 build-php: ## A PHP library has no build step; offline
 build-python: python-tables ## Build each Python package with uv build; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/python packages/validator/python -- $(UV) build
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/python legacy/packages/validator/python -- $(UV) build
 build-rust: ## Build each Rust package with cargo build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/rust packages/validator/rust -- cargo build --locked
 build-ts: require-build ## Build each TypeScript package with tsc after the build of the packages, which writes their tables; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/ts packages/validator/ts -- node_modules/.bin/tsc -p tsconfig.build.json
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/ts legacy/packages/validator/ts -- node_modules/.bin/tsc -p tsconfig.build.json
 
 # The unit tests of a runtime with CASES=<pattern>, the name filter of its runner, with the runner arguments that kit 0.0.98
 # passed (kit K1094, K1106): one go test over the modules of go.work, one test at a time in cargo and the 30 s test timeout of vitest.
 test-go: ## Run the unit tests of the Go modules with CASES=<pattern>; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner go --roots packages/generator/go packages/validator/go -- -count=1 -timeout=0
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner go --roots legacy/packages/generator/go legacy/packages/validator/go -- -count=1 -timeout=0
 test-php: php-tables ## Run the unit tests of each PHP package with CASES=<pattern>; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner php --roots packages/generator/php packages/validator/php
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner php --roots legacy/packages/generator/php legacy/packages/validator/php
 test-python: python-tables ## Run the unit tests of each Python package with CASES=<pattern>; offline
-	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots packages/generator/python packages/validator/python --venv .venv
+	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots legacy/packages/generator/python legacy/packages/validator/python --venv .venv
 test-rust: ## Run the unit tests of each Rust package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner cargo --roots packages/generator/rust packages/validator/rust -- -- --test-threads=1
 test-ts: require-build ## Run the unit tests of each TypeScript package with CASES=<pattern>; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner vitest --roots packages/generator/ts packages/validator/ts -- --testTimeout=30000 --hookTimeout=30000
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner vitest --roots legacy/packages/generator/ts legacy/packages/validator/ts -- --testTimeout=30000 --hookTimeout=30000
 
 lint-python: python-tables ## Lint the Python: ruff with ruff.toml, and vulture on each package; offline
 	$(NODE) $(KIT)/lint-python.$(KIT_EXT)
@@ -212,8 +212,29 @@ lint-python: python-tables ## Lint the Python: ruff with ruff.toml, and vulture 
 lint-php: php-tables ## Lint the PHP: phpcs with phpcs.xml.dist, and PHPStan with phpstan.dist.neon on each Composer package; offline
 	$(NODE) $(KIT)/lint-php.$(KIT_EXT) --memory-limit=-1
 
+# lint-rust lints the core crates: kit runs clippy --workspace, and the binding crates, which need make bindings first, are
+# excluded and linted by lint-bindings.
+BINDING_COMPONENTS := validator generator
+BINDING_CRATES := $(foreach component,$(BINDING_COMPONENTS),polyspec-crud-ui-$(component)-node polyspec-crud-ui-$(component)-python polyspec-crud-ui-$(component)-php-ext)
 lint-rust: ## Lint the Rust: cargo clippy in each Cargo workspace with the [workspace.lints] of its Cargo.toml and clippy.toml
-	$(NODE) $(KIT)/lint-rust.$(KIT_EXT) --locked
+	$(NODE) $(KIT)/lint-rust.$(KIT_EXT) --locked $(foreach crate,$(BINDING_CRATES),--exclude $(crate))
+
+# binding is not yet a package that package-lock.json pins; until it is, BINDING names the cli (packages/ts/src/cli.ts) of
+# a binding checkout, and the targets refuse to run without it. bindings writes the generated folders of
+# packages/<component>/ts, packages/<component>/python and packages/<component>/php-ext, which Git ignores; bindings-check
+# runs the contract check of each component, which also compares the package skeletons with what binding scaffold writes.
+.PHONY: bindings bindings-check lint-bindings test-bindings
+BINDING ?=
+bindings: ## Write the generated folders of the binding packages with BINDING=<cli of binding>
+	@test -n "$(BINDING)" || { echo "bindings: set BINDING to the cli of binding"; exit 1; }
+	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) generate --contract $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
+bindings-check: ## Check the interface contract of each component with BINDING=<cli of binding>
+	@test -n "$(BINDING)" || { echo "bindings-check: set BINDING to the cli of binding"; exit 1; }
+	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) check $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
+lint-bindings: bindings ## Lint the binding crates after make bindings
+	cargo clippy --locked $(foreach crate,$(BINDING_CRATES),-p $(crate)) --all-targets -- -D warnings
+test-bindings: bindings ## Run the tests of the binding crates after make bindings
+	cargo test --locked $(foreach crate,$(BINDING_CRATES),-p $(crate))
 
 lint-go: ## Lint the Go: golangci-lint with .golangci.yml, and deadcode -test, in each Go module; offline once the modules are downloaded
 	$(NODE) $(KIT)/lint-go.$(KIT_EXT)
@@ -228,34 +249,34 @@ lint-ts: require-build production-dependencies-check ## Lint the TypeScript: oxl
 production-dependencies-check:
 	$(NODE) node_modules/knip/bin/knip.js --config config/knip-production.json --production --strict --include unlisted --no-progress --no-config-hints
 
-# The C tables of packages/php-ext are untracked build output of contracts/ (P34): php-ext-tables writes them, and each target
+# The C tables of legacy/packages/php-ext are untracked build output of contracts/ (P34): php-ext-tables writes them, and each target
 # that reads the sources of the extension depends on it.
-php-ext-tables: ## Write packages/php-ext/src/unicode_data.c and interface_messages.c from contracts/; offline
-	$(NODE) packages/php-ext/tools/generate-unicode-data.mjs
-	$(NODE) packages/php-ext/tools/generate-interface-messages.mjs
-# The PHP tables of packages/validator/php and packages/generator/php are untracked build output of contracts/ (P34):
+php-ext-tables: ## Write legacy/packages/php-ext/src/unicode_data.c and interface_messages.c from contracts/; offline
+	$(NODE) legacy/packages/php-ext/tools/generate-unicode-data.mjs
+	$(NODE) legacy/packages/php-ext/tools/generate-interface-messages.mjs
+# The PHP tables of legacy/packages/validator/php and legacy/packages/generator/php are untracked build output of contracts/ (P34):
 # php-tables writes them with the generators of scripts/ of their packages, each target that reads the PHP sources of those
 # packages depends on it, and the release runs it for the Composer archive of each package (config/release.json).
-php-tables: ## Write packages/validator/php/src/Values/UnicodeData.php and packages/generator/php/src/Internal/InterfaceMessages.php from contracts/; offline
-	php packages/validator/php/scripts/generate-unicode-data.php
-	php packages/generator/php/scripts/generate-interface-messages.php
-# The Python tables of packages/validator/python and packages/generator/python are untracked build output of contracts/ (P34):
+php-tables: ## Write legacy/packages/validator/php/src/Values/UnicodeData.php and legacy/packages/generator/php/src/Internal/InterfaceMessages.php from contracts/; offline
+	php legacy/packages/validator/php/scripts/generate-unicode-data.php
+	php legacy/packages/generator/php/scripts/generate-interface-messages.php
+# The Python tables of legacy/packages/validator/python and legacy/packages/generator/python are untracked build output of contracts/ (P34):
 # python-tables writes them with the generators of scripts/ of their packages and the Python of mise.toml, each target that
 # reads the Python sources of those packages depends on it, and the release runs it for the wheel of each package
 # (config/release.json).
-python-tables: ## Write unicode_data.py of packages/validator/python and interface_messages.py of packages/generator/python from contracts/; offline
-	$(PYTHON) packages/validator/python/scripts/generate_unicode_data.py
-	$(PYTHON) packages/generator/python/scripts/generate_interface_messages.py
-# The PHP extension of packages/php-ext: one build with phpize, the check of its names and stub, and its declaration and unit tests.
+python-tables: ## Write unicode_data.py of legacy/packages/validator/python and interface_messages.py of legacy/packages/generator/python from contracts/; offline
+	$(PYTHON) legacy/packages/validator/python/scripts/generate_unicode_data.py
+	$(PYTHON) legacy/packages/generator/python/scripts/generate_interface_messages.py
+# The PHP extension of legacy/packages/php-ext: one build with phpize, the check of its names and stub, and its declaration and unit tests.
 # Its build and check read the PHP libraries (--library), so they depend on php-tables too.
-build-php-ext: php-ext-tables php-tables ## Build packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
-	$(ONLINE) $(NODE) $(KIT)/php-extension.$(KIT_EXT) build --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php
+build-php-ext: php-ext-tables php-tables ## Build legacy/packages/php-ext with phpize into var/php-ext/polyspec_crudui.so after the arginfo check; ONLINE
+	$(ONLINE) $(NODE) $(KIT)/php-extension.$(KIT_EXT) build --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php
 
-lint-php-ext: php-ext-tables php-tables ## Check the names, the one stub and the stub hash of the arginfo header of packages/php-ext; offline
-	$(NODE) $(KIT)/php-extension.$(KIT_EXT) check --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php
+lint-php-ext: php-ext-tables php-tables ## Check the names, the one stub and the stub hash of the arginfo header of legacy/packages/php-ext; offline
+	$(NODE) $(KIT)/php-extension.$(KIT_EXT) check --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php
 
 test-php-ext: build-php-ext ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
-	$(NODE) $(KIT)/php-extension.$(KIT_EXT) test --extension packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library packages/generator/php --library packages/validator/php -- --roots packages/generator/php packages/php-ext packages/validator/php
+	$(NODE) $(KIT)/php-extension.$(KIT_EXT) test --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php -- --roots legacy/packages/generator/php legacy/packages/php-ext legacy/packages/validator/php
 
 .PHONY: kit-gates-static kit-gates-runtime-ts kit-gates-runtime-php kit-gates-runtime-python kit-gates-runtime-go kit-gates-runtime-rust kit-gates-runtime-php-ext
 # The gates of this repository, in the partitions that the jobs of .github/workflows/ci-pipeline.yml run. A partition runs each
@@ -559,8 +580,8 @@ crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-
 # The checking commands of the CI workflow, one target each (CI_TARGETS).
 crudui-test-runtimes: ## Exact runtime versions and test standards
 	$(NPM) run test:runtimes
-# The TypeScript tables are untracked build output of contracts/ (P34): the build script of packages/validator/ts writes
-# src/unicode/properties.ts, and the build script of packages/generator/ts writes src/interface-messages.ts and
+# The TypeScript tables are untracked build output of contracts/ (P34): the build script of legacy/packages/validator/ts writes
+# src/unicode/properties.ts, and the build script of legacy/packages/generator/ts writes src/interface-messages.ts and
 # src/form-template-validator.mjs, ajv's standalone validation code of contracts/schema/form-template.schema.json (C14.38),
 # so the package has no runtime dependency on ajv and compiles no schema at run time. Each target that reads the sources
 # of the two packages runs after that build (require-build).
@@ -583,17 +604,17 @@ crudui-test-validator-js: ## The TypeScript validator suite
 	$(NODE) scripts/require-current-build.mts
 	$(NPM) test -w @polyspec/crudui-validator
 crudui-test-validator-php: php-tables ## The PHP validator suite
-	$(COMPOSER_BIN) --working-dir=packages/validator/php test
+	$(COMPOSER_BIN) --working-dir=legacy/packages/validator/php test
 crudui-test-validator-go: ## The Go validator suite
-	@packages="$$($(GO) -C packages/validator/go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)" || exit $$?; \
+	@packages="$$($(GO) -C legacy/packages/validator/go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)" || exit $$?; \
 	test -n "$$packages" || { echo "crudui-test-validator-go: native Go discovery selected no test package" >&2; exit 1; }; \
-	$(NODE) tests/conformance/run-suite.mts go --cwd packages/validator/go -- -count=1 -timeout=0 $$packages
+	$(NODE) tests/conformance/run-suite.mts go --cwd legacy/packages/validator/go -- -count=1 -timeout=0 $$packages
 crudui-test-validator-rust: ## The Rust validator suite
 	$(NODE) tests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml -- --test-threads=1
 crudui-test-validator-python: python-tables ## The Python validator suite
-	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd packages/validator/python -- discover -s tests -t .
+	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd legacy/packages/validator/python -- discover -s tests -t .
 crudui-test-generator-python: python-tables ## The Python generator suite
-	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd packages/generator/python -- discover -s tests -t .
+	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) tests/conformance/run-suite.mts python --venv $(PYTHON_VENV) --cwd legacy/packages/generator/python -- discover -s tests -t .
 crudui-test-cross-check: python-tables ## The cross-check console gateway conformance
 	$(NPM) test --prefix examples/cross-check-console/server
 manifest-test: ## The verification commands of the feature contracts
@@ -736,10 +757,10 @@ bench-rust: bench-fixtures ## Rust 검증기만 측정
 # The aggregate target runs each part once and reports every failure.
 crudui-test-php-engine: php-ext-tables
 	$(NODE) scripts/require-current-build.mts
-	$(NODE) tests/conformance/run-suite.mts node -- --test-concurrency=1 packages/php-ext/tests/engine/engine.test.mjs packages/php-ext/tests/contract/*.test.mjs packages/php-ext/tests/comparison/comparison.test.mjs
+	$(NODE) tests/conformance/run-suite.mts node -- --test-concurrency=1 legacy/packages/php-ext/tests/engine/engine.test.mjs legacy/packages/php-ext/tests/contract/*.test.mjs legacy/packages/php-ext/tests/comparison/comparison.test.mjs
 
 crudui-test-generator-go:
-	$(NODE) tests/conformance/run-suite.mts go --cwd packages/generator/go -- -count=1 -timeout=0 -race ./...
+	$(NODE) tests/conformance/run-suite.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -race ./...
 
 crudui-test-generator-rust:
 	$(NODE) tests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml -- --test-threads=1
@@ -759,9 +780,9 @@ crudui-test-native-generators:
 
 crudui-test-php-api: php-tables require-build build-php-ext
 	@status=0; \
-	PHP_EXTENSION="$(PHP_EXTENSION)" $(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/php-ext || status=1; \
-	$(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/generator/php -- --testsuite public,php-source-internal || status=1; \
-	$(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/generator/php --php-extension "$(PHP_EXTENSION)" -- tests/FormStateTest.php tests/ButtonsConformanceTest.php tests/TemplateShapeTest.php tests/HistoryFunctionsTest.php || status=1; \
+	PHP_EXTENSION="$(PHP_EXTENSION)" $(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/php-ext || status=1; \
+	$(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal || status=1; \
+	$(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/generator/php --php-extension "$(PHP_EXTENSION)" -- tests/FormStateTest.php tests/ButtonsConformanceTest.php tests/TemplateShapeTest.php tests/HistoryFunctionsTest.php || status=1; \
 	exit $$status
 
 # Compare every declared generator runtime independently of the language unit suites.
@@ -781,9 +802,9 @@ crudui-test-native:
 
 crudui-test-validators: php-tables require-build
 	@status=0; \
-	$(NODE) tests/conformance/run-suite.mts vitest --cwd packages/validator/ts || status=1; \
-	$(NODE) tests/conformance/run-suite.mts phpunit --cwd packages/validator/php -- --testsuite public,php-source-internal || status=1; \
-	$(NODE) tests/conformance/run-suite.mts go --cwd packages/validator/go -- -count=1 -timeout=0 ./... || status=1; \
+	$(NODE) tests/conformance/run-suite.mts vitest --cwd legacy/packages/validator/ts || status=1; \
+	$(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/validator/php -- --testsuite public,php-source-internal || status=1; \
+	$(NODE) tests/conformance/run-suite.mts go --cwd legacy/packages/validator/go -- -count=1 -timeout=0 ./... || status=1; \
 	$(NODE) tests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml -- --test-threads=1 || status=1; \
 	exit $$status
 
@@ -878,6 +899,6 @@ CI_TARGETS = \
 # which runs the PHP tests of each PHP package with the runtime targets (C17.86).
 crudui-test-php-source: php-tables
 	@status=0; \
-	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd packages/generator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
-	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd packages/validator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
+	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
+	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd legacy/packages/validator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
 	exit $$status

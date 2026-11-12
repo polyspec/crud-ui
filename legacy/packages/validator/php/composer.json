@@ -1,0 +1,33 @@
+{
+    "name": "polyspec/crudui-validator",
+    "version": "0.0.20",
+    "description": "PHP validator for crudui system - validates form data against YAML specifications",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "CRUDUI Team"
+        }
+    ],
+    "require": {
+        "php": ">=8.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Polyspec\\Crudui\\Validator\\": "src/",
+            "Polyspec\\Crudui\\": "src/Public/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Polyspec\\Crudui\\Validator\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "COMPOSER_VENDOR_DIR=../../../../vendor node ../../../../tests/conformance/run-suite.mts phpunit --cwd legacy/packages/validator/php -- --testsuite public,php-source-internal"
+    },
+    "minimum-stability": "stable"
+}

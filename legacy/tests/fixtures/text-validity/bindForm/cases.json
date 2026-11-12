@@ -1,0 +1,468 @@
+[
+  {
+    "name": "pass-paired-surrogates",
+    "note": "a surrogate pair is valid text in data and in the identifier prefix.",
+    "requirements": [
+      "CUIT-011",
+      "CURP-001"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "x😀"
+    },
+    "options": {
+      "idPrefix": "f😀"
+    },
+    "expect": "pass"
+  },
+  {
+    "name": "data-lone-high-value",
+    "note": "a lone high surrogate in a data value is an input failure.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-member-name",
+    "note": "an invalid data member name is reported at its object.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "\udc00\ud800": "x"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-nested-row",
+    "note": "a keyed row value is located by its row key.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "tags": {
+          "type": "checkbox",
+          "options": {
+            "items": [
+              "a",
+              "b"
+            ]
+          }
+        },
+        "rows": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "rows": {
+        "k1": {
+          "name": "\udc00"
+        }
+      }
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.rows.k1.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "data-before-options",
+    "note": "the data is checked before the options.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "data": {
+      "name": "\udc00"
+    },
+    "options": {
+      "idPrefix": "\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: data.name",
+      "at": ""
+    }
+  },
+  {
+    "name": "options-in-name-order",
+    "note": "options are checked in code point order of their names.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "language": "\ud800",
+      "idPrefix": "\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.idPrefix",
+      "at": ""
+    }
+  },
+  {
+    "name": "language-before-support",
+    "note": "an invalid language is a text failure before the supported-language check.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "language": "en\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.language",
+      "at": ""
+    }
+  },
+  {
+    "name": "key-prefix",
+    "note": "an invalid key prefix is an input failure.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "name": {
+          "type": "text",
+          "label": "Name"
+        }
+      }
+    },
+    "options": {
+      "keyPrefix": "\udc00\ud800"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: options.keyPrefix",
+      "at": ""
+    }
+  },
+  {
+    "name": "template-before-data",
+    "note": "a template decoded from JSON text is checked before the data.",
+    "requirements": [
+      "CUIT-011"
+    ],
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text",
+            "label": "\ud800"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "\udc00"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Text must be Unicode scalar values: template.fields.0.spec.label",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-group-array-rejected",
+    "note": "collection data of a repeated group that is array is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "items": []
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-group-list-of-text-rejected",
+    "note": "collection data of a repeated group that is list-of-text is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "items": [
+        "a"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-group-null-rejected",
+    "note": "collection data of a repeated group that is null is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "items": null
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-group-text-rejected",
+    "note": "collection data of a repeated group that is text is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "items": "a"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-scalar-array-rejected",
+    "note": "collection data of a repeated scalar that is array is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "text",
+          "multiple": true
+        }
+      }
+    },
+    "data": {
+      "items": []
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-scalar-list-of-text-rejected",
+    "note": "collection data of a repeated scalar that is list-of-text is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "text",
+          "multiple": true
+        }
+      }
+    },
+    "data": {
+      "items": [
+        "a"
+      ]
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-scalar-null-rejected",
+    "note": "collection data of a repeated scalar that is null is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "text",
+          "multiple": true
+        }
+      }
+    },
+    "data": {
+      "items": null
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  },
+  {
+    "name": "items-scalar-text-rejected",
+    "note": "collection data of a repeated scalar that is text is not a keyed object: the input fails with the path of the collection (CUEC-003).",
+    "requirements": [
+      "CUEC-003"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "items": {
+          "type": "text",
+          "multiple": true
+        }
+      }
+    },
+    "data": {
+      "items": "a"
+    },
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Repeated data must be a keyed object: items",
+      "at": ""
+    }
+  }
+]

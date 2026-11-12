@@ -1,0 +1,1347 @@
+[
+  {
+    "name": "choices-follow-edited-values-and-labels",
+    "note": "An edited value or label of a source row changes its choice in the next view, in every field with the source.",
+    "requirements": [
+      "CURP-010",
+      "CURP-012",
+      "CURP-020",
+      "CUSC-071"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "characters": {
+          "type": "group",
+          "label": "Character",
+          "multiple": {
+            "copy": true,
+            "sortable": true
+          },
+          "properties": {
+            "id": {
+              "type": "text",
+              "label": "Id"
+            },
+            "name": {
+              "type": "text",
+              "label": "Name"
+            }
+          }
+        },
+        "lead": {
+          "type": "select",
+          "label": "Lead",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "cast": {
+          "type": "multichoice",
+          "label": "Cast",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "roles": {
+          "type": "group",
+          "label": "Role",
+          "multiple": true,
+          "properties": {
+            "character": {
+              "type": "radio",
+              "label": "Character",
+              "items": {
+                "from": "characters.*.id"
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "characters": {
+        "__0000000000021__": {
+          "id": "ann",
+          "name": "Ann"
+        },
+        "__0000000000022__": {
+          "id": "bob",
+          "name": "Bob"
+        }
+      },
+      "lead": "ann",
+      "cast": [
+        "bob"
+      ],
+      "roles": {
+        "__0000000000031__": {
+          "character": "bob"
+        }
+      }
+    },
+    "steps": [
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "setValue",
+        "args": [
+          "characters.__0000000000021__.name",
+          "Anna"
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "setValue",
+        "args": [
+          "characters.__0000000000022__.id",
+          "rob"
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "cast"
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "roles.__0000000000031__.character"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "Ann"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 0,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Anna"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "Anna"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Anna"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Anna"
+            },
+            "__0000000000022__": {
+              "id": "rob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "Anna"
+          },
+          {
+            "value": "rob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Anna"
+            },
+            "__0000000000022__": {
+              "id": "rob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "ann"
+          },
+          {
+            "value": "rob",
+            "label": "rob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Anna"
+            },
+            "__0000000000022__": {
+              "id": "rob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      }
+    ]
+  },
+  {
+    "name": "choices-follow-added-copied-moved-and-rekeyed-rows",
+    "note": "An added row gives a choice in data order; a copied row repeats a value and gives none; moving a row moves its choice; rekeying keeps it.",
+    "requirements": [
+      "CURP-010",
+      "CURP-012",
+      "CURP-020",
+      "CURP-027",
+      "CUSC-071"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "characters": {
+          "type": "group",
+          "label": "Character",
+          "multiple": {
+            "copy": true,
+            "sortable": true
+          },
+          "properties": {
+            "id": {
+              "type": "text",
+              "label": "Id"
+            },
+            "name": {
+              "type": "text",
+              "label": "Name"
+            }
+          }
+        },
+        "lead": {
+          "type": "select",
+          "label": "Lead",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "cast": {
+          "type": "multichoice",
+          "label": "Cast",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "roles": {
+          "type": "group",
+          "label": "Role",
+          "multiple": true,
+          "properties": {
+            "character": {
+              "type": "radio",
+              "label": "Character",
+              "items": {
+                "from": "characters.*.id"
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "characters": {
+        "__0000000000021__": {
+          "id": "ann",
+          "name": "Ann"
+        },
+        "__0000000000022__": {
+          "id": "bob",
+          "name": "Bob"
+        }
+      },
+      "lead": "ann",
+      "cast": [
+        "bob"
+      ],
+      "roles": {
+        "__0000000000031__": {
+          "character": "bob"
+        }
+      }
+    },
+    "steps": [
+      {
+        "op": "addRow",
+        "args": [
+          "characters",
+          {
+            "key": "__0000000000023__",
+            "value": {
+              "id": "cy",
+              "name": ""
+            }
+          }
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "copyRow",
+        "args": [
+          "characters",
+          "__0000000000023__",
+          {
+            "key": "__0000000000024__"
+          }
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "moveRow",
+        "args": [
+          "characters",
+          "__0000000000023__",
+          0
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "rekeyRow",
+        "args": [
+          "characters",
+          "__0000000000023__",
+          "__0000000000025__"
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "result": "__0000000000023__",
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000023__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "Ann"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          },
+          {
+            "value": "cy",
+            "label": "cy"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000023__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": "__0000000000024__",
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000023__": {
+              "id": "cy",
+              "name": ""
+            },
+            "__0000000000024__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "Ann"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          },
+          {
+            "value": "cy",
+            "label": "cy"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000023__": {
+              "id": "cy",
+              "name": ""
+            },
+            "__0000000000024__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {
+            "__0000000000023__": {
+              "id": "cy",
+              "name": ""
+            },
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000024__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 3,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "cy",
+            "label": "cy"
+          },
+          {
+            "value": "ann",
+            "label": "Ann"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000023__": {
+              "id": "cy",
+              "name": ""
+            },
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000024__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 3,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {
+            "__0000000000025__": {
+              "id": "cy",
+              "name": ""
+            },
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000024__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 4,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "cy",
+            "label": "cy"
+          },
+          {
+            "value": "ann",
+            "label": "Ann"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000025__": {
+              "id": "cy",
+              "name": ""
+            },
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            },
+            "__0000000000024__": {
+              "id": "cy",
+              "name": ""
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 4,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      }
+    ]
+  },
+  {
+    "name": "choices-follow-removed-rows-and-history",
+    "note": "Removing the row of the selected value removes its choice and keeps the value, which validation reports; undo and redo list the restored rows.",
+    "requirements": [
+      "CURP-010",
+      "CURP-012",
+      "CURP-020",
+      "CURP-027",
+      "CUSC-071",
+      "CUVR-060"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "characters": {
+          "type": "group",
+          "label": "Character",
+          "multiple": {
+            "copy": true,
+            "sortable": true
+          },
+          "properties": {
+            "id": {
+              "type": "text",
+              "label": "Id"
+            },
+            "name": {
+              "type": "text",
+              "label": "Name"
+            }
+          }
+        },
+        "lead": {
+          "type": "select",
+          "label": "Lead",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "cast": {
+          "type": "multichoice",
+          "label": "Cast",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "roles": {
+          "type": "group",
+          "label": "Role",
+          "multiple": true,
+          "properties": {
+            "character": {
+              "type": "radio",
+              "label": "Character",
+              "items": {
+                "from": "characters.*.id"
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "characters": {
+        "__0000000000021__": {
+          "id": "ann",
+          "name": "Ann"
+        },
+        "__0000000000022__": {
+          "id": "bob",
+          "name": "Bob"
+        }
+      },
+      "lead": "ann",
+      "cast": [
+        "bob"
+      ],
+      "roles": {
+        "__0000000000031__": {
+          "character": "bob"
+        }
+      }
+    },
+    "steps": [
+      {
+        "op": "removeRow",
+        "args": [
+          "characters",
+          "__0000000000021__"
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "validate",
+        "args": []
+      },
+      {
+        "op": "undo",
+        "args": []
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "redo",
+        "args": []
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "data": {
+          "characters": {
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": {
+          "valid": false,
+          "errors": [
+            {
+              "path": "lead",
+              "field": "lead",
+              "rule": "in",
+              "message": "Please select a valid option."
+            }
+          ]
+        },
+        "data": {
+          "characters": {
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": false,
+        "canRedo": true,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "ann",
+            "label": "Ann"
+          },
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000021__": {
+              "id": "ann",
+              "name": "Ann"
+            },
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 2,
+        "canUndo": false,
+        "canRedo": true,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 3,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "bob",
+            "label": "Bob"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000022__": {
+              "id": "bob",
+              "name": "Bob"
+            }
+          },
+          "lead": "ann",
+          "cast": [
+            "bob"
+          ],
+          "roles": {
+            "__0000000000031__": {
+              "character": "bob"
+            }
+          }
+        },
+        "revision": 3,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      }
+    ]
+  },
+  {
+    "name": "choices-follow-replaced-data",
+    "note": "setData lists the rows of the new data, and a group without rows has no choices; the explicit empty collections keep the observation free of generated row keys.",
+    "requirements": [
+      "CURP-010",
+      "CURP-011",
+      "CURP-012",
+      "CURP-020",
+      "CUSC-071"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "characters": {
+          "type": "group",
+          "label": "Character",
+          "multiple": {
+            "copy": true,
+            "sortable": true
+          },
+          "properties": {
+            "id": {
+              "type": "text",
+              "label": "Id"
+            },
+            "name": {
+              "type": "text",
+              "label": "Name"
+            }
+          }
+        },
+        "lead": {
+          "type": "select",
+          "label": "Lead",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "cast": {
+          "type": "multichoice",
+          "label": "Cast",
+          "items": {
+            "from": "characters.*.id",
+            "label": "name"
+          }
+        },
+        "roles": {
+          "type": "group",
+          "label": "Role",
+          "multiple": true,
+          "properties": {
+            "character": {
+              "type": "radio",
+              "label": "Character",
+              "items": {
+                "from": "characters.*.id"
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "characters": {
+        "__0000000000021__": {
+          "id": "ann",
+          "name": "Ann"
+        },
+        "__0000000000022__": {
+          "id": "bob",
+          "name": "Bob"
+        }
+      },
+      "lead": "ann",
+      "cast": [
+        "bob"
+      ],
+      "roles": {
+        "__0000000000031__": {
+          "character": "bob"
+        }
+      }
+    },
+    "steps": [
+      {
+        "op": "setData",
+        "args": [
+          {
+            "characters": {
+              "__0000000000023__": {
+                "id": "dee",
+                "name": "Dee"
+              }
+            },
+            "lead": "dee",
+            "roles": {}
+          }
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "setData",
+        "args": [
+          {
+            "characters": {},
+            "roles": {}
+          }
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "lead"
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "cast"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "data": {
+          "characters": {
+            "__0000000000023__": {
+              "id": "dee",
+              "name": "Dee"
+            }
+          },
+          "lead": "dee",
+          "roles": {}
+        },
+        "revision": 1,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "dee",
+            "label": "Dee"
+          }
+        ],
+        "data": {
+          "characters": {
+            "__0000000000023__": {
+              "id": "dee",
+              "name": "Dee"
+            }
+          },
+          "lead": "dee",
+          "roles": {}
+        },
+        "revision": 1,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "characters": {},
+          "roles": {}
+        },
+        "revision": 2,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "",
+            "label": "select"
+          }
+        ],
+        "data": {
+          "characters": {},
+          "roles": {}
+        },
+        "revision": 2,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [],
+        "data": {
+          "characters": {},
+          "roles": {}
+        },
+        "revision": 2,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      }
+    ]
+  }
+]

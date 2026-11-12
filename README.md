@@ -39,7 +39,7 @@ and Korean guides, specifications and generated API references.
 - [List and detail development](docs/operations/displays.md)
 - [Form runtime contract](docs/spec/form-runtime.md)
 - [Runtime packages and APIs](docs/spec/runtime-packages.md)
-- [Native PHP package](packages/php-ext/README.md)
+- [Native PHP package](legacy/packages/php-ext/README.md)
 - [Feature and deployment status](docs/features.md)
 - [Development and verification](docs/operations/forms.md)
 - [Documentation maintenance](docs/operations/documentation.md)

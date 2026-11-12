@@ -1,0 +1,946 @@
+[
+  {
+    "name": "empty-history",
+    "note": "The empty history has no entries.",
+    "requirements": [
+      "CURT-076"
+    ],
+    "op": "emptyHistory",
+    "args": [],
+    "expected": {
+      "result": {
+        "entries": [],
+        "redoEntries": []
+      }
+    }
+  },
+  {
+    "name": "record-appends-and-clears-redo",
+    "note": "A record appends the previous record, clears redo and sets the path.",
+    "requirements": [
+      "CURT-077"
+    ],
+    "op": "recordChange",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [
+          "z"
+        ],
+        "lastPath": "p"
+      },
+      "b",
+      "q"
+    ],
+    "expected": {
+      "result": {
+        "entries": [
+          "a",
+          "b"
+        ],
+        "redoEntries": [],
+        "lastPath": "q"
+      }
+    }
+  },
+  {
+    "name": "record-same-path-shares-entry",
+    "note": "A value edit on the path of the last edit adds no entry.",
+    "requirements": [
+      "CURT-077",
+      "CURT-063"
+    ],
+    "op": "recordChange",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [],
+        "lastPath": "p"
+      },
+      "b",
+      "p"
+    ],
+    "expected": {
+      "result": {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [],
+        "lastPath": "p"
+      }
+    }
+  },
+  {
+    "name": "record-without-path-drops-last-path",
+    "note": "A change without a path adds an entry and leaves no path.",
+    "requirements": [
+      "CURT-077"
+    ],
+    "op": "recordChange",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [],
+        "lastPath": "p"
+      },
+      "b",
+      null
+    ],
+    "expected": {
+      "result": {
+        "entries": [
+          "a",
+          "b"
+        ],
+        "redoEntries": []
+      }
+    }
+  },
+  {
+    "name": "record-keeps-100-entries",
+    "note": "The 101st entry drops the oldest.",
+    "requirements": [
+      "CURT-077",
+      "CURT-062"
+    ],
+    "op": "recordChange",
+    "args": [
+      {
+        "entries": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99
+        ],
+        "redoEntries": []
+      },
+      100,
+      null
+    ],
+    "expected": {
+      "result": {
+        "entries": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100
+        ],
+        "redoEntries": []
+      }
+    }
+  },
+  {
+    "name": "can-undo-and-redo-empty",
+    "note": "An empty history can do neither.",
+    "requirements": [
+      "CURT-078"
+    ],
+    "op": "canUndoRedo",
+    "args": [
+      {
+        "entries": [],
+        "redoEntries": []
+      }
+    ],
+    "expected": {
+      "result": [
+        false,
+        false
+      ]
+    }
+  },
+  {
+    "name": "can-undo-and-redo-filled",
+    "note": "An entry allows undo and a redo entry allows redo.",
+    "requirements": [
+      "CURT-078"
+    ],
+    "op": "canUndoRedo",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [
+          "b"
+        ]
+      }
+    ],
+    "expected": {
+      "result": [
+        true,
+        true
+      ]
+    }
+  },
+  {
+    "name": "undo-moves-the-record",
+    "note": "Undo takes the last entry, queues the current record for redo and drops the path.",
+    "requirements": [
+      "CURT-079"
+    ],
+    "op": "undoChange",
+    "args": [
+      {
+        "entries": [
+          "a",
+          "b"
+        ],
+        "redoEntries": [
+          "x"
+        ],
+        "lastPath": "p"
+      },
+      "c"
+    ],
+    "expected": {
+      "result": {
+        "history": {
+          "entries": [
+            "a"
+          ],
+          "redoEntries": [
+            "x",
+            "c"
+          ]
+        },
+        "value": "b"
+      }
+    }
+  },
+  {
+    "name": "undo-keeps-100-redo-entries",
+    "note": "The redo records are limited to 100.",
+    "requirements": [
+      "CURT-079",
+      "CURT-062"
+    ],
+    "op": "undoChange",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99
+        ]
+      },
+      "c"
+    ],
+    "expected": {
+      "result": {
+        "history": {
+          "entries": [],
+          "redoEntries": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            "c"
+          ]
+        },
+        "value": "a"
+      }
+    }
+  },
+  {
+    "name": "undo-of-empty-fails",
+    "note": "An empty history fails.",
+    "requirements": [
+      "CURT-079"
+    ],
+    "op": "undoChange",
+    "args": [
+      {
+        "entries": [],
+        "redoEntries": []
+      },
+      "c"
+    ],
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Nothing to undo"
+      }
+    }
+  },
+  {
+    "name": "redo-moves-the-record",
+    "note": "Redo takes the last redo entry and appends the current record to the entries.",
+    "requirements": [
+      "CURT-080"
+    ],
+    "op": "redoChange",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": [
+          "x",
+          "y"
+        ],
+        "lastPath": "p"
+      },
+      "c"
+    ],
+    "expected": {
+      "result": {
+        "history": {
+          "entries": [
+            "a",
+            "c"
+          ],
+          "redoEntries": [
+            "x"
+          ]
+        },
+        "value": "y"
+      }
+    }
+  },
+  {
+    "name": "redo-keeps-100-entries",
+    "note": "The entries are limited to 100.",
+    "requirements": [
+      "CURT-080",
+      "CURT-062"
+    ],
+    "op": "redoChange",
+    "args": [
+      {
+        "entries": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99
+        ],
+        "redoEntries": [
+          "x"
+        ]
+      },
+      "c"
+    ],
+    "expected": {
+      "result": {
+        "history": {
+          "entries": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            "c"
+          ],
+          "redoEntries": []
+        },
+        "value": "x"
+      }
+    }
+  },
+  {
+    "name": "redo-without-redo-entry-fails",
+    "note": "A history without a redo entry fails.",
+    "requirements": [
+      "CURT-080"
+    ],
+    "op": "redoChange",
+    "args": [
+      {
+        "entries": [
+          "a"
+        ],
+        "redoEntries": []
+      },
+      "c"
+    ],
+    "expected": {
+      "error": {
+        "code": "INVALID_FORM_INPUT",
+        "message": "Nothing to redo"
+      }
+    }
+  }
+]

@@ -1,0 +1,1537 @@
+[
+  {
+    "name": "bindForm-compiled",
+    "note": "a template that compileForm writes is accepted.",
+    "requirements": [
+      "CURT-092",
+      "CURP-019",
+      "CURP-024"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": "pass"
+  },
+  {
+    "name": "bindForm-optional-members",
+    "note": "the optional members keyPrefix, action and description are accepted.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "keyPrefix": "p",
+      "action": {
+        "url": "/save"
+      },
+      "description": "Any value."
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": "pass"
+  },
+  {
+    "name": "bindForm-missing-fields",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-fields-not-a-list",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": {},
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-field-not-an-object",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        },
+        "name"
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-field-without-children",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-field-with-unknown-member",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": [],
+          "label": "Name"
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-missing-buttons",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-buttons-not-a-list",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": {}
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-button-not-an-object",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        []
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-unknown-member",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "version": 1
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-another-kind",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "other",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-null-key-prefix",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "keyPrefix": null
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindForm-string-action",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "action": "/save"
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-compiled",
+    "note": "a template that compileForm writes is accepted.",
+    "requirements": [
+      "CURT-092",
+      "CURP-019",
+      "CURP-024"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": "pass"
+  },
+  {
+    "name": "bindButtons-optional-members",
+    "note": "the optional members keyPrefix, action and description are accepted.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "keyPrefix": "p",
+      "action": {
+        "url": "/save"
+      },
+      "description": "Any value."
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": "pass"
+  },
+  {
+    "name": "bindButtons-missing-fields",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-fields-not-a-list",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": {},
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-field-not-an-object",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        },
+        "name"
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-field-without-children",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-field-with-unknown-member",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": [],
+          "label": "Name"
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-missing-buttons",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-buttons-not-a-list",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": {}
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-button-not-an-object",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        []
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-unknown-member",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "version": 1
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-another-kind",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "other",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-null-key-prefix",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "keyPrefix": null
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "bindButtons-string-action",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "bindButtons",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "action": "/save"
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-compiled",
+    "note": "a template that compileForm writes is accepted.",
+    "requirements": [
+      "CURT-092",
+      "CURP-019",
+      "CURP-024"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": "pass"
+  },
+  {
+    "name": "createForm-optional-members",
+    "note": "the optional members keyPrefix, action and description are accepted.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "keyPrefix": "p",
+      "action": {
+        "url": "/save"
+      },
+      "description": "Any value."
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": "pass"
+  },
+  {
+    "name": "createForm-missing-fields",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-fields-not-a-list",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": {},
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-field-not-an-object",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        },
+        "name"
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-field-without-children",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-field-with-unknown-member",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": [],
+          "label": "Name"
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-missing-buttons",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-buttons-not-a-list",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": {}
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-button-not-an-object",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        []
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-unknown-member",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "version": 1
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-another-kind",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "other",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-null-key-prefix",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "keyPrefix": null
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "createForm-string-action",
+    "note": "a template with this shape violation is refused with the message of the shape rule, and no location.",
+    "requirements": [
+      "CURT-092"
+    ],
+    "operation": "createForm",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ],
+      "action": "/save"
+    },
+    "data": {
+      "name": "a"
+    },
+    "options": {},
+    "expect": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unsupported form template",
+      "at": ""
+    }
+  },
+  {
+    "name": "create-two-records-from-serialized-template",
+    "note": "two records bound from one serialized template each read their own values.",
+    "requirements": [
+      "CURT-050"
+    ],
+    "operation": "createRecords",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        },
+        {
+          "name": "items",
+          "spec": {
+            "type": "group",
+            "multiple": true
+          },
+          "children": [
+            {
+              "name": "title",
+              "spec": {
+                "type": "text",
+                "label": "Title"
+              },
+              "children": []
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": [
+      {
+        "name": "a",
+        "items": {
+          "__0000000000001__": {
+            "title": "x"
+          }
+        }
+      },
+      {
+        "name": "b",
+        "items": {
+          "__0000000000002__": {
+            "title": "y"
+          }
+        }
+      }
+    ],
+    "options": {},
+    "paths": [
+      [
+        "name",
+        "items.__0000000000001__.title"
+      ],
+      [
+        "name",
+        "items.__0000000000002__.title"
+      ]
+    ],
+    "expect": {
+      "results": [
+        {
+          "name": "a",
+          "items.__0000000000001__.title": "x"
+        },
+        {
+          "name": "b",
+          "items.__0000000000002__.title": "y"
+        }
+      ]
+    }
+  },
+  {
+    "name": "create-three-records-independent",
+    "note": "a record bound again after another one reads the same values as its first binding.",
+    "requirements": [
+      "CURT-050"
+    ],
+    "operation": "createRecords",
+    "template": {
+      "kind": "crudui/form-template",
+      "fields": [
+        {
+          "name": "name",
+          "spec": {
+            "type": "text"
+          },
+          "children": []
+        },
+        {
+          "name": "items",
+          "spec": {
+            "type": "group",
+            "multiple": true
+          },
+          "children": [
+            {
+              "name": "title",
+              "spec": {
+                "type": "text",
+                "label": "Title"
+              },
+              "children": []
+            }
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit"
+        }
+      ]
+    },
+    "data": [
+      {
+        "name": "a",
+        "items": {
+          "__0000000000001__": {
+            "title": "x"
+          }
+        }
+      },
+      {
+        "name": "b",
+        "items": {
+          "__0000000000002__": {
+            "title": "y"
+          }
+        }
+      },
+      {
+        "name": "a",
+        "items": {
+          "__0000000000001__": {
+            "title": "x"
+          }
+        }
+      }
+    ],
+    "options": {},
+    "paths": [
+      [
+        "name",
+        "items.__0000000000001__.title"
+      ],
+      [
+        "name",
+        "items.__0000000000002__.title"
+      ],
+      [
+        "name",
+        "items.__0000000000001__.title"
+      ]
+    ],
+    "expect": {
+      "results": [
+        {
+          "name": "a",
+          "items.__0000000000001__.title": "x"
+        },
+        {
+          "name": "b",
+          "items.__0000000000002__.title": "y"
+        },
+        {
+          "name": "a",
+          "items.__0000000000001__.title": "x"
+        }
+      ]
+    }
+  }
+]

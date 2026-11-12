@@ -56,9 +56,9 @@ final class FormGeneration
         $classes = [];
         $signatures = [];
         $sourceFiles = [
-            Generator::class => ['source' => 'packages/generator/php/src/Generator.php'],
-            Form::class => ['source' => 'packages/generator/php/src/Form.php'],
-            Validator::class => ['source' => 'packages/validator/php/src/Public/Validator.php'],
+            Generator::class => ['source' => 'legacy/packages/generator/php/src/Generator.php'],
+            Form::class => ['source' => 'legacy/packages/generator/php/src/Form.php'],
+            Validator::class => ['source' => 'legacy/packages/validator/php/src/Public/Validator.php'],
         ];
         foreach ($sourceFiles as $name => $files) {
             $class = new ReflectionClass($name);

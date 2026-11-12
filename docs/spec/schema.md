@@ -61,7 +61,7 @@ Dependent settings remain under their subject: repeated row settings under
 and dynamic choice descriptors under `items`. Role and structural settings can
 use `false`, `true` or an object where the type definition permits them. `false`
 disables a setting; `true` selects defaults. The
-[TypeScript types](../../packages/validator/ts/src/schema.ts) define accepted
+[TypeScript types](../../legacy/packages/validator/ts/src/schema.ts) define accepted
 declaration shapes. Parsers preserve declared keys; validators reject forbidden
 schema keys instead of silently discarding them.
 

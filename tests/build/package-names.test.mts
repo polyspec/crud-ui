@@ -40,9 +40,9 @@ const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: '
 test('every package of packages/ has the name of the polyspec convention', () => {
   const root = named('package.json');
   assert.equal(root.name, '@polyspec/crudui-workspace');
-  // The npm workspaces of package.json, by their folder under packages/.
+  // The npm workspaces of package.json, by their folder under packages/ or legacy/packages/.
   const npm = Object.fromEntries((root.workspaces ?? [])
-    .map(folder => [folder.slice('packages/'.length), named(`${folder}/package.json`).name]));
+    .map(folder => [folder.replace(/^(legacy\/)?packages\//, ''), named(`${folder}/package.json`).name]));
   assert.deepEqual(npm, {
     cli: '@polyspec/crudui-cli',
     'form-binding': '@polyspec/crudui-form-binding',
@@ -55,16 +55,16 @@ test('every package of packages/ has the name of the polyspec convention', () =>
   });
 
   for (const [directory, name] of [['validator/php', 'polyspec/crudui-validator'], ['generator/php', 'polyspec/crudui-generator']] as const) {
-    const composer = parseJson(read(`packages/${directory}/composer.json`), composerSchema, `packages/${directory}/composer.json`);
+    const composer = parseJson(read(`legacy/packages/${directory}/composer.json`), composerSchema, `legacy/packages/${directory}/composer.json`);
     assert.equal(composer.name, name);
     const prefixes = [...Object.keys(composer.autoload['psr-4']), ...Object.keys(composer['autoload-dev']?.['psr-4'] ?? {})];
     assert.deepEqual(prefixes.filter(prefix => !prefix.startsWith('Polyspec\\Crudui\\')), [], `${directory}: PSR-4 prefixes`);
   }
-  const namespaces = [...read('packages/php-ext/src/polyspec_crudui.stub.php').matchAll(/^namespace ([^ {;]+)/gm)].map(match => group(match, 1));
+  const namespaces = [...read('legacy/packages/php-ext/src/polyspec_crudui.stub.php').matchAll(/^namespace ([^ {;]+)/gm)].map(match => group(match, 1));
   assert.ok(namespaces.length > 0);
   assert.deepEqual(namespaces.filter(name => name !== 'Polyspec\\Crudui' && !name.startsWith('Polyspec\\Crudui\\')), []);
 
-  for (const [directory, name] of [['validator/rust', 'polyspec-crudui-validator'], ['generator/rust', 'polyspec-crudui-generator']] as const) {
+  for (const [directory, name] of [['validator/rust', 'polyspec-crud-ui-validator'], ['generator/rust', 'polyspec-crud-ui-generator']] as const) {
     const manifest = read(`packages/${directory}/Cargo.toml`);
     assert.equal(/^\[package\]\nname = "([^"]+)"/m.exec(manifest)?.[1], name, directory);
     const library = /^\[lib\]\nname = "([^"]+)"/m.exec(manifest)?.[1];
@@ -72,13 +72,16 @@ test('every package of packages/ has the name of the polyspec convention', () =>
   }
 
   for (const directory of ['validator/go', 'generator/go']) {
-    assert.equal(/^module (\S+)$/m.exec(read(`packages/${directory}/go.mod`))?.[1], `github.com/polyspec/crudui/packages/${directory}`);
+    // A legacy module keeps the module path of its release.
+    assert.equal(/^module (\S+)$/m.exec(read(`legacy/packages/${directory}/go.mod`))?.[1], `github.com/polyspec/crudui/packages/${directory}`);
   }
 });
 
 // The programs of examples/, tests/ and tools/ are packages of this repository too: every tracked manifest names
 // its package by the convention, so a private npm package is `@polyspec/crudui-<name>`, a crate and its binaries
-// `polyspec-crudui-<name>`, and a Go module `github.com/polyspec/crudui/<directory>`.
+// `polyspec-crudui-<name>`, and a Go module `github.com/polyspec/crudui/<directory>`. The core crates and the binding
+// packages of a component have the names of the repository crud-ui (`polyspec-crud-ui-<component>`, P-1); the root
+// Cargo.toml is the workspace and names no package; a legacy Go module keeps the module path of its release.
 test('every tracked manifest names its package by the polyspec convention', () => {
   const failures: string[] = [];
   for (const file of tracked) {
@@ -86,18 +89,19 @@ test('every tracked manifest names its package by the polyspec convention', () =
     const directory = path.posix.dirname(file);
     if (name === 'package.json') {
       const manifest = named(file);
-      if (manifest.name !== undefined && !/^@polyspec\/crudui-[a-z0-9-]+$/.test(manifest.name)) failures.push(`${file}: ${manifest.name}`);
+      if (manifest.name !== undefined && !/^@polyspec\/crud-?ui-[a-z0-9-]+$/.test(manifest.name)) failures.push(`${file}: ${manifest.name}`);
     } else if (name === 'composer.json') {
       const manifest = named(file);
-      if (manifest.name === undefined || !/^polyspec\/crudui-[a-z0-9-]+$/.test(manifest.name)) failures.push(`${file}: ${manifest.name ?? 'no name'}`);
+      if (manifest.name === undefined || !/^polyspec\/crud-?ui-[a-z0-9-]+$/.test(manifest.name)) failures.push(`${file}: ${manifest.name ?? 'no name'}`);
     } else if (name === 'Cargo.toml') {
       const manifest = read(file);
       const names = [...manifest.matchAll(/^\[(package|\[bin\])\]\nname = "([^"]+)"/gm)].map(match => group(match, 2));
+      if (file === 'Cargo.toml') continue;
       assert.ok(names.length > 0, `${file}: no package name`);
-      for (const crate of names) if (!/^polyspec-crudui-[a-z0-9-]+$/.test(crate)) failures.push(`${file}: ${crate}`);
+      for (const crate of names) if (!/^polyspec-crud-?ui-[a-z0-9-]+$/.test(crate)) failures.push(`${file}: ${crate}`);
     } else if (name === 'go.mod') {
       const module = /^module (\S+)$/m.exec(read(file))?.[1];
-      if (module !== `github.com/polyspec/crudui/${directory}`) failures.push(`${file}: ${module}`);
+      if (module !== `github.com/polyspec/crudui/${directory.replace(/^legacy\//, '')}`) failures.push(`${file}: ${module}`);
     }
   }
   assert.deepEqual(failures, []);

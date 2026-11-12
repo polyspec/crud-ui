@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: b511a8958a06137025f5f575e0f896f16bfc183e5f82ab13f175de4765605bec -->
+<!-- source-sha256: cbb3fd16e5a6382fdcee08571b0de6395acdbb902cc287382d8f57c0c9a8bca2 -->
 
 [English](package-build.md).
 
@@ -236,9 +236,9 @@ npm registry, workspace 또는 make 대상이 설치한 checkout 디렉터리에
 의존성은 검사가 registry에 묻는 결과가 아니라 review 때 알려진 상태로 판단하므로, 같은
 tree는 언제나 같은 결과를 냅니다. review 대상은 registry 의존성입니다. 루트와 각 workspace
 `package.json`의 `dependencies`와 `devDependencies`, 그리고 `config/dependency-policy.json`이
-지정한 Composer manifest(`config/dependency-policy.json`의 `composerPlatforms`가 지정하는 개발 root `composer.json`이며, 그 lock이 `packages/validator/php`,
-`packages/generator/php`를 해석합니다)와 `pythonManifests`가 지정하는 Python manifest(`packages/validator/python`,
-`packages/generator/python`)의 `build-system.requires` pin의 `require`와 `require-dev`입니다. peer 의존성, URL 의존성, 이 저장소의 package와 Composer platform 요구
+지정한 Composer manifest(`config/dependency-policy.json`의 `composerPlatforms`가 지정하는 개발 root `composer.json`이며, 그 lock이 `legacy/packages/validator/php`,
+`legacy/packages/generator/php`를 해석합니다)와 `pythonManifests`가 지정하는 Python manifest(`legacy/packages/validator/python`,
+`legacy/packages/generator/python`)의 `build-system.requires` pin의 `require`와 `require-dev`입니다. peer 의존성, URL 의존성, 이 저장소의 package와 Composer platform 요구
 사항은 정의상 review 밖에 있습니다. GitHub tag에서 가져온 polyspec package는 그 tag의
 release입니다. 검사는 루트 매니페스트가 그 package를 tag의 checkout에 연결하고, checkout이
 tag의 버전을 가지며, 잠금 파일이 그 버전을 기록할 것을 요구합니다. `make dependency-review`(`node_modules/@polyspec/kit/dist/dependency-review.mjs`)는 각 registry 의존성에 대해

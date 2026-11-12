@@ -25,13 +25,23 @@ ships as an example; this file states only the rules of crudui.
   the CI check `ci-passed` and the push check `push-gate`
   succeeded for the commit on `main`; a release is made from that tag (`docs/operations/repository.md`).
   Enforced by: none, the order of pushes and tags is a procedure that no check reads.
-- Own: The language implementations in `packages/validator/{ts,php,python,go}`, `packages/generator/{ts,php,python,go}`,
-  `packages/php-ext` and `packages/html` read the shared fixtures of `tests/fixtures` until they move to `legacy/`, where
-  they read a pinned copy. Until that move their suites fail the shared cases of the rules that the Rust core implements
-  alone (CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUVR-095, the `accept` values of CUVR-016, CUSC-092, the nesting
-  limit of CUIT-022 and the numbers of CURP-028 in `expr` and `form-render`); these failures are a known state and get
-  no task of their own.
-  Enforced by: none, the known failures are a state of the legacy move that no check reads.
+- Own: `legacy/` holds the language implementations that the generated bindings replace, under their former paths
+  (`legacy/packages/validator/{ts,php,python,go}`, `legacy/packages/generator/{ts,php,python,go}`,
+  `legacy/packages/php-ext`, `legacy/packages/html`), and `legacy/tests/fixtures`, the copy of `tests/fixtures` that
+  their suites read; the copy is fixed and is never brought up to the shared fixtures. They are no release target
+  (`config/release.json`) and serve their own tests and the differential tests against the Rust core. Each is removed
+  by a change of its own when its binding package passes the shared suite and the package tests (plan V-6 (5)). The
+  runners of the root that compare runtimes (`tests/native-generators`, `examples/cross-check-console`,
+  `scripts/check-conformance.mts`) read the shared fixtures, so the legacy runtimes differ there on the rules that the
+  Rust core implements alone (CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUVR-095, the `accept` values of CUVR-016,
+  CUSC-092, the nesting limit of CUIT-022 and the numbers of CURP-028); these differences are a known state.
+  Enforced by: `make layout-check`
+- Own: One Cargo workspace at the root holds the core crates `packages/validator/rust` and `packages/generator/rust`
+  and the binding crates of `packages/<component>/{ts,python,php-ext}`, which `binding scaffold` writes, with one
+  `Cargo.lock`. `make bindings` writes the generated folders of the binding packages and `make bindings-check` checks
+  the interface contract of each component, both with `BINDING=<cli of binding>`; the binding crates are linted and
+  tested by `make lint-bindings` and `make test-bindings` after `make bindings`, and `make lint-rust` lints the rest.
+  Enforced by: `make bindings-check`
 
 ## Tools and dependencies
 

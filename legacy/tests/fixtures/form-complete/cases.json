@@ -1,0 +1,986 @@
+[
+  {
+    "name": "complete-form",
+    "note": "the form element, a hidden field, a form error and a field error; attribute and text values are escaped.",
+    "requirements": [
+      "CUMK-004",
+      "CURT-013",
+      "CURT-014",
+      "CURT-015",
+      "CURT-016",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "method": "post",
+        "url": "/sign-in"
+      },
+      "hidden": {
+        "_csrf": "t<&>\"'"
+      },
+      "formErrors": [
+        "Sign-in failed."
+      ],
+      "errors": [
+        {
+          "path": "email",
+          "field": "email",
+          "rule": "required",
+          "message": "Enter <email> & retry.",
+          "value": ""
+        }
+      ]
+    },
+    "expected_html": "<form action=\"/sign-in\" method=\"post\"><input type=\"hidden\" name=\"_csrf\" value=\"t&lt;&amp;&gt;&quot;&#x27;\"/><div class=\"crudui-form\"><div class=\"crudui-form__errors\"><p class=\"crudui-form__error\">Sign-in failed.</p></div><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">Enter &lt;email&gt; &amp; retry.</p></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div></form>"
+  },
+  {
+    "name": "template-action",
+    "note": "each form attribute takes the render member, or the template action member when the render action has none.",
+    "requirements": [
+      "CURT-013",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      },
+      "action": {
+        "method": "post",
+        "url": "/save",
+        "enctype": "multipart/form-data"
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "url": "/members/42?a=1&b=2"
+      }
+    },
+    "expected_html": "<form action=\"/members/42?a=1&amp;b=2\" encType=\"multipart/form-data\" method=\"post\"><div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div></form>"
+  },
+  {
+    "name": "empty-action",
+    "note": "an empty render action without a template action writes a form element without attributes.",
+    "requirements": [
+      "CURT-013",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {}
+    },
+    "expected_html": "<form><div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div></form>"
+  },
+  {
+    "name": "hidden-order",
+    "note": "hidden inputs follow member order and an empty value is written.",
+    "requirements": [
+      "CURT-013",
+      "CURT-014",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "method": "post"
+      },
+      "hidden": {
+        "b": "2",
+        "a": "",
+        "_csrf": "x"
+      }
+    },
+    "expected_html": "<form method=\"post\"><input type=\"hidden\" name=\"b\" value=\"2\"/><input type=\"hidden\" name=\"a\" value=\"\"/><input type=\"hidden\" name=\"_csrf\" value=\"x\"/><div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div></form>"
+  },
+  {
+    "name": "javascript-url",
+    "note": "a JavaScript URL in the form action is replaced by the blocked URL.",
+    "requirements": [
+      "CURT-013",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "url": " javascript:alert(1)"
+      }
+    },
+    "expected_html": "<form action=\"javascript:throw new Error(&#x27;React has blocked a javascript: URL as a security precaution.&#x27;)\"><div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div></form>"
+  },
+  {
+    "name": "empty-options",
+    "note": "empty options write the crudui-form block alone.",
+    "requirements": [
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {},
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div>"
+  },
+  {
+    "name": "errors-without-action",
+    "note": "errors without action write no form element; an empty form error list writes nothing.",
+    "requirements": [
+      "CURT-015",
+      "CURT-016",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "formErrors": [],
+      "errors": [
+        {
+          "path": "email",
+          "message": "Required."
+        }
+      ]
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">Required.</p></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div>"
+  },
+  {
+    "name": "form-errors-order",
+    "note": "form errors keep list order.",
+    "requirements": [
+      "CUMK-004",
+      "CURT-015",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "formErrors": [
+        "First.",
+        "Second."
+      ]
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__errors\"><p class=\"crudui-form__error\">First.</p><p class=\"crudui-form__error\">Second.</p></div><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div>"
+  },
+  {
+    "name": "node-errors",
+    "note": "collection, row, group, field and hidden field errors follow each node body in list order.",
+    "requirements": [
+      "CURT-016",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "tags": {
+          "type": "text",
+          "multiple": "only",
+          "label": "Tags"
+        },
+        "addr": {
+          "type": "group",
+          "label": "Address",
+          "properties": {
+            "city": {
+              "type": "select",
+              "label": "City",
+              "items": {
+                "s": "Seoul"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "text",
+          "label": "Note",
+          "design": {
+            "show": false
+          }
+        }
+      }
+    },
+    "data": {
+      "tags": {
+        "k1": "x"
+      },
+      "addr": {
+        "city": "s"
+      },
+      "note": "n"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "errors": [
+        {
+          "path": "addr.city",
+          "field": "city",
+          "rule": "required",
+          "message": "City one.",
+          "value": ""
+        },
+        {
+          "path": "tags",
+          "field": "tags",
+          "rule": "required",
+          "message": "Tags.",
+          "value": ""
+        },
+        {
+          "path": "tags.k1",
+          "field": "k1",
+          "rule": "required",
+          "message": "Row.",
+          "value": ""
+        },
+        {
+          "path": "addr",
+          "field": "addr",
+          "rule": "required",
+          "message": "Address.",
+          "value": ""
+        },
+        {
+          "path": "addr.city",
+          "field": "city",
+          "rule": "required",
+          "message": "City two.",
+          "value": ""
+        },
+        {
+          "path": "note",
+          "field": "note",
+          "rule": "required",
+          "message": "Note.",
+          "value": ""
+        }
+      ]
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--collection\" data-field-path=\"tags\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">Tags</span><span class=\"crudui-node__count\">Rows: 1</span></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"k1\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">Tags</span><span class=\"crudui-node__number\">1</span></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"tags[]\" data-rule-name=\"tags[]\" data-default=\"\" id=\"crudui:tags.k1\" name=\"tags[k1]\" value=\"x\"/></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">Row.</p></div></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">Tags.</p></div></div><div class=\"crudui-node crudui-node--group\" data-field-path=\"addr\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">Address</span></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"addr.city\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:addr.city\">City</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><select name=\"addr[city]\" class=\"valid-target crudui-input crudui-input--select\" data-name=\"city\" data-rule-name=\"addr[city]\" data-default=\"\" id=\"crudui:addr.city\"><option value=\"s\" selected=\"\">Seoul</option></select></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">City one.</p><p class=\"crudui-node__error\">City two.</p></div></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">Address.</p></div></div><div class=\"crudui-node crudui-node--field\" data-field-path=\"note\" hidden=\"\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:note\">Note</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"note\" data-rule-name=\"note\" data-default=\"\" id=\"crudui:note\" name=\"note\" value=\"n\"/></div></div><div class=\"crudui-node__errors\"><p class=\"crudui-node__error\">Note.</p></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div>"
+  },
+  {
+    "name": "root-description",
+    "note": "the translated root description precedes the form errors and the body inside the form element; its text is escaped.",
+    "requirements": [
+      "CUMK-004",
+      "CURT-013",
+      "CURT-014",
+      "CURT-015",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      },
+      "description": {
+        "ko": "로그인",
+        "en": "Sign in <now> & \"stay\""
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "method": "post"
+      },
+      "hidden": {
+        "_csrf": "x"
+      },
+      "formErrors": [
+        "Sign-in failed."
+      ]
+    },
+    "expected_html": "<form method=\"post\"><input type=\"hidden\" name=\"_csrf\" value=\"x\"/><div class=\"crudui-form\"><p class=\"crudui-form__description\">Sign in &lt;now&gt; &amp; &quot;stay&quot;</p><div class=\"crudui-form__errors\"><p class=\"crudui-form__error\">Sign-in failed.</p></div><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div></form>"
+  },
+  {
+    "name": "root-description-without-options",
+    "note": "empty options write the root description in the crudui-form block alone.",
+    "requirements": [
+      "CUMK-004",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      },
+      "description": "Members"
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {},
+    "expected_html": "<div class=\"crudui-form\"><p class=\"crudui-form__description\">Members</p><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div>"
+  },
+  {
+    "name": "root-description-null",
+    "note": "a null root description writes nothing.",
+    "requirements": [
+      "CUMK-004",
+      "CURT-015",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      },
+      "description": null
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "formErrors": [
+        "First."
+      ]
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__errors\"><p class=\"crudui-form__error\">First.</p></div><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"email\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:email\">Email</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget\"><input type=\"text\" class=\"valid-target crudui-input\" data-name=\"email\" data-rule-name=\"email\" data-default=\"\" id=\"crudui:email\" name=\"email\" value=\"a@b\"/></div></div></div></div><div class=\"crudui-form__footer\"><div class=\"crudui-controls\" role=\"group\" aria-label=\"Form actions\"><button type=\"submit\" class=\"crudui-action crudui-action--text\">Save</button></div></div></div>"
+  },
+  {
+    "name": "options-not-object",
+    "note": "render options are an object.",
+    "requirements": [
+      "CURT-017",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": 5,
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Render options must be an object"
+    }
+  },
+  {
+    "name": "options-list",
+    "note": "a list is not render options.",
+    "requirements": [
+      "CURT-017",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": [
+      "action"
+    ],
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Render options must be an object"
+    }
+  },
+  {
+    "name": "unknown-option",
+    "note": "the first unknown member in member order is reported before other checks.",
+    "requirements": [
+      "CURT-018",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "zeta": 1,
+      "action": "post",
+      "alpha": 2
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unknown render option: zeta"
+    }
+  },
+  {
+    "name": "action-string",
+    "note": "action is an object.",
+    "requirements": [
+      "CURT-019",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": "post"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "action must be an object with string method, url and enctype"
+    }
+  },
+  {
+    "name": "action-member",
+    "note": "action has only method, url and enctype.",
+    "requirements": [
+      "CURT-019",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "target": "_self"
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "action must be an object with string method, url and enctype"
+    }
+  },
+  {
+    "name": "action-number",
+    "note": "action members are strings.",
+    "requirements": [
+      "CURT-019",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {
+        "method": 1
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "action must be an object with string method, url and enctype"
+    }
+  },
+  {
+    "name": "hidden-number",
+    "note": "hidden values are strings.",
+    "requirements": [
+      "CURT-020",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {},
+      "hidden": {
+        "a": 1
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "hidden must be an object of strings"
+    }
+  },
+  {
+    "name": "hidden-list",
+    "note": "hidden is an object.",
+    "requirements": [
+      "CURT-020",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "action": {},
+      "hidden": [
+        "a"
+      ]
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "hidden must be an object of strings"
+    }
+  },
+  {
+    "name": "hidden-without-action",
+    "note": "hidden inputs need the form element.",
+    "requirements": [
+      "CURT-021",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "hidden": {
+        "a": "1"
+      },
+      "formErrors": 5
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "hidden requires action"
+    }
+  },
+  {
+    "name": "form-errors-string",
+    "note": "formErrors is a list.",
+    "requirements": [
+      "CURT-022",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "formErrors": "x"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "formErrors must be a list of strings"
+    }
+  },
+  {
+    "name": "form-errors-number",
+    "note": "formErrors holds strings.",
+    "requirements": [
+      "CURT-022",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "formErrors": [
+        "x",
+        1
+      ]
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "formErrors must be a list of strings"
+    }
+  },
+  {
+    "name": "errors-object",
+    "note": "errors is a list.",
+    "requirements": [
+      "CURT-023",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "errors": {
+        "email": "x"
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "errors must be a list of objects with string path and message"
+    }
+  },
+  {
+    "name": "errors-message-missing",
+    "note": "every error has a string message.",
+    "requirements": [
+      "CURT-023",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "errors": [
+        {
+          "path": "email"
+        }
+      ]
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "errors must be a list of objects with string path and message"
+    }
+  },
+  {
+    "name": "errors-path-number",
+    "note": "every error has a string path.",
+    "requirements": [
+      "CURT-023",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "errors": [
+        {
+          "path": 1,
+          "message": "x"
+        }
+      ]
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "errors must be a list of objects with string path and message"
+    }
+  },
+  {
+    "name": "unknown-error-path",
+    "note": "the first error whose path names no node is reported.",
+    "requirements": [
+      "CURT-024",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "errors": [
+        {
+          "path": "email",
+          "message": "a"
+        },
+        {
+          "path": "mail",
+          "message": "b"
+        },
+        {
+          "path": "post",
+          "message": "c"
+        }
+      ]
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unknown error path: mail"
+    }
+  },
+  {
+    "name": "row-key-path",
+    "note": "a lang-item or partial path names no node.",
+    "requirements": [
+      "CURT-024",
+      "CURP-013"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "email": {
+          "type": "text",
+          "label": "Email"
+        }
+      }
+    },
+    "data": {
+      "email": "a@b"
+    },
+    "options": {
+      "language": "en"
+    },
+    "render": {
+      "errors": [
+        {
+          "path": "email.x",
+          "message": "a"
+        }
+      ]
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Unknown error path: email.x"
+    }
+  }
+]

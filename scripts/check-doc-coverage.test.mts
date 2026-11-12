@@ -30,7 +30,7 @@ function loggedCall(value: unknown): LoggedCall {
 function environment<T>(operation: (root: string) => T): T {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'crudui-doc-check-')));
   try {
-    for (const relative of ['scripts', 'bin', 'node_modules/.bin', 'packages/validator/go', 'packages/generator/go', 'packages/validator/rust', 'packages/generator/rust']) mkdirSync(join(root, relative), { recursive: true });
+    for (const relative of ['scripts', 'bin', 'node_modules/.bin', 'legacy/packages/validator/go', 'legacy/packages/generator/go', 'packages/validator/rust', 'packages/generator/rust']) mkdirSync(join(root, relative), { recursive: true });
     for (const file of ['check-doc-coverage.mts', 'run-rust-command.mts']) {
       copyFileSync(new URL('./' + file, import.meta.url), join(root, 'scripts', file));
     }
@@ -89,14 +89,14 @@ for (const [target, command] of toolTargets) {
       assert.equal(calls.length, 1);
       assert.deepEqual(calls[0]?.args, [join(root, 'scripts/php-doc-coverage.php')]);
     } else {
-      assert.deepEqual(calls.map(call => call.cwd), ['validator', 'generator'].map(kind => join(root, 'packages', kind, target)));
+      assert.deepEqual(calls.map(call => call.cwd), ['validator', 'generator'].map(kind => join(root, target === 'rust' ? 'packages' : 'legacy/packages', kind, target)));
     }
   }));
 }
 // The documentation of the public TypeScript API is checked by API Extractor, which make lint-ts of kit runs in every package
 // with an api-extractor.json: ae-undocumented and ae-forgotten-export are errors of the config/api-extractor.kit.json of the kit
 // package, which every api-extractor.json extends (kit K514).
-const TS_PACKAGES = ['validator/ts', 'generator/ts', 'html', 'react', 'vue', 'svelte', 'form-binding'];
+const TS_PACKAGES = ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding'];
 
 test('every TypeScript package checks its public API with API Extractor and commits its API report', () => {
   const problems = [];

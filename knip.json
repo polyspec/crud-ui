@@ -35,7 +35,7 @@
       // make crudui-test-native-generators and make crudui-test-php-api run it, and scripts/check-conformance.mts runs it as the native generators suite
       "tests/native-generators/run.mts",
       // writes number-text.json, which NumberTextTest.php reads; its header names the command (`node number-text.generate.mjs > number-text.json`) and NumberTextTest.php names it
-      "packages/validator/php/tests/Values/number-text.generate.mjs",
+      "legacy/packages/validator/php/tests/Values/number-text.generate.mjs",
       // writes tests/data/number-text.tsv, which the crate test numbers_match_the_ecmascript_table (src/validate/canonical.rs) reads and names as its writer
       "packages/validator/rust/tools/generate-number-text.mjs",
       // writes src/validate/unicode/data.rs; the crate test embedded_data_matches_the_contract names `node tools/generate-unicode-properties.mjs` as its fix
@@ -105,7 +105,7 @@
       ]
     },
     // an npm workspace whose Vitest configuration enables the typecheck mode (test.typecheck), whose test files the Vitest plugin of knip does not read: the plugin reads test.include and not typecheck.include
-    "packages/validator/ts": {
+    "legacy/packages/validator/ts": {
       "entry": [
         // the type test files that the typecheck mode of Vitest checks (the default typecheck.include of Vitest)
         "src/**/*.test-d.ts"
@@ -128,7 +128,7 @@
       ]
     },
     // an npm workspace whose tsconfig.json checks the sources and the tests and emits nothing: it has no rootDir or outDir, as its tests import the shared scenario of tests/fixtures/form-session from outside the package (C14.40), so knip cannot map the dist files of package.json exports to src; tsconfig.build.json emits the declarations from src. Its entries replace the default entries of knip
-    "packages/generator/ts": {
+    "legacy/packages/generator/ts": {
       "entry": [
         // the package entry: package.json exports "." is dist/index.mjs and dist/index.js, which tsup builds from src/index.ts
         "src/index.ts",

@@ -1,0 +1,35 @@
+# One workspace: the core crates of the two components and their binding crates, which binding scaffold writes (binding
+# design L-2). One Cargo.lock at the root pins every dependency of all of them, the commit of polyspec-binding-core
+# included. The Rust programs of examples/, benchmarks/ and tests/ are workspaces of their own.
+[workspace]
+resolver = "2"
+members = [
+    "packages/validator/rust",
+    "packages/validator/ts",
+    "packages/validator/python",
+    "packages/validator/php-ext",
+    "packages/generator/rust",
+    "packages/generator/ts",
+    "packages/generator/python",
+    "packages/generator/php-ext",
+]
+
+# The lints of the core crates (R-1): every warning fails, no unsafe code, no unwrap or expect, no discarded result, no
+# cast that can lose or change a value, and every allow attribute names its rule id; clippy.toml disallows the fallback
+# methods of Option and Result. The binding crates carry the lints that binding writes into their manifests.
+[workspace.lints.rust]
+warnings = "deny"
+unsafe_code = "deny"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+allow_attributes_without_reason = "deny"
+let_underscore_must_use = "deny"
+let_underscore_untyped = "deny"
+map_err_ignore = "deny"
+unwrap_used = "deny"
+expect_used = "deny"
+disallowed_methods = "deny"
+cast_possible_truncation = "deny"
+cast_possible_wrap = "deny"
+cast_sign_loss = "deny"

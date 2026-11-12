@@ -1,0 +1,647 @@
+[
+  {
+    "name": "ref-inherit-base",
+    "note": "plain $ref pulls the file properties layer as the base (a,b)",
+    "requirements": [
+      "CURP-001",
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text",
+              "label": "A"
+            },
+            "b": {
+              "type": "number",
+              "label": "B"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml"
+      }
+    },
+    "expected": {
+      "a": {
+        "type": "text",
+        "label": "A"
+      },
+      "b": {
+        "type": "number",
+        "label": "B"
+      }
+    }
+  },
+  {
+    "name": "ref-path-specified",
+    "note": "path-specified $ref descends group.properties then properties",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "group": {
+            "properties": {
+              "properties": {
+                "inner": {
+                  "type": "text"
+                }
+              }
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "(base.yml).group.properties"
+      }
+    },
+    "expected": {
+      "inner": {
+        "type": "text"
+      }
+    }
+  },
+  {
+    "name": "ref-multiple-order",
+    "note": "$ref: [x,y] merges in order; y overrides x on a shared key",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "x.yml": {
+          "properties": {
+            "shared": {
+              "type": "text",
+              "label": "x"
+            },
+            "only_x": {
+              "type": "text"
+            }
+          }
+        },
+        "y.yml": {
+          "properties": {
+            "shared": {
+              "type": "number",
+              "label": "y"
+            },
+            "only_y": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": [
+          "x.yml",
+          "y.yml"
+        ]
+      }
+    },
+    "expected": {
+      "shared": {
+        "type": "number",
+        "label": "y"
+      },
+      "only_x": {
+        "type": "text"
+      },
+      "only_y": {
+        "type": "text"
+      }
+    }
+  },
+  {
+    "name": "patch-deep-path-set",
+    "note": "deep-path set updates only field.validate.required, preserving siblings",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "field": {
+              "type": "text",
+              "validate": {
+                "email": true,
+                "required": false
+              },
+              "design": {
+                "class": "form-control"
+              }
+            },
+            "other": {
+              "type": "checkbox"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "field.validate.required": ".other"
+        }
+      }
+    },
+    "expected": {
+      "field": {
+        "type": "text",
+        "validate": {
+          "email": true,
+          "required": ".other"
+        },
+        "design": {
+          "class": "form-control"
+        }
+      },
+      "other": {
+        "type": "checkbox"
+      }
+    }
+  },
+  {
+    "name": "patch-add-field",
+    "note": "structured add inserts a new field into the expanded spec",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "add": {
+            "newf": {
+              "type": "email"
+            }
+          }
+        }
+      }
+    },
+    "expected": {
+      "a": {
+        "type": "text"
+      },
+      "newf": {
+        "type": "email"
+      }
+    }
+  },
+  {
+    "name": "patch-replace-scalar",
+    "note": "replace overrides a scalar leaf (deep-merge: latter scalar wins)",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text",
+              "design": {
+                "class": "old",
+                "show": ".x"
+              }
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "replace": {
+            "a.design.class": "new"
+          }
+        }
+      }
+    },
+    "expected": {
+      "a": {
+        "type": "text",
+        "design": {
+          "class": "new",
+          "show": ".x"
+        }
+      }
+    }
+  },
+  {
+    "name": "patch-remove-whole-key",
+    "note": "remove deletes a whole field from the expanded spec",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "keep": {
+              "type": "text"
+            },
+            "retired_field": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "remove": [
+            "retired_field"
+          ]
+        }
+      }
+    },
+    "expected": {
+      "keep": {
+        "type": "text"
+      }
+    }
+  },
+  {
+    "name": "patch-remove-deep-path",
+    "note": "remove a deep subkey (field.options.max_tags); field + siblings stay",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "field": {
+              "type": "tags",
+              "options": {
+                "max_tags": 5,
+                "keyword_min_length": 2
+              }
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "remove": [
+            "field.options.max_tags"
+          ]
+        }
+      }
+    },
+    "expected": {
+      "field": {
+        "type": "tags",
+        "options": {
+          "keyword_min_length": 2
+        }
+      }
+    }
+  },
+  {
+    "name": "ref-nested-flatten",
+    "note": "a $ref inside the resolved base is expanded recursively to a single spec",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "$ref": "inner.yml",
+            "own": {
+              "type": "text",
+              "label": "base"
+            }
+          }
+        },
+        "inner.yml": {
+          "properties": {
+            "deep": {
+              "type": "number",
+              "label": "inner"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml"
+      }
+    },
+    "expected": {
+      "deep": {
+        "type": "number",
+        "label": "inner"
+      },
+      "own": {
+        "type": "text",
+        "label": "base"
+      }
+    }
+  },
+  {
+    "name": "ref-then-patch-order",
+    "note": "$ref base laid down first, then $patch overlays (deep-path set)",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text",
+              "validate": {
+                "required": true
+              }
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "a.validate.required": false,
+          "add": {
+            "b": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "expected": {
+      "a": {
+        "type": "text",
+        "validate": {
+          "required": false
+        }
+      },
+      "b": {
+        "type": "number"
+      }
+    }
+  },
+  {
+    "name": "ref-sibling-override",
+    "note": "a named sibling after $ref overrides the inherited base key",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text",
+              "label": "base"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "a": {
+          "type": "email",
+          "label": "override"
+        }
+      }
+    },
+    "expected": {
+      "a": {
+        "type": "email",
+        "label": "override"
+      }
+    }
+  },
+  {
+    "name": "spec-level-ref",
+    "note": "a field-level $ref inherits a base spec; its properties also compose",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "kind": "spec",
+      "files": {
+        "group.yml": {
+          "properties": {
+            "child": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "type": "group",
+        "properties": {
+          "$ref": "group.yml"
+        }
+      }
+    },
+    "expected": {
+      "type": "group",
+      "properties": {
+        "child": {
+          "type": "text"
+        }
+      }
+    }
+  },
+  {
+    "name": "ref-basepath-relative",
+    "note": "relative $ref gets the basepath prefix before lookup",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "basepath": "/forms",
+      "files": {
+        "/forms/base.yml": {
+          "properties": {
+            "a": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml"
+      }
+    },
+    "expected": {
+      "a": {
+        "type": "text"
+      }
+    }
+  },
+  {
+    "name": "err-ref-file-missing",
+    "note": "A missing $ref file produces a load error.",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {},
+      "entry": {
+        "$ref": "nonexistent.yml"
+      }
+    },
+    "expectError": {
+      "code": "REF_FILE_NOT_FOUND"
+    }
+  },
+  {
+    "name": "err-ref-format",
+    "note": "malformed path-specified $ref is a ref-format load error",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {},
+      "entry": {
+        "$ref": "(broken"
+      }
+    },
+    "expectError": {
+      "code": "REF_FORMAT_ERROR"
+    }
+  },
+  {
+    "name": "err-ref-detect-key",
+    "note": "absent detectKey is a not-found load error",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "(base.yml).nope"
+      }
+    },
+    "expectError": {
+      "code": "REF_DETECT_KEY_NOT_FOUND"
+    }
+  },
+  {
+    "name": "err-ref-cycle",
+    "note": "a $ref cycle is detected as a load error (no infinite recursion)",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "a.yml": {
+          "properties": {
+            "$ref": "b.yml"
+          }
+        },
+        "b.yml": {
+          "properties": {
+            "$ref": "a.yml"
+          }
+        }
+      },
+      "entry": {
+        "$ref": "a.yml"
+      }
+    },
+    "expectError": {
+      "code": "REF_CYCLE"
+    }
+  },
+  {
+    "name": "err-patch-remove-missing",
+    "note": "strict deep-path remove of an absent target is a load error",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "remove": [
+            "ghost.subkey"
+          ]
+        }
+      }
+    },
+    "expectError": {
+      "code": "PATCH_REMOVE_TARGET_MISSING"
+    }
+  },
+  {
+    "name": "err-patch-path-conflict",
+    "note": "deep-path set descending into a scalar leaf is a load error",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {
+        "base.yml": {
+          "properties": {
+            "a": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "entry": {
+        "$ref": "base.yml",
+        "$patch": {
+          "a.type.deeper": "x"
+        }
+      }
+    },
+    "expectError": {
+      "code": "PATCH_PATH_CONFLICT"
+    }
+  },
+  {
+    "name": "err-ref-value-type",
+    "note": "$ref that is neither string nor string[] is a load error",
+    "requirements": [
+      "CUSC-007"
+    ],
+    "input": {
+      "files": {},
+      "entry": {
+        "$ref": 123
+      }
+    },
+    "expectError": {
+      "code": "REF_VALUE_TYPE"
+    }
+  }
+]

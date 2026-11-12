@@ -6,11 +6,11 @@
   "workspaces": [
     "packages/cli",
     "packages/form-binding",
-    "packages/generator/ts",
-    "packages/html",
+    "legacy/packages/generator/ts",
+    "legacy/packages/html",
     "packages/react",
     "packages/svelte",
-    "packages/validator/ts",
+    "legacy/packages/validator/ts",
     "packages/vue"
   ],
   "directories": {
@@ -38,7 +38,7 @@
     "manifest:docs:check": "node scripts/generate-feature-contract-docs.mts --check",
     "manifest:test": "node scripts/require-current-build.mts && node scripts/run-contract-tests.mts",
     "spec:schema": "node scripts/check-schema.mts",
-    "test:forms": "node scripts/require-current-build.mts || exit 1; status=0; node tests/conformance/run-suite.mts vitest --cwd packages/generator/ts || status=1; npm test -w @polyspec/crudui-generator-html || status=1; npm test -w @polyspec/crudui-generator-react || status=1; npm test -w @polyspec/crudui-generator-vue || status=1; npm test -w @polyspec/crudui-generator-svelte || status=1; node scripts/run-tests.mts vitest --cwd packages/form-binding || status=1; node scripts/run-tests.mts node -- --test-concurrency=1 tests/fixtures/form-render/normalize.test.mts tests/form-styles.test.mts tests/viewport.test.mts tests/tailwind-styles.test.mts tests/style-properties.test.mts tests/form-markup/naming.test.mts examples/product-forms/examples.test.mjs || status=1; node scripts/run-tests.mts node -- --test-concurrency=1 tests/widget-script-runs.test.mts || status=1; exit $status",
+    "test:forms": "node scripts/require-current-build.mts || exit 1; status=0; node tests/conformance/run-suite.mts vitest --cwd legacy/packages/generator/ts || status=1; npm test -w @polyspec/crudui-generator-html || status=1; npm test -w @polyspec/crudui-generator-react || status=1; npm test -w @polyspec/crudui-generator-vue || status=1; npm test -w @polyspec/crudui-generator-svelte || status=1; node scripts/run-tests.mts vitest --cwd packages/form-binding || status=1; node scripts/run-tests.mts node -- --test-concurrency=1 tests/fixtures/form-render/normalize.test.mts legacy/tests/fixtures/form-render/normalize.test.mts tests/form-styles.test.mts tests/viewport.test.mts tests/tailwind-styles.test.mts tests/style-properties.test.mts tests/form-markup/naming.test.mts examples/product-forms/examples.test.mjs || status=1; node scripts/run-tests.mts node -- --test-concurrency=1 tests/widget-script-runs.test.mts || status=1; exit $status",
     "test:form-comparison": "status=0; npm run test:form-comparison:source || status=1; npm run test:form-comparison:library || status=1; npm run test:form-comparison:browser || status=1; exit $status",
     "test:form-comparison:source": "node scripts/require-current-build.mts && node scripts/run-tests.mts node -- --test-concurrency=1 examples/form-comparison/browser-report.test.mjs examples/form-comparison/check-*.test.mjs examples/form-comparison/public/*.test.mjs examples/form-comparison/src/*.test.mjs",
     "test:form-comparison:browser": "node scripts/require-current-build.mts && node scripts/run-tests.mts node -- --test-concurrency=1 examples/form-comparison/src/browser-job.browser.mjs",
@@ -88,7 +88,7 @@
       "form-comparison-stage-vue": "./examples/form-comparison/src/pages/stage-vue.ts",
       "form-comparison-stage-svelte": "./examples/form-comparison/src/pages/stage-svelte.svelte.ts"
     },
-    "#html": "./packages/html/src/index.ts",
+    "#html": "./legacy/packages/html/src/index.ts",
     "#react/*": "./packages/react/src/components/*.tsx",
     "#vue/*": "./packages/vue/src/components/*.ts",
     "#svelte/*": "./packages/svelte/src/components/*"

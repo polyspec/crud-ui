@@ -22,7 +22,7 @@
         "src/**/*.{ts,tsx,js,mjs,svelte}!"
       ]
     },
-    "packages/generator/ts": {
+    "legacy/packages/generator/ts": {
       "entry": [
         "src/index.{ts,tsx,js,mjs}!",
         "src/server.{ts,tsx,js,mjs}!"
@@ -31,7 +31,7 @@
         "src/**/*.{ts,tsx,js,mjs,svelte}!"
       ]
     },
-    "packages/html": {
+    "legacy/packages/html": {
       "entry": [
         "src/index.{ts,tsx,js,mjs}!",
         "src/server.{ts,tsx,js,mjs}!"
@@ -58,7 +58,7 @@
         "src/**/*.{ts,tsx,js,mjs,svelte}!"
       ]
     },
-    "packages/validator/ts": {
+    "legacy/packages/validator/ts": {
       "entry": [
         "src/index.{ts,tsx,js,mjs}!",
         "src/server.{ts,tsx,js,mjs}!"

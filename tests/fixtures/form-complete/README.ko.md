@@ -1,6 +1,6 @@
 # 완전한 폼 고정 데이터
 <!-- doc-id: tests-fixtures-form-complete-readme -->
-<!-- source-sha256: 6d9a1918c61c9e30ec99e82c422844c74dedd8d8c4869c2965b9dc1b9e3a8b86 -->
+<!-- source-sha256: 2035bf0cc25fbb27f16ff4b60b33b993a957cc8f20f8be7f15316d7ffa233a1c -->
 
 [English](README.md).
 
@@ -18,7 +18,7 @@ JavaScript URL, 빈 옵션, 폼 요소 없는 오류, 폼 오류 순서, 컬렉�
 테스트는 정확한 바이트를 비교합니다. React 서버 렌더링
 ([`form-complete.conformance.test.ts`](../../../packages/react/src/tests/form-complete.conformance.test.ts)),
 HTML renderer
-([`form-complete.conformance.test.ts`](../../../packages/html/src/form-complete.conformance.test.ts)),
+([`form-complete.conformance.test.ts`](../../../legacy/packages/html/src/form-complete.conformance.test.ts)),
 그리고 [네이티브 생성기 검사](../../native-generators/README.ko.md)를 통한 PHP, PHP 확장, Go, Rust
 생성기입니다. Vue
 ([`form-complete.conformance.test.mjs`](../../../packages/vue/tests/form-complete.conformance.test.mjs))와

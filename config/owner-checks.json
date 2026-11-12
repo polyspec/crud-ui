@@ -15,7 +15,8 @@
         "examples/**/README*.md",
         "tests/**/README*.md",
         "benchmarks/validators/README.md",
-        "packages/**/README*.md"
+        "packages/**/README*.md",
+        "legacy/packages/**/README*.md"
       ],
       "targets": [
         "docs-check"
@@ -86,7 +87,7 @@
     },
     {
       "paths": [
-        "packages/validator/ts/**"
+        "legacy/packages/validator/ts/**"
       ],
       "workspaces": [
         "@polyspec/crudui-validator"
@@ -100,7 +101,7 @@
     },
     {
       "paths": [
-        "packages/validator/php/**"
+        "legacy/packages/validator/php/**"
       ],
       "targets": [
         "crudui-test-validators",
@@ -132,7 +133,8 @@
     },
     {
       "paths": [
-        "packages/validator/{go,rust}/**"
+        "legacy/packages/validator/go/**",
+        "packages/validator/rust/**"
       ],
       "targets": [
         "crudui-test-validators"
@@ -143,7 +145,7 @@
     },
     {
       "paths": [
-        "packages/validator/python/**"
+        "legacy/packages/validator/python/**"
       ],
       "targets": [
         "crudui-test-validator-python"
@@ -154,7 +156,7 @@
     },
     {
       "paths": [
-        "packages/generator/ts/**",
+        "legacy/packages/generator/ts/**",
         "contracts/schema/form-template.schema.json",
         "scripts/generate-form-template-validator.mts"
       ],
@@ -167,7 +169,7 @@
     },
     {
       "paths": [
-        "packages/html/**"
+        "legacy/packages/html/**"
       ],
       "workspaces": [
         "@polyspec/crudui-generator-html"
@@ -230,8 +232,9 @@
     },
     {
       "paths": [
-        "packages/generator/{php,go,rust}/**",
-        "packages/php-ext/**",
+        "legacy/packages/generator/{php,go}/**",
+        "packages/generator/rust/**",
+        "legacy/packages/php-ext/**",
         "tests/native-generators/**"
       ],
       "targets": [
@@ -240,7 +243,7 @@
     },
     {
       "paths": [
-        "packages/generator/python/**"
+        "legacy/packages/generator/python/**"
       ],
       "targets": [
         "crudui-test-generator-python"
@@ -268,7 +271,7 @@
     {
       "paths": [
         "tests/php/**",
-        "packages/php-ext/phpunit.xml"
+        "legacy/packages/php-ext/phpunit.xml"
       ],
       "targets": [
         "crudui-test-php-api"
@@ -340,7 +343,8 @@
     },
     {
       "paths": [
-        "tests/fixtures/**"
+        "tests/fixtures/**",
+        "legacy/tests/fixtures/**"
       ],
       "scripts": [
         "test:forms"
@@ -574,7 +578,7 @@
     {
       "paths": [
         "packages/{*,*/*}/package.json",
-        "packages/{validator,generator}/php/composer.json",
+        "legacy/packages/{validator,generator}/php/composer.json",
         "composer.{json,lock}"
       ],
       "targets": [
@@ -801,7 +805,7 @@
     },
     {
       "paths": [
-        "packages/php-ext/**"
+        "legacy/packages/php-ext/**"
       ],
       "targets": [
         "lint-php-ext",
@@ -819,8 +823,8 @@
     },
     {
       "paths": [
-        "packages/generator/php/src/**",
-        "packages/validator/php/src/**"
+        "legacy/packages/generator/php/src/**",
+        "legacy/packages/validator/php/src/**"
       ],
       "tests": [
         "scripts/php-doc-coverage.test.mts"
@@ -838,12 +842,13 @@
     },
     {
       "paths": [
-        "packages/{generator,validator}/php/phpunit.xml",
-        "packages/{generator,validator}/php/tests/**",
+        "legacy/packages/{generator,validator}/php/phpunit.xml",
+        "legacy/packages/{generator,validator}/php/tests/**",
         "tests/php/FixtureJson.php",
         "tests/fixtures/**",
+        "legacy/tests/fixtures/**",
         "tests/build/php-test-scope.test.mts",
-        "packages/{generator,validator}/php/composer.json",
+        "legacy/packages/{generator,validator}/php/composer.json",
         "Makefile",
         "tests/build/make-dry-run.mts",
         "tests/json.mts"
@@ -872,38 +877,61 @@
       "targets": [
         "crudui-test-validators"
       ]
+    },
+    {
+      "paths": [
+        "Cargo.toml",
+        "Cargo.lock"
+      ],
+      "targets": [
+        "lint-rust"
+      ]
+    },
+    {
+      "paths": [
+        "packages/{validator,generator}/{ts,python,php-ext}/**"
+      ],
+      "targets": [
+        "bindings-check"
+      ]
     }
   ],
   "inputs": [
     {
       "check": "make crudui-test-validators",
       "paths": [
-        "packages/validator/{php,go,rust}/**",
+        "legacy/packages/validator/{php,go}/**",
+        "packages/validator/rust/**",
         "tests/fixtures/**",
         "contracts/schema/crudui.schema.json",
-        "contracts/unicode-properties.json"
+        "contracts/unicode-properties.json",
+        "legacy/tests/fixtures/**"
       ]
     },
     {
       "check": "make crudui-test-native",
       "paths": [
-        "packages/generator/{php,go,rust}/**",
-        "packages/php-ext/**",
-        "packages/validator/php/**",
+        "legacy/packages/generator/{php,go}/**",
+        "packages/generator/rust/**",
+        "legacy/packages/php-ext/**",
+        "legacy/packages/validator/php/**",
         "tests/native-generators/**",
-        "tests/fixtures/**"
+        "tests/fixtures/**",
+        "legacy/tests/fixtures/**"
       ]
     },
     {
       "check": "npm run test:forms",
       "paths": [
-        "packages/{generator/ts,html,react,vue,svelte}/**",
+        "legacy/packages/{generator/ts,html}/**",
+        "packages/{react,vue,svelte}/**",
         "packages/form-binding/**",
-        "packages/validator/ts/**",
+        "legacy/packages/validator/ts/**",
         "tests/fixtures/**",
         "tests/*.test.mts",
         "tests/browser-engines.*",
-        "examples/product-forms/**"
+        "examples/product-forms/**",
+        "legacy/tests/fixtures/**"
       ]
     },
     {
@@ -922,7 +950,8 @@
       "check": "npm test --prefix examples/cross-check-console/server",
       "paths": [
         "examples/cross-check-console/**",
-        "packages/validator/{ts,php,go,rust}/**"
+        "legacy/packages/validator/{ts,php,go}/**",
+        "packages/validator/rust/**"
       ]
     },
     {
@@ -938,7 +967,7 @@
         "package.json",
         "package-lock.json",
         "packages/{*,*/*}/package.json",
-        "packages/{validator,generator}/php/composer.json",
+        "legacy/packages/{validator,generator}/php/composer.json",
         "composer.{json,lock}",
         ".npmrc"
       ]
@@ -953,15 +982,16 @@
     {
       "check": "npm run test:php-scope",
       "paths": [
-        "packages/{generator,validator}/php/phpunit.xml",
-        "packages/{generator,validator}/php/tests/**",
+        "legacy/packages/{generator,validator}/php/phpunit.xml",
+        "legacy/packages/{generator,validator}/php/tests/**",
         "tests/php/FixtureJson.php",
         "tests/fixtures/**",
         "tests/build/php-test-scope.test.mts",
-        "packages/{generator,validator}/php/composer.json",
+        "legacy/packages/{generator,validator}/php/composer.json",
         "Makefile",
         "tests/build/make-dry-run.mts",
-        "tests/json.mts"
+        "tests/json.mts",
+        "legacy/tests/fixtures/**"
       ]
     }
   ]

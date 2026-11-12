@@ -342,3 +342,10 @@
 | ID | Task | Deliverables | Verification | State |
 |---|---|---|---|---|
 | C15.1 | Add the rule that the repository does not rebuild what an existing outside tool or library already does: `AGENTS.md` and `AGENTS.ko.md` name the standard tool of each ecosystem used as it is (uv for Python interpreters, environments and locks, Composer for PHP dependencies), accept the symbolic links that such a tool creates, and limit the path and symbolic link rule to what this repository creates | — | `make docs-check` | [o] |
+
+## [Wave 16](plan.md#wave-16) — The Rust cores and their generated bindings
+
+| ID | Task | Deliverables | Verification | State |
+|---|---|---|---|---|
+| C16.1 | Make the Rust crates the cores of the bindings: move the language implementations to `legacy/` under their former paths with the fixed copy `legacy/tests/fixtures`, take them out of the release targets, make one Cargo workspace at the root and scaffold the binding packages of each component. | `legacy/packages/**`, `legacy/tests/fixtures/**`, `Cargo.toml`, `Cargo.lock`, `packages/{validator,generator}/{ts,python,php-ext}`, the recipes `bindings`, `bindings-check`, `lint-bindings` and `test-bindings`, `config/layout.yml`, `config/release.json`, `config/owner-checks.json`, `AGENTS.md` | `make bindings-check BINDING=<cli of binding>` reports no finding; `cargo test --locked -p polyspec-crud-ui-validator -p polyspec-crud-ui-generator`; `make owner-validate`; `make release-coverage` | [o] |
+| C16.2 | Remove each legacy package by a change of its own when its binding package passes the shared suite and the package tests (plan V-6 (5)), with its entries of `config/layout.yml`, `config/release.json` and `config/owner-checks.json`; `legacy/tests/fixtures` goes with the last one. | No path under `legacy/` | `make layout-check` without the exception `!legacy` | [ ] |

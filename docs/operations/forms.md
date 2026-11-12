@@ -23,7 +23,7 @@ update the independent graph's root `allowScripts` field with exact versions.
 Run `npm rebuild` to execute newly approved scripts in an existing installation.
 
 PHP with Composer dependencies, Go and Rust are needed for four-language checks.
-Install PHP dependencies with `composer install` in `packages/validator/php`.
+Install PHP dependencies with `composer install` in `legacy/packages/validator/php`.
 No container is required when these toolchains are available locally.
 
 ## Build before loading data
@@ -124,8 +124,8 @@ make docs-check
 Run the server validation cases from the repository root:
 
 ```sh
-COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd packages/validator/php -- --filter ValidateConformanceTest
-node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd packages/validator/go -- ./validator/validate
+COMPOSER_VENDOR_DIR=../../../vendor node node_modules/@polyspec/kit/dist/run-tests.mjs phpunit --cwd legacy/packages/validator/php -- --filter ValidateConformanceTest
+node node_modules/@polyspec/kit/dist/run-tests.mjs go --cwd legacy/packages/validator/go -- ./validator/validate
 node node_modules/@polyspec/kit/dist/run-tests.mjs cargo -- --locked --manifest-path packages/validator/rust/Cargo.toml --test validate_conformance
 ```
 

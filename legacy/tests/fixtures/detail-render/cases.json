@@ -1,0 +1,2850 @@
+[
+  {
+    "name": "text-with-nul",
+    "note": "a NUL character in a label and in a value is written like any other character.",
+    "requirements": [
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "v": {
+          "field": "v",
+          "label": "A\u0000B"
+        }
+      }
+    },
+    "record": {
+      "v": "x\u0000y"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">AB</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">xy</dd></div></dl>"
+  },
+  {
+    "name": "basic-fields",
+    "note": "plain text fields with translated labels; values are escaped.",
+    "requirements": [
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-001",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": {
+            "ko": "이름",
+            "en": "Name"
+          }
+        },
+        "status": {
+          "field": "status",
+          "label": {
+            "ko": "상태",
+            "en": "Status"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Status</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">active</dd></div></dl>"
+  },
+  {
+    "name": "basic-fields-korean",
+    "note": "the same declaration in Korean selects the Korean labels.",
+    "requirements": [
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": {
+            "ko": "이름",
+            "en": "Name"
+          }
+        },
+        "status": {
+          "field": "status",
+          "label": {
+            "ko": "상태",
+            "en": "Status"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "ko"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">이름</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">상태</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">active</dd></div></dl>"
+  },
+  {
+    "name": "format-date",
+    "note": "date format applies the declared pattern.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-008",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "joined": {
+          "field": "joined",
+          "label": "Joined",
+          "format": {
+            "type": "date",
+            "pattern": "YYYY-MM-DD"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Joined</dt><dd class=\"crudui-detail__value crudui-value crudui-value--date\">2026-01-02</dd></div></dl>"
+  },
+  {
+    "name": "format-number",
+    "note": "number format with decimals, thousands and a translated prefix.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-009",
+      "CUDF-016",
+      "CUDF-018",
+      "CUDF-019",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-050",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "score": {
+          "field": "score",
+          "label": "Score",
+          "format": {
+            "type": "number",
+            "decimals": 2,
+            "thousands": true,
+            "prefix": {
+              "en": "$"
+            }
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Score</dt><dd class=\"crudui-detail__value crudui-value crudui-value--number\">$1,234,567.50</dd></div></dl>"
+  },
+  {
+    "name": "format-badge",
+    "note": "badge format maps the value to a variant.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-010",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-051",
+      "CUDF-052",
+      "CUDF-084",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "status": {
+          "field": "status",
+          "label": "Status",
+          "format": {
+            "type": "badge",
+            "map": {
+              "active": "success"
+            }
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Status</dt><dd class=\"crudui-detail__value crudui-value crudui-value--badge\"><span class=\"crudui-badge\" data-crudui-variant=\"success\">active</span></dd></div></dl>"
+  },
+  {
+    "name": "format-choice-label",
+    "note": "choice-label format looks the value up in the declared items.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-012",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-054",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "grade": {
+          "field": "grade",
+          "label": "Grade",
+          "format": {
+            "type": "choice-label",
+            "items": {
+              "A": "Apple"
+            }
+          }
+        }
+      }
+    },
+    "record": {
+      "grade": "A"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Grade</dt><dd class=\"crudui-detail__value crudui-value crudui-value--choice-label\">Apple</dd></div></dl>"
+  },
+  {
+    "name": "format-choice-label-choice-list",
+    "note": "choice-label format looks the value up in a choice list by the canonical text of each value.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-012",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-054",
+      "CUDF-055",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "answer": {
+          "field": "answer",
+          "label": "Answer",
+          "format": {
+            "type": "choice-label",
+            "items": [
+              {
+                "value": 1,
+                "label": "Yes"
+              },
+              {
+                "value": 0,
+                "label": "No"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "record": {
+      "answer": 0
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Answer</dt><dd class=\"crudui-detail__value crudui-value crudui-value--choice-label\">No</dd></div></dl>"
+  },
+  {
+    "name": "format-link",
+    "note": "link format interpolates explicit tokens and preserves literal domain and extension text.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-011",
+      "CUDF-022",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-053",
+      "CUDF-085",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "format": {
+            "type": "link",
+            "href": "https://example.com/users/{=jointablename.id}/{=join.join.name}.pdf",
+            "target": "_blank"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--link\"><a href=\"https://example.com/users/107/<Ada &amp; Lin>.pdf\" target=\"_blank\">&lt;Ada &amp; Lin&gt;</a></dd></div></dl>"
+  },
+  {
+    "name": "format-bool",
+    "note": "bool format as check, icon and text.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-013",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-086",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "check": {
+          "field": "admin",
+          "label": "Check",
+          "format": {
+            "type": "bool",
+            "as": "check",
+            "labels": {
+              "true": "Yes",
+              "false": "No"
+            }
+          }
+        },
+        "icon": {
+          "field": "admin",
+          "label": "Icon",
+          "format": {
+            "type": "bool",
+            "as": "icon",
+            "labels": {
+              "true": "Yes",
+              "false": "No"
+            }
+          }
+        },
+        "text": {
+          "field": "admin",
+          "label": "Text",
+          "format": {
+            "type": "bool",
+            "labels": {
+              "true": "Yes",
+              "false": "No"
+            }
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Check</dt><dd class=\"crudui-detail__value crudui-value crudui-value--bool\"><span aria-label=\"true\" class=\"crudui-bool crudui-bool--check\" data-crudui-state=\"true\">✔</span></dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Icon</dt><dd class=\"crudui-detail__value crudui-value crudui-value--bool\"><span aria-label=\"true\" class=\"crudui-bool crudui-bool--icon\" data-crudui-state=\"true\"></span></dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Text</dt><dd class=\"crudui-detail__value crudui-value crudui-value--bool\"><span class=\"crudui-bool crudui-bool--text\" data-crudui-state=\"true\">true</span></dd></div></dl>"
+  },
+  {
+    "name": "format-image",
+    "note": "image format interpolates an explicit alt token and preserves a literal extension.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-014",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-050",
+      "CUDF-087",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "avatar": {
+          "field": "avatar",
+          "label": "Avatar",
+          "format": {
+            "type": "image",
+            "width": 40,
+            "height": 40,
+            "alt": "{=name}.png"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Avatar</dt><dd class=\"crudui-detail__value crudui-value crudui-value--image\"><img alt=\"<Ada &amp; Lin>.png\" height=\"40\" src=\"/img/ada.png\" width=\"40\"></dd></div></dl>"
+  },
+  {
+    "name": "format-image-empty-size",
+    "note": "a declared null width and height write empty size attributes.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-014",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-087",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "avatar": {
+          "field": "avatar",
+          "label": "Avatar",
+          "format": {
+            "type": "image",
+            "width": null,
+            "height": null
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Avatar</dt><dd class=\"crudui-detail__value crudui-value crudui-value--image\"><img alt=\"\" height=\"\" src=\"/img/ada.png\" width=\"\"></dd></div></dl>"
+  },
+  {
+    "name": "format-text-truncate-code-points",
+    "note": "truncate counts Unicode code points, keeps the integer part of the limit and applies only a number.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-007",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "emoji": {
+          "field": "emoji",
+          "label": "Emoji",
+          "format": {
+            "type": "text",
+            "truncate": 2
+          }
+        },
+        "hangul": {
+          "field": "hangul",
+          "label": "Hangul",
+          "format": {
+            "type": "text",
+            "truncate": 3
+          }
+        },
+        "fraction": {
+          "field": "plain",
+          "label": "Fraction",
+          "format": {
+            "type": "text",
+            "truncate": 2.9
+          }
+        },
+        "below": {
+          "field": "short",
+          "label": "Below",
+          "format": {
+            "type": "text",
+            "truncate": 0.5
+          }
+        },
+        "text": {
+          "field": "plain",
+          "label": "Text",
+          "format": {
+            "type": "text",
+            "truncate": "2"
+          }
+        }
+      }
+    },
+    "record": {
+      "emoji": "a😀bc",
+      "hangul": "가나다라마",
+      "plain": "abcd",
+      "short": "abc"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Emoji</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">a😀…</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Hangul</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">가나다…</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Fraction</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">ab…</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Below</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">abc</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Text</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">abcd</dd></div></dl>"
+  },
+  {
+    "name": "reject-number-decimals-above-range",
+    "note": "decimals above 100 are rejected.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "n": {
+          "field": "n",
+          "label": "N",
+          "format": {
+            "type": "number",
+            "decimals": 101
+          }
+        }
+      }
+    },
+    "record": {
+      "n": 1
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Number decimals must be between 0 and 100"
+    }
+  },
+  {
+    "name": "reject-number-decimals-below-range",
+    "note": "negative decimals are rejected.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "n": {
+          "field": "n",
+          "label": "N",
+          "format": {
+            "type": "number",
+            "decimals": -1
+          }
+        }
+      }
+    },
+    "record": {
+      "n": 1
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Number decimals must be between 0 and 100"
+    }
+  },
+  {
+    "name": "format-html",
+    "note": "html format writes the declared markup without escaping.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-015",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-088",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "notes": {
+          "field": "notes",
+          "label": "Notes",
+          "format": {
+            "type": "html"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Notes</dt><dd class=\"crudui-detail__value crudui-value crudui-value--html\"><b>bold</b></dd></div></dl>"
+  },
+  {
+    "name": "missing-value",
+    "note": "a field whose path is absent from the record renders an empty cell.",
+    "requirements": [
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "missing": {
+          "field": "missing",
+          "label": "Missing"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Missing</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\"></dd></div></dl>"
+  },
+  {
+    "name": "design-wrapper-and-cell",
+    "note": "the detail design styles the container and a field design styles its cell.",
+    "requirements": [
+      "CUDF-041",
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "design": {
+        "wrapper": {
+          "class": "card",
+          "style": "padding:4px"
+        }
+      },
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "design": {
+            "class": "strong",
+            "style": "color:red"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail card\" style=\"padding: 4px\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text strong\" style=\"color: red\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "condition-hidden-field",
+    "note": "a field hidden by its condition is not rendered.",
+    "requirements": [
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        },
+        "secret": {
+          "field": "status",
+          "label": "Secret",
+          "design": {
+            "show": false
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "composed-fields",
+    "note": "fields resolved from a referenced file.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "$ref": "shared.json"
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en",
+      "files": {
+        "shared.json": {
+          "properties": {
+            "name": {
+              "field": "name",
+              "label": "Name"
+            }
+          }
+        }
+      }
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "empty-fields",
+    "note": "a declaration with no fields renders an empty container.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {}
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"></dl>"
+  },
+  {
+    "name": "actions",
+    "note": "detail actions precede the definition list: a link-format action is an a element, a script string and a script object are buttons that hold their scripts in onclick and an empty action object is a button with its name; labels are translated and escaped.",
+    "requirements": [
+      "CUDF-041",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-062",
+      "CUDF-064",
+      "CUDF-065",
+      "CUDF-066",
+      "CUDF-067",
+      "CUDF-068",
+      "CUDF-069",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "label": {
+            "ko": "수정",
+            "en": "Edit <&>"
+          },
+          "format": {
+            "type": "link",
+            "href": "/members/7/edit",
+            "target": "_self"
+          }
+        },
+        "remove": "confirmDelete(this)",
+        "archive": {
+          "label": {
+            "en": "Archive"
+          },
+          "script": "archive(this)"
+        },
+        "back": {}
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-detail__actions\"><span class=\"crudui-detail__action\" data-action=\"edit\"><a href=\"/members/7/edit\" target=\"_self\">Edit &lt;&amp;&gt;</a></span><span class=\"crudui-detail__action\" data-action=\"remove\"><button onclick=\"confirmDelete(this)\" type=\"button\">remove</button></span><span class=\"crudui-detail__action\" data-action=\"archive\"><button onclick=\"archive(this)\" type=\"button\">Archive</button></span><span class=\"crudui-detail__action\" data-action=\"back\"><button type=\"button\">back</button></span></div><dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "action-behavior-events",
+    "note": "a behavior member is the event attribute: each declared script or script object is written once under its member name, on a button and on a link.",
+    "requirements": [
+      "CUDF-041",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-062",
+      "CUDF-064",
+      "CUDF-066",
+      "CUDF-068",
+      "CUDF-069",
+      "CUDF-070",
+      "CUDF-071",
+      "CUDF-072",
+      "CUDF-073",
+      "CUDF-074",
+      "CUDF-075",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "label": {
+            "en": "Edit"
+          },
+          "format": {
+            "type": "link",
+            "href": "/members/7/edit"
+          },
+          "behavior": {
+            "onclick": "track(this)"
+          }
+        },
+        "remove": {
+          "label": {
+            "en": "Remove"
+          },
+          "behavior": {
+            "onclick": {
+              "label": {
+                "en": "Remove"
+              },
+              "script": "confirmDelete(this)"
+            },
+            "onload": "prepare(this)"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-detail__actions\"><span class=\"crudui-detail__action\" data-action=\"edit\"><a href=\"/members/7/edit\" onclick=\"track(this)\">Edit</a></span><span class=\"crudui-detail__action\" data-action=\"remove\"><button onclick=\"confirmDelete(this)\" onload=\"prepare(this)\" type=\"button\">Remove</button></span></div><dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "actions-with-image",
+    "note": "the image preload links of a string renderer precede the actions, and the actions precede the definition list.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-014",
+      "CUDF-041",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-050",
+      "CUDF-062",
+      "CUDF-064",
+      "CUDF-066",
+      "CUDF-068",
+      "CUDF-069",
+      "CUDF-087",
+      "CURP-017"
+    ],
+    "spec": {
+      "design": {
+        "wrapper": {
+          "class": "card"
+        }
+      },
+      "actions": {
+        "edit": {
+          "label": "Edit",
+          "format": {
+            "type": "link",
+            "href": "/members/7/edit"
+          }
+        }
+      },
+      "fields": {
+        "avatar": {
+          "field": "avatar",
+          "label": "Avatar",
+          "format": {
+            "type": "image",
+            "alt": "Avatar"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-detail__actions\"><span class=\"crudui-detail__action\" data-action=\"edit\"><a href=\"/members/7/edit\">Edit</a></span></div><dl class=\"crudui-detail card\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Avatar</dt><dd class=\"crudui-detail__value crudui-value crudui-value--image\"><img alt=\"Avatar\" src=\"/img/ada.png\"></dd></div></dl>"
+  },
+  {
+    "name": "actions-empty",
+    "note": "an empty actions object writes no actions element.",
+    "requirements": [
+      "CUDF-041",
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      },
+      "actions": {}
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "reject-non-object-specification",
+    "note": "a declaration that is not an object is rejected.",
+    "requirements": [
+      "CUDF-032",
+      "CURP-017"
+    ],
+    "spec": [],
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail specification must be an object"
+    }
+  },
+  {
+    "name": "reject-missing-fields",
+    "note": "a declaration without fields is rejected.",
+    "requirements": [
+      "CUDF-034",
+      "CURP-017"
+    ],
+    "spec": {},
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail specification must declare fields"
+    }
+  },
+  {
+    "name": "content-values",
+    "note": "a choice label in format items is an open value: a label that is not a string or a language map with a non-empty string entry is empty text.",
+    "requirements": [
+      "CUDF-006",
+      "CUDF-011",
+      "CUDF-012",
+      "CUDF-021",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-049",
+      "CUDF-050",
+      "CUDF-053",
+      "CUDF-054",
+      "CUDF-083",
+      "CUDF-085",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "choiceNumber": {
+          "field": "a",
+          "label": "C",
+          "format": {
+            "type": "choice-label",
+            "items": {
+              "a": 3
+            }
+          }
+        },
+        "choiceNumberEntry": {
+          "field": "b",
+          "label": "D",
+          "format": {
+            "type": "choice-label",
+            "items": {
+              "b": {
+                "en": 3,
+                "ko": "가"
+              }
+            }
+          }
+        },
+        "choiceList": {
+          "field": "a",
+          "label": "E",
+          "format": {
+            "type": "choice-label",
+            "items": {
+              "a": [
+                "x"
+              ]
+            }
+          }
+        },
+        "linkTextEmpty": {
+          "field": "name",
+          "label": "LE",
+          "format": {
+            "type": "link",
+            "href": "/u",
+            "text": ""
+          }
+        }
+      }
+    },
+    "record": {
+      "n": 5,
+      "yes": true,
+      "a": "a",
+      "b": "b",
+      "name": "Ada",
+      "img": "data:image/png;base64,AA=="
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">C</dt><dd class=\"crudui-detail__value crudui-value crudui-value--choice-label\"></dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">D</dt><dd class=\"crudui-detail__value crudui-value crudui-value--choice-label\">가</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">E</dt><dd class=\"crudui-detail__value crudui-value crudui-value--choice-label\"></dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">LE</dt><dd class=\"crudui-detail__value crudui-value crudui-value--link\"><a href=\"/u\">Ada</a></dd></div></dl>"
+  },
+  {
+    "name": "list-options-ignored",
+    "note": "the list-only page, total and layout options are neither checked nor used by a detail.",
+    "requirements": [
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "page": 0,
+      "total": -1,
+      "layout": "grid"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
+  },
+  {
+    "name": "reject-specification-before-record",
+    "note": "the specification rule is checked before the record rule.",
+    "requirements": [
+      "CUDF-032",
+      "CURP-017"
+    ],
+    "spec": [],
+    "record": [],
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail specification must be an object"
+    }
+  },
+  {
+    "name": "reject-record-before-fields",
+    "note": "argument shapes are checked before the declaration: the record rule precedes the fields rule.",
+    "requirements": [
+      "CUDF-033",
+      "CURP-017"
+    ],
+    "spec": {},
+    "record": [],
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail record must be an object"
+    }
+  },
+  {
+    "name": "reject-record-before-context",
+    "note": "the record rule is checked before the context rule.",
+    "requirements": [
+      "CUDF-033",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": [],
+    "options": {
+      "data": []
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail record must be an object"
+    }
+  },
+  {
+    "name": "reject-field-design-node-key",
+    "note": "a design node key that the schema does not list is rejected at its field path.",
+    "requirements": [
+      "CUDF-045",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "design": {
+            "label": {
+              "text": "x"
+            }
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid design.label.text at fields.name: unknown key"
+    }
+  },
+  {
+    "name": "reject-detail-design-node-value",
+    "note": "the detail's own design node must be an object.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "design": {
+        "wrapper": "box"
+      },
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid design.wrapper at detail: expected an object"
+    }
+  },
+  {
+    "name": "reject-array-context",
+    "note": "a data option that is not an object is rejected.",
+    "requirements": [
+      "CUDF-035",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "data": []
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail context must be an object"
+    }
+  },
+  {
+    "name": "reject-non-object-record",
+    "note": "a record that is not an object is rejected.",
+    "requirements": [
+      "CUDF-033",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name"
+        }
+      }
+    },
+    "record": [],
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail record must be an object"
+    }
+  },
+  {
+    "name": "reject-root-ref-without-fields",
+    "note": "a root $ref is not composed, so a specification without its own fields declares none.",
+    "requirements": [
+      "CUDF-034",
+      "CURP-017"
+    ],
+    "spec": {
+      "$ref": "base-detail.yml"
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "options": {
+      "files": {
+        "base-detail.yml": {
+          "properties": {
+            "fields": {
+              "name": {
+                "field": "name"
+              }
+            }
+          }
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Detail specification must declare fields"
+    }
+  },
+  {
+    "name": "reject-forbidden-field-key",
+    "note": "a forbidden key in a field fails the forbidden-key scan.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "show_if": ".admin"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "FORBIDDEN_META_KEY",
+      "message": "forbidden meta key \"show_if\" at fields.name.show_if"
+    }
+  },
+  {
+    "name": "reject-forbidden-root-key",
+    "note": "a forbidden root key fails the scan before the declaration rules.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "if": ".admin"
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "FORBIDDEN_META_KEY",
+      "message": "forbidden meta key \"if\" at if"
+    }
+  },
+  {
+    "name": "reject-number-fields",
+    "note": "fields are an object.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": 5
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid fields at detail: expected an object"
+    }
+  },
+  {
+    "name": "reject-unknown-root-key",
+    "note": "a detail root member that the schema does not list is rejected.",
+    "requirements": [
+      "CUDF-041",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "sort": {
+        "field": "name"
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid sort at detail: unknown key"
+    }
+  },
+  {
+    "name": "reject-root-ref",
+    "note": "a root $ref beside the fields is not composed.",
+    "requirements": [
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "$ref": "base.yml"
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid $ref at detail: expected composition inside fields"
+    }
+  },
+  {
+    "name": "reject-field-not-object",
+    "note": "each field is an object.",
+    "requirements": [
+      "CUDF-043",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": 5
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid name at fields: expected an object"
+    }
+  },
+  {
+    "name": "reject-field-sortable",
+    "note": "a detail field does not declare sorting.",
+    "requirements": [
+      "CUDF-045",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "sortable": true
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid sortable at fields.name: unknown key"
+    }
+  },
+  {
+    "name": "reject-field-path",
+    "note": "the field path is a string.",
+    "requirements": [
+      "CUDF-046",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": [
+            "name"
+          ]
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid field at fields.name: expected a string"
+    }
+  },
+  {
+    "name": "reject-field-label",
+    "note": "a label is content.",
+    "requirements": [
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": true
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid label at fields.name: expected a string, a language map or null"
+    }
+  },
+  {
+    "name": "reject-field-format",
+    "note": "a format is a boolean, a string or an object.",
+    "requirements": [
+      "CUDF-048",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "format": 5
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid format at fields.name: expected a boolean, a string or an object"
+    }
+  },
+  {
+    "name": "reject-field-format-items",
+    "note": "a choice list value is a string or a finite number.",
+    "requirements": [
+      "CUDF-055",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "format": {
+            "type": "choice-label",
+            "items": [
+              {
+                "value": null,
+                "label": "None"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid format.items at fields.name: expected value and label pairs with distinct string or number values"
+    }
+  },
+  {
+    "name": "reject-field-format-alt",
+    "note": "an image alternative text is content.",
+    "requirements": [
+      "CUDF-050",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "format": {
+            "type": "image",
+            "alt": 5
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid format.alt at fields.name: expected a string, a language map or null"
+    }
+  },
+  {
+    "name": "reject-actions",
+    "note": "actions are an object.",
+    "requirements": [
+      "CUDF-062",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": []
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid actions at detail: expected an object"
+    }
+  },
+  {
+    "name": "reject-action-ref",
+    "note": "actions are not composed.",
+    "requirements": [
+      "CUDF-063",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "$ref": "actions.yml"
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid $ref at actions: unknown key"
+    }
+  },
+  {
+    "name": "reject-action",
+    "note": "an action is a script or an object.",
+    "requirements": [
+      "CUDF-064",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": 5
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid edit at actions: expected a script or an object"
+    }
+  },
+  {
+    "name": "reject-action-unknown-key",
+    "note": "an action object holds label, format, behavior and design.",
+    "requirements": [
+      "CUDF-065",
+      "CUDF-066",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "label": "Edit",
+          "onclick": "x()"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid onclick at actions.edit: unknown key"
+    }
+  },
+  {
+    "name": "reject-script-action-format",
+    "note": "a script action holds label and script.",
+    "requirements": [
+      "CUDF-065",
+      "CUDF-066",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "script": "x()",
+          "format": "link"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid format at actions.edit: unknown key"
+    }
+  },
+  {
+    "name": "reject-action-label",
+    "note": "an action label is content.",
+    "requirements": [
+      "CUDF-047",
+      "CUDF-068",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "label": 1
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid label at actions.edit: expected a string, a language map or null"
+    }
+  },
+  {
+    "name": "reject-action-format",
+    "note": "an action format follows the format rules.",
+    "requirements": [
+      "CUDF-053",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "format": {
+            "type": "link",
+            "href": 1
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid format.href at actions.edit: expected a string or a condition map"
+    }
+  },
+  {
+    "name": "reject-action-behavior-entry",
+    "note": "a behavior entry is a script or an object.",
+    "requirements": [
+      "CUDF-072",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "behavior": {
+            "onclick": 1
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid behavior.onclick at actions.edit: expected a script or an object"
+    }
+  },
+  {
+    "name": "reject-action-design",
+    "note": "an action design follows the design rules.",
+    "requirements": [
+      "CUDF-065",
+      "CUDF-066",
+      "CUDF-076",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "actions": {
+        "edit": {
+          "design": {
+            "color": "red"
+          }
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid design.color at actions.edit: unknown key"
+    }
+  },
+  {
+    "name": "reject-fields-before-actions",
+    "note": "the fields are checked before the actions.",
+    "requirements": [
+      "CUDF-043",
+      "CURP-017"
+    ],
+    "spec": {
+      "actions": [],
+      "fields": {
+        "name": 5
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid name at fields: expected an object"
+    }
+  },
+  {
+    "name": "reject-design-before-actions",
+    "note": "the own design is checked before the actions.",
+    "requirements": [
+      "CUDF-037",
+      "CUDF-041",
+      "CURP-017"
+    ],
+    "spec": {
+      "actions": [],
+      "design": {
+        "color": "red"
+      },
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid design.color at detail: unknown key"
+    }
+  },
+  {
+    "name": "reject-list-description",
+    "note": "a detail does not declare a description.",
+    "requirements": [
+      "CUDF-041",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "description": "Member"
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid description at detail: unknown key"
+    }
+  },
+  {
+    "name": "reject-root-key-before-design",
+    "note": "root members are checked before the own design.",
+    "requirements": [
+      "CUDF-036",
+      "CUDF-041",
+      "CURP-017"
+    ],
+    "spec": {
+      "design": {
+        "color": "red"
+      },
+      "fields": {
+        "name": {
+          "field": "name"
+        }
+      },
+      "empty": "None"
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid empty at detail: unknown key"
+    }
+  },
+  {
+    "name": "field-path-dotted",
+    "note": "a field path reads the nested record value at the dotted path (CUDF-001).",
+    "requirements": [
+      "CUDF-001",
+      "CUDF-045",
+      "CUDF-047",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "company": {
+          "field": "company.name",
+          "label": "Company"
+        }
+      }
+    },
+    "record": {
+      "company": {
+        "name": "Acme"
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Company</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">Acme</dd></div></dl>"
+  },
+  {
+    "name": "format-true-and-false-are-text",
+    "note": "a format of true or false is the text display (CUDF-004).",
+    "requirements": [
+      "CUDF-002",
+      "CUDF-004",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "format": true
+        },
+        "status": {
+          "field": "status",
+          "label": "Status",
+          "format": false
+        }
+      }
+    },
+    "record": {
+      "name": "Ada",
+      "status": "active"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">Ada</dd></div><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Status</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">active</dd></div></dl>"
+  },
+  {
+    "name": "format-string-type-date",
+    "note": "a format given as a string is that display type with no settings (CUDF-005): the date display.",
+    "requirements": [
+      "CUDF-002",
+      "CUDF-005",
+      "CUDF-008",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-083",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "joined": {
+          "field": "joined",
+          "label": "Joined",
+          "format": "date"
+        }
+      }
+    },
+    "record": {
+      "joined": "2026-01-02"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Joined</dt><dd class=\"crudui-detail__value crudui-value crudui-value--date\">2026-01-02</dd></div></dl>"
+  },
+  {
+    "name": "format-link-href-condition",
+    "note": "an href condition map selects the link by the first true condition (CUDF-020).",
+    "requirements": [
+      "CUDF-002",
+      "CUDF-011",
+      "CUDF-020",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-053",
+      "CUDF-085",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "format": {
+            "type": "link",
+            "href": {
+              "name == \"Ada\"": "/ada",
+              "true": "/other"
+            }
+          }
+        }
+      }
+    },
+    "record": {
+      "name": "Ada"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--link\"><a href=\"/ada\">Ada</a></dd></div></dl>"
+  },
+  {
+    "name": "format-link-javascript-url",
+    "note": "a javascript: href is replaced with a URL that throws (CUDF-023).",
+    "requirements": [
+      "CUDF-002",
+      "CUDF-011",
+      "CUDF-023",
+      "CUDF-045",
+      "CUDF-047",
+      "CUDF-048",
+      "CUDF-085",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "label": "Name",
+          "format": {
+            "type": "link",
+            "href": "javascript:alert(1)"
+          }
+        }
+      }
+    },
+    "record": {
+      "name": "Ada"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--link\"><a href=\"javascript:throw new Error('React has blocked a javascript: URL as a security precaution.')\">Ada</a></dd></div></dl>"
+  },
+  {
+    "name": "reject-field-unknown-key-before-format",
+    "note": "a field checks its unknown keys in member order before its known members (CUDF-038).",
+    "requirements": [
+      "CUDF-038",
+      "CUDF-045",
+      "CURP-017"
+    ],
+    "spec": {
+      "fields": {
+        "name": {
+          "field": "name",
+          "format": 1,
+          "color": "x"
+        }
+      }
+    },
+    "record": {
+      "id": 7,
+      "name": "<Ada & Lin>",
+      "status": "active",
+      "joined": "2026-01-02T09:00:00",
+      "score": 1234567.5,
+      "admin": 1,
+      "avatar": "/img/ada.png",
+      "notes": "<b>bold</b>",
+      "jointablename": {
+        "id": 107
+      },
+      "join": {
+        "join": {
+          "name": "<Ada & Lin>"
+        }
+      }
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid color at fields.name: unknown key"
+    }
+  }
+]

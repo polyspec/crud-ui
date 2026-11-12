@@ -1,6 +1,6 @@
 # 런타임 패키지
 <!-- doc-id: docs-spec-runtime-packages -->
-<!-- source-sha256: 9fb7fec4465cfad3c9c768ff8f865bfe06cd7c1339ac2414f4999d903c9e3d9e -->
+<!-- source-sha256: e3263e1362032f16536047dd5f5d27f9271fb2e5c92981916f9ae3bfc573ea5d -->
 
 [English](runtime-packages.md).
 구현과 검증 결과는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -120,7 +120,7 @@ Composer가 PHP 클래스를 자동 로드합니다. 예제는 두 설정에서 
 ## 구현 패키지
 
 TypeScript 구현은 generator core(`@polyspec/crudui-generator-core`,
-`packages/generator/ts`), validator(`@polyspec/crudui-validator`, `packages/validator/ts`),
+`legacy/packages/generator/ts`), validator(`@polyspec/crudui-validator`, `legacy/packages/validator/ts`),
 그리고 계산된 필드를 HTML로 쓰는 HTML renderer(`@polyspec/crudui-generator-html`,
-`packages/html`)로 구성됩니다. React, Vue, Svelte adapter는 같은 model을 각자 네이티브로
+`legacy/packages/html`)로 구성됩니다. React, Vue, Svelte adapter는 같은 model을 각자 네이티브로
 그리며, 그 구현의 integration으로 시험합니다.

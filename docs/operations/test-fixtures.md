@@ -37,7 +37,7 @@ joined with `.`, and an input failure's `at` is empty.
 }
 ```
 
-The [TypeScript conformance test](../../packages/validator/ts/src/validate.conformance.test.ts)
+The [TypeScript conformance test](../../legacy/packages/validator/ts/src/validate.conformance.test.ts)
 compares the complete result or failure record strictly. It also rejects entries
 without exactly one expectation. PHP, the C PHP extension, Go and Rust consume the
 same validation fixture in their package suites and CLI checks.

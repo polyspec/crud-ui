@@ -21,7 +21,7 @@ parse under the unique-key rule and be a specification the script checks or a fi
 of the CLI's own tests. No YAML specification goes unchecked.
 
 The JSON Schema defines accepted declaration shapes. The TypeScript declarations
-in `packages/validator/ts/src/schema.ts` provide corresponding authoring types, which the entry
+in `legacy/packages/validator/ts/src/schema.ts` provide corresponding authoring types, which the entry
 of `@polyspec/crudui-validator` exports and its API report `etc/crudui-validator.api.md` lists.
 Update both when changing the declaration contract, then run the validator suites,
 CLI checks and `make docs-schema`. `make docs-clean` preserves the schema source.

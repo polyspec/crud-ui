@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: 22486e911aad1392174afc52751b5a008871f63e9c89309512bf0c8d36512c09 -->
+<!-- source-sha256: c7d409717fbaad9b13561328c0055fe734aaadd2cd178f6f96f0026bdec416ec -->
 
 [English](validation-rules.md).
 
@@ -43,7 +43,7 @@
   이하(`maxFrom`)인 유한한 수여야 합니다. 유한한 수가 아닌 값은 실패합니다. 참조한 값이 없거나 `null`이면 경계가 선언되지 않아
   규칙이 통과하고, 있지만 유한한 수가 아니면 실패합니다.
 
-[TypeScript 등록부](../../packages/validator/ts/src/rules/index.ts)는 기본 규칙 이름을
+[TypeScript 등록부](../../legacy/packages/validator/ts/src/rules/index.ts)는 기본 규칙 이름을
 정의합니다. `crudui describe`는 이 등록부에서 목록을 생성합니다.
 [CLI 절차](../operations/cli.ko.md)를 참고합니다. 모든 런타임은 같은 기본 규칙을 가지며 다른 규칙을
 등록하는 방법은 없습니다. 이 이름이 아닌 `validate` 또는 `messages` 키는 `UNKNOWN_RULE`로 로드에

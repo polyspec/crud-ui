@@ -26,15 +26,15 @@ function phpProvenance() {
     classes: {
       'Polyspec\\Crudui\\Generator': {
         internal: false, extension: null,
-        file: '/workspace/build/tree/packages/generator/php/src/Generator.php',
+        file: '/workspace/build/tree/legacy/packages/generator/php/src/Generator.php',
       },
       'Polyspec\\Crudui\\Form': {
         internal: false, extension: null,
-        file: '/workspace/build/tree/packages/generator/php/src/Form.php',
+        file: '/workspace/build/tree/legacy/packages/generator/php/src/Form.php',
       },
       'Polyspec\\Crudui\\Validator': {
         internal: false, extension: null,
-        file: '/workspace/build/tree/packages/validator/php/src/Public/Validator.php',
+        file: '/workspace/build/tree/legacy/packages/validator/php/src/Public/Validator.php',
       },
     },
   };
@@ -64,7 +64,7 @@ test('rejects generator provenance for another source identity', () => {
 test('rejects PHP class files outside the selected candidate locations', () => {
   for (const file of [
     '/workspace/build/tree/vendor/polyspec/crudui-validator/src/Public/Validator.php',
-    '/workspace/source/packages/validator/php/src/Public/Validator.php',
+    '/workspace/source/legacy/packages/validator/php/src/Public/Validator.php',
   ]) {
     const actual = phpProvenance();
     actual.classes['Polyspec\\Crudui\\Validator'].file = file;

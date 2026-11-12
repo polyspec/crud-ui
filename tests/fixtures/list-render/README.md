@@ -29,7 +29,7 @@ The cases are read by the list conformance tests in
 [React](../../../packages/react/src/tests/list-render.conformance.test.ts),
 [Vue](../../../packages/vue/tests/list-render.conformance.test.mjs),
 [Svelte](../../../packages/svelte/tests/list-render.conformance.test.mjs) and the
-[HTML renderer](../../../packages/html/src/list-conformance.test.ts).
+[HTML renderer](../../../legacy/packages/html/src/list-conformance.test.ts).
 Composition error cases require the recorded error code.
 
 ## Regeneration
