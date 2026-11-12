@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- CURP-031: the Rust boundaries take a file loader, the callback `file_loader` of the validator (`boundary::FileLoader`: `normalize`, `load`), in `validate_with_loader`, `validate_list_with_loader`, `validate_detail_with_loader`, `compile_form_with_loader`, `build_list_with_loader`, `render_list_with_loader`, `build_detail_with_loader` and `render_detail_with_loader`; each document is checked as a file when the loader returns it, `files` beside a loader fail, and a failure of the loader reaches the caller unchanged. The contracts declare the callback and these operations in place of their loader todo (CURP-031).
 - RN-9: the Rust server of the form comparison reads and writes JSON with `polyspec-json` of `https://github.com/polyspec/json.git` (branch `v1/rust-core`), the source of the core crates, instead of the tag `v0.0.25` of ordered-json (RN-9).
 - CUMK-073: the Rust `render_form_view(template, data, render, options)` takes a compiled template, data and bind options and binds the nodes and buttons itself instead of taking raw nodes, buttons, a language and a description that nothing checked; compilation is the one check of the node shape, and the generator contract records the change (CUMK-073).
 - CUVR-095: Rust validation refuses an `accept` parameter that is neither a string nor a list of strings with `INVALID_RULE_PARAMETER`, and `accept` fails a list value with a member that is no file object and a value that is no string, list or object, which it used to pass (CUVR-016, CUVR-095).

@@ -4,8 +4,10 @@
 //! written with its members in order and its numbers as `Number::toString` writes their doubles.
 //! Every operation here runs the operation of the same name of the crate.
 
-use binding_core::OrderedMap;
-use polyspec_crud_ui_validator::boundary::{input, output, specification};
+use binding_core::{Failure, OrderedMap};
+use polyspec_crud_ui_validator::boundary::{
+    input, output, specification, FileLoader, LoaderBridge, FILES_WITH_LOADER_MESSAGE,
+};
 use polyspec_crud_ui_validator::{FormInputError, ValidateError};
 use polyspec_json::Value as JsonValue;
 use serde_json::{Map, Value};
@@ -17,9 +19,15 @@ use crate::{
 
 /// A failure of the boundary of the validator as a failure of the generator.
 fn failure(error: ValidateError) -> FormError {
-    match error {
-        ValidateError::Load(error) => error.into(),
-        ValidateError::Input(error) => FormError::input(error.message),
+    error.into()
+}
+
+/// `files` given with a loader are refused (CURP-031).
+fn no_files(files: &OrderedMap<JsonValue>) -> FormResult<()> {
+    if files.is_empty() {
+        Ok(())
+    } else {
+        Err(FormError::input(FILES_WITH_LOADER_MESSAGE))
     }
 }
 
@@ -137,6 +145,14 @@ impl Default for ListOptions {
 }
 
 impl ListOptions {
+    /// The options of the crate that read the files of `bridge` (CURP-031).
+    fn loaded<'a>(&self, bridge: &'a LoaderBridge<'_>) -> FormResult<crate::ListOptions<'a>> {
+        no_files(&self.files)?;
+        let mut options: crate::ListOptions<'a> = self.core()?;
+        options.loader = Some(bridge);
+        Ok(options)
+    }
+
     /// The options of the crate.
     fn core(&self) -> FormResult<crate::ListOptions<'static>> {
         let number = |value: Option<u64>| match value {
@@ -169,6 +185,30 @@ pub fn compile_form(spec: &JsonValue, options: &CompileOptions) -> FormResult<Fo
         key_prefix: options.key_prefix.clone(),
     };
     crate::compile_form(&spec, &options)
+}
+
+/// [`compile_form`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the compilation as a kind, or the failure of the loader.
+pub fn compile_form_with_loader(
+    spec: &JsonValue,
+    loader: &mut dyn FileLoader,
+    options: &CompileOptions,
+) -> Result<FormTemplate, Failure<FormError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        no_files(&options.files)?;
+        let spec = enter_spec(spec)?;
+        let options = crate::CompileOptions {
+            files: Map::new(),
+            loader: Some(&bridge),
+            basepath: options.basepath.clone(),
+            key_prefix: options.key_prefix.clone(),
+        };
+        crate::compile_form(&spec, &options)
+    })();
+    bridge.settle(result)
 }
 
 /// A compiled template read from a value that crossed JSON (CURT-092).
@@ -281,6 +321,90 @@ pub fn render_detail(
 ) -> FormResult<String> {
     let spec = enter_spec(spec)?;
     crate::render_detail(&spec, &enter("record", record)?, &options.core()?)
+}
+
+/// [`build_list`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the operation as a kind, or the failure of the loader.
+pub fn build_list_with_loader(
+    spec: &JsonValue,
+    rows: &[JsonValue],
+    loader: &mut dyn FileLoader,
+    options: &ListOptions,
+) -> Result<JsonValue, Failure<FormError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let options = options.loaded(&bridge)?;
+        let spec = enter_spec(spec)?;
+        leave(&crate::build_list(
+            &spec,
+            &enter_list("rows", rows)?,
+            &options,
+        )?)
+    })();
+    bridge.settle(result)
+}
+
+/// [`render_list`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the operation as a kind, or the failure of the loader.
+pub fn render_list_with_loader(
+    spec: &JsonValue,
+    rows: &[JsonValue],
+    loader: &mut dyn FileLoader,
+    options: &ListOptions,
+) -> Result<String, Failure<FormError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let options = options.loaded(&bridge)?;
+        let spec = enter_spec(spec)?;
+        crate::render_list(&spec, &enter_list("rows", rows)?, &options)
+    })();
+    bridge.settle(result)
+}
+
+/// [`build_detail`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the operation as a kind, or the failure of the loader.
+pub fn build_detail_with_loader(
+    spec: &JsonValue,
+    record: &JsonValue,
+    loader: &mut dyn FileLoader,
+    options: &ListOptions,
+) -> Result<JsonValue, Failure<FormError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let options = options.loaded(&bridge)?;
+        let spec = enter_spec(spec)?;
+        leave(&crate::build_detail(
+            &spec,
+            &enter("record", record)?,
+            &options,
+        )?)
+    })();
+    bridge.settle(result)
+}
+
+/// [`render_detail`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the operation as a kind, or the failure of the loader.
+pub fn render_detail_with_loader(
+    spec: &JsonValue,
+    record: &JsonValue,
+    loader: &mut dyn FileLoader,
+    options: &ListOptions,
+) -> Result<String, Failure<FormError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let options = options.loaded(&bridge)?;
+        let spec = enter_spec(spec)?;
+        crate::render_detail(&spec, &enter("record", record)?, &options)
+    })();
+    bridge.settle(result)
 }
 
 /// [`crate::build_outline`] at the boundary.
@@ -549,6 +673,94 @@ mod tests {
 
     fn json(text: &str) -> JsonValue {
         polyspec_json::parse(text.as_bytes(), &polyspec_json::ParseOptions::default()).unwrap()
+    }
+
+    /// A loader of one file, which fails when `fail` is set.
+    struct OneFile {
+        fail: bool,
+    }
+
+    impl FileLoader for OneFile {
+        fn normalize(
+            &mut self,
+            path: &str,
+            basepath: &str,
+        ) -> Result<String, Failure<ValidateError>> {
+            Ok(format!("{basepath}/{path}"))
+        }
+
+        fn load(&mut self, key: &str) -> Result<JsonValue, Failure<ValidateError>> {
+            if self.fail {
+                return Err(Failure::Callback(format!("no {key}").into()));
+            }
+            if key.ends_with("Columns.yml") {
+                return Ok(json(
+                    r#"{"properties":{"name":{"field":"name","label":"Name"}}}"#,
+                ));
+            }
+            Ok(json(r#"{"properties":{"name":{"type":"text"}}}"#))
+        }
+    }
+
+    /// CURP-031: the operations with a loader read its files, refuse `files` beside it and return
+    /// its failure unchanged.
+    #[test]
+    fn a_loader_gives_the_files_of_the_operations() {
+        let spec = json(r#"{"type":"group","properties":{"$ref":"Base.yml"}}"#);
+        let files = json(r#"{"Base.yml":{"properties":{"name":{"type":"text"}}}}"#);
+        let mut options = CompileOptions::default();
+        let loaded =
+            compile_form_with_loader(&spec, &mut OneFile { fail: false }, &options).unwrap();
+        let mut named = OrderedMap::new();
+        for (name, file) in files.members().unwrap().iter() {
+            named.insert(name.string_value().unwrap(), file.clone());
+        }
+        options.files = named;
+        let declared = compile_form(&spec, &options).unwrap();
+        assert_eq!(
+            serde_json::to_string(&loaded).unwrap(),
+            serde_json::to_string(&declared).unwrap()
+        );
+        let Err(Failure::Kind(error)) =
+            compile_form_with_loader(&spec, &mut OneFile { fail: false }, &options)
+        else {
+            panic!("files with a loader");
+        };
+        assert_eq!(error.message, FILES_WITH_LOADER_MESSAGE);
+        let Err(Failure::Callback(error)) = compile_form_with_loader(
+            &spec,
+            &mut OneFile { fail: true },
+            &CompileOptions::default(),
+        ) else {
+            panic!("the loader failed");
+        };
+        assert_eq!(error.to_string(), "no /Base.yml");
+        let list = json(r#"{"columns":{"$ref":"Columns.yml"}}"#);
+        let html = render_list_with_loader(
+            &list,
+            &[json(r#"{"name":"x"}"#)],
+            &mut OneFile { fail: false },
+            &ListOptions::default(),
+        )
+        .unwrap();
+        assert!(html.contains("Name"));
+        let detail = json(r#"{"fields":{"$ref":"Columns.yml"}}"#);
+        let built = build_detail_with_loader(
+            &detail,
+            &json(r#"{"name":"x"}"#),
+            &mut OneFile { fail: false },
+            &ListOptions::default(),
+        )
+        .unwrap();
+        assert!(built.raw().contains("Name"));
+        let Err(Failure::Callback(_)) = render_detail_with_loader(
+            &detail,
+            &json("{}"),
+            &mut OneFile { fail: true },
+            &ListOptions::default(),
+        ) else {
+            panic!("the loader failed");
+        };
     }
 
     /// CURP-030: the boundary renders the instance that the crate renders, and data leaves with its

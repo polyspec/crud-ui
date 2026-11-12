@@ -187,6 +187,74 @@
   },
   "units": [
     {
+      "id": "file_loader",
+      "name": [
+        "file",
+        "loader"
+      ],
+      "module": "",
+      "kind": "interface",
+      "visibility": "public",
+      "origin": "callback",
+      "core": "polyspec_crud_ui_validator::boundary::FileLoader",
+      "thread": "owner",
+      "members": [
+        {
+          "id": "file_loader.normalize",
+          "name": [
+            "normalize"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "basepath"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "async_allowed": false,
+          "core": {
+            "path": "polyspec_crud_ui_validator::boundary::FileLoader::normalize",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "file_loader.load",
+          "name": [
+            "load"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "json_value",
+          "async_allowed": false,
+          "core": {
+            "path": "polyspec_crud_ui_validator::boundary::FileLoader::load",
+            "receiver": "&mut self"
+          }
+        }
+      ]
+    },
+    {
       "id": "validate_options",
       "name": [
         "validate",
@@ -223,14 +291,8 @@
             "literal": null
           },
           "reason": "CURP-019"
-        },
-        {
-          "todo": "loader: a field of the callback unit file_loader of crud-ui-validator (CUIT-041), declared once binding generates callback units"
         }
       ]
-    },
-    {
-      "todo": "file_loader: the callback unit of FileLoader (normalize, load) whose documents are checked by CUSC-092, declared once binding generates callback units"
     },
     {
       "id": "validation_error",
@@ -577,11 +639,207 @@
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_detail"
+        },
+        {
+          "id": "validator.validate_with_loader",
+          "name": [
+            "validate",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "validate_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": {
+            "unit": "validation_result"
+          },
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_validator::boundary::validate_with_loader"
+        },
+        {
+          "id": "validator.validate_list_with_loader",
+          "name": [
+            "validate",
+            "list",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "validate_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_validator::boundary::validate_list_with_loader"
+        },
+        {
+          "id": "validator.validate_detail_with_loader",
+          "name": [
+            "validate",
+            "detail",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "validate_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_validator::boundary::validate_detail_with_loader"
         }
       ]
     }
   ],
   "changes": [
+    {
+      "id": "loader",
+      "rule": "CURP-031",
+      "reason": "CURP-031: a file loader is a callback parameter of the operation with the suffix _with_loader instead of the member loader of the options, because a record holds no callback (T-4); its documents are polyspec-json values that are checked as files when it returns them, and files given beside it fail",
+      "symbol": "options.loader",
+      "from": {
+        "node": "validate(spec, data, { loader }); validateList(spec, { loader }); validateDetail(spec, { loader })",
+        "php": "Validator::validate($spec, $data, ['loader' => $loader])"
+      },
+      "to": "validator.validate_with_loader"
+    },
     {
       "id": "package-names",
       "rule": "P-1",

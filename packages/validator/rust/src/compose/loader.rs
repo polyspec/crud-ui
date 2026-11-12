@@ -51,6 +51,15 @@ impl MemoryLoader {
     }
 }
 
+/// CUSC-092: a file is an object; another document fails the load at the file key.
+pub(crate) fn not_object(key: &str) -> ComposeLoadError {
+    ComposeLoadError::with_trace(
+        ComposeErrorCode::RefFormatError,
+        format!("$ref file is not an object: {}", key),
+        vec![key.to_string()],
+    )
+}
+
 impl FileLoader for MemoryLoader {
     fn normalize(&self, path: &str, basepath: &str) -> String {
         // Absolute path: pass through. Relative: prefix basepath.
@@ -67,12 +76,7 @@ impl FileLoader for MemoryLoader {
         match self.files.get(key) {
             // Defensive clone so resolution never mutates the source file set.
             Some(Value::Object(doc)) => Ok(doc.clone()),
-            // CUSC-092: a file is an object; another document fails the load.
-            Some(_) => Err(ComposeLoadError::with_trace(
-                ComposeErrorCode::RefFormatError,
-                format!("$ref file is not an object: {}", key),
-                vec![key.to_string()],
-            )),
+            Some(_) => Err(not_object(key)),
             None => Err(ComposeLoadError::with_trace(
                 ComposeErrorCode::RefFileNotFound,
                 format!("$ref file not found: {}", key),

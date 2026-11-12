@@ -81,6 +81,15 @@ impl std::fmt::Display for FormError {
 }
 impl std::error::Error for FormError {}
 
+impl From<polyspec_crud_ui_validator::ValidateError> for FormError {
+    fn from(error: polyspec_crud_ui_validator::ValidateError) -> Self {
+        match error {
+            polyspec_crud_ui_validator::ValidateError::Load(error) => error.into(),
+            polyspec_crud_ui_validator::ValidateError::Input(error) => Self::input(error.message),
+        }
+    }
+}
+
 impl From<ComposeLoadError> for FormError {
     fn from(error: ComposeLoadError) -> Self {
         Self {

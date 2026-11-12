@@ -3,10 +3,13 @@
 //! their members in order and their numbers as ECMAScript doubles; results leave as polyspec-json
 //! values. Every operation here runs the operation of the same name of the crate.
 
-use binding_core::OrderedMap;
+use std::cell::RefCell;
+
+use binding_core::{Failure, OrderedMap};
 use polyspec_json::Value as JsonValue;
 use serde_json::Value;
 
+use crate::compose::{ComposeErrorCode, ComposeLoadError, ComposeResult, LoadedDoc};
 use crate::text::{
     check_inputs, check_specification, decode, from_ordered, validate_detail_text,
     validate_list_text, validate_text, JsonString, JsonText, VALUE_LIMIT_MESSAGE,
@@ -197,6 +200,199 @@ pub fn validate_detail(spec: &JsonValue, options: &ValidateOptions) -> Result<()
     validate_detail_text(&text_of(spec)?, files.as_ref(), basepath.as_ref())
 }
 
+/// A source of composition files that the caller implements (CURP-031).
+pub trait FileLoader {
+    /// The key of the file that `path` names from `basepath`.
+    ///
+    /// # Errors
+    /// The failure of the implementation.
+    fn normalize(&mut self, path: &str, basepath: &str) -> Result<String, Failure<ValidateError>>;
+
+    /// The document of the file at `key`.
+    ///
+    /// # Errors
+    /// The failure of the implementation.
+    fn load(&mut self, key: &str) -> Result<JsonValue, Failure<ValidateError>>;
+}
+
+/// The message of `files` given with a loader (CURP-031).
+pub const FILES_WITH_LOADER_MESSAGE: &str = "Files and a loader are both given";
+
+/// A caller's loader as the loader of the composition (CURP-031). The composition carries only
+/// load failures, so the first other failure is kept here and the operation that used the loader
+/// returns it with [`LoaderBridge::settle`]; after a failure the caller's loader is not called.
+pub struct LoaderBridge<'a> {
+    loader: RefCell<&'a mut dyn FileLoader>,
+    failure: RefCell<Option<Failure<ValidateError>>>,
+}
+
+impl<'a> LoaderBridge<'a> {
+    /// The bridge of a caller's loader.
+    pub fn new(loader: &'a mut dyn FileLoader) -> Self {
+        Self {
+            loader: RefCell::new(loader),
+            failure: RefCell::new(None),
+        }
+    }
+
+    /// The result of the operation that used the loader: the failure that the loader or a check of
+    /// its document gave, before the result of the operation.
+    ///
+    /// # Errors
+    /// The kept failure, or the failure of the operation as a kind.
+    pub fn settle<T, E>(self, result: Result<T, E>) -> Result<T, Failure<E>>
+    where
+        E: From<ValidateError>,
+    {
+        match self.failure.into_inner() {
+            Some(Failure::Kind(error)) => Err(Failure::Kind(E::from(error))),
+            Some(Failure::Raised(raised)) => Err(Failure::Raised(raised)),
+            Some(Failure::Callback(error)) => Err(Failure::Callback(error)),
+            None => result.map_err(Failure::Kind),
+        }
+    }
+
+    /// Keep the first failure and give the load failure that ends the composition.
+    fn keep(&self, failure: Failure<ValidateError>, key: &str) -> ComposeLoadError {
+        let mut kept = self.failure.borrow_mut();
+        if kept.is_none() {
+            *kept = Some(failure);
+        }
+        Self::ended(key)
+    }
+
+    /// The load failure that ends the composition after a kept failure; the operation returns the
+    /// kept failure, never this one.
+    fn ended(key: &str) -> ComposeLoadError {
+        ComposeLoadError::with_trace(
+            ComposeErrorCode::RefFileNotFound,
+            format!("$ref file not found: {key}"),
+            vec![key.to_owned()],
+        )
+    }
+
+    /// The document that the loader gave for `key`, checked as a file of `files` (CUIT-023).
+    fn document(key: &str, document: &JsonValue) -> Result<Value, ValidateError> {
+        let text = text_of(document)?;
+        let files = JsonText::Object(vec![(JsonString::Text(key.to_owned()), text.clone())]);
+        check_specification(None, Some(&files))?;
+        decode(&text)
+    }
+}
+
+impl crate::compose::FileLoader for LoaderBridge<'_> {
+    fn normalize(&self, path: &str, basepath: &str) -> String {
+        if self.failure.borrow().is_some() {
+            return String::new();
+        }
+        let key = self.loader.borrow_mut().normalize(path, basepath);
+        match key {
+            Ok(key) => key,
+            Err(failure) => {
+                drop(self.keep(failure, path));
+                String::new()
+            }
+        }
+    }
+
+    fn load(&self, key: &str) -> ComposeResult<LoadedDoc> {
+        if self.failure.borrow().is_some() {
+            return Err(Self::ended(key));
+        }
+        let document = self.loader.borrow_mut().load(key);
+        let document = match document {
+            Ok(document) => document,
+            Err(failure) => return Err(self.keep(failure, key)),
+        };
+        match Self::document(key, &document) {
+            Ok(Value::Object(document)) => Ok(document),
+            // CUSC-092: a file is an object.
+            Ok(_) => Err(crate::compose::loader::not_object(key)),
+            Err(ValidateError::Load(error)) => Err(error),
+            Err(error) => Err(self.keep(Failure::Kind(error), key)),
+        }
+    }
+}
+
+/// The base path of the options, after `files` given with a loader are refused (CURP-031).
+fn loader_basepath(options: &ValidateOptions) -> Result<Option<String>, ValidateError> {
+    if options.files.is_some() {
+        return Err(FormInputError::new(FILES_WITH_LOADER_MESSAGE).into());
+    }
+    Ok(options.basepath.clone())
+}
+
+/// [`validate`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the validation as a kind, or the failure of the loader.
+pub fn validate_with_loader(
+    spec: &JsonValue,
+    data: &JsonValue,
+    loader: &mut dyn FileLoader,
+    options: &ValidateOptions,
+) -> Result<ValidationResult, Failure<ValidateError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let basepath = loader_basepath(options)?;
+        let spec = specification(spec)?;
+        let data = input("data", data)?;
+        let options = crate::ValidateOptions {
+            files: None,
+            loader: Some(&bridge),
+            basepath,
+        };
+        result_of(crate::validate(&spec, &data, &options)?)
+    })();
+    bridge.settle(result)
+}
+
+/// [`validate_list`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the validation as a kind, or the failure of the loader.
+pub fn validate_list_with_loader(
+    spec: &JsonValue,
+    loader: &mut dyn FileLoader,
+    options: &ValidateOptions,
+) -> Result<(), Failure<ValidateError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let basepath = loader_basepath(options)?;
+        let spec = specification(spec)?;
+        let options = crate::ValidateListOptions {
+            files: None,
+            loader: Some(&bridge),
+            basepath,
+        };
+        Ok::<(), ValidateError>(crate::validate_list(&spec, &options)?)
+    })();
+    bridge.settle(result)
+}
+
+/// [`validate_detail`] with the files of a loader (CURP-031).
+///
+/// # Errors
+/// The failure of the validation as a kind, or the failure of the loader.
+pub fn validate_detail_with_loader(
+    spec: &JsonValue,
+    loader: &mut dyn FileLoader,
+    options: &ValidateOptions,
+) -> Result<(), Failure<ValidateError>> {
+    let bridge = LoaderBridge::new(loader);
+    let result = (|| {
+        let basepath = loader_basepath(options)?;
+        let spec = specification(spec)?;
+        let options = crate::ValidateDetailOptions {
+            files: None,
+            loader: Some(&bridge),
+            basepath,
+        };
+        Ok::<(), ValidateError>(crate::validate_detail(&spec, &options)?)
+    })();
+    bridge.settle(result)
+}
+
 /// [`crate::hidden_paths`] at the boundary.
 pub fn hidden_paths(spec: &JsonValue, data: &JsonValue) -> Result<Vec<String>, ValidateError> {
     let spec = specification(spec)?;
@@ -228,6 +424,146 @@ mod tests {
             error.message(),
             "Text must be Unicode scalar values: data.a"
         );
+    }
+
+    /// A loader over a list of files; `fail` names a key whose load fails in the loader.
+    struct Files {
+        files: Vec<(&'static str, &'static str)>,
+        fail: Option<&'static str>,
+        loads: usize,
+    }
+
+    impl FileLoader for Files {
+        fn normalize(
+            &mut self,
+            path: &str,
+            basepath: &str,
+        ) -> Result<String, Failure<ValidateError>> {
+            Ok(format!("{basepath}:{path}"))
+        }
+
+        fn load(&mut self, key: &str) -> Result<JsonValue, Failure<ValidateError>> {
+            self.loads += 1;
+            if self.fail == Some(key) {
+                return Err(Failure::Callback("the loader failed".into()));
+            }
+            match self.files.iter().find(|(name, _)| *name == key) {
+                Some((_, text)) => Ok(json(text)),
+                None => Err(Failure::Kind(ValidateError::Load(
+                    ComposeLoadError::with_trace(
+                        ComposeErrorCode::RefFileNotFound,
+                        format!("$ref file not found: {key}"),
+                        vec![key.to_owned()],
+                    ),
+                ))),
+            }
+        }
+    }
+
+    fn loader(files: &[(&'static str, &'static str)]) -> Files {
+        Files {
+            files: files.to_vec(),
+            fail: None,
+            loads: 0,
+        }
+    }
+
+    fn based(basepath: &str) -> ValidateOptions {
+        ValidateOptions {
+            files: None,
+            basepath: Some(basepath.to_owned()),
+        }
+    }
+
+    /// CURP-031: the loader names the key from the base path and gives the document.
+    #[test]
+    fn a_loader_gives_the_files() {
+        let mut files = loader(&[
+            (
+                "specs:Base.yml",
+                r#"{"properties":{"name":{"type":"text","validate":{"required":true}}}}"#,
+            ),
+            (
+                "specs:List.yml",
+                r#"{"properties":{"name":{"type":"text"}}}"#,
+            ),
+        ]);
+        let spec = json(r#"{"type":"group","properties":{"$ref":"Base.yml"}}"#);
+        let result = validate_with_loader(&spec, &json("{}"), &mut files, &based("specs")).unwrap();
+        assert_eq!(result.errors[0].rule, "required");
+        let reference = json(r#"{"$ref":"List.yml"}"#);
+        validate_list_with_loader(&reference, &mut files, &based("specs")).unwrap();
+        validate_detail_with_loader(&reference, &mut files, &based("specs")).unwrap();
+    }
+
+    /// CURP-031, CUSC-092, CUIT-023: a document is checked as a file when the loader returns it.
+    #[test]
+    fn a_loaded_document_is_checked_as_a_file() {
+        let spec = json(r#"{"type":"group","properties":{"$ref":"Base.yml"}}"#);
+        let options = ValidateOptions::default();
+        let mut list = loader(&[(":Base.yml", r#"["name"]"#)]);
+        let Err(Failure::Kind(ValidateError::Load(error))) =
+            validate_with_loader(&spec, &json("{}"), &mut list, &options)
+        else {
+            panic!("a list is no file");
+        };
+        assert_eq!(error.code.as_str(), "REF_FORMAT_ERROR");
+        assert_eq!(error.message, "$ref file is not an object: :Base.yml");
+        let mut text = loader(&[(":Base.yml", r#"{"name":{"label":"\ud800"}}"#)]);
+        let Err(Failure::Kind(ValidateError::Load(error))) =
+            validate_with_loader(&spec, &json("{}"), &mut text, &options)
+        else {
+            panic!("invalid text is no file");
+        };
+        assert_eq!(error.code.as_str(), "INVALID_TEXT");
+        assert_eq!(error.trace, [":Base.yml", "name", "label"]);
+    }
+
+    /// CURP-031: a failure of the loader reaches the caller unchanged and ends the reading.
+    #[test]
+    fn a_failure_of_the_loader_reaches_the_caller() {
+        let spec = json(
+            r#"{"type":"group","properties":{"a":{"type":"group","properties":{"$ref":"A.yml"}},"b":{"type":"group","properties":{"$ref":"B.yml"}}}}"#,
+        );
+        let options = ValidateOptions::default();
+        let mut files = loader(&[(":B.yml", "{}")]);
+        files.fail = Some(":A.yml");
+        let Err(Failure::Callback(error)) =
+            validate_with_loader(&spec, &json("{}"), &mut files, &options)
+        else {
+            panic!("the loader failed");
+        };
+        assert_eq!(error.to_string(), "the loader failed");
+        assert_eq!(files.loads, 1);
+        let mut missing = loader(&[]);
+        let Err(Failure::Kind(ValidateError::Load(error))) = validate_with_loader(
+            &json(r#"{"type":"group","properties":{"$ref":"A.yml"}}"#),
+            &json("{}"),
+            &mut missing,
+            &options,
+        ) else {
+            panic!("the file is missing");
+        };
+        assert_eq!(error.code.as_str(), "REF_FILE_NOT_FOUND");
+    }
+
+    /// CURP-031: files given with a loader fail.
+    #[test]
+    fn files_with_a_loader_fail() {
+        let mut files = loader(&[]);
+        let options = ValidateOptions {
+            files: Some(OrderedMap::new()),
+            basepath: None,
+        };
+        let Err(Failure::Kind(error)) = validate_with_loader(
+            &json(r#"{"type":"group","properties":{}}"#),
+            &json("{}"),
+            &mut files,
+            &options,
+        ) else {
+            panic!("files with a loader");
+        };
+        assert_eq!(error.message(), FILES_WITH_LOADER_MESSAGE);
     }
 
     /// The boundary validation gives the result of the crate.

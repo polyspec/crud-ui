@@ -277,9 +277,6 @@
             "literal": null
           },
           "reason": "CURT-092"
-        },
-        {
-          "todo": "loader: a field of the callback unit file_loader of crud-ui-validator (CUIT-041), declared once binding generates callback units"
         }
       ]
     },
@@ -434,9 +431,6 @@
             "literal": null
           },
           "reason": "CUDF-081"
-        },
-        {
-          "todo": "loader: a field of the callback unit file_loader of crud-ui-validator (CUIT-041), declared once binding generates callback units"
         }
       ]
     },
@@ -2135,6 +2129,340 @@
           "core": "polyspec_crud_ui_generator::boundary::render_detail"
         },
         {
+          "id": "generator.compile_form_with_loader",
+          "name": [
+            "compile",
+            "form",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader",
+                "library": "crud-ui-validator"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "compile_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": {
+            "unit": "form_template"
+          },
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_generator::boundary::compile_form_with_loader"
+        },
+        {
+          "id": "generator.build_list_with_loader",
+          "name": [
+            "build",
+            "list",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "rows"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader",
+                "library": "crud-ui-validator"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "json_value",
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_generator::boundary::build_list_with_loader"
+        },
+        {
+          "id": "generator.render_list_with_loader",
+          "name": [
+            "render",
+            "list",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "rows"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader",
+                "library": "crud-ui-validator"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_generator::boundary::render_list_with_loader"
+        },
+        {
+          "id": "generator.build_detail_with_loader",
+          "name": [
+            "build",
+            "detail",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "record"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader",
+                "library": "crud-ui-validator"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "json_value",
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_generator::boundary::build_detail_with_loader"
+        },
+        {
+          "id": "generator.render_detail_with_loader",
+          "name": [
+            "render",
+            "detail",
+            "with",
+            "loader"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "record"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "loader"
+              ],
+              "type": {
+                "unit": "file_loader",
+                "library": "crud-ui-validator"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crud_ui_generator::boundary::render_detail_with_loader"
+        },
+        {
           "id": "generator.render_form_view",
           "name": [
             "render",
@@ -3027,6 +3355,16 @@
         "node": "decodeFormTemplate(value): FormTemplate; decodeFormRenderOptions(value)"
       },
       "to": null
+    },
+    {
+      "id": "loader",
+      "rule": "CURP-031",
+      "reason": "CURP-031: a file loader is the callback file_loader of the validator, a parameter of the operation with the suffix _with_loader instead of the member loader of the options, because a record holds no callback (T-4); files given beside it fail",
+      "symbol": "options.loader",
+      "from": {
+        "node": "compileForm(spec, { loader }); buildList(spec, rows, { loader }); renderList(spec, rows, { loader }); buildDetail(spec, record, { loader }); renderDetail(spec, record, { loader })"
+      },
+      "to": "generator.compile_form_with_loader"
     },
     {
       "id": "html-renderer",
