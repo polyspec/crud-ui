@@ -117,6 +117,15 @@ structure or validation rules.
   each number as `Number::toString` writes its double. A value that leaves nested deeper than 256 levels fails with
   `INVALID_FORM_INPUT` and `Recursive or excessively nested value: result`; a value that enters fails as CUIT-029 to
   CUIT-031 state.
+- **CURP-031** An operation that composes takes its files from a file loader in the operation of the same name with
+  the suffix `_with_loader` (`validate_with_loader`, `validate_list_with_loader`, `validate_detail_with_loader` of the
+  validator; `compile_form_with_loader`, `build_list_with_loader`, `render_list_with_loader`,
+  `build_detail_with_loader` and `render_detail_with_loader` of the generator). The loader is the callback
+  `file_loader` of the validator: `normalize(path, basepath)` gives the key of a referenced file and `load(key)` gives
+  its document as a polyspec-json `Value`. Each document is checked when the loader returns it, as a file of `files`
+  under its key (CUIT-023, CUSC-092). `files` given with a loader fail with `INVALID_FORM_INPUT` and
+  `Files and a loader are both given`. A failure of the loader ends the operation and reaches the caller unchanged; the
+  operation reads nothing from the loader after it.
 
 ## Implementation packages
 

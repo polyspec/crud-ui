@@ -1,6 +1,6 @@
 # 런타임 패키지
 <!-- doc-id: docs-spec-runtime-packages -->
-<!-- source-sha256: 4c10213cad07e1b7ae50168dd741572641562e77805304f7f94709e04d10caa9 -->
+<!-- source-sha256: 9fb7fec4465cfad3c9c768ff8f865bfe06cd7c1339ac2414f4999d903c9e3d9e -->
 
 [English](runtime-packages.md).
 구현과 검증 결과는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -109,6 +109,13 @@ Composer가 PHP 클래스를 자동 로드합니다. 예제는 두 설정에서 
   나가는 값은 멤버를 순서대로, 각 숫자를 그 double의 `Number::toString`으로 씁니다. 256단계보다 깊이 중첩된 나가는 값은
   `INVALID_FORM_INPUT`와 `Recursive or excessively nested value: result`로 실패하고, 들어오는 값은 CUIT-029~CUIT-031대로
   실패합니다.
+- **CURP-031** 합성하는 연산은 이름에 `_with_loader`가 붙은 같은 이름의 연산에서 파일을 파일 로더로 받습니다(validator의
+  `validate_with_loader`, `validate_list_with_loader`, `validate_detail_with_loader`; generator의
+  `compile_form_with_loader`, `build_list_with_loader`, `render_list_with_loader`, `build_detail_with_loader`,
+  `render_detail_with_loader`). 로더는 validator의 callback `file_loader`입니다. `normalize(path, basepath)`는 참조한
+  파일의 키를, `load(key)`는 그 문서를 polyspec-json `Value`로 줍니다. 각 문서는 로더가 돌려줄 때 그 키의 `files` 파일로서
+  검사합니다(CUIT-023, CUSC-092). 로더와 함께 준 `files`는 `INVALID_FORM_INPUT`와 `Files and a loader are both given`으로
+  실패합니다. 로더의 실패는 연산을 끝내고 호출자에게 그대로 전달되며, 연산은 그 뒤로 로더에서 아무것도 읽지 않습니다.
 
 ## 구현 패키지
 
