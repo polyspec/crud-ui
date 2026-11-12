@@ -58,6 +58,17 @@ so `equalto` is not `equalTo`.
 ## Evaluation
 
 Rules run in declaration order and stop at the first failure for each field.
+
+- **CUVR-090** A field whose data has no member is validated with the value `null`: a missing value and `null`
+  are both no value, as a form that submits nothing for an empty control. `required` fails both, every other
+  rule skips them as empty values, and the error's `value` is `null`. The data itself keeps the difference
+  (CURP-025).
+- **CUVR-091** A specification whose composed root has no object `properties` fails as an input failure after
+  composition — Code: `INVALID_FORM_INPUT`; Message: `A form spec must be a group with properties`; an empty
+  location. A specification is never read as a form without fields (CUVR-088).
+- **CUVR-092** In the JSON text entries, an `options.files` that is not an object fails with `INVALID_FORM_INPUT`
+  and `Files must be an object`, and an `options.basepath` that is not a string with `Basepath must be a
+  string`, both with an empty location, after the input text checks.
 A resolved `false` or `null` parameter disables the rule. A rule name that is
 not registered is a load failure whatever its parameter, so a misspelled rule never
 disables validation silently; the meta-schema rejects the same names.
@@ -344,6 +355,7 @@ is the field's declaration path: the property names from the root joined with `.
 without row keys. Every runtime reports the same code and message:
 
 - **CUVR-041** `validate` or `messages` key that is not a registered rule — Code: `UNKNOWN_RULE`; Message: `Unknown rule: {name}`
+- **CUVR-089** `messages` that is not an object, or a `messages` member whose value is not a string, checked after the member's key — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid messages.{rule} at {path}: expected a string` (`Invalid messages at {path}: expected an object` for the whole member). A message is never skipped: an override that is not text would fall back to the default without a sign.
 - **CUVR-042** `minlength`, `maxlength` limit — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid {rule} parameter: expected an integer from 0 to 9007199254740991`
 - **CUVR-043** `rangelength` limits — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid rangelength parameter: expected [minimum, maximum] integers with minimum not above maximum`
 - **CUVR-044** `number`, `digits` limit — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid {rule} parameter: expected true or false`

@@ -509,8 +509,10 @@ that is empty, is declared by the author (see [schema](schema.md)). Binding reje
 string with `Language must be a string`, then a present `keyPrefix` or `idPrefix`
 that is not a string with `{name} must be a string`, then an `unsupported` other
 than `throw` or `marker` with `unsupported must be throw or marker`, then any other
-language with `Unsupported language: {language}`. An absent or null option uses
-its default.
+language with `Unsupported language: {language}`.
+
+- **CUMK-070** An absent or null binding option uses its default: `language` `ko`, `idPrefix` `crudui`
+  (CURT-094), no `keyPrefix` beyond the template's, `unsupported` `throw` and no collapsed row.
 
 ## Styles
 

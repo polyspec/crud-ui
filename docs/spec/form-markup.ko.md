@@ -1,6 +1,6 @@
 # 폼 마크업
 <!-- doc-id: docs-spec-form-markup -->
-<!-- source-sha256: 8f4238f2a7938ca8f6421bdb9593b9587eaa2396156ec7612c09b38f68072591 -->
+<!-- source-sha256: 7285e2d475dfdd6705b92249533b85f0e8cd1f0617b47c825870d0d920a90f78 -->
 
 [English](form-markup.md). 이 문서는 평가된 폼 노드의 렌더링 방식을 정의합니다.
 React, Vue, Svelte, HTML 렌더러와 네이티브 렌더러는 같은 마크업을 생성합니다.
@@ -463,8 +463,10 @@ href, design, behavior }` 목록이고 `type`은 `submit`, `reset`, `button`, `l
 ([스키마](schema.ko.md) 참고). 바인딩은 문자열이 아닌 언어를 `Language must be a string`으로,
 그다음 문자열이 아닌 `keyPrefix`·`idPrefix`를 `{name} must be a string`으로, 그다음
 `throw`나 `marker`가 아닌 `unsupported`를 `unsupported must be throw or marker`로,
-그다음 그 밖의 언어를 `Unsupported language: {language}`로 거부합니다. 없거나 null인
-옵션은 기본값을 씁니다.
+그다음 그 밖의 언어를 `Unsupported language: {language}`로 거부합니다.
+
+- **CUMK-070** 없거나 null인 바인딩 옵션은 기본값을 씁니다: `language`는 `ko`, `idPrefix`는 `crudui`(CURT-094),
+  `keyPrefix`는 템플릿의 것 외에 없음, `unsupported`는 `throw`, 접힌 행은 없음.
 
 ## 스타일
 

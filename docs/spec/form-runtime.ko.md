@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: 69ddaa12e730b1c9fbae89ef1203d5174baef099c47308714138117aff44bd27 -->
+<!-- source-sha256: fcb12050fadfdd6586b6d61510108b9ec1aa690f3905dd1971b748c728022294 -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -377,7 +377,7 @@ form 비교 예제의 복사 규칙은 [예제 README](../../examples/form-compa
 
 ## 입력 라벨과 선택값
 
-각 기본 입력은 전체 필드 경로와 인스턴스의 `idPrefix`(기본값 `crudui`)로
+각 기본 입력은 전체 필드 경로와 인스턴스의 `idPrefix`(CURT-094)로
 생성한 고정 DOM 식별자를 사용합니다. 한 문서에 여러 폼을 표시하는 page는
 서로 다른 접두사를 지정하고 SSR과 브라우저에서 같은 접두사를 사용합니다.
 식별자는 추가 레코드 데이터를 표현하거나 전송하지 않습니다.
@@ -391,6 +391,8 @@ form 비교 예제의 복사 규칙은 [예제 README](../../examples/form-compa
 검색을 포함한 모든 위젯은 구조상의 행 위치로 규칙 경로를 생성합니다.
 복수 선택 입력은 배열 전송 이름을 사용하고 주입·편집·전송에서 선택값 전체를
 유지합니다. 선택하지 않은 경우 인스턴스 데이터는 빈 배열입니다.
+
+- **CURT-094** 기본 `idPrefix`는 `crudui`입니다.
 
 목록 렌더링은 `renderList(spec, rows, { layout })`를 사용합니다. 모든 프레임워크에서
 `layout`은 `table`(기본값) 또는 `card`입니다.

@@ -81,7 +81,10 @@ text.
 
 The value is parsed with the [date value rules](form-runtime.md#date-values) and shown in UTC.
 `pattern` replaces the tokens `YYYY` (year), `MM` (month), `DD` (day), `HH` (hour, 24-hour),
-`mm` (minute) and `ss` (second); other characters are kept. The default pattern is `YYYY-MM-DD`.
+`mm` (minute) and `ss` (second); other characters are kept.
+
+- **CUDF-090** A date format without a nonempty `pattern` takes the pattern `YYYY-MM-DD`.
+
 A value that is not a supported date is displayed unchanged.
 
 ### number
@@ -280,8 +283,12 @@ each action to the same model.
 - **CUDF-082** `mode` — Accepted value: `pages`, `offset`, `cursor` or `none`; Failure message: `Invalid pagination.mode at list: expected pages, offset, cursor or none`
 
 The resolved pagination model has its members in this order: `enabled`; for enabled paging
-`perPage` (default 20), `mode` (default `pages`) and `page` (default 1); the supplied `total`;
+`perPage`, `mode` and `page` (CUDF-089); the supplied `total`;
 and for enabled paging `pageCount`. Disabled paging keeps only the supplied `page` and `total`.
+
+- **CUDF-089** Enabled paging without `per_page` takes `perPage` 20, without `mode` the mode `pages`, and without a
+  supplied page the page 1; without a supplied total `pageCount` is 0.
+
 The page-number window holds every page up to seven pages, and otherwise the first, previous,
 current, next and last page. Without a total the current page is 1; a page after the last page
 selects the last page.

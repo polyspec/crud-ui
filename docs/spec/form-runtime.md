@@ -409,7 +409,11 @@ The copy rule of the form comparison example is in [its README](../../examples/f
 ## Input labels and selection
 
 Each native input has a stable DOM identifier derived from its full field path
-and the instance `idPrefix` (default `crudui`). Pages rendering multiple
+and the instance `idPrefix`.
+
+- **CURT-094** The default `idPrefix` is `crudui`.
+
+Pages rendering multiple
 forms in one document provide distinct prefixes; SSR and browser rendering use
 the same prefix. Identifiers do not encode or submit additional record data.
 Single-control labels use `for`; checkbox and radio captions target their own

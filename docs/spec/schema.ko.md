@@ -1,6 +1,6 @@
 # 명세 구조
 <!-- doc-id: docs-spec-schema -->
-<!-- source-sha256: cb098177c767716eaf092459e98f86c091245725dd57415d1280b57610c02727 -->
+<!-- source-sha256: 5069721e46ec4c235393bc0f07903cfe5f673c091935ef7dcbbf5bd3e6838958 -->
 
 [English](schema.md). 이 문서는 필드와 목록 선언을 정의합니다.
 폼 인스턴스, 반복 행 키, 캐싱은 [폼 런타임](form-runtime.ko.md)에 정의합니다.
@@ -281,7 +281,9 @@ second recording." }] } }`는 두 규칙을 모두 통과합니다. `opens_when`
 
 콘텐츠 번역과 언어별 입력값은 별개입니다. 콘텐츠는 `{ en: Name, ko: 이름 }` 같은
 맵을 사용합니다. `lang`은 설정한 언어별 입력을 생성하며 `only`, `frame`, `title`,
-`group_class`를 설정합니다. 기본 언어는 `ko`, `en`, `ja`, `zh`입니다.
+`group_class`를 설정합니다.
+
+- **CUSC-091** `lang.only`가 없거나 비어 있으면 언어는 `ko`, `en`, `ja`, `zh`입니다.
 
 `items`는 인덱스가 값인 정적 배열, 값과 라벨의 맵, [선택 목록](#선택-목록), `from`이 있는
 [그룹 소스](#반복-그룹의-선택지), `model`이 있는 동적 소스 설정을 사용합니다. 정적 라벨에는 언어 맵을 사용할 수 있습니다. 생성기는 동적 소스 설정을

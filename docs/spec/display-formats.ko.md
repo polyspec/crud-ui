@@ -1,6 +1,6 @@
 # 표시 형식
 <!-- doc-id: docs-spec-display-formats -->
-<!-- source-sha256: 81bbd2b4e4d8b8cc5603100984bb4e12efd9b545b2c2523c71a6e781fc6fbad1 -->
+<!-- source-sha256: 38959dc4e15fa2d27236d2d05b0ca2eb1f5b9514301e0040a990f2cb82280d51 -->
 
 [English](display-formats.md).
 
@@ -73,8 +73,10 @@ columns:
 ### date
 
 값은 [날짜 값 규칙](form-runtime.ko.md)으로 해석하고 UTC로 표시합니다. `pattern`의 `YYYY`(연), `MM`(월),
-`DD`(일), `HH`(24시간제 시), `mm`(분), `ss`(초) 토큰을 바꾸고 나머지 문자는 유지합니다. 기본 패턴은
-`YYYY-MM-DD`입니다. 지원하는 날짜가 아닌 값은 그대로 표시합니다.
+`DD`(일), `HH`(24시간제 시), `mm`(분), `ss`(초) 토큰을 바꾸고 나머지 문자는 유지합니다.
+
+- **CUDF-090** 비어 있지 않은 `pattern`이 없는 날짜 형식은 패턴 `YYYY-MM-DD`를 씁니다.
+ 지원하는 날짜가 아닌 값은 그대로 표시합니다.
 
 ### number
 
@@ -251,11 +253,14 @@ columns:
 - **CUDF-081** `per_page` — 허용 값: 1부터 9007199254740991까지의 정수; 실패 메시지: `Invalid pagination.per_page at list: expected a positive integer`
 - **CUDF-082** `mode` — 허용 값: `pages`, `offset`, `cursor`, `none`; 실패 메시지: `Invalid pagination.mode at list: expected pages, offset, cursor or none`
 
-해석된 페이지네이션 모델의 멤버 순서는 `enabled`, 페이지네이션이 켜진 경우의 `perPage`(기본 20)·
-`mode`(기본 `pages`)·`page`(기본 1), 제공된 `total`, 켜진 경우의 `pageCount`입니다. 꺼진 경우에는
+해석된 페이지네이션 모델의 멤버 순서는 `enabled`, 페이지네이션이 켜진 경우의 `perPage`·
+`mode`·`page`(CUDF-089), 제공된 `total`, 켜진 경우의 `pageCount`입니다. 꺼진 경우에는
 제공된 `page`와 `total`만 남습니다. 페이지 번호는 7페이지까지 모두 표시하고, 그보다 많으면 첫·이전·현재·다음·
 마지막 페이지를 표시합니다. 전체 수가 없으면 현재 페이지는 1이고, 마지막 페이지보다 큰 페이지는 마지막 페이지를
 선택합니다.
+
+- **CUDF-089** 켜진 페이지네이션은 `per_page`가 없으면 `perPage` 20, `mode`가 없으면 `pages`, 제공된 페이지가 없으면 페이지 1을
+  씁니다. 제공된 전체 수가 없으면 `pageCount`는 0입니다.
 
 PHP에서는 [PHP API 계약](../operations/php-extension.ko.md)이 어떤 PHP 값이 객체인지 정합니다. 루트 객체 인수와 고정 객체
 옵션 `data`, `files`에는 빈 PHP 배열을 받고, 중첩 값은 타입을 유지합니다.

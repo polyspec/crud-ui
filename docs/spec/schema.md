@@ -305,8 +305,9 @@ second recording." }] } }` passes both rules; a `judge` member in `opens_when` f
 
 Content translation and language input values are separate. Content uses maps
 such as `{ en: Name, ko: 이름 }`. `lang` creates one value input per configured
-language, with `only`, `frame`, `title` and `group_class` settings. The default
-languages are `ko`, `en`, `ja` and `zh`.
+language, with `only`, `frame`, `title` and `group_class` settings.
+
+- **CUSC-091** Without `lang.only`, or with an empty `lang.only`, the languages are `ko`, `en`, `ja` and `zh`.
 
 `items` can be a static array whose indexes are the values, a value-to-label map, a
 [choice list](#choice-lists), a [group source](#choices-from-a-repeated-group) with `from` or a

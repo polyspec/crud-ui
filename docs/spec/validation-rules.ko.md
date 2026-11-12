@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: 555098ba5a9662a8f659382125992a2f56bb254fb650cb3b1c802ae7b71131af -->
+<!-- source-sha256: ccd1e7249329b0b1e4d45ca1be5c994b3a620700587c7256c207503c153a439e -->
 
 [English](validation-rules.md).
 
@@ -48,6 +48,14 @@
 실패합니다([매개변수 오류](#매개변수-오류) 참고). 이름은 정확히 비교하므로 `equalto`는 `equalTo`가 아닙니다.
 
 ## 평가
+
+- **CUVR-090** 데이터에 멤버가 없는 필드는 값 `null`로 검증합니다. 빈 컨트롤에 아무것도 보내지 않는 폼처럼 없는 값과
+  `null`은 둘 다 값이 없는 것입니다. `required`는 둘 다 실패시키고, 다른 규칙은 빈 값으로 건너뛰며, 오류의 `value`는
+  `null`입니다. 데이터 자체는 그 차이를 유지합니다(CURP-025).
+- **CUVR-091** 합성한 루트에 객체인 `properties`가 없는 명세는 합성 뒤 입력 실패입니다 — 코드: `INVALID_FORM_INPUT`;
+  메시지: `A form spec must be a group with properties`; 빈 위치. 명세를 필드 없는 폼으로 읽지 않습니다(CUVR-088).
+- **CUVR-092** JSON 텍스트 진입점에서 객체가 아닌 `options.files`는 `INVALID_FORM_INPUT`와 `Files must be an object`로,
+  문자열이 아닌 `options.basepath`는 `Basepath must be a string`으로, 입력 텍스트 검사 뒤에 빈 위치로 실패합니다.
 
 규칙은 선언 순서대로 실행하며 필드별 첫 실패에서 중단합니다. 해석된 매개변수가
 `false` 또는 `null`이면 규칙을 비활성화합니다. 등록되지 않은 규칙 이름은 매개변수와 관계없이
@@ -286,6 +294,7 @@ POSIX 클래스, 소유·중첩 수량자, `\uHHHH`, 8진수·제어 문자 이�
 `.`로 이은 값이며 행 키를 포함하지 않습니다. 모든 런타임은 같은 코드와 메시지를 보고합니다.
 
 - **CUVR-041** 등록된 규칙이 아닌 `validate` 또는 `messages` 키 — 코드: `UNKNOWN_RULE`; 메시지: `Unknown rule: {name}`
+- **CUVR-089** 객체가 아닌 `messages`, 또는 값이 문자열이 아닌 `messages` 멤버(멤버의 키 다음에 검사) — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid messages.{rule} at {path}: expected a string`(멤버 전체는 `Invalid messages at {path}: expected an object`). 메시지를 건너뛰지 않습니다. 텍스트가 아닌 재정의는 아무 표시 없이 기본 메시지로 돌아가기 때문입니다.
 - **CUVR-042** `minlength`, `maxlength` 제한값 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid {rule} parameter: expected an integer from 0 to 9007199254740991`
 - **CUVR-043** `rangelength` 제한값 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid rangelength parameter: expected [minimum, maximum] integers with minimum not above maximum`
 - **CUVR-044** `number`, `digits` 매개변수 — 코드: `INVALID_RULE_PARAMETER`; 메시지: `Invalid {rule} parameter: expected true or false`
