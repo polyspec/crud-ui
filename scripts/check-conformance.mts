@@ -263,7 +263,7 @@ export const evidenceSuites: EvidenceSuite[] = [
   { name: 'PHP extension', run: { program: 'tests/conformance/run-suite.mts', tool: 'node', argument: 'legacy/packages/php-ext/tests/engine/engine.test.mjs' }, runtimes: ['php-native'] },
   { name: 'PHP extension API', run: { program: 'tests/conformance/run-suite.mts', tool: 'phpunit', cwd: 'legacy/packages/php-ext' }, runtimes: ['php-native'] },
   { name: 'generator Python', run: { program: 'tests/conformance/run-suite.mts', tool: 'python', cwd: 'legacy/packages/generator/python' }, runtimes: ['python'] },
-  { name: 'native generators', run: { program: 'legacy/tests/native-generators/run.mts' }, runtimes: ['javascript', 'javascript-html', 'php', 'go', 'rust', 'php-native'] },
+  { name: 'native generators', run: { program: 'legacy/tests/native-generators/run.mts' }, runtimes: ['javascript', 'javascript-html', 'php', 'go', 'php-native'] },
 ];
 
 /**

@@ -15,7 +15,6 @@ import type * as javascript from './javascript.mts';
 import type { NodeVM, WidgetModel } from '@polyspec/crudui-generator-core';
 import { formScenarios, numberCases, companySpec, companyData, row, imageCase, urlCase, dateCases, dateFormSpec, dateFormData, dateListSpec } from './cases.mts';
 import { failureOf, runCommand } from '@polyspec/kit/run-command';
-import { runRustCommand } from '../../../scripts/run-rust-command.mts';
 import { recordConformance } from '../../../tests/conformance/evidence.mts';
 import { recordSuiteRun } from '../../../tests/conformance/runs.mts';
 import { createProgress } from '@polyspec/kit/test-progress';
@@ -289,7 +288,6 @@ async function buildGo(cwd: string): Promise<void> {
 // Each language's process is a program beside this suite that calls its package's public API.
 const programs = path.join(ROOT, 'legacy/tests/native-generators/programs');
 const goBinary = path.join(buildDirectory, 'generate-go');
-const rustBinary = path.join(programs, 'rust/target/debug/polyspec-crudui-native-generator');
 const phpCLI = path.join(programs, 'php/generate.php');
 const phpLiteral = (value: string): string => "'" + value.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
 function phpProvenanceSource(autoload: boolean): string {
@@ -310,7 +308,6 @@ const targets: Target[] = [
     assert.deepEqual(JSON.parse(result.stdout), { generator: false, validator: false, form: false }, 'Pure PHP target must use PHP classes; disable the native extension in its configuration');
   } },
   { name: 'go', command: goBinary, args: [], build: () => buildGo(path.join(programs, 'go')) },
-  { name: 'rust', command: rustBinary, args: [], build: () => runRustCommand(['build', '--locked'], { cwd: path.join(programs, 'rust') }) },
   { name: 'php-native', command: process.env.PHP ?? 'php', args: ['-d', `extension=${extension ?? ''}`, phpCLI], probe: async () => {
     assert.ok(extension && path.isAbsolute(extension), '--extension must provide an absolute native PHP module path');
     assert.ok((await stat(extension)).isFile(), 'Native PHP module must be a file');

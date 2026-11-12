@@ -65,7 +65,7 @@ test('crudui-test-native runs the generator and PHP API parts after the PHP engi
   assert.equal(result.error, undefined, result.error?.message ?? '');
   assert.notEqual(result.status, 0, [result.stdout, result.stderr].join('\n'));
   const commands = await readFile(commandLog, 'utf8');
-  assert.match(commands, /^node\ttests\/native-generators\/run\.mts --target javascript,html,go,rust,python /m,
+  assert.match(commands, /^node\tlegacy\/tests\/native-generators\/run\.mts --target javascript,html,go,python /m,
     `the generator part did not run:\n${commands}`);
   assert.match(commands, /^node\ttests\/native-generators\/run\.mts --extension \S+ --target php,php-native /m,
     `the PHP API part did not run:\n${commands}`);

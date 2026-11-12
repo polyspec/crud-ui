@@ -14,7 +14,6 @@
     "packages/validator/rust/Cargo.toml": "git-tag",
     "legacy/examples/cross-check-console/validators/rust/Cargo.toml": "version",
     "examples/form-comparison/servers/rust/Cargo.toml": "version",
-    "legacy/tests/native-generators/programs/rust/Cargo.toml": "version",
     "benchmarks/validators/rust/Cargo.toml": "version",
     "tests/conformance/python/pyproject.toml": "version"
   },

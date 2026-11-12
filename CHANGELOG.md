@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- C16.1: the native generator suite under `legacy/` has no Rust target any more: the Rust core follows rules that changed after `legacy/tests/fixtures` was fixed, so a comparison on that copy says nothing; the Rust core is checked by its own tests against `tests/fixtures` (C16.1).
 - C16.1: the suites of react, vue, svelte and form-binding, which run on the legacy TypeScript core, read `legacy/tests/fixtures` (C16.1).
 - G-5: the cases of the validator contract, `tests/fixtures/validate`, `list-validity` and `detail-validity`, are in the case form of binding's generated tests: a group `cases` of cases with an `id`, the arguments by their parameter names with each `json_value` as `{ kind, value }`, the files in `options`, and a failure as `raises: { kind, status, category, message?, at }`. The Rust tests and the schema check read that form through one decoder each (`tests/common/case_value.rs`, `tests/case-values.mts`); the contract no longer names the validation cases for `hidden_paths`, whose failures differ from those of `validate` (G-5).
 - C16.1: the tools that compare the implementations with each other move to `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures` (the comparison of the Rust generator with the TypeScript one, over the cases that both fixture sets hold alike) and `legacy/examples/cross-check-console` and read `legacy/tests/fixtures`; the conformance check takes the evidence of a legacy runtime against the copy under `legacy/` and that of the Rust core against `tests/fixtures` (C16.1).

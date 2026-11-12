@@ -210,12 +210,6 @@ test('Rust generator fixture validation uses one resolved toolchain', t => {
   }]);
 });
 
-test('native generator integration uses the shared Rust command entry point', () => {
-  const source = readFileSync(path.join(repository, 'legacy/tests/native-generators/run.mts'), 'utf8');
-  assert.match(source, /runRustCommand/);
-  assert.doesNotMatch(source, /process\.env\.CARGO|globalThis\.process\.env\.CARGO/);
-});
-
 test('cross-check server builds Rust through its module-located entry point', t => {
   const manifest = readManifest(path.join(repository, 'legacy/examples/cross-check-console/server/package.json'));
   assert.equal(script(manifest, 'build:rust'), 'node build-rust.mjs');

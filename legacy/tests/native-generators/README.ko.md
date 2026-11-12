@@ -1,14 +1,18 @@
 # 네이티브 생성기 적합성 검사
 <!-- doc-id: tests-native-generators-readme -->
-<!-- source-sha256: 4c6ce9bc0ccf3cf7123f3ed3221aac3de68a17a1cc762f27c1bec02315eb06d1 -->
+<!-- source-sha256: b2d80b4119627a0ca731396fc10863acbdfe3b8b6f71d746d7f13aed9da5da9c -->
 
 [English](README.md).
 
-검사기는 JavaScript 기준 구현(React 서버 렌더링), JavaScript HTML 렌더러, PHP, Go, Rust,
+검사기는 JavaScript 기준 구현(React 서버 렌더링), JavaScript HTML 렌더러, PHP, Go, Python,
 PHP 네이티브 확장을 실행합니다. 네이티브 모듈의
 절대 파일 경로가 필요합니다. 대상 누락, 프로세스 실패, 잘못된 응답, 비교 실패가
 있으면 명령이 실패합니다. 보고서는 사용할 수 없는 대상을 별도로 기록하고,
 실행 가능한 대상의 검사를 계속하여 실제 결과를 수집합니다.
+
+검사기는 legacy 구현의 도구이며 고정 사본 `legacy/tests/fixtures`를 읽습니다. Rust 대상은 없습니다. Rust 코어는 그 사본을
+고정한 뒤 바뀐 규칙을 따르므로 사본 위에서 낸 결과는 사본이 기록한 결과가 아니고, 거기서 비교해도 어느 쪽에 대해서도 알 수
+있는 것이 없습니다. Rust 코어는 자기 시험이 `tests/fixtures`로 검사합니다.
 
 ```sh
 node scripts/require-current-build.mts
@@ -22,8 +26,8 @@ node legacy/tests/native-generators/run.mts \
 ## 진행 상황, 시간 예산, 선택 실행
 
 검사기는 실행 중에 자신의 상태를 보고합니다. 모든 줄에 시작 이후 경과 시간이
-붙습니다. 먼저 입력을 해시하고 build 단계를 실행합니다. 선택한 대상의 Go와 Rust
-프로그램을 한 번씩 빌드하며, 빌드 도구의 출력과 빌드 중 5초마다의 줄을 출력하고 시간
+붙습니다. 먼저 입력을 해시하고 build 단계를 실행합니다. 선택한 대상의 Go
+프로그램을 한 번 빌드하며, 빌드 도구의 출력과 빌드 중 5초마다의 줄을 출력하고 시간
 한도는 두지 않습니다. 이어서 probe가 각 PHP 대상의 PHP 프로그램을 확인합니다. 그다음 각
 검사는 시작 줄, 실행 중 5초마다의 줄, 소요 시간과 함께 결과를 출력하는 하나의 test입니다.
 모든 대상의 검사는 서로 독립된 프로세스이므로 하나의 pool에서 기기의 processor 수
@@ -31,7 +35,7 @@ node legacy/tests/native-generators/run.mts \
 
 ```
 [    0.6s] inputs: 744 files hashed (0.6s)
-[    0.7s] targets: javascript, html, php, go, rust, php-native
+[    0.7s] targets: javascript, html, php, go, python, php-native
 [    0.8s] ▶ build: go program
 [    1.5s] ✔ build: go program (0.7s)
 [    2.1s] checks: 4428 checks of 6 targets, 11 at a time
@@ -48,19 +52,19 @@ node legacy/tests/native-generators/run.mts \
 작업이므로 예산이 없고 종료 상태가 결과를 정합니다.
 
 한 대상이나 한 영역을 개발하는 동안에는 해당 검사만 실행합니다. 전체 검사는 변경이
-끝난 뒤 한 번 실행합니다. 아래 명령은 차례대로 Rust 대상만, Go와 네이티브 PHP 대상의
+끝난 뒤 한 번 실행합니다. 아래 명령은 차례대로 Python 대상만, Go와 네이티브 PHP 대상의
 목록·상세 검사만, id에 `lang`이 들어 있는 폼 고정 사례만 실행합니다. `*`는 임의의
 문자열과 일치합니다.
 
 ```sh
-node legacy/tests/native-generators/run.mts --extension /absolute/crudui.so --target rust
+node legacy/tests/native-generators/run.mts --extension /absolute/crudui.so --target python
 node legacy/tests/native-generators/run.mts --extension /absolute/crudui.so \
   --target go,php-native --check list,detail
 node legacy/tests/native-generators/run.mts --extension /absolute/crudui.so \
   --check 'form-fixture:*lang*'
 ```
 
-`--target`은 `javascript`, `html`, `php`, `go`, `rust`, `php-native`를 받습니다.
+`--target`은 `javascript`, `html`, `php`, `go`, `python`, `php-native`를 받습니다.
 `--check`는 그룹 이름(`form-fixture`, `list`, `detail`, `number`, `instance`,
 `request`, `reject`, `compile-reject`, `member-order`, `bindForm-option-reject`,
 `form-option-reject`, `bindForm-shape-reject`, `form-shape-reject`, `dates`, `text`), 전체
@@ -68,7 +72,7 @@ node legacy/tests/native-generators/run.mts --extension /absolute/crudui.so \
 여러 번 쓸 수 있습니다. 어떤 검사와도 일치하지 않는 선택은 실패하며, 보고서에
 선택 내용을 기록하므로 선택 실행을 전체 실행으로 오인하지 않습니다.
 
-검사기의 build 단계가 Go와 Rust 실행 파일을 빌드합니다. `PHP`, `GO`, `CARGO`로 해당 설치 명령을
+검사기의 build 단계가 Go 실행 파일을 빌드합니다. `PHP`, `GO`, `CARGO`로 해당 설치 명령을
 지정할 수 있습니다. 확장은 네이티브 `Polyspec\Crudui\Generator`, `Polyspec\Crudui\Validator`,
 `Polyspec\Crudui\Form` 클래스를 등록해야 합니다. Reflection으로 세 클래스가 네이티브
 PHP에서는 내부 클래스이고 순수 PHP에서는 사용자 정의 클래스인지 확인합니다.
@@ -125,16 +129,12 @@ PHP의 `date.timezone`을 모두 설정하고 날짜/날짜시간/목록의 명�
 | `javascript`, `html` | [`javascript.mts`](javascript.mts)(`--renderer html`은 HTML 렌더러 선택) | `@polyspec/crudui-generator-core`와 `@polyspec/crudui-generator-react` 또는 `@polyspec/crudui-generator-html` |
 | `php`, `php-native` | [`programs/php/generate.php`](programs/php/generate.php) | `legacy/packages/generator/php`의 Composer 오토로더로 불러온 `polyspec/crudui-generator`. 확장을 불러오면 확장의 클래스 |
 | `go` | [`programs/go`](programs/go/main.go)(자체 `go.mod`를 가진 모듈) | `legacy/packages/generator/go` |
-| `rust` | [`programs/rust`](programs/rust/src/main.rs)(크레이트 `polyspec-crudui-native-generator`) | `polyspec-crudui-generator` |
 
-검사기는 Go 프로그램을 빌드 디렉터리에 빌드하고, Rust 프로그램은 `programs/rust`에서
-`cargo build --locked`로 빌드합니다. 형식과 정적 검사는 다음과 같습니다.
+검사기는 Go 프로그램을 빌드 디렉터리에 빌드합니다. 형식과 정적 검사는 다음과 같습니다.
 
 ```sh
 gofmt -l legacy/tests/native-generators/programs/go
 go -C legacy/tests/native-generators/programs/go vet ./...
-node scripts/run-rust-command.mts fmt --check --manifest-path legacy/tests/native-generators/programs/rust/Cargo.toml
-node scripts/run-rust-command.mts clippy --locked --all-targets --manifest-path legacy/tests/native-generators/programs/rust/Cargo.toml -- -D warnings
 ```
 
 각 프로그램은 표준 입력으로 JSON 값 하나를 받습니다. 연산은 `compileForm`, `bindForm`,
@@ -167,6 +167,4 @@ node scripts/run-rust-command.mts clippy --locked --all-targets --manifest-path 
 `buildDetail` 케이스를 모두 쌍이 없는 서로게이트 이스케이프가 있는 JSON 텍스트로 보내고, 케이스의
 [입력 텍스트](../../../docs/spec/input-text.ko.md) 실패나 성공을 요구합니다. 각 프로그램은 디코딩하면서
 그 텍스트를 보존합니다. JavaScript는 `JSON.parse`, PHP는 `JsonText::decode`, Go는
-`generator.DecodeJSON`과 템플릿 디코딩 전의 `generator.CheckBindText`, Rust는 `JsonText`를 씁니다.
-Rust는 `JsonText`의 형태로 프로토콜 규칙을 검사하고, `polyspec_crudui_generator::text`가 각 연산의 텍스트를
-먼저 검사합니다. 마지막 검사는 UTF-8이 아닌 표준 입력을 보냅니다.
+`generator.DecodeJSON`과 템플릿 디코딩 전의 `generator.CheckBindText`를 씁니다. 마지막 검사는 UTF-8이 아닌 표준 입력을 보냅니다.

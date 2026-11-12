@@ -84,7 +84,7 @@ rules:
   #   and Python suites record in their own language;
   # - scripts/generator-contract.php and scripts/go: the shared steps of the table generators that run in their own
   #   language (`php` and `go generate`), which several packages of that language use;
-  # - legacy/tests/native-generators/python.py and programs/{go,php,rust}: the programs of the native generator runner, one per
+  # - legacy/tests/native-generators/python.py and programs/{go,php}: the programs of the native generator runner, one per
   #   language, which drive the generator of that language;
   #   the test of the Go program (legacy/tests/native-generators/programs/go/main_test.go), which drives the Go generator
   #   as main.go does;
@@ -106,7 +106,6 @@ rules:
       - "!legacy/tests/native-generators/programs/go/main.go"
       - "!legacy/tests/native-generators/programs/go/main_test.go"
       - "!legacy/tests/native-generators/programs/php/generate.php"
-      - "!legacy/tests/native-generators/programs/rust/src/main.rs"
 
   - id: layout-infrastructure-shebang
     paths:

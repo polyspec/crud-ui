@@ -819,7 +819,6 @@ jobs:
         with:
           workspaces: |
             packages/generator/rust
-            legacy/tests/native-generators/programs/rust
             benchmarks/validators/rust
       - name: Download the modules that the Go workspace requires
         run: make crudui-install-go-modules

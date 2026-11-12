@@ -424,7 +424,7 @@ BENCH_ITERS  ?= 50000
 BENCH_WARMUP ?= 5000
 PHP_EXTENSION ?= $(CURDIR)/var/php-ext/polyspec_crudui.so
 # Reports live in the Git directory, which is a file-referenced directory in a worktree: NATIVE_REPORT of the JavaScript,
-# HTML, Go and Rust targets and PHP_NATIVE_REPORT of the PHP and native PHP targets of legacy/tests/native-generators/run.mts.
+# HTML, Go and Python targets and PHP_NATIVE_REPORT of the PHP and native PHP targets of legacy/tests/native-generators/run.mts.
 NATIVE_REPORT ?= $(shell git rev-parse --git-path native-generators/report.json)
 PHP_NATIVE_REPORT ?= $(shell git rev-parse --git-path native-generators/report-php.json)
 CONFORMANCE_EVIDENCE ?= $(abspath $(shell git rev-parse --git-path conformance-evidence))
@@ -488,7 +488,7 @@ help: ## 타겟 설명
 	@echo "  make docs-verify-idempotent  docs 를 2회 생성하고 diff 가 비는지 검증"
 	@echo "  make build-php-ext                Build the native PHP module with phpize (kit)"
 	@echo "  make crudui-test-php-engine       Test the C engine of the native PHP module with the C compiler and its sanitizers"
-	@echo "  make crudui-test-native-generators  Test the Go and Rust generators and compare JavaScript, HTML, Go and Rust generation"
+	@echo "  make crudui-test-native-generators  Test the Go generator and compare JavaScript, HTML, Go and Python generation"
 	@echo "  make crudui-test-php-api          Build the native PHP module, test its PHP API and compare PHP and native PHP generation"
 	@echo "  make crudui-test-native           Run crudui-test-php-engine, crudui-test-native-generators and crudui-test-php-api"
 	@echo "  make crudui-test-validators       Test the JavaScript, PHP, Go and Rust validators"
@@ -788,7 +788,7 @@ crudui-test-php-api: php-tables require-build build-php-ext
 # Compare every declared generator runtime independently of the language unit suites.
 crudui-test-cross-language-equivalence: python-tables require-build build-php-ext
 	@status=0; \
-	$(NODE) legacy/tests/native-generators/run.mts --target javascript,html,go,rust,python --report "$(NATIVE_REPORT)" || status=1; \
+	$(NODE) legacy/tests/native-generators/run.mts --target javascript,html,go,python --report "$(NATIVE_REPORT)" || status=1; \
 	$(NODE) legacy/tests/native-generators/run.mts --extension "$(PHP_EXTENSION)" --target php,php-native --report "$(PHP_NATIVE_REPORT)" || status=1; \
 	exit $$status
 

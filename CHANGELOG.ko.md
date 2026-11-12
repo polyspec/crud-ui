@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 6fea3323f81119083ca5b823083573f2db45547e0d7147a5b25c4cd73aeb9c9e -->
+<!-- source-sha256: d7dca9ae8baa79fd9f30576c4773e481e70f27a57fb23ac1ae97b9c288f0c01c -->
 
 ## Unreleased
 
+- C16.1: `legacy/` 아래 네이티브 생성기 검사기에서 Rust 대상을 뺍니다. Rust 코어는 `legacy/tests/fixtures`를 고정한 뒤 바뀐 규칙을 따르므로 그 사본 위의 비교는 의미가 없고, Rust 코어는 자기 시험이 `tests/fixtures`로 검사합니다(C16.1).
 - C16.1: legacy TypeScript 코어로 실행하는 react, vue, svelte, form-binding의 suite는 `legacy/tests/fixtures`를 읽습니다(C16.1).
 - G-5: validator 계약의 case인 `tests/fixtures/validate`, `list-validity`, `detail-validity`를 binding 생성 시험의 case 형식으로 씁니다. group `cases`의 각 case는 `id`, 매개변수 이름으로 쓴 인수(각 `json_value`는 `{ kind, value }`), `options`의 파일, 실패를 나타내는 `raises: { kind, status, category, message?, at }`를 가집니다. Rust 시험과 스키마 검사는 디코더 하나씩(`tests/common/case_value.rs`, `tests/case-values.mts`)으로 이 형식을 읽습니다. 계약은 `validate`와 실패가 다른 `hidden_paths`에 검증 case를 더 이상 붙이지 않습니다(G-5).
 - C16.1: 구현끼리 비교하는 도구를 `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`(두 fixture 묶음이 같게 가진 case에서 Rust generator와 TypeScript generator를 비교), `legacy/examples/cross-check-console`로 옮기고 `legacy/tests/fixtures`를 읽게 합니다. 적합성 검사는 legacy 런타임의 근거를 `legacy/` 아래 사본과, Rust 코어의 근거를 `tests/fixtures`와 대조합니다(C16.1).
