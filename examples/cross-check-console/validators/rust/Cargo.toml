@@ -6,7 +6,7 @@ rust-version = "1.99.0"
 publish = false
 
 [dependencies]
-polyspec-crudui-validator = { path = "../../../../packages/validator/rust" }
+polyspec-crud-ui-validator = { path = "../../../../packages/validator/rust" }
 serde_json = { version = "1", features = ["preserve_order", "float_roundtrip"] }
 
 [profile.release]

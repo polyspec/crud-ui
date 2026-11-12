@@ -16,14 +16,14 @@
 )]
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_generator::text::{
+use polyspec_crud_ui_generator::text::{
     check_bind, check_compile_form, check_display, check_form_method,
 };
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     bind_form, build_detail, build_list, compile_form, AddRowOptions, BindOptions, CompileOptions,
     CopyRowOptions, Form, FormResult, FormTemplate, ListOptions,
 };
-use polyspec_crudui_validator::text::JsonText;
+use polyspec_crud_ui_validator::text::JsonText;
 use serde_json::{json, Map, Value};
 use std::path::Path;
 

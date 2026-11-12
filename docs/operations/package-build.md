@@ -73,7 +73,7 @@ The packages follow the naming of the polyspec repositories, as template and hyp
 |---|---|
 | npm | `@polyspec/crudui-<name>`: `@polyspec/crudui-cli`, `@polyspec/crudui-form-binding`, `@polyspec/crudui-generator-core`, `@polyspec/crudui-generator-html`, `@polyspec/crudui-generator-react`, `@polyspec/crudui-generator-svelte`, `@polyspec/crudui-generator-vue`, `@polyspec/crudui-validator`; the private workspace root is `@polyspec/crudui-workspace` |
 | Composer | `polyspec/crudui-generator` and `polyspec/crudui-validator`, with the PHP namespace `Polyspec\Crudui\`: the classes `Polyspec\Crudui\Generator`, `Polyspec\Crudui\Validator`, `Polyspec\Crudui\Form` and `Polyspec\Crudui\FormError`, the internal namespaces `Polyspec\Crudui\Generator\` and `Polyspec\Crudui\Validator\`; the PHP extension registers the same classes |
-| Rust | the crates `polyspec-crudui-generator` and `polyspec-crudui-validator`, with the libraries `polyspec_crudui_generator` and `polyspec_crudui_validator` |
+| Rust | the crates `polyspec-crud-ui-generator` and `polyspec-crud-ui-validator`, with the libraries `polyspec_crud_ui_generator` and `polyspec_crud_ui_validator` |
 | Go | the modules `github.com/polyspec/crudui/packages/generator/go` and `github.com/polyspec/crudui/packages/validator/go` |
 
 The programs of `examples/`, `tests/` and `tools/` follow the same convention: the private npm package

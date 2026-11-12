@@ -1,5 +1,5 @@
 //! Rust generator process of the native generator conformance suite. It reads one JSON request
-//! on standard input, calls the public API of polyspec-crudui-generator and writes one JSON value on
+//! on standard input, calls the public API of polyspec-crud-ui-generator and writes one JSON value on
 //! standard output; ../../README.md defines the protocol.
 
 #![allow(
@@ -9,10 +9,10 @@
 
 use std::io::{self, Read};
 
-use polyspec_crudui_generator::text::{
+use polyspec_crud_ui_generator::text::{
     check_bind, check_compile_form, check_display, check_form_method, JsonText,
 };
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     bind_buttons, bind_form, build_detail, build_list, build_outline, compile_form,
     form_buttons_html, list_rows, render_detail, render_form, render_list, AddRowOptions,
     BindOptions, CompileOptions, CopyRowOptions, DetailOptions, Form, FormError, FormResult,
@@ -23,7 +23,7 @@ use serde_json::{json, Value};
 
 fn input(message: impl Into<String>) -> FormError {
     FormError {
-        code: polyspec_crudui_generator::FormErrorCode::InvalidFormInput,
+        code: polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput,
         message: message.into(),
         at: String::new(),
         trace: Vec::new(),

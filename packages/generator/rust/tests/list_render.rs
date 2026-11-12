@@ -15,7 +15,7 @@
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{list_rows, render_list, ListOptions};
+use polyspec_crud_ui_generator::{list_rows, render_list, ListOptions};
 use regex::Regex;
 use serde_json::Value;
 use std::sync::LazyLock;

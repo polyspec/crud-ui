@@ -1,16 +1,16 @@
 # CRUDUI Rust 검증기
 <!-- doc-id: packages-validator-rust-readme -->
-<!-- source-sha256: c24480c45738fda06c8bf69bf204b4d48af73850c02ea22fb96541a510903322 -->
+<!-- source-sha256: 2a8713d3baec8bb9f94c2a4a2ac0b57707a82a43dff912f78506ae2cac645be2 -->
 
 [English](README.md).
 
-`polyspec-crudui-validator` 패키지 버전은 `0.0.7`입니다. 라이브러리이며 명령을 설치하지
+`polyspec-crud-ui-validator` 패키지 버전은 `0.0.7`입니다. 라이브러리이며 명령을 설치하지
 않습니다.
 
 ## API
 
 ```rust
-use polyspec_crudui_validator::{validate, validate_detail, validate_list, ValidateOptions};
+use polyspec_crud_ui_validator::{validate, validate_detail, validate_list, ValidateOptions};
 
 let result = validate(&spec, &data, &ValidateOptions::default())?;
 ```
@@ -32,7 +32,7 @@ let result = validate(&spec, &data, &ValidateOptions::default())?;
 
 ## 입력 텍스트와 공유 값
 
-`polyspec_crudui_validator::text::JsonText`는 텍스트를 바꾸지 않고 JSON 문서를 읽으므로,
+`polyspec_crud_ui_validator::text::JsonText`는 텍스트를 바꾸지 않고 JSON 문서를 읽으므로,
 짝이 없는 surrogate 이스케이프가 검사에 그대로 보입니다. JSON 텍스트가 쓸 수 없는 두
 변형이 있습니다. `JsonText::Shared(Arc<JsonText>)`는 한 값을 여러 부모에 둡니다.
 `JsonText::Link(Weak<JsonText>)`는 자기를 담고 있는 공유 값으로 되돌아가는 링크이며,

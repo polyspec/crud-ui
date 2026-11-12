@@ -1,6 +1,6 @@
 # 검증기 프로세스
 <!-- doc-id: examples-cross-check-console-validators-readme -->
-<!-- source-sha256: a74f50cb1b7b64f126b02fc9ca425726474ec9ee65ca84307e7cb20cce56dc77 -->
+<!-- source-sha256: 447219444d35d25a4cfde2b60f1348243f2bbc3845c4f6886f76014738db7e08 -->
 
 [English](README.md).
 
@@ -14,7 +14,7 @@
 | PHP | `php/validate.php` | `Polyspec\Crudui\Validator::validate`, `validateList`, `validateDetail` |
 | PHP 확장 | `php -d extension=… php/validate.php` | 확장의 클래스로 실행하는 같은 PHP 프로그램 |
 | Go | `go/`(자체 `go.mod`를 가진 모듈) | `validate.ValidateJSON`, `ValidateListJSON`, `ValidateDetailJSON` |
-| Rust | `rust/`(크레이트 `polyspec-crudui-cross-check-validator`) | `polyspec_crudui_validator::validate`, `validate_list`, `validate_detail` |
+| Rust | `rust/`(크레이트 `polyspec-crudui-cross-check-validator`) | `polyspec_crud_ui_validator::validate`, `validate_list`, `validate_detail` |
 | Python | `python/validate.py` | `polyspec.crudui.validator`의 `validate`, `validateList`, `validateDetail` |
 
 `../server`에서 `npm run build:validators`를 실행하면 Go 프로그램을 root의 `var/build/cross-check-console/go-validate`로, Rust

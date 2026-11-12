@@ -6,10 +6,10 @@
 //! [`JsonText`] passes its parts here, in the
 //! order each operation checks them, before decoding them into values.
 
-use polyspec_crudui_validator::text::{check_inputs, check_specification};
-use polyspec_crudui_validator::validate::ValidateError;
+use polyspec_crud_ui_validator::text::{check_inputs, check_specification};
+use polyspec_crud_ui_validator::validate::ValidateError;
 
-pub use polyspec_crudui_validator::text::{JsonString, JsonText, JsonTextError};
+pub use polyspec_crud_ui_validator::text::{JsonString, JsonText, JsonTextError};
 
 use crate::error::{FormError, FormResult};
 

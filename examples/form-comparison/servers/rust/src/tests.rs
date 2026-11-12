@@ -1,7 +1,7 @@
 use super::*;
 use axum::body::{to_bytes, Body};
-use polyspec_crudui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
-use polyspec_crudui_validator::validate::{validate, ValidateOptions};
+use polyspec_crud_ui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
+use polyspec_crud_ui_validator::validate::{validate, ValidateOptions};
 use serde_json::Map;
 use std::fs;
 use tower::ServiceExt;

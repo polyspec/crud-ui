@@ -3,6 +3,7 @@
 
 mod actions;
 mod binding;
+pub mod boundary;
 mod buttons;
 mod choice_list;
 mod condition_editor;

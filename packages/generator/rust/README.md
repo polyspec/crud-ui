@@ -3,9 +3,9 @@
 
 [한국어](README.ko.md).
 
-`polyspec-crudui-generator` compiles form structure, binds ordered record data, manages
+`polyspec-crud-ui-generator` compiles form structure, binds ordered record data, manages
 form instances and renders form, list and read-only detail HTML inside a Rust process. It reuses
-`polyspec-crudui-validator` for specification composition and expressions.
+`polyspec-crud-ui-validator` for specification composition and expressions.
 
 ## Use
 
@@ -14,7 +14,7 @@ and validator with explicit paths to their package directories. The generator's
 Cargo manifest declares its validator dependency.
 
 ```rust
-use polyspec_crudui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
+use polyspec_crud_ui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
 use serde_json::json;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

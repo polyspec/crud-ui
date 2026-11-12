@@ -28,7 +28,7 @@ const FEATURE: &str = "validate";
 const FIXTURE: &str = "tests/fixtures/spec-validity/cases.json";
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::validate::{validate, ValidateOptions};
+use polyspec_crud_ui_validator::validate::{validate, ValidateOptions};
 use serde_json::Value;
 use std::path::{Path, PathBuf};
 

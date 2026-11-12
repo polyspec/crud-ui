@@ -187,7 +187,9 @@ fn json_string(value: &polyspec_ordered_json::Value) -> Result<JsonString, JsonT
 }
 
 /// The JSON text value of a value that ordered-json read.
-fn from_ordered(value: &polyspec_ordered_json::Value) -> Result<JsonText, JsonTextError> {
+pub(crate) fn from_ordered(
+    value: &polyspec_ordered_json::Value,
+) -> Result<JsonText, JsonTextError> {
     use polyspec_ordered_json::Kind;
     Ok(match value.kind() {
         Kind::Null => JsonText::Null,
@@ -456,7 +458,7 @@ fn decoded(value: Option<&JsonText>) -> Result<Option<Value>, ValidateError> {
 }
 
 /// A JSON text value, or the failure of a number that `serde_json` does not accept.
-fn decode(value: &JsonText) -> Result<Value, ValidateError> {
+pub(crate) fn decode(value: &JsonText) -> Result<Value, ValidateError> {
     json_text_to_value(value).ok_or_else(|| {
         ValidateError::Input(FormInputError::new("Numbers must be finite JSON numbers"))
     })

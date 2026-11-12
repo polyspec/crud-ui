@@ -1,6 +1,6 @@
 # 데이터 검증
 <!-- doc-id: docs-operations-validation -->
-<!-- source-sha256: d60ce14299345fbc0d18a669b437480f6bff612d4e033bd955a44faa9a51e8da -->
+<!-- source-sha256: 55b7bf42efe3c66b07e6fc1a9203e69a19ef4bc31669956100d5c149674f5165 -->
 
 [English](validation.md).
 
@@ -84,11 +84,11 @@ func main() {
 ## Rust
 
 크레이트 루트는 `validate`와 `ValidateOptions`를 export합니다. 옵션은 가상 파일,
-로더와 기준 경로를 받습니다. 예제는 `polyspec-crudui-validator` 크레이트와
+로더와 기준 경로를 받습니다. 예제는 `polyspec-crud-ui-validator` 크레이트와
 `serde_json` 의존성을 사용해 실행합니다.
 
 ```rust
-use polyspec_crudui_validator::{validate, ValidateOptions};
+use polyspec_crud_ui_validator::{validate, ValidateOptions};
 use serde_json::json;
 
 fn main() {

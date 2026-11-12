@@ -1,12 +1,12 @@
 # CRUDUI Rust 생성기
 <!-- doc-id: packages-generator-rust-readme -->
-<!-- source-sha256: 628d4ef31fb502005218f1d1ebdc65074c64582aa15630484695e397e02b06c0 -->
+<!-- source-sha256: 021920c7fc766e7b6eae1a973b1182cca3e4300602e511afe48922b6a2841356 -->
 
 [English](README.md).
 
-`polyspec-crudui-generator`는 Rust 프로세스에서 폼 구조를 컴파일하고, 순서를 유지하는
+`polyspec-crud-ui-generator`는 Rust 프로세스에서 폼 구조를 컴파일하고, 순서를 유지하는
 레코드 데이터를 바인딩하고, 폼 인스턴스를 관리하고, 폼·목록·읽기 전용 상세 HTML을 렌더링합니다.
-스펙 조합과 표현식에는 `polyspec-crudui-validator`를 사용합니다.
+스펙 조합과 표현식에는 `polyspec-crud-ui-validator`를 사용합니다.
 
 ## 사용
 
@@ -14,7 +14,7 @@
 생성기와 검증기를 추가합니다. 생성기의 Cargo 매니페스트는 검증기 의존성을 선언합니다.
 
 ```rust
-use polyspec_crudui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
+use polyspec_crud_ui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
 use serde_json::json;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

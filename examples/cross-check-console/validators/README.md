@@ -13,7 +13,7 @@ the packages provide the validator library functions instead.
 | PHP | `php/validate.php` | `Polyspec\Crudui\Validator::validate`, `validateList` and `validateDetail` |
 | PHP extension | `php -d extension=… php/validate.php` | the same PHP program, served by the extension's classes |
 | Go | `go/` (module with its own `go.mod`) | `validate.ValidateJSON`, `ValidateListJSON` and `ValidateDetailJSON` |
-| Rust | `rust/` (crate `polyspec-crudui-cross-check-validator`) | `polyspec_crudui_validator::validate`, `validate_list` and `validate_detail` |
+| Rust | `rust/` (crate `polyspec-crudui-cross-check-validator`) | `polyspec_crud_ui_validator::validate`, `validate_list` and `validate_detail` |
 | Python | `python/validate.py` | `validate`, `validateList` and `validateDetail` of `polyspec.crudui.validator` |
 
 `npm run build:validators` in `../server` builds the Go program to `var/build/cross-check-console/go-validate` of the root and the Rust

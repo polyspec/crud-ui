@@ -1,8 +1,8 @@
 use crate::util::{OrNoList, OrNoText};
-use polyspec_crudui_validator::compose::{
+use polyspec_crud_ui_validator::compose::{
     compose_properties, member_ordered, ComposeOptions, FileLoader, MemoryLoader,
 };
-use polyspec_crudui_validator::scan_forbidden_keys;
+use polyspec_crud_ui_validator::scan_forbidden_keys;
 use serde_json::{json, Map, Value};
 
 use crate::choice_list::{choice_label, is_choice_list};
@@ -154,7 +154,7 @@ fn cell_display(
                         "Number decimals must be between 0 and 100",
                     ))
                 }
-                _ => polyspec_crudui_validator::validate::canonical::number_text(number),
+                _ => polyspec_crud_ui_validator::validate::canonical::number_text(number),
             };
             if truthy(options.get("thousands")) {
                 let (integer, fraction) = match body.split_once('.') {

@@ -8,11 +8,11 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     compile_form, render_detail, render_form, render_list, sequence_row_key, BindOptions,
     CompileOptions, DetailOptions, Form, ListOptions,
 };
-use polyspec_crudui_validator::validate::{validate, ValidateOptions};
+use polyspec_crud_ui_validator::validate::{validate, ValidateOptions};
 use serde_json::{json, Value};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

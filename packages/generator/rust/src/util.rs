@@ -1,5 +1,5 @@
 pub(crate) use crate::css::style_string as style;
-use polyspec_crudui_validator::validate::canonical::{json_number, number_text};
+use polyspec_crud_ui_validator::validate::canonical::{json_number, number_text};
 use serde_json::{Map, Value};
 
 /// The text of a template, specification or view-model member read as text.

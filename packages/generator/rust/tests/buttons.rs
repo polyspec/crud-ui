@@ -16,7 +16,7 @@
 mod evidence;
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     bind_buttons, compile_form, form_buttons_html, BindOptions, CompileOptions, FormResult,
     FormTemplate,
 };

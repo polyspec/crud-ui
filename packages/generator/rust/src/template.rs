@@ -1,12 +1,12 @@
 use crate::condition_editor::{check_condition_editor, fields_error};
 use crate::util::OrNoText;
 use crate::{FormError, FormResult};
-use polyspec_crudui_validator::compose::{
+use polyspec_crud_ui_validator::compose::{
     compose_properties, member_ordered, member_ordered_map, ComposeOptions, FileLoader,
     MemoryLoader,
 };
-use polyspec_crudui_validator::validate::group_source::{group_source_failure, scalar_child};
-use polyspec_crudui_validator::validate::numeric;
+use polyspec_crud_ui_validator::validate::group_source::{group_source_failure, scalar_child};
+use polyspec_crud_ui_validator::validate::numeric;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 

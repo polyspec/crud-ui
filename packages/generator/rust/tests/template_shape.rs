@@ -17,10 +17,10 @@
 mod evidence;
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     bind_buttons, bind_form, BindOptions, Form, FormResult, FormTemplate,
 };
-use polyspec_crudui_validator::text::JsonText;
+use polyspec_crud_ui_validator::text::JsonText;
 use serde_json::{json, Value};
 use std::path::Path;
 

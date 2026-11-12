@@ -179,17 +179,17 @@ Run it in a module that requires the generator and validator modules.
 
 ## Rust
 
-The `polyspec-crudui-generator` crate exports `build_list`, `render_list`, `build_detail`,
+The `polyspec-crud-ui-generator` crate exports `build_list`, `render_list`, `build_detail`,
 `render_detail`, `ListOptions` and `DetailOptions`. `ListOptions` has the fields `files`,
 `loader`, `basepath`, `language`, `data`, `page`, `total` and `layout`; `data`, `page`, `total`
-and `layout` are JSON values, and the default language is `ko`. The `polyspec-crudui-validator` crate
+and `layout` are JSON values, and the default language is `ko`. The `polyspec-crud-ui-validator` crate
 exports `validate_list` with `ValidateListOptions` and `validate_detail` with
 `ValidateDetailOptions` (`files`, `loader`, `basepath`). A structure failure is
 `Err(ComposeLoadError)`.
 
 ```rust
-use polyspec_crudui_generator::{build_detail, render_detail, render_list, DetailOptions, ListOptions};
-use polyspec_crudui_validator::{validate_detail, validate_list, ValidateDetailOptions, ValidateListOptions};
+use polyspec_crud_ui_generator::{build_detail, render_detail, render_list, DetailOptions, ListOptions};
+use polyspec_crud_ui_validator::{validate_detail, validate_list, ValidateDetailOptions, ValidateListOptions};
 use serde_json::json;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

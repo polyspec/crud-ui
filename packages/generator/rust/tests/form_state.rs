@@ -18,7 +18,7 @@
 mod evidence;
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     bind_form, collapsible_rows, compile_form, initial_view, rekey_row_view, remove_row_view,
     resolve_action, run_action, set_all_expanded_view, toggle_row_view, ActionInput, ActionResult,
     ActionTarget, AddRowOptions, BindOptions, CompileOptions, CopyRowOptions, Form, FormError,
@@ -216,18 +216,18 @@ fn perform(form: &mut Form, spec: &Value, op: &str, args: &[Value]) -> FormResul
     match op {
         "validate" => {
             // The errors of the validator for the specification and the current record, in the validator's order.
-            let result = polyspec_crudui_validator::validate::validate(
+            let result = polyspec_crud_ui_validator::validate::validate(
                 spec,
                 &form.get_data(),
-                &polyspec_crudui_validator::validate::ValidateOptions::default(),
+                &polyspec_crud_ui_validator::validate::ValidateOptions::default(),
             )
             .map_err(|error| FormError {
                 code: match &error {
-                    polyspec_crudui_validator::ValidateError::Load(load) => {
-                        polyspec_crudui_generator::FormErrorCode::Compose(load.code)
+                    polyspec_crud_ui_validator::ValidateError::Load(load) => {
+                        polyspec_crud_ui_generator::FormErrorCode::Compose(load.code)
                     }
-                    polyspec_crudui_validator::ValidateError::Input(_) => {
-                        polyspec_crudui_generator::FormErrorCode::InvalidFormInput
+                    polyspec_crud_ui_validator::ValidateError::Input(_) => {
+                        polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput
                     }
                 },
                 message: error.message().to_string(),

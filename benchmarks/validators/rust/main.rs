@@ -16,7 +16,7 @@
     reason = "R-1 holds the library paths of the crudui cores; this program reads its requests with their documented defaults"
 )]
 
-use polyspec_crudui_validator::validate::Validator;
+use polyspec_crud_ui_validator::validate::Validator;
 use serde_json::Value;
 use std::fs;
 use std::path::Path;

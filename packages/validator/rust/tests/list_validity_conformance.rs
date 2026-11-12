@@ -23,7 +23,7 @@ const FIXTURE: &str = "tests/fixtures/list-validity/cases.json";
 use std::path::{Path, PathBuf};
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::list::{validate_list, ValidateListOptions};
+use polyspec_crud_ui_validator::list::{validate_list, ValidateListOptions};
 use serde_json::Value;
 
 fn fixture_path() -> PathBuf {

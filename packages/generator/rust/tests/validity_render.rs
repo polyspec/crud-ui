@@ -15,7 +15,7 @@
 )]
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_generator::{build_detail, build_list, DetailOptions, FormError, ListOptions};
+use polyspec_crud_ui_generator::{build_detail, build_list, DetailOptions, FormError, ListOptions};
 use serde_json::{json, Map, Value};
 use std::path::Path;
 

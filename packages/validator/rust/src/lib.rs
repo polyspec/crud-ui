@@ -1,6 +1,7 @@
 //! CRUDUI schema composition and validation.
 #![deny(missing_docs)]
 
+pub mod boundary;
 pub mod compose;
 pub mod detail;
 pub mod expr;

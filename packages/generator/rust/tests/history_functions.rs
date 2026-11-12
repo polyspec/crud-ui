@@ -15,7 +15,7 @@
 mod evidence;
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     can_redo, can_undo, empty_history, record_change, redo_change, undo_change, History,
     HistoryResult,
 };

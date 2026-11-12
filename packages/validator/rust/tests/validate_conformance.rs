@@ -23,7 +23,7 @@ const FEATURE: &str = "validate";
 const FIXTURE: &str = "tests/fixtures/validate/cases.json";
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::validate::{hidden_paths, validate, ValidateOptions};
+use polyspec_crud_ui_validator::validate::{hidden_paths, validate, ValidateOptions};
 use serde_json::{json, Map, Value};
 use std::path::{Path, PathBuf};
 
@@ -75,7 +75,7 @@ fn load_cases() -> Vec<Value> {
 }
 
 /// Build the `{ valid, errors, hidden }` value shape from a result for ordered comparison.
-fn result_to_value(result: &polyspec_crudui_validator::validate::ValidationResult) -> Value {
+fn result_to_value(result: &polyspec_crud_ui_validator::validate::ValidationResult) -> Value {
     let errors: Vec<Value> = result.errors.iter().map(|e| e.to_value()).collect();
     let mut m = Map::new();
     m.insert("valid".to_string(), Value::Bool(result.valid));

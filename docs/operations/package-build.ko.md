@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: a5f3ba1474adc3e124849a43d6c8ee1a9d4897948f90631c223d84b12a6a8bed -->
+<!-- source-sha256: b511a8958a06137025f5f575e0f896f16bfc183e5f82ab13f175de4765605bec -->
 
 [English](package-build.md).
 
@@ -69,7 +69,7 @@ Rust recipe는 Cargo 프록시 디렉터리를 `PATH`에 추가하지 않습니�
 |---|---|
 | npm | `@polyspec/crudui-<name>`: `@polyspec/crudui-cli`, `@polyspec/crudui-form-binding`, `@polyspec/crudui-generator-core`, `@polyspec/crudui-generator-html`, `@polyspec/crudui-generator-react`, `@polyspec/crudui-generator-svelte`, `@polyspec/crudui-generator-vue`, `@polyspec/crudui-validator`. 비공개 workspace root는 `@polyspec/crudui-workspace`입니다 |
 | Composer | `polyspec/crudui-generator`와 `polyspec/crudui-validator`이며 PHP namespace는 `Polyspec\Crudui\`입니다. 클래스는 `Polyspec\Crudui\Generator`, `Polyspec\Crudui\Validator`, `Polyspec\Crudui\Form`, `Polyspec\Crudui\FormError`이고, 내부 namespace는 `Polyspec\Crudui\Generator\`와 `Polyspec\Crudui\Validator\`입니다. PHP 확장도 같은 클래스를 등록합니다 |
-| Rust | crate `polyspec-crudui-generator`와 `polyspec-crudui-validator`, library `polyspec_crudui_generator`와 `polyspec_crudui_validator` |
+| Rust | crate `polyspec-crud-ui-generator`와 `polyspec-crud-ui-validator`, library `polyspec_crud_ui_generator`와 `polyspec_crud_ui_validator` |
 | Go | module `github.com/polyspec/crudui/packages/generator/go`와 `github.com/polyspec/crudui/packages/validator/go` |
 
 `examples/`, `tests/`, `tools/`의 프로그램도 같은 규칙을 따릅니다. 비공개 npm package는

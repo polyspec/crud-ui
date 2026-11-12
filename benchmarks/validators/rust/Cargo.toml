@@ -9,7 +9,7 @@ name = "polyspec-crudui-bench"
 path = "main.rs"
 
 [dependencies]
-polyspec-crudui-validator = { path = "../../../packages/validator/rust" }
+polyspec-crud-ui-validator = { path = "../../../packages/validator/rust" }
 serde_json = { version = "1", features = ["preserve_order"] }
 
 # Always build the bench optimized — an unoptimized debug build would measure

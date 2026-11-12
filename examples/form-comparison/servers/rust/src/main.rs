@@ -17,7 +17,7 @@ use axum::{
     routing::any,
     Router,
 };
-use polyspec_crudui_validator::validate::{validate, ValidateOptions};
+use polyspec_crud_ui_validator::validate::{validate, ValidateOptions};
 use repository::{load_data, read_object, Repository};
 use serde_json::{json, Value};
 use std::{path::PathBuf, sync::Arc};
@@ -243,8 +243,8 @@ async fn handle(
     let spec = read_object(&server.public.join("spec.json"))?;
     let validation = validate(&spec, &data, &ValidateOptions::default()).map_err(|e| Error {
         status: match e {
-            polyspec_crudui_validator::ValidateError::Input(_) => StatusCode::BAD_REQUEST,
-            polyspec_crudui_validator::ValidateError::Load(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            polyspec_crud_ui_validator::ValidateError::Input(_) => StatusCode::BAD_REQUEST,
+            polyspec_crud_ui_validator::ValidateError::Load(_) => StatusCode::INTERNAL_SERVER_ERROR,
         },
         message: e.to_string(),
     })?;

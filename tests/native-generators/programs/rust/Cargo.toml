@@ -6,7 +6,7 @@ rust-version = "1.99.0"
 publish = false
 
 [dependencies]
-polyspec-crudui-generator = { path = "../../../../packages/generator/rust" }
+polyspec-crud-ui-generator = { path = "../../../../packages/generator/rust" }
 serde = "1"
 serde_json = { version = "1", features = ["preserve_order"] }
 

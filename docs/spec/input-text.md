@@ -74,7 +74,7 @@ as an input failure that names the value. A custom loader's document is named `f
 
 Go's value entries take maps, slices and `*compose.OMap` values that can share nodes, so Go
 applies the limits like JavaScript and PHP. A Rust value, a `serde_json::Value` or a
-`polyspec_crudui_validator::text::JsonText`, owns each of its nodes: it cannot share a container
+`polyspec_crud_ui_validator::text::JsonText`, owns each of its nodes: it cannot share a container
 or contain itself, so a shared container cannot appear twice in a value. Rust's value entries count
 nodes and levels: the walk costs no more than building it.
 
@@ -136,11 +136,11 @@ A value beyond the value limits is an input failure in every argument and option
 - **CUIT-039** PHP: `Polyspec\Crudui\Validator\Support\JsonText::decode` returns what
   `json_decode($json, false, 512, JSON_THROW_ON_ERROR)` returns and keeps an escaped surrogate as
   its three bytes. The class has no dependencies.
-- **CUIT-040** Rust: `polyspec_crudui_validator::text::JsonText` reads the text with the reader of ordered-json, which
+- **CUIT-040** Rust: `polyspec_crud_ui_validator::text::JsonText` reads the text with the reader of ordered-json, which
   refuses a repeated member name and keeps an unpaired surrogate escape as its code unit, without replacing anything.
   The JSON texts that the Rust core writes take their string and number tokens from the writer of ordered-json.
   `validate_text`, `validate_list_text` and `validate_detail_text` run the validation entries
-  over it, and `polyspec_crudui_generator::text` holds the checks of the generation entries.
+  over it, and `polyspec_crud_ui_generator::text` holds the checks of the generation entries.
 
 JSON text is UTF-8. A program that reads a JSON request rejects input that is not UTF-8 as
 invalid JSON before decoding it.

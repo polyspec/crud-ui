@@ -3,13 +3,13 @@
 
 [한국어](README.ko.md).
 
-The `polyspec-crudui-validator` package is version `0.0.7`. It is a library; it installs
+The `polyspec-crud-ui-validator` package is version `0.0.7`. It is a library; it installs
 no command.
 
 ## API
 
 ```rust
-use polyspec_crudui_validator::{validate, validate_detail, validate_list, ValidateOptions};
+use polyspec_crud_ui_validator::{validate, validate_detail, validate_list, ValidateOptions};
 
 let result = validate(&spec, &data, &ValidateOptions::default())?;
 ```
@@ -34,7 +34,7 @@ language.
 
 ## Input text and shared values
 
-`polyspec_crudui_validator::text::JsonText` reads a JSON document without replacing
+`polyspec_crud_ui_validator::text::JsonText` reads a JSON document without replacing
 any text, so an unpaired surrogate escape stays visible to the checks. Two variants
 are not written by JSON text: `JsonText::Shared(Arc<JsonText>)` places one value in
 several parents, and `JsonText::Link(Weak<JsonText>)` links back to a shared value that

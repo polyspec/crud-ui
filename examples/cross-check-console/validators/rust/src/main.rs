@@ -1,12 +1,12 @@
 //! Rust validator process of the cross-check console. It reads one JSON request
-//! on standard input, calls the public API of `polyspec-crudui-validator` and writes one
+//! on standard input, calls the public API of `polyspec-crud-ui-validator` and writes one
 //! JSON response on standard output with the exit status. The contract, shared
 //! with the JavaScript, PHP and Go programs, is in `../README.md`.
 //!
 //! Modes, selected by the request `mode` (absent → `"form"`):
-//!   - form: `polyspec_crudui_validator::validate` validates `data`.
-//!   - list: `polyspec_crudui_validator::validate_list` composes and scans the list; `data` is ignored.
-//!   - detail: `polyspec_crudui_validator::validate_detail` composes and scans the detail; `data` is ignored.
+//!   - form: `polyspec_crud_ui_validator::validate` validates `data`.
+//!   - list: `polyspec_crud_ui_validator::validate_list` composes and scans the list; `data` is ignored.
+//!   - detail: `polyspec_crud_ui_validator::validate_detail` composes and scans the detail; `data` is ignored.
 //!
 //! Request rules, checked in this order (each → exit 1, stdout exactly `{ "error" }`):
 //!   1. stdin is not UTF-8 or not valid JSON → "Request must be valid JSON"
@@ -30,9 +30,9 @@ use std::io::{self, Read, Write};
 
 use serde_json::{Map, Value};
 
-use polyspec_crudui_validator::text::{self, JsonText};
-use polyspec_crudui_validator::validate::ValidationResult;
-use polyspec_crudui_validator::{
+use polyspec_crud_ui_validator::text::{self, JsonText};
+use polyspec_crud_ui_validator::validate::ValidationResult;
+use polyspec_crud_ui_validator::{
     validate, validate_detail, validate_list, ValidateDetailOptions, ValidateListOptions,
     ValidateOptions,
 };

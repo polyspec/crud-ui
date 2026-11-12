@@ -9,7 +9,7 @@ use crate::util::OrNoText;
 use crate::util::*;
 use crate::widget::{declared_attributes, evaluate_widget, widget_kind, WidgetContext};
 use crate::{FieldTemplate, FormError, FormResult, FormTemplate};
-use polyspec_crudui_validator::validate::group_source::is_group_source;
+use polyspec_crud_ui_validator::validate::group_source::is_group_source;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
 
@@ -473,7 +473,7 @@ impl Binding<'_> {
         let language = self.language;
         let label = spec
             .get("label")
-            .filter(|v| polyspec_crudui_validator::expr::is_truthy(v))
+            .filter(|v| polyspec_crud_ui_validator::expr::is_truthy(v))
             .map(|v| translate(Some(v), language))
             .filter(|v| !v.is_empty());
         let description = Some(translate(spec.get("description"), language));

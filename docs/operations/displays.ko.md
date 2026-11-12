@@ -1,6 +1,6 @@
 # 목록과 상세 개발과 검증
 <!-- doc-id: docs-operations-displays -->
-<!-- source-sha256: 4f7d23f00f9d802b5c78e1a4aaeb96d3351010a1510adf36bc8dbf9537a715c8 -->
+<!-- source-sha256: 7bea483dd562462fe3cfdd7d8a04a860f78d313c049bc169a3a1e20cd0fd919b -->
 
 [English](displays.md). [표시 형식](../spec/display-formats.ko.md)은 각 형식, 허용 입력과
 마크업을 정의합니다. [명세 구조](../spec/schema.ko.md)는 목록과 상세 필드와
@@ -178,16 +178,16 @@ func main() {
 
 ## Rust
 
-`polyspec-crudui-generator` 크레이트는 `build_list`, `render_list`, `build_detail`, `render_detail`,
+`polyspec-crud-ui-generator` 크레이트는 `build_list`, `render_list`, `build_detail`, `render_detail`,
 `ListOptions`, `DetailOptions`를 내보냅니다. `ListOptions` 필드는 `files`, `loader`, `basepath`,
 `language`, `data`, `page`, `total`, `layout`이며, `data`, `page`, `total`, `layout`은 JSON 값이고
-기본 언어는 `ko`입니다. `polyspec-crudui-validator` 크레이트는 `ValidateListOptions`를 받는
+기본 언어는 `ko`입니다. `polyspec-crud-ui-validator` 크레이트는 `ValidateListOptions`를 받는
 `validate_list`와 `ValidateDetailOptions`(`files`, `loader`, `basepath`)를 받는
 `validate_detail`을 내보냅니다. 구조 실패는 `Err(ComposeLoadError)`입니다.
 
 ```rust
-use polyspec_crudui_generator::{build_detail, render_detail, render_list, DetailOptions, ListOptions};
-use polyspec_crudui_validator::{validate_detail, validate_list, ValidateDetailOptions, ValidateListOptions};
+use polyspec_crud_ui_generator::{build_detail, render_detail, render_list, DetailOptions, ListOptions};
+use polyspec_crud_ui_validator::{validate_detail, validate_list, ValidateDetailOptions, ValidateListOptions};
 use serde_json::json;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

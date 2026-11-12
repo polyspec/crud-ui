@@ -5,7 +5,7 @@ use crate::util::OrNoList;
 use crate::util::OrNoText;
 use crate::util::{scalar, style};
 use crate::{FormError, FormResult};
-use polyspec_crudui_validator::validate::group_source::{group_choices, GroupChoicesError};
+use polyspec_crud_ui_validator::validate::group_source::{group_choices, GroupChoicesError};
 use serde_json::{json, Map, Value};
 use std::collections::HashSet;
 

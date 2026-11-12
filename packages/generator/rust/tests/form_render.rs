@@ -14,11 +14,11 @@
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
+use polyspec_crud_ui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
 use serde_json::{json, Value};
 
 /// Compiles and binds one case with its options and data, as the fixture's generator does.
-fn instance(case: &Value) -> polyspec_crudui_generator::FormResult<Form> {
+fn instance(case: &Value) -> polyspec_crud_ui_generator::FormResult<Form> {
     let options = case.get("options").cloned().unwrap_or(json!({}));
     let compile = CompileOptions {
         files: options["files"].as_object().cloned().unwrap_or_default(),

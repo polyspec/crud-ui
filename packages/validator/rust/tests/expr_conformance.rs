@@ -19,7 +19,7 @@ const FEATURE: &str = "validate";
 const FIXTURE: &str = "tests/fixtures/expr/cases.json";
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::expr::Expression;
+use polyspec_crud_ui_validator::expr::Expression;
 use serde_json::Value;
 use std::path::{Path, PathBuf};
 
@@ -192,7 +192,7 @@ fn check_case(spec: &Value, name: &str) -> Vec<String> {
 // --- targeted unit checks beyond the shared fixture --------------------------
 
 fn condition_map_resolves_in_declaration_order() {
-    use polyspec_crudui_validator::expr::condition_map;
+    use polyspec_crud_ui_validator::expr::condition_map;
 
     let entries = vec![
         (".tier == 'gold'".to_string(), Value::from("premium")),
@@ -238,7 +238,7 @@ fn condition_map_resolves_in_declaration_order() {
 }
 
 fn condition_map_default_does_not_short_circuit() {
-    use polyspec_crudui_validator::expr::condition_map;
+    use polyspec_crud_ui_validator::expr::condition_map;
 
     let entries = vec![
         ("true".to_string(), Value::from("fallback")),

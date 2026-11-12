@@ -23,7 +23,7 @@ const FEATURE: &str = "compileForm";
 const FIXTURE: &str = "tests/fixtures/compose/cases.json";
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::compose::{
+use polyspec_crud_ui_validator::compose::{
     compose_properties, compose_spec, ComposeOptions, MemoryLoader,
 };
 use serde_json::{Map, Value};

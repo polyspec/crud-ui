@@ -1,4 +1,4 @@
-use polyspec_crudui_validator::compose::{ComposeErrorCode, ComposeLoadError};
+use polyspec_crud_ui_validator::compose::{ComposeErrorCode, ComposeLoadError};
 
 /// The code of a failed form operation: a composition load failure, an input failure or a field
 /// type that binding does not support.

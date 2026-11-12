@@ -86,11 +86,11 @@ func main() {
 ## Rust
 
 The crate root exports `validate` and `ValidateOptions`. Options accept virtual
-files, a loader and a base path. Run the example with the `polyspec-crudui-validator`
+files, a loader and a base path. Run the example with the `polyspec-crud-ui-validator`
 crate and `serde_json` dependencies.
 
 ```rust
-use polyspec_crudui_validator::{validate, ValidateOptions};
+use polyspec_crud_ui_validator::{validate, ValidateOptions};
 use serde_json::json;
 
 fn main() {

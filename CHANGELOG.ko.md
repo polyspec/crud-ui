@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 980b03aa1a51ad093f931516d1df180c25c819ff404a98d07a143272d076fea6 -->
+<!-- source-sha256: ea9944e94afb78edeb1fb5f9e8049687b02495661cbaeed5c162942f322e23be -->
 
 ## Unreleased
 
+- CURP-030: Rust crate 이름은 `polyspec-crud-ui-validator`와 `polyspec-crud-ui-generator`(라이브러리 `polyspec_crud_ui_validator`, `polyspec_crud_ui_generator`)이고 ordered-json을 `https://github.com/polyspec/json.git`에서 받는다. 각 crate의 `boundary` 모듈은 ordered-json 값을 받고 주며, 들어오는 값은 그 인수의 입력 텍스트 규칙으로 검사하고 나가는 숫자는 ECMAScript double로 쓴다. 인터페이스 계약은 boundary 연산, 바인딩의 component 이름(`polyspec/crud-ui-validator`, `Polyspec\CrudUi\Validator`, `polyspec.crud_ui.validator`, `@polyspec/crud-ui-validator`, `CrudUi<Category>Error`, Python·Go의 `CRUDUI<Category>Error`)을 가리키고, 보기 렌더러는 인터페이스 언어를 받는다(CURP-030).
 - CUVR-094: Rust 검증은 객체도 `false`도 아닌 `validate` 멤버를 필드의 규칙을 건너뛰지 않고 거부한다(CUVR-094).
 - C-10: Rust generator가 HTML 렌더러 패키지에만 있던 구조 맵(`render_outline`, `render_outline_view`, CUMK-072), 데이터 보기(`render_data`, `render_data_panel`, CUMK-071), 계산된 노드의 폼 보기(`render_form_view`, CUMK-073)를 렌더링한다. 폼 footer는 인스턴스의 계산된 버튼으로 쓰고, 계약은 이 연산들과 `hidden_paths`를 선언한다(C-10).
 - CUVR-093: Rust validator에 브라우저 폼 바인딩을 위한 `hidden_paths(spec, data)`가 생겼다. 파일 없이 합성한 검증의 숨은 경로이며, 검증 적합성 시험이 파일 없는 모든 결과의 `hidden`과 비교한다(CUVR-093).

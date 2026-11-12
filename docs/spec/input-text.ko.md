@@ -1,6 +1,6 @@
 # 입력 텍스트
 <!-- doc-id: docs-spec-input-text -->
-<!-- source-sha256: 51baa1f63b246ceab85a4e85c032cbc839b22441f166754ab42760650e8af6b7 -->
+<!-- source-sha256: 8b84702e1498f04c4c24c83403cceb70f0a496898eca4f23bc5a109436ca5219 -->
 
 [English](input-text.md).
 
@@ -71,7 +71,7 @@ JavaScript 배열과 객체, PHP 배열과 객체, Go 맵, 슬라이스, 순서 
 
 Go의 값 진입점은 노드를 공유할 수 있는 맵, 슬라이스, `*compose.OMap` 값을 받으므로 Go도
 JavaScript, PHP와 같이 한도를 적용합니다. Rust 값인 `serde_json::Value`와
-`polyspec_crudui_validator::text::JsonText`는 모든 노드를 소유합니다. 컨테이너를 공유하거나 자기 자신을 담을
+`polyspec_crud_ui_validator::text::JsonText`는 모든 노드를 소유합니다. 컨테이너를 공유하거나 자기 자신을 담을
 수 없으므로 공유 컨테이너가 값에 두 번 나타날 수 없습니다. Rust 값 진입점은 노드와 단계를 셉니다. 순회
 비용은 값을 만드는 비용을 넘지 않습니다.
 
@@ -128,11 +128,11 @@ PHP 라이브러리의 값 복사와 확장의 값 변환은 변환하는 모든
 - **CUIT-039** PHP: `Polyspec\Crudui\Validator\Support\JsonText::decode`는
   `json_decode($json, false, 512, JSON_THROW_ON_ERROR)`와 같은 값을 반환하고, 이스케이프된
   서로게이트를 3바이트로 보존합니다. 이 클래스는 의존성이 없습니다.
-- **CUIT-040** Rust: `polyspec_crudui_validator::text::JsonText`는 ordered-json의 읽기로 아무것도 바꾸지 않고 텍스트를
+- **CUIT-040** Rust: `polyspec_crud_ui_validator::text::JsonText`는 ordered-json의 읽기로 아무것도 바꾸지 않고 텍스트를
   읽습니다. 반복된 멤버 이름은 거부하고, 짝 없는 서로게이트 이스케이프는 그 코드 단위로 유지합니다. Rust 코어가 쓰는
   JSON 텍스트의 문자열·숫자 토큰은 ordered-json의 쓰기에서 옵니다.
   `validate_text`, `validate_list_text`, `validate_detail_text`는 이 값으로 검증 진입점을 실행하고,
-  `polyspec_crudui_generator::text`는 생성 진입점의 검사를 제공합니다.
+  `polyspec_crud_ui_generator::text`는 생성 진입점의 검사를 제공합니다.
 
 JSON 텍스트는 UTF-8입니다. JSON 요청을 읽는 프로그램은 디코딩 전에 UTF-8이 아닌 입력을 잘못된
 JSON으로 거부합니다.

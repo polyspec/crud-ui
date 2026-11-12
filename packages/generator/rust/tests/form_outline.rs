@@ -14,7 +14,7 @@
 use libtest_mimic::{Arguments, Trial};
 mod support;
 
-use polyspec_crudui_generator::{
+use polyspec_crud_ui_generator::{
     bind_form, build_outline, compile_form, render_data_panel, render_outline_view, BindOptions,
     CompileOptions,
 };

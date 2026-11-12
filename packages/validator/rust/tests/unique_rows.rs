@@ -11,7 +11,7 @@
     reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
 )]
 
-use polyspec_crudui_validator::validate::{validate, ValidateOptions};
+use polyspec_crud_ui_validator::validate::{validate, ValidateOptions};
 use serde_json::{json, Map, Value};
 
 fn spec() -> Value {
