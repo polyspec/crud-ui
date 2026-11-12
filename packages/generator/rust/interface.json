@@ -277,6 +277,9 @@
             "literal": null
           },
           "reason": "CURT-092"
+        },
+        {
+          "todo": "loader: a field of the callback unit file_loader of crud-ui-validator (CUIT-041), declared once binding generates callback units"
         }
       ]
     },
@@ -431,6 +434,9 @@
             "literal": null
           },
           "reason": "CUDF-081"
+        },
+        {
+          "todo": "loader: a field of the callback unit file_loader of crud-ui-validator (CUIT-041), declared once binding generates callback units"
         }
       ]
     },
@@ -2965,16 +2971,6 @@
         "php": "array $view; \\stdClass $history"
       },
       "to": "view_state"
-    },
-    {
-      "id": "loader",
-      "rule": "CURP-030",
-      "reason": "CURP-030: a custom loader would hand documents to the core as language values; its documents are not yet checked as composition files at the boundary, so the option waits for that rule",
-      "symbol": "options.loader",
-      "from": {
-        "node": "compileForm(spec, { loader })"
-      },
-      "to": null
     },
     {
       "id": "json-values",
