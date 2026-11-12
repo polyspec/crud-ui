@@ -25941,5 +25941,175 @@
     "requirements": [
       "CUSC-092"
     ]
+  },
+  {
+    "name": "accept-parameter-not-string",
+    "note": "an accept parameter that is neither a string nor a list of strings fails the load at the field (CUVR-095).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "photo": {
+          "type": "file",
+          "validate": {
+            "accept": true
+          }
+        }
+      }
+    },
+    "data": {
+      "photo": "a.png"
+    },
+    "expectFailure": {
+      "code": "INVALID_RULE_PARAMETER",
+      "message": "Invalid accept parameter: expected a string or a list of strings",
+      "at": "photo"
+    },
+    "requirements": [
+      "CUVR-095"
+    ]
+  },
+  {
+    "name": "accept-parameter-list-member",
+    "note": "an accept list with a member that is no string fails the load at the field (CUVR-095).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "photo": {
+          "type": "file",
+          "validate": {
+            "accept": [
+              "image/png",
+              5
+            ]
+          }
+        }
+      }
+    },
+    "data": {
+      "photo": "a.png"
+    },
+    "expectFailure": {
+      "code": "INVALID_RULE_PARAMETER",
+      "message": "Invalid accept parameter: expected a string or a list of strings",
+      "at": "photo"
+    },
+    "requirements": [
+      "CUVR-095"
+    ]
+  },
+  {
+    "name": "accept-parameter-list",
+    "note": "an accept list of strings is the accepted types; a matching file object passes (CUVR-016).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "photo": {
+          "type": "file",
+          "validate": {
+            "accept": [
+              ".png",
+              "image/jpeg"
+            ]
+          }
+        }
+      }
+    },
+    "data": {
+      "photo": {
+        "name": "a.png"
+      }
+    },
+    "expected": {
+      "valid": true,
+      "errors": [],
+      "hidden": []
+    },
+    "requirements": [
+      "CUVR-016",
+      "CURP-018",
+      "CURP-022"
+    ]
+  },
+  {
+    "name": "accept-list-member-not-object",
+    "note": "a list value with a member that is no file object fails accept (CUVR-016).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "photo": {
+          "type": "file",
+          "validate": {
+            "accept": ".png"
+          }
+        }
+      }
+    },
+    "data": {
+      "photo": [
+        {
+          "name": "a.png"
+        },
+        "b.png"
+      ]
+    },
+    "expected": {
+      "valid": false,
+      "errors": [
+        {
+          "path": "photo",
+          "field": "photo",
+          "rule": "accept",
+          "message": "Please upload a file with a valid format.",
+          "value": [
+            {
+              "name": "a.png"
+            },
+            "b.png"
+          ]
+        }
+      ],
+      "hidden": []
+    },
+    "requirements": [
+      "CUVR-016",
+      "CURP-018",
+      "CURP-022"
+    ]
+  },
+  {
+    "name": "accept-value-of-another-type",
+    "note": "a value that is no string, list or object fails accept (CUVR-016).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "photo": {
+          "type": "file",
+          "validate": {
+            "accept": ".png"
+          }
+        }
+      }
+    },
+    "data": {
+      "photo": 5
+    },
+    "expected": {
+      "valid": false,
+      "errors": [
+        {
+          "path": "photo",
+          "field": "photo",
+          "rule": "accept",
+          "message": "Please upload a file with a valid format.",
+          "value": 5
+        }
+      ],
+      "hidden": []
+    },
+    "requirements": [
+      "CUVR-016",
+      "CURP-018",
+      "CURP-022"
+    ]
   }
 ]
