@@ -25,7 +25,7 @@ const exceeds = (limit: 'depth' | 'values', n: number) => ({
 /** The load failure of a bad dataLimits. */
 const BAD_LIMITS = {
   code: 'INVALID_RULE_PARAMETER',
-  message: 'Invalid dataLimits parameter: expected depth from 1 to 512 and values from 1 to 1000000',
+  message: 'Invalid dataLimits parameter: expected depth from 1 to 256 and values from 1 to 1000000',
   at: '',
 };
 
@@ -43,11 +43,11 @@ export const DATA_LIMITS_CASES: Array<WrittenCase | FailingCase> = [
   { name: 'data-limits-before-rules', note: 'data beyond a limit fails before the required rule of b runs.', spec: form({ values: 2 }), data: { a: [1] }, expectFailure: exceeds('values', 2) },
   { name: 'data-limits-default-depth-at', note: 'without dataLimits, 64 levels pass.', spec: form(), data: { a: nest(63), b: 'x' }, expected: passed },
   { name: 'data-limits-default-depth-over', note: 'without dataLimits, 65 levels fail the default depth of 64.', spec: form(), data: { a: nest(64), b: 'x' }, expectFailure: exceeds('depth', 64) },
-  { name: 'data-limits-default-values-over', note: 'a dataLimits without values takes the default of 100000: the root, the array and 99999 items are 100001 nodes.', spec: form({ depth: 512 }), data: { a: Array.from({ length: 99999 }, () => 0), b: 'x' }, expectFailure: exceeds('values', 100000) },
+  { name: 'data-limits-default-values-over', note: 'a dataLimits without values takes the default of 100000: the root, the array and 99999 items are 100001 nodes.', spec: form({ depth: 256 }), data: { a: Array.from({ length: 99999 }, () => 0), b: 'x' }, expectFailure: exceeds('values', 100000) },
   bad('not-object', 'a dataLimits that is not an object fails the load.', 64),
   bad('unknown-member', 'a member other than depth and values fails the load.', { depth: 3, size: 1 }),
   bad('depth-zero', 'a depth below 1 fails the load.', { depth: 0 }),
-  bad('depth-above', 'a depth above the nesting limit of 512 fails the load.', { depth: 513 }),
+  bad('depth-above', 'a depth above the nesting limit of 256 fails the load.', { depth: 257 }),
   bad('values-above', 'values above the node limit of 1000000 fail the load.', { values: 1000001 }),
   bad('values-fraction', 'values that are not an integer fail the load.', { values: 1.5 }),
   bad('depth-boolean', 'a boolean is not an integer.', { depth: true }),

@@ -85,18 +85,18 @@
   },
   {
     "name": "nesting-at-limit",
-    "note": "data and 511 nested lists are 512 levels of arrays and objects, the most a value may nest.",
+    "note": "data and 255 nested lists are 256 levels of arrays and objects, the most a value may nest.",
     "requirements": [
       "CUIT-022"
     ],
-    "spec": { "type": "group", "dataLimits": { "depth": 512 }, "properties": { "list": { "type": "text" } } },
+    "spec": { "type": "group", "dataLimits": { "depth": 256 }, "properties": { "list": { "type": "text" } } },
     "data": { "list": null },
-    "graph": { "at": ["data", "list"], "shape": "chain", "size": 511, "leaf": "x" },
+    "graph": { "at": ["data", "list"], "shape": "chain", "size": 255, "leaf": "x" },
     "expect": { "valid": true, "errors": [], "hidden": [] }
   },
   {
     "name": "nesting-beyond-limit",
-    "note": "one more nested list is 513 levels.",
+    "note": "one more nested list is 257 levels.",
     "requirements": [
       "CUIT-022",
       "CUIT-029",
@@ -106,7 +106,7 @@
     ],
     "spec": { "type": "group", "properties": { "list": { "type": "text" } } },
     "data": { "list": null },
-    "graph": { "at": ["data", "list"], "shape": "chain", "size": 512, "leaf": "x" },
+    "graph": { "at": ["data", "list"], "shape": "chain", "size": 256, "leaf": "x" },
     "expect": { "code": "INVALID_FORM_INPUT", "message": "Recursive or excessively nested value: data", "at": "" }
   },
   {
