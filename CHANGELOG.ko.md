@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: dc96a19c862a3e68ee870e6ca8a0e7f041d5fdd33457cc2c8ef692a74a66a5c9 -->
+<!-- source-sha256: db5ad8097a345e1368b595b98cec9140465763d2c1f746fc3bac605a389e43ee -->
 
 ## Unreleased
 
+- RN-9: 폼 비교의 Rust 서버는 ordered-json의 tag `v0.0.25` 대신 코어 crate와 같은 출처인 `https://github.com/polyspec/json.git`(branch `v1/rust-core`)의 `polyspec-json`으로 JSON을 읽고 씁니다(RN-9).
 - CUMK-073: Rust `render_form_view(template, data, render, options)`는 아무도 검사하지 않던 원시 노드·버튼·언어·설명 대신 컴파일한 템플릿, 데이터, 바인딩 옵션을 받아 노드와 버튼을 직접 바인딩합니다. 노드 형태는 컴파일에서 한 번만 검사하며, generator 계약이 이 변경을 기록합니다(CUMK-073).
 - CUVR-095: Rust 검증은 문자열도 문자열 목록도 아닌 `accept` 매개변수를 `INVALID_RULE_PARAMETER`로 거절하고, 객체가 아닌 항목이 있는 목록 값과 문자열·목록·객체가 아닌 값을 통과시키던 대신 `accept` 실패로 처리합니다(CUVR-016, CUVR-095).
 - N-3: Rust crate는 JSON 라이브러리를 `https://github.com/polyspec/json.git`의 crate `polyspec-json`(라이브러리 `polyspec_json`)으로 받습니다. json 저장소가 코어에 붙인 이름입니다. 계약은 `json_value`의 라이브러리를 `json`으로 적고, CUIT-022, CUIT-040, CURP-030이 그 이름을 씁니다(N-3).

@@ -336,7 +336,8 @@ const KIT_ASSET = /^https:\/\/github\.com\/polyspec\/kit\/releases\/download\/v(
 const ORDERED_JSON_ASSET = /^https:\/\/github\.com\/polyspec\/ordered-json\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-ordered-json-\1\.tgz$/;
 
 // Every runtime of crudui requires the OrderedJSON release that the root package.json pins (C17.110): a Go module requires
-// its module tag, and a Rust crate takes its Git tag, so no server builds against an older OrderedJSON than the others.
+// its module tag, and a Rust crate that still takes a Git tag of polyspec/ordered-json takes that one; the Rust server of
+// the form comparison takes polyspec-json of the branch v1/rust-core instead, as the core crates do.
 test('every Go module and Rust crate requires the OrderedJSON version of the root package.json (C17.110)', () => {
   const pinned = captured(ORDERED_JSON_ASSET.exec(packageManifest('.').devDependencies?.['@polyspec/ordered-json'] ?? '') ?? assert.fail('the root package.json pins no OrderedJSON release asset'), 1);
   const stale = trackedComposerFiles('go.mod').flatMap((file) => [...readFileSync(path.join(root, file), 'utf8').matchAll(/github\.com\/polyspec\/ordered-json\/packages\/go v(\d+\.\d+\.\d+)/g)]

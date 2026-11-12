@@ -8,7 +8,7 @@ publish = false
 [dependencies]
 polyspec-crud-ui-generator = { path = "../../../../packages/generator/rust" }
 polyspec-crud-ui-validator = { path = "../../../../packages/validator/rust" }
-ordered-json = { package = "polyspec-ordered-json", git = "https://github.com/polyspec/ordered-json", tag = "v0.0.25", version = "0.0.25" }
+polyspec-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
 serde_json = { version = "1", features = ["preserve_order"] }
 axum = { version = "0.8.9", features = ["multipart"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }

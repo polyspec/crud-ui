@@ -1,5 +1,5 @@
 use crate::{bad, Result};
-use ordered_json::{Kind, OrderedMap, Value as Ordered};
+use polyspec_json::{Kind, OrderedMap, ParseOptions, StringifyOptions, Value as Ordered};
 use serde_json::{Map, Value};
 
 /// Decode ordered JSON into the validator's existing ordered record model. Form data numbers are
@@ -14,14 +14,11 @@ pub fn decode_values(bytes: &[u8]) -> Result<Value> {
 }
 
 fn parse(bytes: &[u8]) -> Result<Ordered> {
-    ordered_json::parse_bytes(bytes).map_err(|e| bad(e.to_string()))
+    polyspec_json::parse(bytes, &ParseOptions::default()).map_err(|e| bad(e.to_string()))
 }
 
 fn string_from_ordered(value: &Ordered) -> Result<String> {
-    let bytes = value
-        .string_value()
-        .map_err(|error| bad(error.to_string()))?;
-    String::from_utf8(bytes).map_err(|error| bad(error.to_string()))
+    value.string_value().map_err(|error| bad(error.to_string()))
 }
 
 fn from_ordered(value: &Ordered, exact: bool) -> Result<Value> {
@@ -70,12 +67,18 @@ fn check_number(value: f64, exact: bool) -> Result<()> {
 
 /// Encode form storage through the same ordered JSON processor.
 pub fn encode(value: &Value) -> Result<String> {
-    Ok(ordered_json::stringify(&to_ordered(value, true)?))
+    Ok(polyspec_json::stringify(
+        &to_ordered(value, true)?,
+        &StringifyOptions::default(),
+    ))
 }
 
 /// Encode responses and record storage, whose numbers are any finite double.
 pub fn encode_values(value: &Value) -> Result<String> {
-    Ok(ordered_json::stringify(&to_ordered(value, false)?))
+    Ok(polyspec_json::stringify(
+        &to_ordered(value, false)?,
+        &StringifyOptions::default(),
+    ))
 }
 
 fn to_ordered(value: &Value, exact: bool) -> Result<Ordered> {

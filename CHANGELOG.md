@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- RN-9: the Rust server of the form comparison reads and writes JSON with `polyspec-json` of `https://github.com/polyspec/json.git` (branch `v1/rust-core`), the source of the core crates, instead of the tag `v0.0.25` of ordered-json (RN-9).
 - CUMK-073: the Rust `render_form_view(template, data, render, options)` takes a compiled template, data and bind options and binds the nodes and buttons itself instead of taking raw nodes, buttons, a language and a description that nothing checked; compilation is the one check of the node shape, and the generator contract records the change (CUMK-073).
 - CUVR-095: Rust validation refuses an `accept` parameter that is neither a string nor a list of strings with `INVALID_RULE_PARAMETER`, and `accept` fails a list value with a member that is no file object and a value that is no string, list or object, which it used to pass (CUVR-016, CUVR-095).
 - N-3: the Rust crates take the JSON library as the crate `polyspec-json` (library `polyspec_json`) from `https://github.com/polyspec/json.git`, the name that the json repository gives its core; the contracts name `json` as the library of `json_value`, and CUIT-022, CUIT-040 and CURP-030 name it (N-3).
