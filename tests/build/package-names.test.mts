@@ -101,7 +101,11 @@ test('every tracked manifest names its package by the polyspec convention', () =
       for (const crate of names) if (!/^polyspec-crud-?ui-[a-z0-9-]+$/.test(crate)) failures.push(`${file}: ${crate}`);
     } else if (name === 'go.mod') {
       const module = /^module (\S+)$/m.exec(read(file))?.[1];
-      if (module !== `github.com/polyspec/crudui/${directory.replace(/^legacy\//, '')}`) failures.push(`${file}: ${module}`);
+      // A legacy module keeps the path of its release; a binding module of a component has the repository name crud-ui.
+      const expected = directory.startsWith('legacy/') ? `github.com/polyspec/crudui/${directory.slice('legacy/'.length)}`
+        : /^packages\/(validator|generator)\/go$/.test(directory) ? `github.com/polyspec/crud-ui/${directory}`
+          : `github.com/polyspec/crudui/${directory}`;
+      if (module !== expected) failures.push(`${file}: ${module}`);
     }
   }
   assert.deepEqual(failures, []);

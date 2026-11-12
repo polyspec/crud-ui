@@ -891,7 +891,7 @@
     },
     {
       "paths": [
-        "packages/{validator,generator}/{ts,python,php-ext}/**"
+        "packages/{validator,generator}/{ts,python,php-ext,go}/**"
       ],
       "targets": [
         "bindings-check"

@@ -53,7 +53,13 @@
     "packages/form-binding/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
     "packages/react/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
     "packages/svelte/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
-    "packages/vue/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)"
+    "packages/vue/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; released again after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/ts/wasm/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/go/internal/ffi/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/validator/go/go.mod": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/ts/wasm/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/go/internal/ffi/Cargo.toml": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)",
+    "packages/generator/go/go.mod": "a binding package of binding, released after the generated bindings pass the shared suite and the package tests (V-6 (2)) and kit makes its platform assets (K-3)"
   },
   "goModules": {},
   "annotatedTags": true,

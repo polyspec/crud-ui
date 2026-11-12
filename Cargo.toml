@@ -8,10 +8,14 @@ members = [
     "packages/validator/ts",
     "packages/validator/python",
     "packages/validator/php-ext",
+    "packages/validator/ts/wasm",
+    "packages/validator/go/internal/ffi",
     "packages/generator/rust",
     "packages/generator/ts",
     "packages/generator/python",
     "packages/generator/php-ext",
+    "packages/generator/ts/wasm",
+    "packages/generator/go/internal/ffi",
 ]
 
 # The lints of the core crates (R-1): every warning fails, no unsafe code, no unwrap or expect, no discarded result, no

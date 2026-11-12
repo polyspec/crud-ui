@@ -5,7 +5,9 @@ use (
 	./legacy/examples/cross-check-console/validators/go
 	./examples/form-comparison/servers/go
 	./legacy/packages/generator/go
+	./packages/generator/go
 	./legacy/packages/validator/go
+	./packages/validator/go
 	./scripts/go
 	./legacy/tests/native-generators/programs/go
 )

@@ -125,3 +125,4 @@ go.work.sum
 /.links
 # The generated folders of the binding packages, which make bindings writes (binding design L-2)
 /packages/*/*/generated/
+/packages/*/*/*/generated/

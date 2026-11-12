@@ -215,7 +215,7 @@ lint-php: php-tables ## Lint the PHP: phpcs with phpcs.xml.dist, and PHPStan wit
 # lint-rust lints the core crates: kit runs clippy --workspace, and the binding crates, which need make bindings first, are
 # excluded and linted by lint-bindings.
 BINDING_COMPONENTS := validator generator
-BINDING_CRATES := $(foreach component,$(BINDING_COMPONENTS),polyspec-crud-ui-$(component)-node polyspec-crud-ui-$(component)-python polyspec-crud-ui-$(component)-php-ext)
+BINDING_CRATES := $(foreach component,$(BINDING_COMPONENTS),polyspec-crud-ui-$(component)-node polyspec-crud-ui-$(component)-python polyspec-crud-ui-$(component)-php-ext polyspec-crud-ui-$(component)-wasm polyspec-crud-ui-$(component)-go)
 lint-rust: ## Lint the Rust: cargo clippy in each Cargo workspace with the [workspace.lints] of its Cargo.toml and clippy.toml
 	$(NODE) $(KIT)/lint-rust.$(KIT_EXT) --locked $(foreach crate,$(BINDING_CRATES),--exclude $(crate))
 
