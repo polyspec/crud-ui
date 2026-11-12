@@ -37,117 +37,60 @@ pub fn canonical_text(value: &Value) -> Option<Cow<'_, str>> {
     }
 }
 
-/// ECMAScript `Number::toString(x)` with radix 10 (`NaN`, `Infinity` and
-/// `-Infinity` for nonfinite values, which JSON values never are).
-///
-/// ECMAScript takes the fewest significant digits k whose decimal reads back as
-/// `x` and, among such k-digit decimals, the one closest to `x`, an exact tie going
-/// to the even one. Rust's `{:e}` writes the fewest digits but may break a tie the
-/// other way (2^-25 is exactly 2.98023223876953125e-8; ECMAScript writes
-/// …312e-8, `{:e}` writes …313e-8). The k-digit decimal closest to `x` is the
-/// correctly rounded one, which `{:.*e}` writes with ties to even; when that one
-/// does not read back as `x` (possible just above a power of two), the shortest
-/// output is the only k-digit decimal that does.
+/// ECMAScript `Number::toString(x)` with radix 10 (CUVR-021): the float text of ordered-json, the one
+/// float-to-text function of polyspec (C-1), for a finite number, and `NaN`, `Infinity` and
+/// `-Infinity` for the others, which no JSON value holds.
 pub fn number_text(x: f64) -> String {
-    if x.is_nan() {
-        return "NaN".to_string();
+    match polyspec_ordered_json::number_text(x) {
+        Ok(text) => text,
+        Err(_) if x.is_nan() => "NaN".to_owned(),
+        Err(_) if x > 0.0 => "Infinity".to_owned(),
+        Err(_) => "-Infinity".to_owned(),
     }
-    if x.is_infinite() {
-        return if x > 0.0 { "Infinity" } else { "-Infinity" }.to_string();
-    }
-    if x == 0.0 {
-        // Covers negative zero.
-        return "0".to_string();
-    }
-    let sign = if x < 0.0 { "-" } else { "" };
-    let (digits, n) = shortest_digits(x.abs());
-    let k = digit_count(&digits);
-    let digits: String = digits
-        .iter()
-        .map(|digit| char::from(b'0' + digit))
-        .collect();
-
-    let body = if k <= n && n <= 21 {
-        format!("{digits}{}", "0".repeat(span(n - k)))
-    } else if 0 < n && n <= 21 {
-        let (int, frac) = digits.split_at(span(n));
-        format!("{int}.{frac}")
-    } else if -6 < n && n <= 0 {
-        format!("0.{}{digits}", "0".repeat(span(-n)))
-    } else {
-        let e = n - 1;
-        let e_sign = if e >= 0 { '+' } else { '-' };
-        let (first, rest) = digits.split_at(1);
-        if rest.is_empty() {
-            format!("{first}e{e_sign}{}", e.abs())
-        } else {
-            format!("{first}.{rest}e{e_sign}{}", e.abs())
-        }
-    };
-    format!("{sign}{body}")
 }
 
-/// A finite nonzero double as the decimal its canonical text writes: `significand × 10^exponent`,
-/// and `(0, 0)` for zero.
+/// A finite double as the decimal its canonical text writes: `significand × 10^exponent` of its
+/// magnitude, and `(0, 0)` for zero and the values that are not finite.
 pub(crate) fn decimal(value: f64) -> (u64, i32) {
     if value == 0.0 || !value.is_finite() {
         return (0, 0);
     }
-    let (digits, n) = shortest_digits(value.abs());
-    // At most 17 digits, so the significand fits in a u64.
-    let significand = digits.iter().fold(0u64, |significand, digit| {
-        significand * 10 + u64::from(*digit)
-    });
-    (significand, n - digit_count(&digits))
-}
-
-/// The digits `d1…dk` and the exponent `n` with `x = 0.d1…dk × 10^n` that ECMAScript
-/// `Number::toString` chooses for a finite positive double (see [`number_text`]).
-fn shortest_digits(magnitude: f64) -> (Vec<u8>, i32) {
-    let shortest = format!("{magnitude:e}");
-    let count = shortest
-        .bytes()
-        .take_while(|byte| *byte != b'e')
-        .filter(u8::is_ascii_digit)
-        .count();
-    let rounded = format!("{magnitude:.*e}", count.saturating_sub(1));
-    let scientific = if rounded.parse::<f64>() == Ok(magnitude) {
-        rounded
-    } else {
-        shortest
+    let text = number_text(value.abs());
+    let (mantissa, exponent) = match text.split_once('e') {
+        Some((mantissa, exponent)) => (mantissa, exponent),
+        None => (text.as_str(), "0"),
     };
-    // `{:e}` writes the digits, an optional point, `e`, an optional `-` and the decimal exponent.
-    let mut digits = Vec::new();
-    let mut exponent: i32 = 0;
-    let mut negative = false;
-    let mut in_exponent = false;
-    for byte in scientific.bytes() {
-        match byte {
-            b'e' => in_exponent = true,
-            b'-' => negative = true,
-            b'0'..=b'9' if in_exponent => exponent = exponent * 10 + i32::from(byte - b'0'),
-            b'0'..=b'9' => digits.push(byte - b'0'),
-            _ => {}
-        }
-    }
-    let exponent = if negative { -exponent } else { exponent };
-    (digits, exponent + 1)
+    // The canonical text writes a decimal exponent with an optional sign.
+    let (negative, exponent_digits) = match exponent.strip_prefix('-') {
+        Some(digits) => (true, digits),
+        None => (false, exponent.trim_start_matches('+')),
+    };
+    let magnitude = exponent_digits.bytes().fold(0i32, |value, digit| {
+        value * 10 + i32::from(digit.wrapping_sub(b'0'))
+    });
+    let exponent = if negative { -magnitude } else { magnitude };
+    let (integer, fraction) = match mantissa.split_once('.') {
+        Some((integer, fraction)) => (integer, fraction),
+        None => (mantissa, ""),
+    };
+    let digits = format!("{integer}{fraction}");
+    let significant = digits.trim_end_matches('0');
+    // At most 17 significant digits, so the significand fits in a u64.
+    let significand = significant.bytes().fold(0u64, |value, digit| {
+        value * 10 + u64::from(digit.wrapping_sub(b'0'))
+    });
+    let zeros = digit_count(&digits[significant.len()..]);
+    (significand, exponent - digit_count(fraction) + zeros)
 }
 
-/// The number of digits of a double's shortest decimal, at most 17.
+/// The number of digits of a part of a canonical number text, at most 21 positions plus 17 digits.
 #[allow(
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
-    reason = "R-1: a double has at most 17 significant digits"
+    reason = "R-1: a canonical number text has at most a few dozen digits"
 )]
-fn digit_count(digits: &[u8]) -> i32 {
+fn digit_count(digits: &str) -> i32 {
     digits.len() as i32
-}
-
-/// A count of characters that a branch of [`number_text`] has checked to be nonnegative.
-fn span(count: i32) -> usize {
-    // u32 to usize is lossless on every target of the crate.
-    count.unsigned_abs() as usize
 }
 
 #[cfg(test)]

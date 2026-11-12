@@ -136,7 +136,9 @@ A value beyond the value limits is an input failure in every argument and option
 - **CUIT-039** PHP: `Polyspec\Crudui\Validator\Support\JsonText::decode` returns what
   `json_decode($json, false, 512, JSON_THROW_ON_ERROR)` returns and keeps an escaped surrogate as
   its three bytes. The class has no dependencies.
-- **CUIT-040** Rust: `polyspec_crudui_validator::text::JsonText` reads the text without replacing anything.
+- **CUIT-040** Rust: `polyspec_crudui_validator::text::JsonText` reads the text with the reader of ordered-json, which
+  refuses a repeated member name and keeps an unpaired surrogate escape as its code unit, without replacing anything.
+  The JSON texts that the Rust core writes take their string and number tokens from the writer of ordered-json.
   `validate_text`, `validate_list_text` and `validate_detail_text` run the validation entries
   over it, and `polyspec_crudui_generator::text` holds the checks of the generation entries.
 

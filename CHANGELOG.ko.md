@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: a3b227631801d9a8d8d0c34d5df68ad5fed591f8fd6b90cc99d666c3ab589c99 -->
+<!-- source-sha256: 9160a4ff06c961572bb223bd68d6e707164b2d720addefe2af8df6c486ce0ac1 -->
 
 ## Unreleased
 
+- C-1: Rust crate는 JSON 텍스트를 ordered-json의 읽기로 읽고, 쓰는 JSON 텍스트의 문자열·숫자 토큰과 유일한 실수 텍스트를 ordered-json에서 가져온다. 라이브러리는 더는 serde_json으로 입력 텍스트를 읽지 않으므로 ordered-json이 켜는 feature(`unbounded_depth`, `raw_value`)가 입력에 닿지 않는다(C-1).
 - D-16: 값의 중첩은 최대 256단계이고(CUIT-022) `dataLimits.depth`의 상한도 256이다(CUSC-087, CUVR-084). ordered-json의 읽기 한도다. Rust 읽기와 순회가 이를 따르고, 공유 검증 케이스에 객체가 아닌 명세(CUVR-088)가 생겼다(D-16).
 - C-10: `packages/validator/rust/interface.json`과 `packages/generator/rust/interface.json`이 두 crate의 인터페이스 계약을 bindgen 스키마로 선언하고, 언어 API와 다른 점을 `changes`에 적는다. 각 crate는 계약을 패키지에 담고(`include`) 값 타입 `json_value`의 주인인 `polyspec-ordered-json`에 git 소스로 의존한다. Rust `Form::copy_row`는 `CopyRowOptions { new_key, after_key }`를 받고(CURT-005), `ViewState`와 `History`에 읽기 접근자가 생겼으며, Rust 시험 프로그램은 픽스처의 JavaScript `{ key, afterKey }`를 그것으로 옮긴다(C-10).
 - L-2: 두 Rust crate는 bindgen git 저장소의 `polyspec-bindgen-core`에 의존하고(각 `Cargo.lock`이 commit을 고정한다) `ComposeLoadError`, `FormInputError`, `ValidateError`, `FormError`에 그 `Kinds`를 구현한다. kind는 code의 소문자 snake case(예: `invalid_form_input`)이고 status와 errno는 없다. `FormError::code`는 code 텍스트로 쓰고 비교하는 enum `FormErrorCode`다(L-2).

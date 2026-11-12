@@ -188,13 +188,10 @@ fn placeholder_option() -> Value {
     json!({"value":"","label":"select","selected":false,"isDefault":false})
 }
 
-#[allow(
-    clippy::expect_used,
-    reason = "R-1: serde_json writes every str, so the serialization never fails"
-)]
+/// A string literal of a script: the string token of ordered-json with `<`, U+2028 and U+2029
+/// escaped, so the literal cannot end a script element or a line of the script.
 fn script_string(value: &str) -> String {
-    serde_json::to_string(value)
-        .expect("string serialization")
+    string_token(value)
         .replace('<', "\\u003c")
         .replace('\u{2028}', "\\u2028")
         .replace('\u{2029}', "\\u2029")

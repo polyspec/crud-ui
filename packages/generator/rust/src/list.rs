@@ -154,7 +154,7 @@ fn cell_display(
                         "Number decimals must be between 0 and 100",
                     ))
                 }
-                _ => buffer.format(number).to_owned(),
+                _ => polyspec_crudui_validator::validate::canonical::number_text(number),
             };
             if truthy(options.get("thousands")) {
                 let (integer, fraction) = match body.split_once('.') {

@@ -69,27 +69,49 @@ fn number_string(number: &serde_json::Number) -> String {
     number_text(json_number(number))
 }
 
-/// JSON text as JSON.stringify writes it: each number as `number_string` writes it.
+/// The JSON text of a value as ECMAScript `JSON.stringify` writes it (CUMK-066): members in order,
+/// no whitespace, each string as the string token of ordered-json and each number as its double
+/// (CURP-028); the tokens are those of the serializer of ordered-json (C-1).
 pub(crate) fn json_text(value: &Value) -> String {
+    let mut out = String::new();
+    write_json(&mut out, value);
+    out
+}
+
+/// The string token of a text, as ordered-json writes it.
+pub(crate) fn string_token(text: &str) -> String {
+    polyspec_ordered_json::Value::string(text).raw().to_owned()
+}
+
+/// Write the JSON text of a value; see [`json_text`].
+fn write_json(out: &mut String, value: &Value) {
     match value {
-        Value::Number(n) => number_string(n),
-        Value::Array(items) => format!(
-            "[{}]",
-            items.iter().map(json_text).collect::<Vec<_>>().join(",")
-        ),
-        Value::Object(members) => format!(
-            "{{{}}}",
-            members
-                .iter()
-                .map(|(key, member)| format!(
-                    "{}:{}",
-                    Value::String(key.clone()),
-                    json_text(member)
-                ))
-                .collect::<Vec<_>>()
-                .join(",")
-        ),
-        other => other.to_string(),
+        Value::Null => out.push_str("null"),
+        Value::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
+        Value::Number(n) => out.push_str(&number_string(n)),
+        Value::String(text) => out.push_str(&string_token(text)),
+        Value::Array(items) => {
+            out.push('[');
+            for (index, item) in items.iter().enumerate() {
+                if index > 0 {
+                    out.push(',');
+                }
+                write_json(out, item);
+            }
+            out.push(']');
+        }
+        Value::Object(members) => {
+            out.push('{');
+            for (index, (key, member)) in members.iter().enumerate() {
+                if index > 0 {
+                    out.push(',');
+                }
+                out.push_str(&string_token(key));
+                out.push(':');
+                write_json(out, member);
+            }
+            out.push('}');
+        }
     }
 }
 
@@ -109,45 +131,7 @@ pub(crate) fn condition_text(value: Option<&Value>) -> String {
     match value {
         None | Some(Value::Null) => String::new(),
         Some(Value::String(s)) => s.clone(),
-        Some(other) => {
-            let mut out = String::new();
-            write_condition_json(&mut out, other);
-            out
-        }
-    }
-}
-
-/// The `JSON.stringify` text of a JSON value: members in order, no whitespace, ECMAScript numbers.
-fn write_condition_json(out: &mut String, value: &Value) {
-    match value {
-        Value::Null => out.push_str("null"),
-        Value::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
-        Value::Number(n) => out.push_str(&number_string(n)),
-        // serde_json quotes a string as JSON.stringify does: `"` and `\` escaped, the short escapes
-        // of U+0008, U+0009, U+000A, U+000C and U+000D, `\u00xx` for the other controls.
-        Value::String(_) => out.push_str(&value.to_string()),
-        Value::Array(items) => {
-            out.push('[');
-            for (index, item) in items.iter().enumerate() {
-                if index > 0 {
-                    out.push(',');
-                }
-                write_condition_json(out, item);
-            }
-            out.push(']');
-        }
-        Value::Object(members) => {
-            out.push('{');
-            for (index, (key, member)) in members.iter().enumerate() {
-                if index > 0 {
-                    out.push(',');
-                }
-                out.push_str(&Value::String(key.clone()).to_string());
-                out.push(':');
-                write_condition_json(out, member);
-            }
-            out.push('}');
-        }
+        Some(other) => json_text(other),
     }
 }
 

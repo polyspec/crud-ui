@@ -9,7 +9,6 @@
 //! failures as every other runtime: the load failure `INVALID_TEXT` for a
 //! specification or a file, and `INVALID_FORM_INPUT` for other caller values.
 
-use std::collections::HashSet;
 use std::fmt;
 
 use serde_json::{Map, Number, Value};
@@ -23,9 +22,6 @@ pub const MESSAGE: &str = "Text must be Unicode scalar values";
 
 /// Message of every value beyond the limits.
 pub const VALUE_LIMIT_MESSAGE: &str = "Recursive or excessively nested value";
-
-/// The nesting depth the JSON parser accepts: the reading limit of ordered-json (CUIT-022).
-const MAX_DEPTH: usize = 256;
 
 /// Maximum nodes a value may hold: every array, object, string, number, boolean and null.
 pub(crate) const NODE_LIMIT: usize = 1_000_000;
@@ -89,235 +85,17 @@ impl fmt::Display for JsonTextError {
 
 impl std::error::Error for JsonTextError {}
 
-struct Parser<'a> {
-    text: &'a str,
-    bytes: &'a [u8],
-    pos: usize,
-}
-
-impl Parser<'_> {
-    fn error<T>(&self) -> Result<T, JsonTextError> {
-        Err(JsonTextError { offset: self.pos })
-    }
-
-    fn space(&mut self) {
-        while matches!(self.bytes.get(self.pos), Some(b' ' | b'\t' | b'\n' | b'\r')) {
-            self.pos += 1;
-        }
-    }
-
-    fn literal(&mut self, word: &[u8], value: JsonText) -> Result<JsonText, JsonTextError> {
-        if self.bytes[self.pos..].starts_with(word) {
-            self.pos += word.len();
-            Ok(value)
-        } else {
-            self.error()
-        }
-    }
-
-    fn value(&mut self, depth: usize) -> Result<JsonText, JsonTextError> {
-        self.space();
-        match self.bytes.get(self.pos) {
-            Some(b'{') => {
-                if depth >= MAX_DEPTH {
-                    return self.error();
-                }
-                self.pos += 1;
-                let mut members: Vec<(JsonString, JsonText)> = Vec::new();
-                let mut names: HashSet<JsonString> = HashSet::new();
-                self.space();
-                if self.bytes.get(self.pos) == Some(&b'}') {
-                    self.pos += 1;
-                    return Ok(JsonText::Object(members));
-                }
-                loop {
-                    self.space();
-                    if self.bytes.get(self.pos) != Some(&b'"') {
-                        return self.error();
-                    }
-                    let offset = self.pos;
-                    let name = self.string()?;
-                    if !names.insert(name.clone()) {
-                        return Err(JsonTextError { offset });
-                    }
-                    self.space();
-                    if self.bytes.get(self.pos) != Some(&b':') {
-                        return self.error();
-                    }
-                    self.pos += 1;
-                    let value = self.value(depth + 1)?;
-                    members.push((name, value));
-                    self.space();
-                    match self.bytes.get(self.pos) {
-                        Some(b',') => self.pos += 1,
-                        Some(b'}') => {
-                            self.pos += 1;
-                            return Ok(JsonText::Object(members));
-                        }
-                        _ => return self.error(),
-                    }
-                }
-            }
-            Some(b'[') => {
-                if depth >= MAX_DEPTH {
-                    return self.error();
-                }
-                self.pos += 1;
-                let mut items = Vec::new();
-                self.space();
-                if self.bytes.get(self.pos) == Some(&b']') {
-                    self.pos += 1;
-                    return Ok(JsonText::Array(items));
-                }
-                loop {
-                    items.push(self.value(depth + 1)?);
-                    self.space();
-                    match self.bytes.get(self.pos) {
-                        Some(b',') => self.pos += 1,
-                        Some(b']') => {
-                            self.pos += 1;
-                            return Ok(JsonText::Array(items));
-                        }
-                        _ => return self.error(),
-                    }
-                }
-            }
-            Some(b'"') => Ok(JsonText::String(self.string()?)),
-            Some(b't') => self.literal(b"true", JsonText::Bool(true)),
-            Some(b'f') => self.literal(b"false", JsonText::Bool(false)),
-            Some(b'n') => self.literal(b"null", JsonText::Null),
-            Some(b'-' | b'0'..=b'9') => self.number(),
-            _ => self.error(),
-        }
-    }
-
-    fn digits(&mut self) -> usize {
-        let start = self.pos;
-        while matches!(self.bytes.get(self.pos), Some(b'0'..=b'9')) {
-            self.pos += 1;
-        }
-        self.pos - start
-    }
-
-    fn number(&mut self) -> Result<JsonText, JsonTextError> {
-        let start = self.pos;
-        if self.bytes[self.pos] == b'-' {
-            self.pos += 1;
-        }
-        match self.bytes.get(self.pos) {
-            Some(b'0') => self.pos += 1,
-            Some(b'1'..=b'9') => {
-                self.digits();
-            }
-            _ => return self.error(),
-        }
-        if self.bytes.get(self.pos) == Some(&b'.') {
-            self.pos += 1;
-            if self.digits() == 0 {
-                return self.error();
-            }
-        }
-        if matches!(self.bytes.get(self.pos), Some(b'e' | b'E')) {
-            self.pos += 1;
-            if matches!(self.bytes.get(self.pos), Some(b'+' | b'-')) {
-                self.pos += 1;
-            }
-            if self.digits() == 0 {
-                return self.error();
-            }
-        }
-        // The number is ASCII, so its bounds are character bounds of the text.
-        Ok(JsonText::Number(self.text[start..self.pos].to_owned()))
-    }
-
-    fn hex(&mut self) -> Result<u16, JsonTextError> {
-        let digits = self
-            .bytes
-            .get(self.pos..self.pos + 4)
-            .ok_or(JsonTextError { offset: self.pos })?;
-        let mut unit: u16 = 0;
-        for digit in digits {
-            let value = match digit {
-                b'0'..=b'9' => digit - b'0',
-                b'a'..=b'f' => digit - b'a' + 10,
-                b'A'..=b'F' => digit - b'A' + 10,
-                _ => return self.error(),
-            };
-            unit = unit * 16 + u16::from(value);
-        }
-        self.pos += 4;
-        Ok(unit)
-    }
-
-    fn string(&mut self) -> Result<JsonString, JsonTextError> {
-        self.pos += 1;
-        let mut units: Vec<u16> = Vec::new();
-        loop {
-            let Some(&byte) = self.bytes.get(self.pos) else {
-                return self.error();
-            };
-            match byte {
-                b'"' => {
-                    self.pos += 1;
-                    return Ok(match String::from_utf16(&units) {
-                        Ok(text) => JsonString::Text(text),
-                        Err(_) => JsonString::Units(units),
-                    });
-                }
-                b'\\' => {
-                    self.pos += 1;
-                    let unit = match self.bytes.get(self.pos) {
-                        Some(b'"') => u16::from(b'"'),
-                        Some(b'\\') => u16::from(b'\\'),
-                        Some(b'/') => u16::from(b'/'),
-                        Some(b'b') => 0x08,
-                        Some(b'f') => 0x0c,
-                        Some(b'n') => u16::from(b'\n'),
-                        Some(b'r') => u16::from(b'\r'),
-                        Some(b't') => u16::from(b'\t'),
-                        Some(b'u') => {
-                            self.pos += 1;
-                            units.push(self.hex()?);
-                            continue;
-                        }
-                        _ => return self.error(),
-                    };
-                    self.pos += 1;
-                    units.push(unit);
-                }
-                0x00..=0x1f => return self.error(),
-                _ => {
-                    // The scan stops only after whole characters, so the position is a character
-                    // bound of the text.
-                    let character = self
-                        .text
-                        .get(self.pos..)
-                        .and_then(|rest| rest.chars().next())
-                        .ok_or(JsonTextError { offset: self.pos })?;
-                    let mut buffer = [0u16; 2];
-                    units.extend_from_slice(character.encode_utf16(&mut buffer));
-                    self.pos += character.len_utf8();
-                }
-            }
-        }
-    }
-}
-
 impl JsonText {
-    /// Read one JSON document with the grammar and nesting limit `serde_json`
-    /// applies, keeping every string as written.
+    /// Read one JSON document with the reader of ordered-json (C-1): its grammar (RFC 8259), its
+    /// nesting limit of 256 levels (CUIT-022), and a repeated member name refused, keeping every
+    /// string as written, an unpaired surrogate escape included.
     pub fn parse(text: &str) -> Result<JsonText, JsonTextError> {
-        let mut parser = Parser {
-            text,
-            bytes: text.as_bytes(),
-            pos: 0,
+        let options = polyspec_ordered_json::ParseOptions {
+            max_depth: None,
+            reject_duplicates: Some(true),
         };
-        let value = parser.value(0)?;
-        parser.space();
-        if parser.pos != parser.bytes.len() {
-            return parser.error();
-        }
-        Ok(value)
+        let value = polyspec_ordered_json::parse(text.as_bytes(), &options).map_err(text_error)?;
+        from_ordered(&value)
     }
 
     /// The member `name` of an object.
@@ -380,6 +158,59 @@ impl JsonText {
     pub fn has_limit_violation(&self) -> bool {
         value_failure(self) == Some(ValueFailure::Limit)
     }
+}
+
+/// The failure of a JSON text at the offset that the reader reports.
+fn text_error(error: polyspec_ordered_json::Error) -> JsonTextError {
+    let offset = match error.offset().map(usize::try_from) {
+        Some(Ok(offset)) => offset,
+        // A failure without an offset, or one beyond usize, is placed at the end of the text.
+        _ => usize::MAX,
+    };
+    JsonTextError { offset }
+}
+
+/// A JSON string of the UTF-16 code units of a string value: text when they are valid UTF-16.
+fn json_string(value: &polyspec_ordered_json::Value) -> Result<JsonString, JsonTextError> {
+    let mut units = Vec::new();
+    for unit in value.string_units().map_err(text_error)? {
+        // ordered-json gives UTF-16 code units, each below 65536.
+        match u16::try_from(unit) {
+            Ok(unit) => units.push(unit),
+            Err(_) => return Err(JsonTextError { offset: usize::MAX }),
+        }
+    }
+    Ok(match String::from_utf16(&units) {
+        Ok(text) => JsonString::Text(text),
+        Err(_) => JsonString::Units(units),
+    })
+}
+
+/// The JSON text value of a value that ordered-json read.
+fn from_ordered(value: &polyspec_ordered_json::Value) -> Result<JsonText, JsonTextError> {
+    use polyspec_ordered_json::Kind;
+    Ok(match value.kind() {
+        Kind::Null => JsonText::Null,
+        Kind::Boolean => JsonText::Bool(value.boolean_value().map_err(text_error)?),
+        Kind::Number => JsonText::Number(value.number_literal().map_err(text_error)?.to_owned()),
+        Kind::String => JsonText::String(json_string(value)?),
+        Kind::Array => JsonText::Array(
+            value
+                .items()
+                .map_err(text_error)?
+                .iter()
+                .map(from_ordered)
+                .collect::<Result<_, _>>()?,
+        ),
+        Kind::Object => JsonText::Object(
+            value
+                .members()
+                .map_err(text_error)?
+                .iter()
+                .map(|(name, member)| Ok((json_string(name)?, from_ordered(member)?)))
+                .collect::<Result<_, JsonTextError>>()?,
+        ),
+    })
 }
 
 /// The first failure of a value, which the text and limit checks report.

@@ -1,6 +1,6 @@
 # 입력 텍스트
 <!-- doc-id: docs-spec-input-text -->
-<!-- source-sha256: 4eea4b2b46940f7928ca896b8ee1c16f69532368bd876231ba12f44d496aea0d -->
+<!-- source-sha256: 51baa1f63b246ceab85a4e85c032cbc839b22441f166754ab42760650e8af6b7 -->
 
 [English](input-text.md).
 
@@ -128,7 +128,9 @@ PHP 라이브러리의 값 복사와 확장의 값 변환은 변환하는 모든
 - **CUIT-039** PHP: `Polyspec\Crudui\Validator\Support\JsonText::decode`는
   `json_decode($json, false, 512, JSON_THROW_ON_ERROR)`와 같은 값을 반환하고, 이스케이프된
   서로게이트를 3바이트로 보존합니다. 이 클래스는 의존성이 없습니다.
-- **CUIT-040** Rust: `polyspec_crudui_validator::text::JsonText`는 아무것도 바꾸지 않고 텍스트를 읽습니다.
+- **CUIT-040** Rust: `polyspec_crudui_validator::text::JsonText`는 ordered-json의 읽기로 아무것도 바꾸지 않고 텍스트를
+  읽습니다. 반복된 멤버 이름은 거부하고, 짝 없는 서로게이트 이스케이프는 그 코드 단위로 유지합니다. Rust 코어가 쓰는
+  JSON 텍스트의 문자열·숫자 토큰은 ordered-json의 쓰기에서 옵니다.
   `validate_text`, `validate_list_text`, `validate_detail_text`는 이 값으로 검증 진입점을 실행하고,
   `polyspec_crudui_generator::text`는 생성 진입점의 검사를 제공합니다.
 
