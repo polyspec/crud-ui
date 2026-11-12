@@ -1,0 +1,805 @@
+{
+  "schema": "polyspec/interface@1",
+  "library": "crudui-validator",
+  "core": {
+    "crate": "polyspec-crudui-validator",
+    "path": "packages/validator/rust"
+  },
+  "targets": [
+    "php",
+    "python",
+    "node",
+    "go",
+    "wasm"
+  ],
+  "packages": {
+    "php": {
+      "package": "polyspec/crudui-validator",
+      "namespace": "Polyspec\\CruduiValidator"
+    },
+    "python": {
+      "package": "polyspec-crudui-validator",
+      "module": "polyspec.crudui_validator"
+    },
+    "node": {
+      "package": "@polyspec/crudui-validator",
+      "entries": {
+        ".": {
+          "conditions": {
+            "node": "napi",
+            "browser": "wasm"
+          },
+          "formats": [
+            "import",
+            "require"
+          ]
+        }
+      }
+    },
+    "go": {
+      "module": "github.com/polyspec/crudui/packages/validator/go"
+    }
+  },
+  "naming": {
+    "exceptions": []
+  },
+  "types": {
+    "json_value": {
+      "library": "ordered-json",
+      "unit": "value"
+    }
+  },
+  "errors": {
+    "classes": {
+      "value": {
+        "php": "Polyspec\\CruduiValidator\\CruduiValueError",
+        "python": "CruduiValueError",
+        "node": "CruduiValueError",
+        "wasm": "CruduiValueError"
+      },
+      "type": {
+        "php": "Polyspec\\CruduiValidator\\CruduiTypeError",
+        "python": "CruduiTypeError",
+        "node": "CruduiTypeError",
+        "wasm": "CruduiTypeError"
+      },
+      "io": {
+        "php": "Polyspec\\CruduiValidator\\CruduiIoError",
+        "python": "CruduiIoError",
+        "node": "CruduiIoError",
+        "wasm": "CruduiIoError"
+      },
+      "store": {
+        "php": "Polyspec\\CruduiValidator\\CruduiStoreError",
+        "python": "CruduiStoreError",
+        "node": "CruduiStoreError",
+        "wasm": "CruduiStoreError"
+      },
+      "busy": {
+        "php": "Polyspec\\CruduiValidator\\CruduiBusyError",
+        "python": "CruduiBusyError",
+        "node": "CruduiBusyError",
+        "wasm": "CruduiBusyError"
+      },
+      "internal": {
+        "php": "Polyspec\\CruduiValidator\\CruduiInternalError",
+        "python": "CruduiInternalError",
+        "node": "CruduiInternalError",
+        "wasm": "CruduiInternalError"
+      }
+    },
+    "fixed": [
+      {
+        "lang": "php",
+        "class": "ArgumentCountError"
+      },
+      {
+        "lang": "php",
+        "class": "Error"
+      },
+      {
+        "lang": "python",
+        "class": "TypeError"
+      },
+      {
+        "lang": "node",
+        "class": "TypeError"
+      },
+      {
+        "lang": "wasm",
+        "class": "TypeError"
+      }
+    ],
+    "kinds": [
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+        "category": "value",
+        "class": "compose_load_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::ValidateError::Input",
+        "category": "value",
+        "class": "form_input_error"
+      }
+    ],
+    "binding": [],
+    "wrapped": []
+  },
+  "units": [
+    {
+      "id": "file_loader",
+      "name": [
+        "file",
+        "loader"
+      ],
+      "module": "",
+      "kind": "interface",
+      "visibility": "public",
+      "origin": "callback",
+      "core": "polyspec_crudui_validator::compose::FileLoader",
+      "thread": "owner",
+      "members": [
+        {
+          "id": "file_loader.normalize",
+          "name": [
+            "normalize"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "basepath"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [],
+          "wait": "none",
+          "async_allowed": false
+        },
+        {
+          "id": "file_loader.load",
+          "name": [
+            "load"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "json_value",
+          "raises": [],
+          "wait": "none",
+          "async_allowed": false,
+          "errors": {
+            "recognize": [
+              {
+                "unit": "compose_load_error"
+              }
+            ],
+            "reason": "CUIT-041"
+          }
+        }
+      ]
+    },
+    {
+      "id": "validate_options",
+      "name": [
+        "validate",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_validator::ValidateOptions",
+      "fields": [
+        {
+          "name": [
+            "files"
+          ],
+          "type": {
+            "map": "json_value"
+          },
+          "default": {
+            "empty": "map"
+          }
+        },
+        {
+          "name": [
+            "loader"
+          ],
+          "type": {
+            "optional": {
+              "unit": "file_loader"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        },
+        {
+          "name": [
+            "basepath"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        }
+      ]
+    },
+    {
+      "id": "validate_list_options",
+      "name": [
+        "validate",
+        "list",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_validator::ValidateListOptions",
+      "fields": [
+        {
+          "name": [
+            "files"
+          ],
+          "type": {
+            "map": "json_value"
+          },
+          "default": {
+            "empty": "map"
+          }
+        },
+        {
+          "name": [
+            "loader"
+          ],
+          "type": {
+            "optional": {
+              "unit": "file_loader"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        },
+        {
+          "name": [
+            "basepath"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        }
+      ]
+    },
+    {
+      "id": "validate_detail_options",
+      "name": [
+        "validate",
+        "detail",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_validator::ValidateDetailOptions",
+      "fields": [
+        {
+          "name": [
+            "files"
+          ],
+          "type": {
+            "map": "json_value"
+          },
+          "default": {
+            "empty": "map"
+          }
+        },
+        {
+          "name": [
+            "loader"
+          ],
+          "type": {
+            "optional": {
+              "unit": "file_loader"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        },
+        {
+          "name": [
+            "basepath"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        }
+      ]
+    },
+    {
+      "id": "validation_error",
+      "name": [
+        "validation",
+        "error"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_validator::validate::ValidationError",
+      "fields": [
+        {
+          "name": [
+            "path"
+          ],
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": [
+            "field"
+          ],
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": [
+            "rule"
+          ],
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": [
+            "message"
+          ],
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": [
+            "value"
+          ],
+          "type": "json_value",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "validation_result",
+      "name": [
+        "validation",
+        "result"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_validator::validate::ValidationResult",
+      "fields": [
+        {
+          "name": [
+            "valid"
+          ],
+          "type": "bool",
+          "required": true
+        },
+        {
+          "name": [
+            "errors"
+          ],
+          "type": {
+            "list": {
+              "unit": "validation_error"
+            }
+          },
+          "required": true
+        },
+        {
+          "name": [
+            "hidden"
+          ],
+          "type": {
+            "list": "text"
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "compose_load_error",
+      "name": [
+        "compose",
+        "load",
+        "error"
+      ],
+      "module": "errors",
+      "kind": "error",
+      "visibility": "public",
+      "origin": "generated",
+      "category": "value",
+      "final": true,
+      "members": [
+        {
+          "id": "compose_load_error.trace",
+          "name": [
+            "trace"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "text"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_validator::compose::ComposeLoadError::trace",
+            "receiver": "&self"
+          }
+        }
+      ]
+    },
+    {
+      "id": "form_input_error",
+      "name": [
+        "form",
+        "input",
+        "error"
+      ],
+      "module": "errors",
+      "kind": "error",
+      "visibility": "public",
+      "origin": "generated",
+      "category": "value",
+      "final": true
+    },
+    {
+      "id": "validator",
+      "name": [
+        "validator"
+      ],
+      "module": "",
+      "kind": "functions",
+      "visibility": "public",
+      "origin": "generated",
+      "members": [
+        {
+          "id": "validator.validate",
+          "name": [
+            "validate"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "validate_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": {
+            "unit": "validation_result"
+          },
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_validator::validate"
+        },
+        {
+          "id": "validator.validate_list",
+          "name": [
+            "validate",
+            "list"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "validate_list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_validator::validate_list"
+        },
+        {
+          "id": "validator.validate_detail",
+          "name": [
+            "validate",
+            "detail"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "validate_detail_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_validator::ValidateError::Input"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_validator::validate_detail"
+        }
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "id": "package-names",
+      "rule": "P-1",
+      "reason": "P-1: one form of names: Composer polyspec/crudui-validator, PHP Polyspec\\CruduiValidator, PyPI polyspec-crudui-validator, Python polyspec.crudui_validator; the PHP classes Polyspec\\Crudui\\Validator and the Python package polyspec.crudui.validator move, npm @polyspec/crudui-validator",
+      "symbol": "Polyspec\\Crudui\\Validator, polyspec.crudui.validator",
+      "from": {
+        "php": "final class Polyspec\\Crudui\\Validator (static methods)",
+        "python": "import polyspec.crudui.validator"
+      },
+      "to": "validator"
+    },
+    {
+      "id": "validate",
+      "rule": "T-4",
+      "reason": "T-4: the options are one record in every language; P-10: a PHP array or stdClass of options is a second form",
+      "symbol": "validate",
+      "from": {
+        "php": "Validator::validate(array|\\stdClass $spec, array|\\stdClass $data, array $options = []): \\stdClass",
+        "node": "validate(spec, data, options?: ValidateOptions): ValidationResult",
+        "python": "validate(spec, data, options=None)",
+        "go": "Validate(spec, data any, options ...Option) (Result, error)"
+      },
+      "to": "validator.validate"
+    },
+    {
+      "id": "validate-list",
+      "rule": "CUDF-024",
+      "reason": "CUDF-024: a list declaration that breaks its rules fails with its kind (F-3); a valid one returns nothing, so the result record {valid, errors} of the language APIs, whose errors are always empty, is not kept",
+      "symbol": "validateList",
+      "from": {
+        "php": "Validator::validateList(array|\\stdClass $spec, array $options = []): \\stdClass",
+        "node": "validateList(spec, options?): ValidationResult"
+      },
+      "to": "validator.validate_list"
+    },
+    {
+      "id": "validate-detail",
+      "rule": "CUDF-032",
+      "reason": "CUDF-032: as validate-list, for a detail declaration",
+      "symbol": "validateDetail",
+      "from": {
+        "php": "Validator::validateDetail(array|\\stdClass $spec, array $options = []): \\stdClass",
+        "node": "validateDetail(spec, options?): ValidationResult"
+      },
+      "to": "validator.validate_detail"
+    },
+    {
+      "id": "errors",
+      "rule": "E-2",
+      "reason": "E-2, E-3: every error is a library class with kind(); the code getter getErrorCode() and the code strings (REF_FILE_NOT_FOUND) become the kinds in lower snake case, and PHP \\RuntimeException subclasses become CruduiValueError subclasses",
+      "symbol": "ComposeLoadError, FormInputError",
+      "from": {
+        "php": "final class ComposeLoadError extends \\RuntimeException { getErrorCode(): string; getCompositionTrace(): array; __get; __isset }; final class FormInputError extends \\RuntimeException { getErrorCode(): string }",
+        "node": "class ComposeLoadError extends Error { code; trace }; class FormInputError extends Error { code }"
+      },
+      "to": "compose_load_error"
+    },
+    {
+      "id": "hidden-paths",
+      "rule": "CURP-029",
+      "reason": "CURP-029: hiddenPaths serves the browser form binding, a browser layer; the hidden paths are the member hidden of the validation result",
+      "symbol": "hiddenPaths",
+      "from": {
+        "node": "hiddenPaths(spec, data): string[]"
+      },
+      "to": null
+    }
+  ],
+  "cases": [
+    {
+      "member": "validator.validate",
+      "file": "tests/fixtures/validate/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "validator.validate_list",
+      "file": "tests/fixtures/list-validity/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "validator.validate_detail",
+      "file": "tests/fixtures/detail-validity/cases.json",
+      "group": "cases"
+    }
+  ]
+}

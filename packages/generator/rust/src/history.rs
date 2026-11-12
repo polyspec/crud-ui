@@ -15,6 +15,23 @@ pub struct History<T> {
     pub last_path: Option<String>,
 }
 
+impl<T> History<T> {
+    /// The earlier records, oldest first (CURT-076).
+    pub fn entries(&self) -> &[T] {
+        &self.entries
+    }
+
+    /// The records that redo restores, oldest first (CURT-076).
+    pub fn redo_entries(&self) -> &[T] {
+        &self.redo_entries
+    }
+
+    /// The path of the last value edit, or `None` when the last change was no value edit (CURT-077).
+    pub fn last_path(&self) -> Option<&str> {
+        self.last_path.as_deref()
+    }
+}
+
 /// The history after an undo or a redo and the record that it restored.
 #[derive(Debug, Clone, PartialEq)]
 pub struct HistoryResult<T> {

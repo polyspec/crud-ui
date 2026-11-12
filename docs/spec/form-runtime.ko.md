@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: 96069463091227805545c41c73c11bd75a59a8b1a2c2be8161a7136989fe01d5 -->
+<!-- source-sha256: 69ddaa12e730b1c9fbae89ef1203d5174baef099c47308714138117aff44bd27 -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -136,7 +136,7 @@ PHP에서 폼 데이터는 `stdClass`, 연관 배열 또는 빈 배열(빈 객�
 모든 작업은 폼 데이터 루트 기준의 컬렉션 경로를 받습니다.
 
 - **CURT-004** `addRow(path, { afterKey?, value?, key? })`: 새 키 또는 지정한 키로 행 하나를 추가합니다.
-- **CURT-005** `copyRow(path, key)`: 현재 값을 복사하고 복사한 행과 모든 중첩 반복 행의 키를 새로 생성합니다.
+- **CURT-005** `copyRow(path, key, { newKey?, afterKey? })`: 현재 값을 복사하고 복사한 행과 모든 중첩 반복 행의 키를 새로 생성합니다. 복사본은 `newKey`가 있으면 그 키를 갖고, 행 `afterKey` 뒤에, 없으면 복사한 행 뒤에 들어갑니다. 바인딩이 옵션을 인수 `key` 옆의 이름 있는 인수로 펼치므로 옵션 이름은 `key`가 아니라 `newKey`입니다.
 - **CURT-006** `removeRow(path, key)`: 지정한 행만 제거합니다.
 - **CURT-007** `moveRow(path, key, index)`: 행 키와 값을 유지하며 순서를 변경합니다.
 - **CURT-008** `rekeyRow(path, oldKey, newKey)`: 저장 후 행 키 하나를 변경하고 하위 필드 경로를 다시 생성합니다.

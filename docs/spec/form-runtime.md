@@ -146,7 +146,7 @@ depth first; a collection is checked before its rows, and rows follow data order
 All operations receive the collection path relative to the form data root.
 
 - **CURT-004** `addRow(path, { afterKey?, value?, key? })`: Insert one row with a new or supplied key.
-- **CURT-005** `copyRow(path, key)`: Copy current values and generate new keys for the copied row and all nested repeated rows.
+- **CURT-005** `copyRow(path, key, { newKey?, afterKey? })`: Copy current values and generate new keys for the copied row and all nested repeated rows. The copy takes the key `newKey` when it is given and is inserted after the row `afterKey`, or after the copied row. The option is `newKey`, not `key`, because the bindings spread the options into named arguments beside the argument `key`.
 - **CURT-006** `removeRow(path, key)`: Remove only the selected row.
 - **CURT-007** `moveRow(path, key, index)`: Change order without changing row keys or values.
 - **CURT-008** `rekeyRow(path, oldKey, newKey)`: Change one row key after saving; regenerate descendant field paths.

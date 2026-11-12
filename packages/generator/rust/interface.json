@@ -1,0 +1,2969 @@
+{
+  "schema": "polyspec/interface@1",
+  "library": "crudui-generator",
+  "core": {
+    "crate": "polyspec-crudui-generator",
+    "path": "packages/generator/rust"
+  },
+  "targets": [
+    "php",
+    "python",
+    "node",
+    "go",
+    "wasm"
+  ],
+  "packages": {
+    "php": {
+      "package": "polyspec/crudui-generator",
+      "namespace": "Polyspec\\CruduiGenerator"
+    },
+    "python": {
+      "package": "polyspec-crudui-generator",
+      "module": "polyspec.crudui_generator"
+    },
+    "node": {
+      "package": "@polyspec/crudui-generator",
+      "entries": {
+        ".": {
+          "conditions": {
+            "node": "napi",
+            "browser": "wasm"
+          },
+          "formats": [
+            "import",
+            "require"
+          ]
+        }
+      }
+    },
+    "go": {
+      "module": "github.com/polyspec/crudui/packages/generator/go"
+    }
+  },
+  "naming": {
+    "exceptions": []
+  },
+  "types": {
+    "json_value": {
+      "library": "ordered-json",
+      "unit": "value"
+    }
+  },
+  "errors": {
+    "classes": {
+      "value": {
+        "php": "Polyspec\\CruduiGenerator\\CruduiValueError",
+        "python": "CruduiValueError",
+        "node": "CruduiValueError",
+        "wasm": "CruduiValueError"
+      },
+      "type": {
+        "php": "Polyspec\\CruduiGenerator\\CruduiTypeError",
+        "python": "CruduiTypeError",
+        "node": "CruduiTypeError",
+        "wasm": "CruduiTypeError"
+      },
+      "io": {
+        "php": "Polyspec\\CruduiGenerator\\CruduiIoError",
+        "python": "CruduiIoError",
+        "node": "CruduiIoError",
+        "wasm": "CruduiIoError"
+      },
+      "store": {
+        "php": "Polyspec\\CruduiGenerator\\CruduiStoreError",
+        "python": "CruduiStoreError",
+        "node": "CruduiStoreError",
+        "wasm": "CruduiStoreError"
+      },
+      "busy": {
+        "php": "Polyspec\\CruduiGenerator\\CruduiBusyError",
+        "python": "CruduiBusyError",
+        "node": "CruduiBusyError",
+        "wasm": "CruduiBusyError"
+      },
+      "internal": {
+        "php": "Polyspec\\CruduiGenerator\\CruduiInternalError",
+        "python": "CruduiInternalError",
+        "node": "CruduiInternalError",
+        "wasm": "CruduiInternalError"
+      }
+    },
+    "fixed": [
+      {
+        "lang": "php",
+        "class": "ArgumentCountError"
+      },
+      {
+        "lang": "php",
+        "class": "Error"
+      },
+      {
+        "lang": "python",
+        "class": "TypeError"
+      },
+      {
+        "lang": "node",
+        "class": "TypeError"
+      },
+      {
+        "lang": "wasm",
+        "class": "TypeError"
+      }
+    ],
+    "kinds": [
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+        "category": "value",
+        "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType",
+        "category": "value",
+        "class": "form_error"
+      }
+    ],
+    "binding": [],
+    "wrapped": []
+  },
+  "units": [
+    {
+      "id": "form_template",
+      "name": [
+        "form",
+        "template"
+      ],
+      "module": "",
+      "kind": "class",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::FormTemplate",
+      "final": true,
+      "constructible": false,
+      "members": [
+        {
+          "id": "form_template.from_json",
+          "name": [
+            "from",
+            "json"
+          ],
+          "kind": "static",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "value"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "form_template"
+          },
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::FormTemplate::from_json"
+        }
+      ]
+    },
+    {
+      "id": "compile_options",
+      "name": [
+        "compile",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::CompileOptions",
+      "fields": [
+        {
+          "name": [
+            "files"
+          ],
+          "type": {
+            "map": "json_value"
+          },
+          "default": {
+            "empty": "map"
+          }
+        },
+        {
+          "name": [
+            "loader"
+          ],
+          "type": {
+            "optional": {
+              "unit": "file_loader",
+              "library": "crudui-validator"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        },
+        {
+          "name": [
+            "basepath"
+          ],
+          "type": "text",
+          "default": {
+            "literal": ""
+          }
+        },
+        {
+          "name": [
+            "key",
+            "prefix"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-092"
+        }
+      ]
+    },
+    {
+      "id": "bind_options",
+      "name": [
+        "bind",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::BindOptions",
+      "fields": [
+        {
+          "name": [
+            "id",
+            "prefix"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUIT-011"
+        },
+        {
+          "name": [
+            "language"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUIT-011"
+        },
+        {
+          "name": [
+            "key",
+            "prefix"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUIT-011"
+        },
+        {
+          "name": [
+            "unsupported"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUIT-011"
+        },
+        {
+          "name": [
+            "collapsed"
+          ],
+          "type": {
+            "list": "text"
+          },
+          "default": {
+            "empty": "list"
+          }
+        }
+      ]
+    },
+    {
+      "id": "list_options",
+      "name": [
+        "list",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::ListOptions",
+      "fields": [
+        {
+          "name": [
+            "files"
+          ],
+          "type": {
+            "map": "json_value"
+          },
+          "default": {
+            "empty": "map"
+          }
+        },
+        {
+          "name": [
+            "loader"
+          ],
+          "type": {
+            "optional": {
+              "unit": "file_loader",
+              "library": "crudui-validator"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        },
+        {
+          "name": [
+            "basepath"
+          ],
+          "type": "text",
+          "default": {
+            "literal": ""
+          }
+        },
+        {
+          "name": [
+            "language"
+          ],
+          "type": "text",
+          "default": {
+            "literal": "ko"
+          }
+        },
+        {
+          "name": [
+            "data"
+          ],
+          "type": "json_value",
+          "default": {
+            "empty": "object"
+          }
+        },
+        {
+          "name": [
+            "page"
+          ],
+          "type": {
+            "optional": "uint"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUDF-081"
+        },
+        {
+          "name": [
+            "total"
+          ],
+          "type": {
+            "optional": "uint"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUDF-081"
+        }
+      ]
+    },
+    {
+      "id": "detail_options",
+      "name": [
+        "detail",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::DetailOptions",
+      "fields": [
+        {
+          "name": [
+            "files"
+          ],
+          "type": {
+            "map": "json_value"
+          },
+          "default": {
+            "empty": "map"
+          }
+        },
+        {
+          "name": [
+            "loader"
+          ],
+          "type": {
+            "optional": {
+              "unit": "file_loader",
+              "library": "crudui-validator"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURP-019"
+        },
+        {
+          "name": [
+            "basepath"
+          ],
+          "type": "text",
+          "default": {
+            "literal": ""
+          }
+        },
+        {
+          "name": [
+            "language"
+          ],
+          "type": "text",
+          "default": {
+            "literal": "ko"
+          }
+        },
+        {
+          "name": [
+            "data"
+          ],
+          "type": "json_value",
+          "default": {
+            "empty": "object"
+          }
+        }
+      ]
+    },
+    {
+      "id": "add_row_options",
+      "name": [
+        "add",
+        "row",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::AddRowOptions",
+      "fields": [
+        {
+          "name": [
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-004"
+        },
+        {
+          "name": [
+            "after",
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-004"
+        },
+        {
+          "name": [
+            "value"
+          ],
+          "type": {
+            "optional": "json_value"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-004"
+        }
+      ]
+    },
+    {
+      "id": "copy_row_options",
+      "name": [
+        "copy",
+        "row",
+        "options"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::CopyRowOptions",
+      "fields": [
+        {
+          "name": [
+            "new",
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-005"
+        },
+        {
+          "name": [
+            "after",
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-005"
+        }
+      ]
+    },
+    {
+      "id": "form_snapshot",
+      "name": [
+        "form",
+        "snapshot"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::FormSnapshot",
+      "fields": [
+        {
+          "name": [
+            "fields"
+          ],
+          "type": {
+            "list": "json_value"
+          },
+          "required": true
+        },
+        {
+          "name": [
+            "buttons"
+          ],
+          "type": {
+            "list": "json_value"
+          },
+          "required": true
+        },
+        {
+          "name": [
+            "revision"
+          ],
+          "type": "uint",
+          "required": true
+        },
+        {
+          "name": [
+            "can",
+            "undo"
+          ],
+          "type": "bool",
+          "required": true
+        },
+        {
+          "name": [
+            "can",
+            "redo"
+          ],
+          "type": "bool",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "view_state",
+      "name": [
+        "view",
+        "state"
+      ],
+      "module": "",
+      "kind": "class",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::ViewState",
+      "final": true,
+      "constructible": false,
+      "members": [
+        {
+          "id": "view_state.collapsed",
+          "name": [
+            "collapsed"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "text"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::ViewState::collapsed",
+            "receiver": "&self"
+          }
+        }
+      ]
+    },
+    {
+      "id": "history",
+      "name": [
+        "history"
+      ],
+      "module": "",
+      "kind": "class",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::History",
+      "final": true,
+      "constructible": false,
+      "members": [
+        {
+          "id": "history.entries",
+          "name": [
+            "entries"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::History::entries",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "history.redo_entries",
+          "name": [
+            "redo",
+            "entries"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::History::redo_entries",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "history.last_path",
+          "name": [
+            "last",
+            "path"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "optional": "text"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::History::last_path",
+            "receiver": "&self"
+          },
+          "optional_reason": "CURT-077"
+        }
+      ]
+    },
+    {
+      "id": "history_result",
+      "name": [
+        "history",
+        "result"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::HistoryResult",
+      "fields": [
+        {
+          "name": [
+            "history"
+          ],
+          "type": {
+            "unit": "history"
+          },
+          "required": true
+        },
+        {
+          "name": [
+            "value"
+          ],
+          "type": "json_value",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "action_name",
+      "name": [
+        "action",
+        "name"
+      ],
+      "module": "",
+      "kind": "enum",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::ActionName",
+      "variants": [
+        {
+          "name": [
+            "move",
+            "up"
+          ],
+          "value": "move-up"
+        },
+        {
+          "name": [
+            "move",
+            "down"
+          ],
+          "value": "move-down"
+        },
+        {
+          "name": [
+            "add",
+            "row"
+          ],
+          "value": "add-row"
+        },
+        {
+          "name": [
+            "copy",
+            "row"
+          ],
+          "value": "copy-row"
+        },
+        {
+          "name": [
+            "remove",
+            "row"
+          ],
+          "value": "remove-row"
+        },
+        {
+          "name": [
+            "toggle",
+            "row"
+          ],
+          "value": "toggle-row"
+        },
+        {
+          "name": [
+            "select",
+            "row"
+          ],
+          "value": "select-row"
+        },
+        {
+          "name": [
+            "expand",
+            "all"
+          ],
+          "value": "expand-all"
+        },
+        {
+          "name": [
+            "collapse",
+            "all"
+          ],
+          "value": "collapse-all"
+        },
+        {
+          "name": [
+            "undo"
+          ],
+          "value": "undo"
+        },
+        {
+          "name": [
+            "redo"
+          ],
+          "value": "redo"
+        }
+      ]
+    },
+    {
+      "id": "action_input",
+      "name": [
+        "action",
+        "input"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::ActionInput",
+      "fields": [
+        {
+          "name": [
+            "action"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-081"
+        },
+        {
+          "name": [
+            "path"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-081"
+        },
+        {
+          "name": [
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-081"
+        }
+      ]
+    },
+    {
+      "id": "action_target",
+      "name": [
+        "action",
+        "target"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::ActionTarget",
+      "fields": [
+        {
+          "name": [
+            "name"
+          ],
+          "type": {
+            "unit": "action_name"
+          },
+          "required": true
+        },
+        {
+          "name": [
+            "path"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-081"
+        },
+        {
+          "name": [
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-081"
+        }
+      ]
+    },
+    {
+      "id": "focus_target",
+      "name": [
+        "focus",
+        "target"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::FocusTarget",
+      "fields": [
+        {
+          "name": [
+            "path"
+          ],
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": [
+            "key"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-086"
+        }
+      ]
+    },
+    {
+      "id": "action_result",
+      "name": [
+        "action",
+        "result"
+      ],
+      "module": "",
+      "kind": "record",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::ActionResult",
+      "fields": [
+        {
+          "name": [
+            "focus"
+          ],
+          "type": {
+            "optional": {
+              "unit": "focus_target"
+            }
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CURT-082"
+        }
+      ]
+    },
+    {
+      "id": "form_error",
+      "name": [
+        "form",
+        "error"
+      ],
+      "module": "errors",
+      "kind": "error",
+      "visibility": "public",
+      "origin": "generated",
+      "category": "value",
+      "final": true,
+      "members": [
+        {
+          "id": "form_error.at",
+          "name": [
+            "at"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "text",
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::FormError::at",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form_error.trace",
+          "name": [
+            "trace"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "text"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::FormError::trace",
+            "receiver": "&self"
+          }
+        }
+      ]
+    },
+    {
+      "id": "form",
+      "name": [
+        "form"
+      ],
+      "module": "",
+      "kind": "class",
+      "visibility": "public",
+      "origin": "generated",
+      "core_type": "polyspec_crudui_generator::Form",
+      "final": true,
+      "members": [
+        {
+          "id": "form.constructor",
+          "name": [
+            "constructor"
+          ],
+          "kind": "constructor",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "template"
+              ],
+              "type": {
+                "unit": "form_template"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "default": {
+                "empty": "object"
+              }
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "bind_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::new"
+          }
+        },
+        {
+          "id": "form.template",
+          "name": [
+            "template"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "unit": "form_template"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::template",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.fields",
+          "name": [
+            "fields"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::fields",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.buttons",
+          "name": [
+            "buttons"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::buttons",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.description",
+          "name": [
+            "description"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "text",
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::description",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.revision",
+          "name": [
+            "revision"
+          ],
+          "kind": "property",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "uint",
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::revision",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.snapshot",
+          "name": [
+            "snapshot"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "unit": "form_snapshot"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::snapshot",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.get_data",
+          "name": [
+            "get",
+            "data"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "json_value",
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::get_data",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.get_value",
+          "name": [
+            "get",
+            "value"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": {
+            "optional": "json_value"
+          },
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::get_value",
+            "receiver": "&self"
+          },
+          "optional_reason": "CURT-093"
+        },
+        {
+          "id": "form.set_data",
+          "name": [
+            "set",
+            "data"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::set_data",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.set_value",
+          "name": [
+            "set",
+            "value"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "value"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::set_value",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.add_row",
+          "name": [
+            "add",
+            "row"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "add_row_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::add_row",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.copy_row",
+          "name": [
+            "copy",
+            "row"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "copy_row_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::copy_row",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.remove_row",
+          "name": [
+            "remove",
+            "row"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::remove_row",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.move_row",
+          "name": [
+            "move",
+            "row"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "index"
+              ],
+              "type": "int",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::move_row",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.rekey_row",
+          "name": [
+            "rekey",
+            "row"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "old",
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "new",
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::rekey_row",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.toggle_row",
+          "name": [
+            "toggle",
+            "row"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "key"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::toggle_row",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.set_all_expanded",
+          "name": [
+            "set",
+            "all",
+            "expanded"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "expanded"
+              ],
+              "type": "bool",
+              "required": true
+            }
+          ],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::set_all_expanded",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.undo",
+          "name": [
+            "undo"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::undo",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.redo",
+          "name": [
+            "redo"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "none",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::redo",
+            "receiver": "&mut self"
+          }
+        },
+        {
+          "id": "form.can_undo",
+          "name": [
+            "can",
+            "undo"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "bool",
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::can_undo",
+            "receiver": "&self"
+          }
+        },
+        {
+          "id": "form.can_redo",
+          "name": [
+            "can",
+            "redo"
+          ],
+          "kind": "method",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "bool",
+          "raises": [],
+          "wait": "none",
+          "core": {
+            "path": "polyspec_crudui_generator::Form::can_redo",
+            "receiver": "&self"
+          }
+        }
+      ]
+    },
+    {
+      "id": "generator",
+      "name": [
+        "generator"
+      ],
+      "module": "",
+      "kind": "functions",
+      "visibility": "public",
+      "origin": "generated",
+      "members": [
+        {
+          "id": "generator.compile_form",
+          "name": [
+            "compile",
+            "form"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "compile_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": {
+            "unit": "form_template"
+          },
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::compile_form"
+        },
+        {
+          "id": "generator.bind_form",
+          "name": [
+            "bind",
+            "form"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "template"
+              ],
+              "type": {
+                "unit": "form_template"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "bind_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::bind_form"
+        },
+        {
+          "id": "generator.bind_buttons",
+          "name": [
+            "bind",
+            "buttons"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "template"
+              ],
+              "type": {
+                "unit": "form_template"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "data"
+              ],
+              "type": "json_value",
+              "default": {
+                "empty": "object"
+              }
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "bind_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::bind_buttons"
+        },
+        {
+          "id": "generator.form_buttons_html",
+          "name": [
+            "form",
+            "buttons",
+            "html"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "buttons"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::form_buttons_html"
+        },
+        {
+          "id": "generator.render_form",
+          "name": [
+            "render",
+            "form"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "form"
+              ],
+              "type": {
+                "unit": "form"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "optional": "json_value"
+              },
+              "default": {
+                "literal": null
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_form"
+        },
+        {
+          "id": "generator.build_list",
+          "name": [
+            "build",
+            "list"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "rows"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "default": {
+                "empty": "list"
+              }
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "json_value",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::build_list"
+        },
+        {
+          "id": "generator.render_list",
+          "name": [
+            "render",
+            "list"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "rows"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "default": {
+                "empty": "list"
+              }
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "list_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_list"
+        },
+        {
+          "id": "generator.build_detail",
+          "name": [
+            "build",
+            "detail"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "record"
+              ],
+              "type": "json_value",
+              "default": {
+                "empty": "object"
+              }
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "detail_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "json_value",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::build_detail"
+        },
+        {
+          "id": "generator.render_detail",
+          "name": [
+            "render",
+            "detail"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "spec"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "record"
+              ],
+              "type": "json_value",
+              "default": {
+                "empty": "object"
+              }
+            },
+            {
+              "name": [
+                "options"
+              ],
+              "type": {
+                "unit": "detail_options"
+              },
+              "default": {
+                "empty": "object"
+              }
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crudui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::render_detail"
+        },
+        {
+          "id": "generator.build_outline",
+          "name": [
+            "build",
+            "outline"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "nodes"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            }
+          ],
+          "returns": {
+            "list": "json_value"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::build_outline"
+        },
+        {
+          "id": "generator.resolve_action",
+          "name": [
+            "resolve",
+            "action"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "input"
+              ],
+              "type": {
+                "unit": "action_input"
+              },
+              "required": true
+            }
+          ],
+          "returns": {
+            "optional": {
+              "unit": "action_target"
+            }
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::resolve_action",
+          "optional_reason": "CURT-081"
+        },
+        {
+          "id": "generator.run_action",
+          "name": [
+            "run",
+            "action"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "form"
+              ],
+              "type": {
+                "unit": "form"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "target"
+              ],
+              "type": {
+                "unit": "action_target"
+              },
+              "required": true
+            }
+          ],
+          "returns": {
+            "optional": {
+              "unit": "action_result"
+            }
+          },
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput",
+            "polyspec_crudui_generator::FormErrorCode::UnsupportedFieldType"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::run_action",
+          "optional_reason": "CURT-083"
+        },
+        {
+          "id": "generator.initial_view",
+          "name": [
+            "initial",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "unit": "view_state"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::initial_view"
+        },
+        {
+          "id": "generator.collapsible_rows",
+          "name": [
+            "collapsible",
+            "rows"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "nodes"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            }
+          ],
+          "returns": {
+            "list": "text"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::collapsible_rows"
+        },
+        {
+          "id": "generator.toggle_row_view",
+          "name": [
+            "toggle",
+            "row",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "view"
+              ],
+              "type": {
+                "unit": "view_state"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "row",
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "view_state"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::toggle_row_view"
+        },
+        {
+          "id": "generator.set_all_expanded_view",
+          "name": [
+            "set",
+            "all",
+            "expanded",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "nodes"
+              ],
+              "type": {
+                "list": "json_value"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "expanded"
+              ],
+              "type": "bool",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "view_state"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::set_all_expanded_view"
+        },
+        {
+          "id": "generator.remove_row_view",
+          "name": [
+            "remove",
+            "row",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "view"
+              ],
+              "type": {
+                "unit": "view_state"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "row",
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "view_state"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::remove_row_view"
+        },
+        {
+          "id": "generator.rekey_row_view",
+          "name": [
+            "rekey",
+            "row",
+            "view"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "view"
+              ],
+              "type": {
+                "unit": "view_state"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "old",
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": [
+                "new",
+                "path"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "view_state"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::rekey_row_view"
+        },
+        {
+          "id": "generator.empty_history",
+          "name": [
+            "empty",
+            "history"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [],
+          "returns": {
+            "unit": "history"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::empty_history"
+        },
+        {
+          "id": "generator.record_change",
+          "name": [
+            "record",
+            "change"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "history"
+              ],
+              "type": {
+                "unit": "history"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "previous"
+              ],
+              "type": "json_value",
+              "required": true
+            },
+            {
+              "name": [
+                "path"
+              ],
+              "type": {
+                "optional": "text"
+              },
+              "default": {
+                "literal": null
+              }
+            }
+          ],
+          "returns": {
+            "unit": "history"
+          },
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::record_change"
+        },
+        {
+          "id": "generator.can_undo",
+          "name": [
+            "can",
+            "undo"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "history"
+              ],
+              "type": {
+                "unit": "history"
+              },
+              "required": true
+            }
+          ],
+          "returns": "bool",
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::can_undo"
+        },
+        {
+          "id": "generator.can_redo",
+          "name": [
+            "can",
+            "redo"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "history"
+              ],
+              "type": {
+                "unit": "history"
+              },
+              "required": true
+            }
+          ],
+          "returns": "bool",
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::can_redo"
+        },
+        {
+          "id": "generator.undo_change",
+          "name": [
+            "undo",
+            "change"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "history"
+              ],
+              "type": {
+                "unit": "history"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "current"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "history_result"
+          },
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::undo_change"
+        },
+        {
+          "id": "generator.redo_change",
+          "name": [
+            "redo",
+            "change"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "history"
+              ],
+              "type": {
+                "unit": "history"
+              },
+              "required": true
+            },
+            {
+              "name": [
+                "current"
+              ],
+              "type": "json_value",
+              "required": true
+            }
+          ],
+          "returns": {
+            "unit": "history_result"
+          },
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::redo_change"
+        },
+        {
+          "id": "generator.sequence_row_key",
+          "name": [
+            "sequence",
+            "row",
+            "key"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "sequence"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::sequence_row_key"
+        },
+        {
+          "id": "generator.create_row_key",
+          "name": [
+            "create",
+            "row",
+            "key"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [],
+          "returns": "text",
+          "raises": [
+            "polyspec_crudui_generator::FormErrorCode::InvalidFormInput"
+          ],
+          "wait": "none",
+          "core": "polyspec_crudui_generator::create_row_key"
+        }
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "id": "package-names",
+      "rule": "P-1",
+      "reason": "P-1: one form of names: Composer polyspec/crudui-generator, PHP Polyspec\\CruduiGenerator, PyPI polyspec-crudui-generator, Python polyspec.crudui_generator, npm @polyspec/crudui-generator (was @polyspec/crudui-generator-core); the static class Polyspec\\Crudui\\Generator becomes module functions (U-1 functions)",
+      "symbol": "Polyspec\\Crudui\\Generator, @polyspec/crudui-generator-core, polyspec.crudui.generator",
+      "from": {
+        "php": "final class Polyspec\\Crudui\\Generator (static methods)",
+        "node": "@polyspec/crudui-generator-core",
+        "python": "import polyspec.crudui.generator"
+      },
+      "to": "generator"
+    },
+    {
+      "id": "create-form",
+      "rule": "U-2",
+      "reason": "U-2: the instance is the constructor of Form in every language; createForm and FormInstance are a second name of one operation",
+      "symbol": "createForm",
+      "from": {
+        "node": "createForm(template, data?, options?): FormInstance",
+        "php": "new Form(\\stdClass $template, mixed $data = [], array $options = [])"
+      },
+      "to": "form.constructor"
+    },
+    {
+      "id": "form-getters",
+      "rule": "I-3",
+      "reason": "I-3: a read of the instance is a property in every language (PHP method, Node getter, Python property); getTemplate, getFields, getButtons, getDescription and getRevision become template, fields, buttons, description and revision",
+      "symbol": "Form::getTemplate, getFields, getButtons, getDescription, getRevision",
+      "from": {
+        "php": "getTemplate(): \\stdClass; getFields(): array; getButtons(): array; getDescription(): string; getRevision(): int",
+        "node": "readonly template; get description(); getSnapshot().fields"
+      },
+      "to": "form.fields"
+    },
+    {
+      "id": "form-snapshot",
+      "rule": "CURP-029",
+      "reason": "CURP-029: the instance gives snapshot(); listener registration (subscribe) is the browser layer's, and getSnapshot becomes snapshot",
+      "symbol": "FormInstance.subscribe, getSnapshot",
+      "from": {
+        "node": "subscribe(listener): () => void; getSnapshot(): FormSnapshot"
+      },
+      "to": "form.snapshot"
+    },
+    {
+      "id": "form-messages",
+      "rule": "C-10",
+      "reason": "C-10: the interface messages of the instance are not yet an operation of the core; the PHP and Node readers wait for the core (listed as remaining work)",
+      "symbol": "Form::getMessages, FormInstance.messages",
+      "from": {
+        "php": "getMessages(): array",
+        "node": "get messages(): FormMessages"
+      },
+      "to": null
+    },
+    {
+      "id": "form-get-value",
+      "rule": "CURT-093",
+      "reason": "CURT-093, P-2: getValue returns absence for a path without a value, never null in its place",
+      "symbol": "getValue",
+      "from": {
+        "php": "getValue(string $path): mixed",
+        "node": "getValue(path: string): unknown"
+      },
+      "to": "form.get_value"
+    },
+    {
+      "id": "options-record",
+      "rule": "T-4",
+      "reason": "T-4: options are one record in every language; a PHP array or a mixed value of options is a second form",
+      "symbol": "renderForm, bindForm, buildList and the other operations with options",
+      "from": {
+        "php": "array $options = [] / mixed $options = []"
+      },
+      "to": "bind_options"
+    },
+    {
+      "id": "sequence-row-key",
+      "rule": "T-1",
+      "reason": "T-1, P-1: a sequence is decimal text; the int|string union of PHP is a second input form",
+      "symbol": "sequenceRowKey",
+      "from": {
+        "php": "sequenceRowKey(int|string $sequence): string",
+        "node": "sequenceRowKey(sequence: number | string): string"
+      },
+      "to": "generator.sequence_row_key"
+    },
+    {
+      "id": "errors",
+      "rule": "E-2",
+      "reason": "E-2, E-3: every error is a library class with kind(); FormError extends CruduiValueError, getErrorCode() and the code strings become the kinds in lower snake case, getPath() becomes the property at, and UnsupportedFieldTypeError, FormRenderOptionsError and FormTemplateError are kinds of form_error",
+      "symbol": "FormError, UnsupportedFieldTypeError, FormRenderOptionsError, FormTemplateError",
+      "from": {
+        "php": "final class FormError extends \\RuntimeException { getErrorCode(): string; getPath(): string }",
+        "node": "class FormInputError extends Error { code }; class UnsupportedFieldTypeError; class FormRenderOptionsError; class FormTemplateError { pointer }"
+      },
+      "to": "form_error"
+    },
+    {
+      "id": "copy-row-key",
+      "rule": "T-4",
+      "reason": "T-4: the options of copyRow are spread into named arguments in PHP and Python, where the option key would take the name of the argument key, so the key of the copy is new_key",
+      "symbol": "copyRow",
+      "from": {
+        "node": "copyRow(path, key, options?: { key?, afterKey? }): string",
+        "php": "copyRow(string $path, string $key, array $options = []): string"
+      },
+      "to": "form.copy_row"
+    },
+    {
+      "id": "template-class",
+      "rule": "T-4",
+      "reason": "T-4: a record argument is the last argument and spreads into named arguments, so the compiled template, which comes first, is the class FormTemplate; a template that crosses JSON is read with FormTemplate.fromJson (CURT-092) instead of a plain object or stdClass",
+      "symbol": "FormTemplate",
+      "from": {
+        "node": "interface FormTemplate (plain object); decodeFormTemplate(value)",
+        "php": "\\stdClass $template"
+      },
+      "to": "form_template"
+    },
+    {
+      "id": "view-history-classes",
+      "rule": "T-4",
+      "reason": "T-4: a view and a history come first in their functions, so they are the classes ViewState and History instead of plain objects",
+      "symbol": "ViewState, History",
+      "from": {
+        "node": "interface ViewState { collapsed }; interface History { entries; redoEntries; lastPath? }",
+        "php": "array $view; \\stdClass $history"
+      },
+      "to": "view_state"
+    },
+    {
+      "id": "init",
+      "rule": "P-5",
+      "reason": "P-5 (bindgen design): the WASM binding is initialized asynchronously, so the browser entry has await init()",
+      "symbol": "init",
+      "from": {},
+      "to": null
+    },
+    {
+      "id": "browser-layer",
+      "rule": "CURP-029",
+      "reason": "CURP-029, L-3: connectForm, connectOutline, connectStickyHeaders, patchContent and updateView are the DOM connection of the browser layer, host code over the binding, not generated operations",
+      "symbol": "connectForm, connectOutline, connectStickyHeaders, patchContent",
+      "from": {
+        "node": "connectForm(element, form); connectOutline(element, form, formElement); connectStickyHeaders(element); patchContent(element, html)"
+      },
+      "to": null
+    },
+    {
+      "id": "decoders",
+      "rule": "CURT-092",
+      "reason": "CURT-092: a template enters the core as the record form_template, which the binding reads as a value, so decodeFormTemplate and decodeFormRenderOptions are no separate operations",
+      "symbol": "decodeFormTemplate, decodeFormRenderOptions",
+      "from": {
+        "node": "decodeFormTemplate(value): FormTemplate; decodeFormRenderOptions(value)"
+      },
+      "to": null
+    },
+    {
+      "id": "description-messages",
+      "rule": "C-10",
+      "reason": "C-10: formDescription and formMessages read the template and the interface text; formDescription is the property description of the instance, and the message table waits for the core",
+      "symbol": "formDescription, formMessages",
+      "from": {
+        "node": "formDescription(template, options): string; formMessages(language): FormMessages"
+      },
+      "to": null
+    }
+  ],
+  "cases": [
+    {
+      "member": "generator.compile_form",
+      "file": "tests/fixtures/compose/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.render_form",
+      "file": "tests/fixtures/form-render/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.bind_buttons",
+      "file": "tests/fixtures/buttons/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.build_list",
+      "file": "tests/fixtures/list-render/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.render_list",
+      "file": "tests/fixtures/list-render/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.build_detail",
+      "file": "tests/fixtures/detail-render/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.render_detail",
+      "file": "tests/fixtures/detail-render/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.build_outline",
+      "file": "tests/fixtures/form-outline/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.run_action",
+      "file": "tests/fixtures/form-actions/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.toggle_row_view",
+      "file": "tests/fixtures/view-functions/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "generator.record_change",
+      "file": "tests/fixtures/history-functions/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "form.constructor",
+      "file": "tests/fixtures/form-state/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "form.set_value",
+      "file": "tests/fixtures/form-state/cases.json",
+      "group": "cases"
+    },
+    {
+      "member": "form.undo",
+      "file": "tests/fixtures/form-history/cases.json",
+      "group": "cases"
+    }
+  ]
+}

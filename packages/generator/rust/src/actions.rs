@@ -1,7 +1,7 @@
 //! The action buttons of a form: resolving the target of a button and running it on the form (CURT-081 to CURT-090).
 
 use crate::error::{FormError, FormResult};
-use crate::instance::{AddRowOptions, Form};
+use crate::instance::{AddRowOptions, CopyRowOptions, Form};
 
 /// The eleven operations that an action button can request (CURT-081).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -162,7 +162,7 @@ pub fn run_action(form: &mut Form, target: &ActionTarget) -> FormResult<Option<A
     };
     let result = match target.name {
         ActionName::CopyRow => {
-            let copied = form.copy_row(path, key, AddRowOptions::default())?;
+            let copied = form.copy_row(path, key, CopyRowOptions::default())?;
             focus_on(path, &copied)
         }
         ActionName::RemoveRow => {

@@ -393,6 +393,7 @@ dependencies = [
  "num-traits",
  "polyspec-bindgen-core",
  "polyspec-crudui-validator",
+ "polyspec-ordered-json",
  "regex",
  "ryu-js",
  "serde",
@@ -404,6 +405,18 @@ name = "polyspec-crudui-validator"
 version = "0.0.20"
 dependencies = [
  "polyspec-bindgen-core",
+ "polyspec-ordered-json",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "polyspec-ordered-json"
+version = "0.0.25"
+source = "git+https://github.com/polyspec/ordered-json.git?branch=v1%2Frust-core#07f84344dff893cea14943a2e105a91c093dcaf8"
+dependencies = [
+ "polyspec-bindgen-core",
+ "ryu-js",
  "serde",
  "serde_json",
 ]

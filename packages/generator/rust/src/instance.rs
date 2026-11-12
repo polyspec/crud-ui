@@ -254,6 +254,17 @@ pub struct FormSnapshot {
     pub can_redo: bool,
 }
 
+/// Identity and insertion position of a copied row (CURT-005). The key of the copy is `new_key`, since
+/// the key of the copied row is an argument of `copy_row` itself (bindgen design T-4).
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CopyRowOptions {
+    /// Supplied key of the copy; omitted to generate a new key.
+    pub new_key: Option<String>,
+    /// Existing row after which the copy is inserted; omitted to insert it after the copied row.
+    pub after_key: Option<String>,
+}
+
 /// An independent editable form instance using a compiled structure.
 #[derive(Clone)]
 pub struct Form {
@@ -569,17 +580,26 @@ impl Form {
         &mut self,
         path: &str,
         key: &str,
-        mut options: AddRowOptions,
+        options: CopyRowOptions,
     ) -> FormResult<String> {
         let (field, rows) = self.editable_collection(path)?;
         let value = rows
             .get(key)
             .ok_or_else(|| FormError::input(format!("Unknown row: {key}")))?;
-        options.value = Some(copy_row_value(field, value)?);
-        if options.after_key.is_none() {
-            options.after_key = Some(key.into());
-        }
-        self.add_row(path, options)
+        let value = copy_row_value(field, value)?;
+        // Without `after_key` the copy follows the copied row.
+        let after_key = match options.after_key {
+            Some(after_key) => after_key,
+            None => key.into(),
+        };
+        self.add_row(
+            path,
+            AddRowOptions {
+                key: options.new_key,
+                after_key: Some(after_key),
+                value: Some(value),
+            },
+        )
     }
 
     /// Remove a row while enforcing the minimum count.

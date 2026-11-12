@@ -21,8 +21,8 @@ use libtest_mimic::{Arguments, Trial};
 use polyspec_crudui_generator::{
     bind_form, collapsible_rows, compile_form, initial_view, rekey_row_view, remove_row_view,
     resolve_action, run_action, set_all_expanded_view, toggle_row_view, ActionInput, ActionResult,
-    ActionTarget, AddRowOptions, BindOptions, CompileOptions, Form, FormError, FormResult,
-    ViewState,
+    ActionTarget, AddRowOptions, BindOptions, CompileOptions, CopyRowOptions, Form, FormError,
+    FormResult, ViewState,
 };
 use regex::Regex;
 use serde_json::{json, Map, Value};
@@ -167,6 +167,14 @@ fn options(args: &[Value], index: usize) -> AddRowOptions {
         })
 }
 
+/// The options of a `copyRow` step, which the fixtures write as the JavaScript `{ key, afterKey }`.
+fn copy_options(options: AddRowOptions) -> CopyRowOptions {
+    CopyRowOptions {
+        new_key: options.key,
+        after_key: options.after_key,
+    }
+}
+
 /// The target of a `runAction` step: its operation name, collection path and row key.
 fn action_target(value: &Value) -> FormResult<ActionTarget> {
     ActionTarget::named(
@@ -249,7 +257,7 @@ fn perform(form: &mut Form, spec: &Value, op: &str, args: &[Value]) -> FormResul
             .add_row(text(args, 0), options(args, 1))
             .map(|key| Some(json!(key))),
         "copyRow" => form
-            .copy_row(text(args, 0), text(args, 1), options(args, 2))
+            .copy_row(text(args, 0), text(args, 1), copy_options(options(args, 2)))
             .map(|key| Some(json!(key))),
         "removeRow" => form.remove_row(text(args, 0), text(args, 1)).map(|()| None),
         "moveRow" => form

@@ -12,6 +12,13 @@ pub struct ViewState {
     pub collapsed: Vec<String>,
 }
 
+impl ViewState {
+    /// The collapsed row paths, in the order the rows were collapsed (CURT-071).
+    pub fn collapsed(&self) -> &[String] {
+        &self.collapsed
+    }
+}
+
 /// Whether `path` is the row path `row_path` or lies inside that row.
 fn inside(row_path: &str, path: &str) -> bool {
     path == row_path

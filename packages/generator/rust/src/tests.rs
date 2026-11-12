@@ -113,8 +113,8 @@ fn copied_nested_rows_have_new_keys_and_operations_preserve_order() {
         .copy_row(
             "companies",
             "__0000000000005__",
-            AddRowOptions {
-                key: Some("__a000000000001__".into()),
+            CopyRowOptions {
+                new_key: Some("__a000000000001__".into()),
                 ..Default::default()
             },
         )
@@ -297,7 +297,7 @@ fn data_only_collections_hold_exactly_the_data_rows() {
         let results = [
             form.add_row("variants", AddRowOptions::default())
                 .map(|_| ()),
-            form.copy_row("variants", "a", AddRowOptions::default())
+            form.copy_row("variants", "a", CopyRowOptions::default())
                 .map(|_| ()),
             form.remove_row("variants", "a"),
             form.move_row("variants", "a", 0),

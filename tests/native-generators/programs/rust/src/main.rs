@@ -15,8 +15,8 @@ use polyspec_crudui_generator::text::{
 use polyspec_crudui_generator::{
     bind_buttons, bind_form, build_detail, build_list, build_outline, compile_form,
     form_buttons_html, list_rows, render_detail, render_form, render_list, AddRowOptions,
-    BindOptions, CompileOptions, DetailOptions, Form, FormError, FormResult, FormTemplate,
-    ListOptions,
+    BindOptions, CompileOptions, CopyRowOptions, DetailOptions, Form, FormError, FormResult,
+    FormTemplate, ListOptions,
 };
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
@@ -145,6 +145,11 @@ fn action(form: &mut Form, action: &Value, text: Option<&JsonText>) -> FormResul
                 .map(decode::<AddRowOptions>)
                 .transpose()?
                 .unwrap_or_default();
+            // The request writes the options as the JavaScript `{ key, afterKey }`.
+            let options = CopyRowOptions {
+                new_key: options.key,
+                after_key: options.after_key,
+            };
             return form
                 .copy_row(string_arg(args, 0)?, string_arg(args, 1)?, options)
                 .map(Value::String);

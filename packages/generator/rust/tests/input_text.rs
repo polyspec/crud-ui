@@ -21,7 +21,7 @@ use polyspec_crudui_generator::text::{
 };
 use polyspec_crudui_generator::{
     bind_form, build_detail, build_list, compile_form, AddRowOptions, BindOptions, CompileOptions,
-    Form, FormResult, FormTemplate, ListOptions,
+    CopyRowOptions, Form, FormResult, FormTemplate, ListOptions,
 };
 use polyspec_crudui_validator::text::JsonText;
 use serde_json::{json, Map, Value};
@@ -195,7 +195,7 @@ fn run_action(form: &mut Form, action: &JsonText) -> FormResult<()> {
             form.add_row(&text(0), options).map(|_| ())
         }
         "copyRow" => form
-            .copy_row(&text(0), &text(1), AddRowOptions::default())
+            .copy_row(&text(0), &text(1), CopyRowOptions::default())
             .map(|_| ()),
         "removeRow" => form.remove_row(&text(0), &text(1)),
         "moveRow" => form.move_row(&text(0), &text(1), arg(2).as_i64().unwrap_or_default()),
