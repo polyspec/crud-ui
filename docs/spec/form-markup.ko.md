@@ -1,6 +1,6 @@
 # 폼 마크업
 <!-- doc-id: docs-spec-form-markup -->
-<!-- source-sha256: 7285e2d475dfdd6705b92249533b85f0e8cd1f0617b47c825870d0d920a90f78 -->
+<!-- source-sha256: d234630c3d4a2aceecf84a8315ef699aa6576f56ecad934e2938bb799f711455 -->
 
 [English](form-markup.md). 이 문서는 평가된 폼 노드의 렌더링 방식을 정의합니다.
 React, Vue, Svelte, HTML 렌더러와 네이티브 렌더러는 같은 마크업을 생성합니다.
@@ -437,6 +437,15 @@ href, design, behavior }` 목록이고 `type`은 `submit`, `reset`, `button`, `l
 하단에 `--crudui-form-footer-height` 높이로 붙습니다.
 
 ## 구조 맵과 현재 데이터 보기
+
+- **CUMK-072** 구조 맵은 `crudui-outline` 블록입니다. 헤더에는 텍스트 작업 `expand-all`, `collapse-all`, `undo`, `redo`의
+  `crudui-controls` 그룹 하나가 있고(되돌리기·다시 하기 기록이 없으면 `aria-disabled="true"`), 본문에는 `buildOutline`의 행마다
+  `crudui-node crudui-node--row` 요소가 있으며, 그 헤더는 행의 번호와 제목을 담은 `select-row` 버튼과 행의 구조 맵 컨트롤을,
+  본문은 중첩된 행을 담습니다. Rust 코어는 `render_outline(form)`과
+  `render_outline_view(fields, can_undo, can_redo, language)`로 씁니다.
+- **CUMK-071** 데이터 보기는 `crudui-data` 블록입니다. 헤더에는 인터페이스 텍스트 `data`가, `pre` 본문에는 ECMAScript
+  `JSON.stringify(data, null, 2)`가 쓰는 데이터가 있으며 숫자는 CURP-028대로 읽습니다. Rust 코어는 `render_data(form)`과
+  `render_data_panel(data, language)`로 씁니다.
 
 구조 맵의 규칙은 하나입니다. 맵의 한 줄은 폼의 행 하나입니다. `buildOutline(nodes)`은
 폼의 행과 각 행에 중첩된 행을 반환하므로 맵은 폼과 똑같이 중첩되며, 컬렉션·개수·빈

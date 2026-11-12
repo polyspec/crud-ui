@@ -481,6 +481,16 @@ container at `--crudui-form-footer-height`, as sticky row headers pin to the top
 
 ## Structure map and data view
 
+- **CUMK-072** The structure map is a `crudui-outline` block: a header with one `crudui-controls` group of the text
+  actions `expand-all`, `collapse-all`, `undo` and `redo` (`aria-disabled="true"` when undo or redo has no record),
+  and a body with one `crudui-node crudui-node--row` element per row of `buildOutline`, whose header holds the
+  `select-row` button with the row's number and title and the row's outline controls, and whose body holds its
+  nested rows. The Rust core writes it as `render_outline(form)` and `render_outline_view(fields, can_undo,
+  can_redo, language)`.
+- **CUMK-071** The data view is a `crudui-data` block: a header with the interface text `data` and a `pre` body with
+  the data as ECMAScript `JSON.stringify(data, null, 2)` writes it, its numbers as CURP-028 reads them. The Rust
+  core writes it as `render_data(form)` and `render_data_panel(data, language)`.
+
 The structure map has one rule: one line per form row. `buildOutline(nodes)`
 returns the form's rows, each with the rows nested in it, so the map nests exactly
 as the form does; collections, counts and empty collections are not rows and stay in
