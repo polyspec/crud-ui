@@ -25920,5 +25920,26 @@
     "requirements": [
       "CUVR-094"
     ]
+  },
+  {
+    "name": "compose-file-not-object",
+    "note": "a composition file whose document is no object fails the load, never as a missing file (CUSC-092).",
+    "spec": {
+      "$ref": "Base.yml"
+    },
+    "files": {
+      "Base.yml": [
+        "name"
+      ]
+    },
+    "data": {},
+    "expectFailure": {
+      "code": "REF_FORMAT_ERROR",
+      "message": "$ref file is not an object: Base.yml",
+      "at": "Base.yml"
+    },
+    "requirements": [
+      "CUSC-092"
+    ]
   }
 ]
