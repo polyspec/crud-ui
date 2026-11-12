@@ -1,6 +1,6 @@
 # 폼 구조와 데이터 바인딩
 <!-- doc-id: docs-spec-form-runtime -->
-<!-- source-sha256: c90112732fe1660f1018a1d667e94610cbe55a664382796292576d7efbccd983 -->
+<!-- source-sha256: d2a65036e77d7b04b967490fca33b4afe3f035cdf4cfea0ad3ad9f85a66ce25d -->
 
 이 문서는 폼 런타임 계약을 정의합니다. [English](form-runtime.md).
 구현과 검증 상태는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -82,7 +82,7 @@ description)`는 React, Vue, Svelte의 `FormFields`처럼, 직접 관리하는 �
 
 - **CUMK-073** `renderFormView(fields, buttons, messages, options, description)`는 같은 노드·버튼·설명을 가지고 템플릿
   action이 없는 인스턴스에 `renderForm`이 쓰는 마크업을 씁니다. Rust 코어는 `render_form_view(template, data,
-  options, render)`로 씁니다. 원시 노드가 아니라 컴파일한 템플릿을 받고, `bind_form`과 `bind_buttons`처럼 바인딩 옵션
+  render, options)`로 씁니다. 원시 노드가 아니라 컴파일한 템플릿을 받고, `bind_form`과 `bind_buttons`처럼 바인딩 옵션
   `options`로 `data`의 노드와 버튼을 바인딩하며, 바인딩한 언어의 루트 설명과 인터페이스 텍스트를 씁니다. `render`는
   렌더 옵션입니다. 따라서 노드 형태는 컴파일에서 한 번만 검사하고, 바인딩은 `bind_form`과 같이 실패합니다.
 
