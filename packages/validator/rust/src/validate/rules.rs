@@ -1047,11 +1047,13 @@ fn rule_accept(ctx: &RuleContext) -> Option<String> {
             None
         }
         Value::Array(items) => {
+            // CUVR-016: every member is a file object that matches.
             for file in items {
-                if let Value::Object(obj) = file {
-                    if !file_accepted(obj, &accept_list) {
-                        return fail();
-                    }
+                let Value::Object(obj) = file else {
+                    return fail();
+                };
+                if !file_accepted(obj, &accept_list) {
+                    return fail();
                 }
             }
             None
@@ -1062,7 +1064,8 @@ fn rule_accept(ctx: &RuleContext) -> Option<String> {
             }
             None
         }
-        _ => None,
+        // CUVR-016: a value of another type does not satisfy the rule.
+        _ => fail(),
     }
 }
 
@@ -1129,6 +1132,7 @@ fn parse_accept_param(param: &Value) -> Vec<String> {
                 out.extend(parse_accept_param(item));
             }
         }
+        // The load refuses a parameter of another type (CUVR-095), so none reaches here.
         _ => {}
     }
     out

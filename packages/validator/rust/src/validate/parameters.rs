@@ -269,6 +269,14 @@ pub(crate) fn check(
                 "Invalid notEqual parameter: expected a string, number or boolean".to_string(),
             )),
         },
+        // CUVR-095: a string or a list of strings; the rule is never skipped for another type.
+        "accept" => match parameter {
+            Value::String(_) => Ok(Parameter::Unchecked),
+            Value::Array(items) if items.iter().all(Value::is_string) => Ok(Parameter::Unchecked),
+            _ => Err(invalid(
+                "Invalid accept parameter: expected a string or a list of strings".to_string(),
+            )),
+        },
         "reference" => match parameter {
             Value::String(_) => Ok(Parameter::Unchecked),
             _ => Err(invalid(REFERENCE_PARAMETER_MESSAGE.to_string())),
