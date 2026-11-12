@@ -17,16 +17,16 @@ import { ComposeLoadError, FormInputError, UnsupportedFieldTypeError, compileFor
  */
 
 import { describe, test, expect } from 'vitest';
-import { normalizeHtml } from '../../../../tests/fixtures/form-render/normalize.mts';
+import { normalizeHtml } from '../../../../legacy/tests/fixtures/form-render/normalize.mts';
 // The shared fixture, imported as JSON (resolveJsonModule) — the SAME file the
 // Vue/Svelte CRUDUI generators load. No node:fs dependency (DOM test env).
-import fixtureCases from '../../../../tests/fixtures/form-render/cases.json';
+import fixtureCases from '../../../../legacy/tests/fixtures/form-render/cases.json';
 import { provesConformance } from '../../../../tests/conformance/evidence.mts';
 
 /** Run one fixture case and record renderForm evidence for it. */
 function proves(name: string, body: () => unknown): Promise<unknown> {
   return provesConformance(
-    { features: ['renderForm'], fixture: 'tests/fixtures/form-render/cases.json', runtime: 'react', case: name },
+    { features: ['renderForm'], fixture: 'legacy/tests/fixtures/form-render/cases.json', runtime: 'react', case: name },
     body
   );
 }

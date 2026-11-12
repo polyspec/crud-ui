@@ -7,7 +7,7 @@
 import { describe, expect, test } from 'vitest';
 import { compileForm, createForm } from '@polyspec/crudui-generator-core';
 import { renderForm } from '../server';
-import fixtureCases from '../../../../tests/fixtures/form-complete/cases.json';
+import fixtureCases from '../../../../legacy/tests/fixtures/form-complete/cases.json';
 import { provesConformance } from '../../../../tests/conformance/evidence.mts';
 import { checked, renderOptionsSchema } from '../../../../tests/json.mts';
 
@@ -34,7 +34,7 @@ function renderFailingCase(form: ReturnType<typeof createForm>, render: unknown)
 describe('complete form: React writes the expected bytes or the declared failure', () => {
   for (const c of cases) {
     test(c.name, () => provesConformance(
-      { features: ['renderForm'], fixture: 'tests/fixtures/form-complete/cases.json', runtime: 'react', case: c.name },
+      { features: ['renderForm'], fixture: 'legacy/tests/fixtures/form-complete/cases.json', runtime: 'react', case: c.name },
       () => {
         const form = createForm(compileForm(c.spec), c.data, c.options);
         if (c.expectError) {

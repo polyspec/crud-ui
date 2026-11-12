@@ -10,10 +10,10 @@ import { renderDetail, renderForm, renderList } from '../server';
 import {
   renderDetail as htmlDetail, renderForm as htmlForm, renderList as htmlList,
 } from '@polyspec/crudui-generator-html';
-import formCases from '../../../../tests/fixtures/form-render/cases.json';
-import listCases from '../../../../tests/fixtures/list-render/cases.json';
-import detailCases from '../../../../tests/fixtures/detail-render/cases.json';
-import completeCases from '../../../../tests/fixtures/form-complete/cases.json';
+import formCases from '../../../../legacy/tests/fixtures/form-render/cases.json';
+import listCases from '../../../../legacy/tests/fixtures/list-render/cases.json';
+import detailCases from '../../../../legacy/tests/fixtures/detail-render/cases.json';
+import completeCases from '../../../../legacy/tests/fixtures/form-complete/cases.json';
 
 interface Case { name: string; spec: unknown; expectError?: unknown; options?: Record<string, unknown> }
 

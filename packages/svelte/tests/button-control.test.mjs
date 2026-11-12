@@ -5,7 +5,7 @@
  */
 import { describe, expect, test } from 'vitest';
 import { compileForm } from '@polyspec/crudui-generator-core';
-import { normalizeHtml } from '../../../tests/fixtures/form-render/normalize.mts';
+import { normalizeHtml } from '../../../legacy/tests/fixtures/form-render/normalize.mts';
 import { renderFields } from '../src/internal/renderFields.ts';
 
 const render = (field) => normalizeHtml(renderFields(compileForm({ type: 'group', properties: { run: field } }), { language: 'en', data: {} }));

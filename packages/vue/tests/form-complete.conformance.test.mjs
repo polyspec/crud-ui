@@ -9,17 +9,17 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, test, expect } from 'vitest';
 import { compileForm, createForm } from '@polyspec/crudui-generator-core';
-import { normalizeHtml } from '../../../tests/fixtures/form-render/normalize.mts';
+import { normalizeHtml } from '../../../legacy/tests/fixtures/form-render/normalize.mts';
 import { renderForm } from '../src/ssr.ts';
 import { provesConformance } from '../../../tests/conformance/evidence.mts';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const cases = JSON.parse(fs.readFileSync(path.resolve(HERE, '../../../tests/fixtures/form-complete/cases.json'), 'utf8'));
+const cases = JSON.parse(fs.readFileSync(path.resolve(HERE, '../../../legacy/tests/fixtures/form-complete/cases.json'), 'utf8'));
 
 describe('complete form: Vue writes the expected markup or the declared failure', () => {
   for (const c of cases) {
     test(c.name, () => provesConformance(
-      { features: ['renderForm'], fixture: 'tests/fixtures/form-complete/cases.json', runtime: 'vue', case: c.name },
+      { features: ['renderForm'], fixture: 'legacy/tests/fixtures/form-complete/cases.json', runtime: 'vue', case: c.name },
       async () => {
         const form = createForm(compileForm(c.spec), c.data, c.options);
         if (c.expectError) {

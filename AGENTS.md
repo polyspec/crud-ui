@@ -33,7 +33,8 @@ ships as an example; this file states only the rules of crudui.
   by a change of its own when its binding package passes the shared suite and the package tests (plan V-6 (5)). The
   tools that compare the implementations with each other, `legacy/tests/native-generators`,
   `legacy/tests/rust-generator-fixtures` and `legacy/examples/cross-check-console`, are tools of the legacy implementations: they read `legacy/tests/fixtures` and
-  are removed with them. `scripts/check-conformance.mts` checks the evidence of a legacy runtime against the copy under
+  are removed with them. The suites of the packages that run on the legacy TypeScript core (react, vue, svelte and
+  form-binding) read `legacy/tests/fixtures` too. `scripts/check-conformance.mts` checks the evidence of a legacy runtime against the copy under
   `legacy/` and that of the Rust core against `tests/fixtures`.
   Enforced by: `make layout-check`
 - Own: One Cargo workspace at the root holds the core crates `packages/validator/rust` and `packages/generator/rust`

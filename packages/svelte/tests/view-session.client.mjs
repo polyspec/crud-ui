@@ -2,7 +2,7 @@ import { mount, unmount, tick } from 'svelte';
 import { writable } from 'svelte/store';
 import { expect, it } from 'vitest';
 import ViewHost from './ViewHost.svelte';
-import { exerciseViewRerender } from '../../../tests/fixtures/view-session/rerender.mts';
+import { exerciseViewRerender } from '../../../legacy/tests/fixtures/view-session/rerender.mts';
 import { provesConformance } from '../../../tests/conformance/evidence.mts';
 
 it('keeps list and detail nodes across re-renders', async () => {
@@ -16,7 +16,7 @@ it('keeps list and detail nodes across re-renders', async () => {
     app = mount(ViewHost, { target: element, props: { source } });
   };
   try {
-    await provesConformance({ features: ['updateView'], fixture: 'tests/fixtures/view-session/rerender.mts', runtime: 'svelte', case: 'exerciseViewRerender' }, () =>
+    await provesConformance({ features: ['updateView'], fixture: 'legacy/tests/fixtures/view-session/rerender.mts', runtime: 'svelte', case: 'exerciseViewRerender' }, () =>
       exerciseViewRerender({ element, show, expect, flush: tick }));
   } finally { if (app) await unmount(app); element.remove(); }
 });

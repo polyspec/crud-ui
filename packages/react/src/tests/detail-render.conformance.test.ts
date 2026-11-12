@@ -9,15 +9,15 @@
 
 import { describe, expect, test } from 'vitest';
 import { renderDetail } from '../server';
-import { normalizeHtml } from '../../../../tests/fixtures/form-render/normalize.mts';
-import { withoutPreloadLinks } from '../../../../tests/fixtures/preload-links.mts';
-import cases from '../../../../tests/fixtures/detail-render/cases.json';
+import { normalizeHtml } from '../../../../legacy/tests/fixtures/form-render/normalize.mts';
+import { withoutPreloadLinks } from '../../../../legacy/tests/fixtures/preload-links.mts';
+import cases from '../../../../legacy/tests/fixtures/detail-render/cases.json';
 import { provesConformance } from '../../../../tests/conformance/evidence.mts';
 
 /** Run one fixture case and record renderDetail evidence for it. */
 function proves(name: string, body: () => unknown): Promise<unknown> {
   return provesConformance(
-    { features: ['renderDetail'], fixture: 'tests/fixtures/detail-render/cases.json', runtime: 'react', case: name },
+    { features: ['renderDetail'], fixture: 'legacy/tests/fixtures/detail-render/cases.json', runtime: 'react', case: name },
     body
   );
 }

@@ -24,19 +24,19 @@ import { fileURLToPath } from 'node:url';
 import { describe, test, expect } from 'vitest';
 import { ComposeLoadError } from '@polyspec/crudui-generator-core';
 import { renderList } from '../src/index.ts';
-import { normalizeHtml } from '../../../tests/fixtures/form-render/normalize.mts';
+import { normalizeHtml } from '../../../legacy/tests/fixtures/form-render/normalize.mts';
 import { provesConformance } from '../../../tests/conformance/evidence.mts';
 
 /** Run one fixture case and record renderList evidence for it. */
 function proves(name, body) {
   return provesConformance(
-    { features: ['renderList'], fixture: 'tests/fixtures/list-render/cases.json', runtime: 'svelte', case: name },
+    { features: ['renderList'], fixture: 'legacy/tests/fixtures/list-render/cases.json', runtime: 'svelte', case: name },
     body
   );
 }
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const FIXTURE = path.resolve(HERE, '../../../tests/fixtures/list-render/cases.json');
+const FIXTURE = path.resolve(HERE, '../../../legacy/tests/fixtures/list-render/cases.json');
 const cases = JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
 
 

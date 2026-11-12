@@ -20,19 +20,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, test, expect } from 'vitest';
-import { normalizeHtml } from '../../../tests/fixtures/form-render/normalize.mts';
+import { normalizeHtml } from '../../../legacy/tests/fixtures/form-render/normalize.mts';
 import { provesConformance } from '../../../tests/conformance/evidence.mts';
 
 /** Run one fixture case and record renderForm evidence for it. */
 function proves(name, body) {
   return provesConformance(
-    { features: ['renderForm'], fixture: 'tests/fixtures/form-render/cases.json', runtime: 'svelte', case: name },
+    { features: ['renderForm'], fixture: 'legacy/tests/fixtures/form-render/cases.json', runtime: 'svelte', case: name },
     body
   );
 }
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const FIXTURE = path.resolve(HERE, '../../../tests/fixtures/form-render/cases.json');
+const FIXTURE = path.resolve(HERE, '../../../legacy/tests/fixtures/form-render/cases.json');
 const cases = JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
 
 function render(c) {

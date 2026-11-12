@@ -2,13 +2,13 @@ import { mount, unmount, tick } from 'svelte';
 import { expect, it } from 'vitest';
 import { compileForm, createForm } from '@polyspec/crudui-generator-core';
 import Form from '../src/components/Form.svelte';
-import { spec, data, exerciseSessionDom } from '../../../tests/fixtures/form-session/scenario.mts';
-import { compareInitialization, compareServerTakeover } from '../../../tests/fixtures/form-session/initialization.mts';
+import { spec, data, exerciseSessionDom } from '../../../legacy/tests/fixtures/form-session/scenario.mts';
+import { compareInitialization, compareServerTakeover } from '../../../legacy/tests/fixtures/form-session/initialization.mts';
 import { provesConformance } from '../../../tests/conformance/evidence.mts';
 
 /** Run one shared form session case and record svelte evidence for the features it proves. */
 function proves(fixture, name, features, run) {
-  return provesConformance({ features, fixture: `tests/fixtures/form-session/${fixture}`, runtime: 'svelte', case: name }, run);
+  return provesConformance({ features, fixture: `legacy/tests/fixtures/form-session/${fixture}`, runtime: 'svelte', case: name }, run);
 }
 const SESSION_FEATURES = ['connectForm', 'connectOutline', 'runAction', 'viewState', 'formHistory'];
 
@@ -77,7 +77,7 @@ it.each([
   } finally { await unmount(app); element.remove(); }
 });
 
-import { controlSpec, exerciseControls } from '../../../tests/fixtures/form-session/controls.mts';
+import { controlSpec, exerciseControls } from '../../../legacy/tests/fixtures/form-session/controls.mts';
 it('connects labels and preserves multiple choice values through editing and submission', async () => {
   const form = createForm(compileForm(controlSpec), { enabled: 1, memo: 'Original', choices: ['a', 'c'] });
   const element = document.createElement('form');
@@ -91,7 +91,7 @@ it('connects labels and preserves multiple choice values through editing and sub
   finally { await unmount(app); element.remove(); }
 });
 
-import { onlySpec, exerciseOnlyRows, visibilitySpec, visibilityData, exerciseHiddenValues } from '../../../tests/fixtures/form-session/data-rows.mts';
+import { onlySpec, exerciseOnlyRows, visibilitySpec, visibilityData, exerciseHiddenValues } from '../../../legacy/tests/fixtures/form-session/data-rows.mts';
 it('keeps a data-only collection to the rows of its data', async () => {
   const session = createForm(compileForm(onlySpec));
   const element = document.createElement('form');
@@ -118,7 +118,7 @@ it('keeps the values of a group hidden by design.show', async () => {
   finally { await unmount(app); element.remove(); }
 });
 
-import { typingSpec, exerciseTyping, installWidgetHost } from '../../../tests/fixtures/form-session/typing.mts';
+import { typingSpec, exerciseTyping, installWidgetHost } from '../../../legacy/tests/fixtures/form-session/typing.mts';
 it('keeps the typed control node, its order and its caret', async () => {
   installWidgetHost(document);
   const form = createForm(compileForm(typingSpec));
@@ -133,7 +133,7 @@ it('keeps the typed control node, its order and its caret', async () => {
   finally { await unmount(app); element.remove(); }
 });
 
-import { sourceSpec, sourceData, exerciseGroupSource } from '../../../tests/fixtures/form-session/group-source.mts';
+import { sourceSpec, sourceData, exerciseGroupSource } from '../../../legacy/tests/fixtures/form-session/group-source.mts';
 it('lists the choices of a group source from the rows of each change', async () => {
   const session = createForm(compileForm(sourceSpec), sourceData);
   const element = document.createElement('form');

@@ -4,7 +4,7 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it } from 'vitest';
 import { compileForm, createForm } from '@polyspec/crudui-generator-core';
 import { Form } from '../components/Form';
-import { installWidgetHost } from '../../../../tests/fixtures/form-session/typing.mts';
+import { installWidgetHost } from '../../../../legacy/tests/fixtures/form-session/typing.mts';
 import { element } from './elements';
 
 const behavior = { onchange: 'document.body.dataset.cruduiBehaviorEvents = String(Number(document.body.dataset.cruduiBehaviorEvents || 0) + 1)' };

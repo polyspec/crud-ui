@@ -16,14 +16,14 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { ComposeLoadError, compileForm, type BindFormOptions, type CompileFormOptions } from '@polyspec/crudui-generator-core';
 import { renderFields } from '../src/internal/renderFields';
-import { normalizeHtml } from '../../../tests/fixtures/form-render/normalize.mts';
+import { normalizeHtml } from '../../../legacy/tests/fixtures/form-render/normalize.mts';
 import { SCENARIOS } from './scenario-form-render-cases';
 import { WRITTEN_CASES } from './written-form-render-cases';
 import { GROUP_SOURCE_CASES, GROUP_SOURCE_REQUIREMENTS } from './group-source-form-render-cases';
 import { CONDITION_EDITOR_CASES, CONDITION_EDITOR_REQUIREMENTS } from './condition-editor-form-render-cases';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const casesPath = resolve(__dirname, '../../../tests/fixtures/form-render/cases.json');
+const casesPath = resolve(__dirname, '../../../legacy/tests/fixtures/form-render/cases.json');
 
 interface FixtureCase {
   name: string;
