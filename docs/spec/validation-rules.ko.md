@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: ccd1e7249329b0b1e4d45ca1be5c994b3a620700587c7256c207503c153a439e -->
+<!-- source-sha256: 57a23fb92112368db6fd03563f3b39ee7bdbef78125d9707ab269c83564df1aa -->
 
 [English](validation-rules.md).
 
@@ -49,6 +49,9 @@
 
 ## 평가
 
+- **CUVR-093** `hiddenPaths(spec, data)`는 같은 명세와 데이터의 검증 결과 `hidden`이 담는 데이터 경로를 돌려줍니다.
+  명세는 파일 없이 합성하고 `validate`처럼 검사하며, 데이터는 객체이고, 그 안의 다른 모양 데이터는 없는 것으로
+  읽으며, 데이터 한도는 재지 않습니다. 브라우저 폼 바인딩이 필드를 보이고 숨기려고 읽습니다.
 - **CUVR-090** 데이터에 멤버가 없는 필드는 값 `null`로 검증합니다. 빈 컨트롤에 아무것도 보내지 않는 폼처럼 없는 값과
   `null`은 둘 다 값이 없는 것입니다. `required`는 둘 다 실패시키고, 다른 규칙은 빈 값으로 건너뛰며, 오류의 `value`는
   `null`입니다. 데이터 자체는 그 차이를 유지합니다(CURP-025).

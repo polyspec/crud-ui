@@ -59,6 +59,10 @@ so `equalto` is not `equalTo`.
 
 Rules run in declaration order and stop at the first failure for each field.
 
+- **CUVR-093** `hiddenPaths(spec, data)` returns the data paths that the `hidden` member of the validation result
+  holds for the same specification and data: the specification is composed without files and checked as
+  `validate` checks it, the data is an object, data of another shape inside it is read as missing, and the
+  data limits are not measured. The browser form binding reads it to show and hide fields.
 - **CUVR-090** A field whose data has no member is validated with the value `null`: a missing value and `null`
   are both no value, as a form that submits nothing for an empty control. `required` fails both, every other
   rule skips them as empty values, and the error's `value` is `null`. The data itself keeps the difference
