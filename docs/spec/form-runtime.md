@@ -89,8 +89,10 @@ options, description)` renders the same content from `bindForm`, `bindButtons` a
 
 - **CUMK-073** `renderFormView(fields, buttons, messages, options, description)` writes the markup that `renderForm`
   writes for an instance with the same nodes, buttons and description and no template action. The Rust core
-  writes it as `render_form_view(fields, buttons, language, options, description)`, which takes the interface
-  text of `language`.
+  writes it as `render_form_view(template, data, options, render)`: it takes a compiled template, never raw nodes,
+  binds the nodes and buttons of `data` with the bind options `options`, as `bind_form` and `bind_buttons` do, and
+  takes the root description and the interface text of the bound language; `render` holds the render options. The
+  shape of the nodes is thus checked once, by compilation, and binding fails as `bind_form` fails.
 
 `renderList(spec, rows, options)`
 returns the declared table or card layout. The package performs no DOM binding,
