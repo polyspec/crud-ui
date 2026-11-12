@@ -25,6 +25,12 @@ ships as an example; this file states only the rules of crudui.
   the CI check `ci-passed` and the push check `push-gate`
   succeeded for the commit on `main`; a release is made from that tag (`docs/operations/repository.md`).
   Enforced by: none, the order of pushes and tags is a procedure that no check reads.
+- Own: The language implementations in `packages/validator/{ts,php,python,go}`, `packages/generator/{ts,php,python,go}`,
+  `packages/php-ext` and `packages/html` read the shared fixtures of `tests/fixtures` until they move to `legacy/`, where
+  they read a pinned copy. Until that move their suites fail the shared cases of the rules that the Rust core implements
+  alone (CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUSC-092, the nesting limit of CUIT-022 and the numbers of CURP-028 in
+  `expr` and `form-render`); these failures are a known state and get no task of their own.
+  Enforced by: none, the known failures are a state of the legacy move that no check reads.
 
 ## Tools and dependencies
 

@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: 0d52d7818717f97c60e94018f0954a2d8dcebc5f23fadd8c807faed54483fbd9 -->
+<!-- source-sha256: 2ca489602cd71c7d30a5becd227e1a62940df3489081a78cb894d501a6d1d1c3 -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -25,6 +25,12 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   tag는 commit에 대해 CI check `ci-passed`와 push check `push-gate`가 성공한 뒤에만 만들며, release는
   그 tag에서 만듭니다(`docs/operations/repository.md`).
   Enforced by: none, push와 tag의 순서는 어떤 검사도 읽지 않는 절차입니다.
+- Own: `packages/validator/{ts,php,python,go}`, `packages/generator/{ts,php,python,go}`, `packages/php-ext`,
+  `packages/html`의 언어 구현은 `legacy/`로 옮기기 전까지 `tests/fixtures`의 공유 fixture를 읽고, 옮긴 뒤에는 고정한
+  사본을 읽습니다. 옮기기 전까지 그 suite는 Rust 코어만 구현한 규칙(CUVR-088, CUVR-089, CUVR-091, CUVR-094, CUSC-092,
+  CUIT-022의 중첩 한도, `expr`와 `form-render`의 CURP-028 숫자)의 공유 case에서 실패합니다. 이 실패는 알려진 상태이며
+  따로 작업을 두지 않습니다.
+  Enforced by: none, 알려진 실패는 어떤 검사도 읽지 않는 legacy 이동의 상태입니다.
 
 ## 도구와 의존성
 
