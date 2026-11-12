@@ -151,8 +151,8 @@ fn main() {
                 },
                 false,
             ),
-            // A composition failure produces no validation result.
-            Err(err) => failure(&err.message, err.code.as_str(), &err.trace.join(".")),
+            // A composition or input failure produces no validation result.
+            Err(err) => failure(err.message(), err.code(), &err.at()),
         }
     }
 
