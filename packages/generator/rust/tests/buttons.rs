@@ -2,6 +2,16 @@
 //! and `form_buttons_html` (CURP-009). Each observation equals the one that the TypeScript reference recorded, as JSON text,
 //! so the order of the attributes counts. A failure is observed with its code and message.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 #[path = "support/evidence.rs"]
 mod evidence;
 

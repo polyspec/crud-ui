@@ -126,8 +126,11 @@ types are unequal, numbers are equal by value (`1` equals `1.0`), strings by the
 characters, and `null` equals `null`. An array never equals an object or `null`.
 An array that a path without a wildcard names is one value, not the candidates of
 a wildcard: `.a == .b` compares the two arrays, and `.tags in a, b` is false for
-`tags: ['a']`. Relational comparisons convert both sides to numbers. A string uses its leading numeric part, or zero when no number is
-available. This condition conversion is separate from numeric validation rules.
+`tags: ['a']`.
+
+- **CUXP-025** Relational comparisons convert both sides to numbers. A string uses its leading
+  numeric part, or zero when no number is available. This condition conversion is separate from
+  numeric validation rules.
 
 A relative `.field` resolves beside the current field. `..field` moves one parent
 level further; each additional dot moves one additional level. A row of a repeated

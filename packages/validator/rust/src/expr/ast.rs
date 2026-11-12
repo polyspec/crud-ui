@@ -8,7 +8,7 @@
 //! 4-language AST contract excludes it; including it would break cross-language
 //! fixture equality.
 
-use serde_json::{json, Value};
+use serde_json::{json, Number, Value};
 
 /// A literal's value kind plus its concrete value (number kept as int or float so
 /// the fixture's integer literals stay integers when serialized).
@@ -56,8 +56,9 @@ pub enum PathSegment {
     Identifier(String),
     /// A wildcard (`*`) segment matching any array index.
     Wildcard,
-    /// A fixed numeric array-index segment.
-    Index(i64),
+    /// A segment written as a number; the path names the member that ECMAScript
+    /// `String(number)` writes for it (CURP-028), so `1e3` names `1000`.
+    Index(Number),
 }
 
 impl PathSegment {

@@ -4,6 +4,16 @@
 //! case does not write is one that an operation generated, and the observation names it `$1`, `$2` in the order of its
 //! first appearance (tests/fixtures/form-state/README.md).
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 #[path = "support/evidence.rs"]
 mod evidence;
 

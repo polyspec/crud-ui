@@ -59,7 +59,10 @@ fn literal_choices(choices: Option<&Value>) -> Option<Vec<GroupChoice>> {
         if literal.iter().any(|known| known.value == value) {
             return None;
         }
-        literal.push(GroupChoice { value, label: choice["label"].clone() });
+        literal.push(GroupChoice {
+            value,
+            label: choice["label"].clone(),
+        });
     }
     Some(literal)
 }
@@ -170,11 +173,12 @@ pub fn group_source_failure(
     path: &str,
     root: &Map<String, Value>,
 ) -> Option<String> {
-    let items = field
-        .get("items")
-        .filter(|items| is_group_source(items))?;
+    let items = field.get("items").filter(|items| is_group_source(items))?;
     let members = items.as_object()?;
-    if let Some(key) = members.keys().find(|key| *key != "from" && *key != "label" && *key != "choices") {
+    if let Some(key) = members
+        .keys()
+        .find(|key| *key != "from" && *key != "label" && *key != "choices")
+    {
         return Some(format!("Invalid items.{key} at {path}: unknown key"));
     }
     let is_choice = field
@@ -187,7 +191,8 @@ pub fn group_source_failure(
         ));
     }
     let from = members.get("from").and_then(Value::as_str);
-    let Some((from, group)) = from.and_then(|from| source_group(from, root).map(|group| (from, group)))
+    let Some((from, group)) =
+        from.and_then(|from| source_group(from, root).map(|group| (from, group)))
     else {
         return Some(from_message(path));
     };
@@ -195,19 +200,29 @@ pub fn group_source_failure(
     let group_path = segments[..segments.len() - 2].join(".");
     let value_name = segments[segments.len() - 1];
     if holds_boolean(group, value_name) {
-        return Some(boolean_message("from", path, &format!("{group_path}.{value_name}")));
+        return Some(boolean_message(
+            "from",
+            path,
+            &format!("{group_path}.{value_name}"),
+        ));
     }
     if let Some(label) = members.get("label") {
         match label.as_str() {
             Some(name) if group.get(name).is_some_and(scalar_child) => {
                 if holds_boolean(group, name) {
-                    return Some(boolean_message("label", path, &format!("{group_path}.{name}")));
+                    return Some(boolean_message(
+                        "label",
+                        path,
+                        &format!("{group_path}.{name}"),
+                    ));
                 }
             }
             _ => return Some(label_message(path)),
         }
     }
-    literal_choices(members.get("choices")).is_none().then(|| choices_message(path))
+    literal_choices(members.get("choices"))
+        .is_none()
+        .then(|| choices_message(path))
 }
 
 fn choices_message(path: &str) -> String {
@@ -231,9 +246,15 @@ fn choice_text(value: Option<&Value>) -> Option<String> {
 ///
 /// `items` must have passed [`group_source_failure`]; a source whose `from` or `label` is not
 /// of the declared shape gives the message of its declaration failure, located at `path`.
-pub fn group_choices(items: &Value, data: &Value, path: &str) -> Result<Vec<GroupChoice>, GroupChoicesError> {
+pub fn group_choices(
+    items: &Value,
+    data: &Value,
+    path: &str,
+) -> Result<Vec<GroupChoice>, GroupChoicesError> {
     let declaration = |message: String| GroupChoicesError::Declaration(message);
-    let members = items.as_object().ok_or_else(|| declaration(from_message(path)))?;
+    let members = items
+        .as_object()
+        .ok_or_else(|| declaration(from_message(path)))?;
     let from = members
         .get("from")
         .and_then(Value::as_str)
@@ -248,7 +269,8 @@ pub fn group_choices(items: &Value, data: &Value, path: &str) -> Result<Vec<Grou
         Some(Value::String(name)) => Some(name.as_str()),
         Some(_) => return Err(declaration(label_message(path))),
     };
-    let literal = literal_choices(members.get("choices")).ok_or_else(|| declaration(choices_message(path)))?;
+    let literal = literal_choices(members.get("choices"))
+        .ok_or_else(|| declaration(choices_message(path)))?;
     if let Some(repeat) = first_repeat(items, data, false) {
         return Err(GroupChoicesError::Repeated(repeat));
     }
@@ -268,10 +290,17 @@ pub fn group_choices(items: &Value, data: &Value, path: &str) -> Result<Vec<Grou
         if !seen.insert(value.clone()) {
             continue;
         }
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "CUSC-063: a choice whose row has no label text is labelled by its value"
+        )]
         let label = label_name
             .and_then(|name| choice_text(row.get(name)))
             .unwrap_or_else(|| value.clone());
-        choices.push(GroupChoice { value, label: Value::String(label) });
+        choices.push(GroupChoice {
+            value,
+            label: Value::String(label),
+        });
     }
     Ok(choices)
 }
@@ -297,6 +326,10 @@ pub fn group_source_repeat(items: &Value, data: &Value) -> Option<String> {
 /// of an earlier row.
 fn first_repeat(items: &Value, data: &Value, rows: bool) -> Option<String> {
     let from = items.get("from").and_then(Value::as_str)?;
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "CUSC-089: a group source without choices has no literal choice"
+    )]
     let literal = literal_choices(items.get("choices")).unwrap_or_default();
     let segments: Vec<&str> = from.split('.').collect();
     if segments.len() < 3 {

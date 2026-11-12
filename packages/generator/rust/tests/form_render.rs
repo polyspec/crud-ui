@@ -1,6 +1,16 @@
 //! The form rendering fixtures against the Rust generator: each result case of `tests/fixtures/form-render` compiles,
 //! binds and renders to the recorded layout, and each failure case raises the recorded code and message. Each case is one test. Results are compared as normalized layout trees (tests/support), as the Python runner does.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod support;
 
 use libtest_mimic::{Arguments, Trial};
@@ -34,8 +44,7 @@ fn check_result(case: &Value) {
         Err(error) => panic!("{name}: {error}"),
     };
     let expected = support::html_tree(case["expected_html"].as_str().unwrap());
-    if let Some(difference) = support::first_difference(&support::html_tree(&actual), &expected)
-    {
+    if let Some(difference) = support::first_difference(&support::html_tree(&actual), &expected) {
         panic!("{name}: {difference}");
     }
     // A new instance over the same template and data renders the same form.

@@ -2,6 +2,16 @@
 //! with the case options and renders it with the case render options. A case with `expected_html` must render the same
 //! bytes, and a case with `expectError` must fail with the recorded code and message. One trial per case.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 use libtest_mimic::{Arguments, Trial};
 use polyspec_crudui_generator::{compile_form, render_form, BindOptions, CompileOptions, Form};
 use serde_json::Value;

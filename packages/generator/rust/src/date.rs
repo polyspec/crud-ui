@@ -2,20 +2,49 @@ use chrono::{DateTime, Datelike, Duration, NaiveDate, TimeZone, Timelike, Utc};
 use regex::Regex;
 use std::sync::LazyLock;
 
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
 static ISO: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^([0-9]{4})-([0-9]{2})-([0-9]{2})(?:[T ]([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\.([0-9]+))?)?(Z|[+-][0-9]{2}:[0-9]{2})?)?$").expect("ISO date expression")
 });
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
 static RFC: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"(?i)^(?:(Sun|Mon|Tue|Wed|Thu|Fri|Sat),[ \t]+)?([0-9]{1,2})[ \t]+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[ \t]+([0-9]{4})[ \t]+([0-9]{2}):([0-9]{2})(?::([0-9]{2}))?[ \t]+([+-][0-9]{4}|UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT)$").expect("RFC date expression")
 });
 const MONTHS: [&str; 12] = [
     "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
 ];
-/// The digit runs that the expressions capture fit their numeric types, so they always parse.
-const CAPTURED_DIGITS: &str = "the expression captures ASCII digits that fit the type";
 const WEEKDAYS: [&str; 7] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
-fn offset_minutes(zone: &str) -> Option<i64> {
+/// The value of a run of ASCII digits, or `None` when it holds another character or exceeds `u32`.
+fn digits(text: &str) -> Option<u32> {
+    text.bytes().try_fold(0u32, |value, byte| {
+        if !byte.is_ascii_digit() {
+            return None;
+        }
+        value.checked_mul(10)?.checked_add(u32::from(byte - b'0'))
+    })
+}
+
+/// The value of an optional captured digit run; a time part that the value omits is zero
+/// (form-runtime.md, date values).
+fn optional_digits(part: Option<regex::Match<'_>>) -> Option<u32> {
+    match part {
+        Some(part) => digits(part.as_str()),
+        None => Some(0),
+    }
+}
+
+/// The offset of a zone in minutes; a value without a zone is UTC.
+fn offset_minutes(zone: Option<&str>) -> Option<i64> {
+    let Some(zone) = zone else {
+        return Some(0);
+    };
     let named = match zone.to_ascii_uppercase().as_str() {
         "" | "Z" | "UT" | "GMT" => Some(0),
         "EST" | "CDT" => Some(-300),
@@ -28,9 +57,9 @@ fn offset_minutes(zone: &str) -> Option<i64> {
     if let Some(offset) = named {
         return Some(offset);
     }
-    let digits = zone.get(1..)?.replace(':', "");
-    let hours: i64 = digits.get(..2)?.parse().expect(CAPTURED_DIGITS);
-    let minutes: i64 = digits.get(2..)?.parse().expect(CAPTURED_DIGITS);
+    let digits_of_zone = zone.get(1..)?.replace(':', "");
+    let hours = i64::from(digits(digits_of_zone.get(..2)?)?);
+    let minutes = i64::from(digits(digits_of_zone.get(2..)?)?);
     if hours > 23 || minutes > 59 {
         return None;
     }
@@ -41,64 +70,55 @@ pub(crate) fn parse(value: &str) -> Option<DateTime<Utc>> {
     let (year, month, day, hour, minute, second, fraction, zone, weekday) =
         if let Some(parts) = ISO.captures(value) {
             (
-                parts[1].parse().expect(CAPTURED_DIGITS),
-                parts[2].parse().expect(CAPTURED_DIGITS),
-                parts[3].parse().expect(CAPTURED_DIGITS),
-                parts
-                    .get(4)
-                    .map_or("0", |v| v.as_str())
-                    .parse()
-                    .expect(CAPTURED_DIGITS),
-                parts
-                    .get(5)
-                    .map_or("0", |v| v.as_str())
-                    .parse()
-                    .expect(CAPTURED_DIGITS),
-                parts
-                    .get(6)
-                    .map_or("0", |v| v.as_str())
-                    .parse()
-                    .expect(CAPTURED_DIGITS),
-                parts.get(7).map_or("", |v| v.as_str()),
-                parts.get(8).map_or("", |v| v.as_str()),
+                digits(&parts[1])?,
+                digits(&parts[2])?,
+                digits(&parts[3])?,
+                optional_digits(parts.get(4))?,
+                optional_digits(parts.get(5))?,
+                optional_digits(parts.get(6))?,
+                // An omitted fraction and an omitted zone are none (UTC).
+                parts.get(7).map(|v| v.as_str()),
+                parts.get(8).map(|v| v.as_str()),
                 None,
             )
         } else {
             let parts = RFC.captures(value)?;
             (
-                parts[4].parse().expect(CAPTURED_DIGITS),
+                digits(&parts[4])?,
                 MONTHS
                     .iter()
-                    .position(|m| parts[3].eq_ignore_ascii_case(m))? as u32
-                    + 1,
-                parts[2].parse().expect(CAPTURED_DIGITS),
-                parts[5].parse().expect(CAPTURED_DIGITS),
-                parts[6].parse().expect(CAPTURED_DIGITS),
-                parts
-                    .get(7)
-                    .map_or("0", |v| v.as_str())
-                    .parse()
-                    .expect(CAPTURED_DIGITS),
-                "",
-                parts.get(8)?.as_str(),
+                    .zip(1u32..)
+                    .find(|(m, _)| parts[3].eq_ignore_ascii_case(m))?
+                    .1,
+                digits(&parts[2])?,
+                digits(&parts[5])?,
+                digits(&parts[6])?,
+                optional_digits(parts.get(7))?,
+                None,
+                Some(parts.get(8)?.as_str()),
                 parts.get(1).map(|v| v.as_str()),
             )
         };
     if hour > 23 || minute > 59 || second > 59 {
         return None;
     }
+    // The expressions capture four digits of a year, which an i32 holds.
+    let Ok(year) = i32::try_from(year) else {
+        return None;
+    };
     let date = NaiveDate::from_ymd_opt(year, month, day)?;
     if weekday.is_some_and(|day| {
         !day.eq_ignore_ascii_case(WEEKDAYS[date.weekday().num_days_from_sunday() as usize])
     }) {
         return None;
     }
-    let nanos: u32 = format!(
-        "{fraction:0<9}",
-        fraction = &fraction[..fraction.len().min(9)]
-    )
-    .parse()
-    .expect(CAPTURED_DIGITS);
+    let nanos = match fraction {
+        Some(fraction) => digits(&format!(
+            "{fraction:0<9}",
+            fraction = &fraction[..fraction.len().min(9)]
+        ))?,
+        None => 0,
+    };
     let time = date.and_hms_nano_opt(hour, minute, second, nanos)?;
     let utc = time.checked_sub_signed(Duration::minutes(offset_minutes(zone)?))?;
     Some(Utc.from_utc_datetime(&utc))

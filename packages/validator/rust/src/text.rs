@@ -90,6 +90,7 @@ impl fmt::Display for JsonTextError {
 impl std::error::Error for JsonTextError {}
 
 struct Parser<'a> {
+    text: &'a str,
     bytes: &'a [u8],
     pos: usize,
 }
@@ -225,8 +226,8 @@ impl Parser<'_> {
                 return self.error();
             }
         }
-        let text = std::str::from_utf8(&self.bytes[start..self.pos]).expect("ASCII digits");
-        Ok(JsonText::Number(text.to_owned()))
+        // The number is ASCII, so its bounds are character bounds of the text.
+        Ok(JsonText::Number(self.text[start..self.pos].to_owned()))
     }
 
     fn hex(&mut self) -> Result<u16, JsonTextError> {
@@ -234,13 +235,18 @@ impl Parser<'_> {
             .bytes
             .get(self.pos..self.pos + 4)
             .ok_or(JsonTextError { offset: self.pos })?;
-        if !digits.iter().all(u8::is_ascii_hexdigit) {
-            return self.error();
+        let mut unit: u16 = 0;
+        for digit in digits {
+            let value = match digit {
+                b'0'..=b'9' => digit - b'0',
+                b'a'..=b'f' => digit - b'a' + 10,
+                b'A'..=b'F' => digit - b'A' + 10,
+                _ => return self.error(),
+            };
+            unit = unit * 16 + u16::from(value);
         }
-        // Hex digits are ASCII, so the four bytes are valid UTF-8.
-        let text = std::str::from_utf8(digits).expect("ASCII hex digits are UTF-8");
         self.pos += 4;
-        Ok(u16::from_str_radix(text, 16).expect("hex digits"))
+        Ok(unit)
     }
 
     fn string(&mut self) -> Result<JsonString, JsonTextError> {
@@ -281,17 +287,12 @@ impl Parser<'_> {
                 }
                 0x00..=0x1f => return self.error(),
                 _ => {
-                    // The input is a `str`, so each character is whole.
-                    let length = match byte {
-                        0x00..=0x7f => 1,
-                        0xc0..=0xdf => 2,
-                        0xe0..=0xef => 3,
-                        _ => 4,
-                    };
-                    let character = std::str::from_utf8(&self.bytes[self.pos..self.pos + length])
-                        .expect("the input is a str, so each character is whole")
-                        .chars()
-                        .next()
+                    // The scan stops only after whole characters, so the position is a character
+                    // bound of the text.
+                    let character = self
+                        .text
+                        .get(self.pos..)
+                        .and_then(|rest| rest.chars().next())
                         .ok_or(JsonTextError { offset: self.pos })?;
                     let mut buffer = [0u16; 2];
                     units.extend_from_slice(character.encode_utf16(&mut buffer));
@@ -307,6 +308,7 @@ impl JsonText {
     /// applies, keeping every string as written.
     pub fn parse(text: &str) -> Result<JsonText, JsonTextError> {
         let mut parser = Parser {
+            text,
             bytes: text.as_bytes(),
             pos: 0,
         };
@@ -487,10 +489,8 @@ fn value_failure(value: &JsonText) -> Option<ValueFailure> {
     if !holds_failure(value, 0, &mut Walk::default()) {
         return None;
     }
-    Some(
-        first_failure(value, &mut Vec::new(), 0, &mut Walk::default())
-            .expect("the ordered walk reports the failure that the quick walk found"),
-    )
+    // The ordered walk visits the nodes that the quick walk visited, so it finds the failure.
+    first_failure(value, &mut Vec::new(), 0, &mut Walk::default())
 }
 
 /// The shape of a value within its limits, as [`JsonText::shape`] states it.
@@ -512,6 +512,10 @@ fn shape_of(value: &JsonText) -> Value {
         JsonText::String(JsonString::Text(text)) => Value::String(text.clone()),
         JsonText::Null => Value::Null,
         JsonText::Bool(value) => Value::Bool(*value),
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "CUIT-040: a shape is read only for kinds, and the text checks report the number first"
+        )]
         JsonText::Number(text) => number_value(text).unwrap_or(Value::Null),
     }
 }
@@ -577,7 +581,10 @@ pub fn check_inputs(inputs: &[(&str, Option<&JsonText>)]) -> Result<(), FormInpu
 
 /// The value of a JSON number. A number that `serde_json` does not accept (out of its
 /// range) is invalid input: the callers return `None`, and the text checks report it.
-#[allow(clippy::disallowed_methods, reason = "a number serde_json rejects is invalid")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "a number serde_json rejects is invalid"
+)]
 fn number_value(text: &str) -> Option<Value> {
     serde_json::from_str::<Number>(text).ok().map(Value::Number)
 }
@@ -614,13 +621,14 @@ fn json_text_to_value(value: &JsonText) -> Option<Value> {
 /// A JSON text member that is not text, or a number `serde_json` does not
 /// accept, after the text checks passed.
 fn decoded(value: Option<&JsonText>) -> Result<Option<Value>, ValidateError> {
-    value
-        .map(|value| {
-            json_text_to_value(value).ok_or_else(|| {
-                ValidateError::Input(FormInputError::new("Numbers must be finite JSON numbers"))
-            })
-        })
-        .transpose()
+    value.map(decode).transpose()
+}
+
+/// A JSON text value, or the failure of a number that `serde_json` does not accept.
+fn decode(value: &JsonText) -> Result<Value, ValidateError> {
+    json_text_to_value(value).ok_or_else(|| {
+        ValidateError::Input(FormInputError::new("Numbers must be finite JSON numbers"))
+    })
 }
 
 /// The decoded files and base path of a JSON text validation.
@@ -652,8 +660,12 @@ pub fn validate_text(
     check_specification(Some(spec), files)?;
     check_inputs(&[("data", data), ("options.basepath", basepath)])?;
     let (files, basepath) = composition(files, basepath)?;
-    let spec = decoded(Some(spec))?.unwrap_or(Value::Null);
-    let data = decoded(data)?.unwrap_or_else(|| Value::Object(Map::new()));
+    let spec = decode(spec)?;
+    // CUIT-040: absent data is the empty object.
+    let data = match decoded(data)? {
+        Some(data) => data,
+        None => Value::Object(Map::new()),
+    };
     crate::validate(
         &spec,
         &data,
@@ -671,12 +683,16 @@ fn structure_text(
     spec: &JsonText,
     files: Option<&JsonText>,
     basepath: Option<&JsonText>,
-    validate: impl FnOnce(&Value, Option<Map<String, Value>>, Option<String>) -> Result<(), ValidateError>,
+    validate: impl FnOnce(
+        &Value,
+        Option<Map<String, Value>>,
+        Option<String>,
+    ) -> Result<(), ValidateError>,
 ) -> Result<(), ValidateError> {
     check_specification(Some(spec), files)?;
     check_inputs(&[("options.basepath", basepath)])?;
     let (files, basepath) = composition(files, basepath)?;
-    let spec = decoded(Some(spec))?.unwrap_or(Value::Null);
+    let spec = decode(spec)?;
     validate(&spec, files, basepath)
 }
 

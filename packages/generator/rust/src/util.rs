@@ -2,6 +2,67 @@ pub(crate) use crate::css::style_string as style;
 use polyspec_crudui_validator::validate::canonical::{json_number, number_text};
 use serde_json::{Map, Value};
 
+/// The text of a template, specification or view-model member read as text.
+///
+/// CURP-024: templates and view models are JSON shared by every runtime, and each runtime writes a
+/// member that is absent or not text as no text. Every such read goes through this one rule; the
+/// typed models that replace the JSON reads remove it.
+pub(crate) trait OrNoText<'a> {
+    /// The text, or the empty text for an absent member or a member that is not text.
+    fn or_no_text(self) -> &'a str;
+}
+
+impl<'a> OrNoText<'a> for Option<&'a str> {
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "CURP-024: an absent or non-text member of a JSON model is no text"
+    )]
+    fn or_no_text(self) -> &'a str {
+        self.unwrap_or("")
+    }
+}
+
+/// The items of a JSON model member read as a list; CURP-024: an absent member or a member that
+/// is not a list has no items.
+pub(crate) trait OrNoList<'a> {
+    /// The items, or none for an absent member or a member that is not a list.
+    fn or_no_list(self) -> &'a [Value];
+}
+
+impl<'a> OrNoList<'a> for Option<&'a Vec<Value>> {
+    fn or_no_list(self) -> &'a [Value] {
+        match self {
+            Some(items) => items,
+            None => &[],
+        }
+    }
+}
+
+/// The members of a JSON model member read as an object; CURP-024: an absent member or a member
+/// that is not an object has no members.
+pub(crate) trait OrNoMembers {
+    /// The members, or none for an absent member or a member that is not an object.
+    fn or_no_members(self) -> Map<String, Value>;
+}
+
+impl OrNoMembers for Option<Map<String, Value>> {
+    fn or_no_members(self) -> Map<String, Value> {
+        match self {
+            Some(members) => members,
+            None => Map::new(),
+        }
+    }
+}
+
+/// The members of a `json!` object literal, which is always an object.
+pub(crate) fn literal_members(value: Value) -> Map<String, Value> {
+    match value {
+        Value::Object(members) => members,
+        // `json!({ … })` builds an object, so no other value reaches here.
+        _ => Map::new(),
+    }
+}
+
 /// The text of a JSON number: the double that ECMAScript reads for it, as `Number::toString`
 /// writes it (CURP-028), so an integer beyond 2^53 is written as its nearest double.
 fn number_string(number: &serde_json::Number) -> String {
@@ -12,12 +73,19 @@ fn number_string(number: &serde_json::Number) -> String {
 pub(crate) fn json_text(value: &Value) -> String {
     match value {
         Value::Number(n) => number_string(n),
-        Value::Array(items) => format!("[{}]", items.iter().map(json_text).collect::<Vec<_>>().join(",")),
+        Value::Array(items) => format!(
+            "[{}]",
+            items.iter().map(json_text).collect::<Vec<_>>().join(",")
+        ),
         Value::Object(members) => format!(
             "{{{}}}",
             members
                 .iter()
-                .map(|(key, member)| format!("{}:{}", Value::String(key.clone()), json_text(member)))
+                .map(|(key, member)| format!(
+                    "{}:{}",
+                    Value::String(key.clone()),
+                    json_text(member)
+                ))
                 .collect::<Vec<_>>()
                 .join(",")
         ),
@@ -153,11 +221,12 @@ fn list_index(segment: &str) -> Option<usize> {
     if !canonical {
         return None;
     }
-    match segment.parse::<usize>() {
-        Ok(index) => Some(index),
-        // Digits beyond usize name no item of any list.
-        Err(_) => None,
-    }
+    // Digits beyond usize name no item of any list.
+    segment.bytes().try_fold(0usize, |index, digit| {
+        index
+            .checked_mul(10)?
+            .checked_add(usize::from(digit - b'0'))
+    })
 }
 
 /// The value at a data path (CURT-093), or `None` when the data holds no value there.
@@ -219,7 +288,7 @@ pub(crate) fn leaf_name(path: &str, rows: &[usize]) -> String {
             parts
                 .get(parts.len().wrapping_sub(2))
                 .map(String::as_str)
-                .unwrap_or("")
+                .or_no_text()
         )
     } else {
         last.clone() + if path.ends_with("[]") { "[]" } else { "" }

@@ -20,7 +20,14 @@ pub(crate) fn limit(value: &Value) -> Option<u64> {
     }
     let float = number.as_f64()?;
     // `-0.0 >= 0.0` holds, so negative zero is the limit 0.
-    (float.fract() == 0.0 && (0.0..=MAX_LIMIT as f64).contains(&float)).then_some(float as u64)
+    #[allow(
+        clippy::cast_possible_truncation,
+        clippy::cast_sign_loss,
+        reason = "R-1: the value is an integer from 0 to 2^53 - 1, which a u64 holds exactly"
+    )]
+    let limit =
+        (float.fract() == 0.0 && (0.0..=MAX_LIMIT as f64).contains(&float)).then_some(float as u64);
+    limit
 }
 
 /// A `rangelength` parameter: `[minimum, maximum]` limits with minimum ≤ maximum.

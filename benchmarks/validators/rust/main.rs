@@ -11,6 +11,11 @@
 //! Args: --iters N, --warmup N, --spec NAME, --fixtures DIR. The counts follow
 //! the rule of ../arguments.js.
 
+#![allow(
+    clippy::disallowed_methods,
+    reason = "R-1 holds the library paths of the crudui cores; this program reads its requests with their documented defaults"
+)]
+
 use polyspec_crudui_validator::validate::Validator;
 use serde_json::Value;
 use std::fs;
@@ -106,7 +111,10 @@ fn count_argument(flag: &str, value: Option<&String>) -> usize {
     let count = value
         .filter(|text| (1..=8).contains(&text.len()) && text.bytes().all(|b| b.is_ascii_digit()))
         // Eight ASCII digits at most always parse as usize (the filter above guarantees it).
-        .map(|text| text.parse::<usize>().expect("up to eight ASCII digits parse as usize"))
+        .map(|text| {
+            text.parse::<usize>()
+                .expect("up to eight ASCII digits parse as usize")
+        })
         .filter(|n| (minimum..=MAX_COUNT).contains(n));
     match count {
         Some(n) => n,

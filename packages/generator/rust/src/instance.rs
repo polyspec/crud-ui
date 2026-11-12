@@ -5,6 +5,7 @@ use crate::history::{
 };
 use crate::template::member_ordered_template;
 use crate::template::{data_only, repeats};
+use crate::util::OrNoMembers;
 use crate::util::{segments, value_at};
 use crate::view::{
     initial_view, rekey_row_view, remove_row_view, set_all_expanded_view, toggle_row_view,
@@ -71,12 +72,16 @@ fn row_path(collection: &[String], key: &str) -> String {
 }
 
 fn put_at(data: &Value, path: &[String], value: Value) -> Value {
-    let mut object = data.as_object().cloned().unwrap_or_default();
+    let mut object = data.as_object().cloned().or_no_members();
     let head = &path[0];
     let next = if path.len() == 1 {
         value
     } else {
-        put_at(object.get(head).unwrap_or(&Value::Null), &path[1..], value)
+        // A path through a missing member creates the objects along it.
+        match object.get(head) {
+            Some(member) => put_at(member, &path[1..], value),
+            None => put_at(&Value::Null, &path[1..], value),
+        }
     };
     object.insert(head.clone(), next);
     object.into()
@@ -104,10 +109,11 @@ fn normalize_row(
     if field.spec.get("type").is_some_and(|t| t == "group") {
         normalize_fields(&field.children, value, path, fresh)
     } else {
-        Ok(value
-            .or_else(|| field.spec.get("default"))
-            .cloned()
-            .unwrap_or(json!("")))
+        // CURP-020: a missing value takes the field default, and a field without one the empty text.
+        Ok(match value.or_else(|| field.spec.get("default")) {
+            Some(value) => value.clone(),
+            None => json!(""),
+        })
     }
 }
 
@@ -186,15 +192,16 @@ fn copy_row_value(field: &FieldTemplate, value: &Value) -> FormResult<Value> {
     if field.spec.get("type").is_none_or(|t| t != "group") {
         return Ok(value.clone());
     }
-    let mut row = value.as_object().cloned().unwrap_or_default();
+    let mut row = value.as_object().cloned().or_no_members();
     for child in &field.children {
-        let Some(raw) = row.get(&child.name).filter(|v| v.is_object()) else {
+        let Some(raw_rows) = row.get(&child.name).and_then(Value::as_object) else {
             continue;
         };
+        let raw = &Value::Object(raw_rows.clone());
         if repeats(child) {
-            let mut used = raw.as_object().unwrap().clone();
+            let mut used = raw_rows.clone();
             let mut copied = Map::new();
-            for value in raw.as_object().unwrap().values() {
+            for value in raw_rows.values() {
                 let key = fresh_key(&used)?;
                 used.insert(key.clone(), Value::Null);
                 copied.insert(key, copy_row_value(child, value)?);
@@ -282,7 +289,12 @@ impl Form {
 
     /// Content and interface language of the instance, defaulting to Korean.
     pub(crate) fn language(&self) -> &str {
-        self.options.language.as_str().unwrap_or("ko")
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "form-markup.md, interface text: an absent or null language option uses its default ko"
+        )]
+        let language = self.options.language.as_str().unwrap_or("ko");
+        language
     }
 
     /// Return the shared structure without instance values.
@@ -607,10 +619,10 @@ impl Form {
             .iter()
             .position(|(k, _)| k == key)
             .ok_or_else(|| FormError::input(format!("Unknown row: {key}")))?;
-        if index < 0 || index >= entries.len() as i64 {
-            return Err(FormError::input(format!("Invalid row position: {index}")));
-        }
-        let to = index as usize;
+        let to = match usize::try_from(index) {
+            Ok(to) if to < entries.len() => to,
+            _ => return Err(FormError::input(format!("Invalid row position: {index}"))),
+        };
         if from == to {
             return Ok(());
         }

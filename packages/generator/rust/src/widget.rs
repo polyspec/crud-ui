@@ -3,6 +3,7 @@ use crate::choice_list::{
 };
 use crate::condition_editor::condition_editor;
 use crate::messages::form_messages;
+use crate::util::OrNoText;
 use crate::util::*;
 use serde_json::{json, Map, Value};
 
@@ -22,10 +23,10 @@ impl WidgetContext<'_> {
         bracket(self.path, self.key_prefix)
     }
     fn class(&self, base: &str) -> String {
-        join_class(&[base, self.design["main"]["class"].as_str().unwrap_or("")])
+        join_class(&[base, self.design["main"]["class"].as_str().or_no_text()])
     }
     fn style(&self) -> String {
-        style(self.design["main"]["style"].as_str().unwrap_or(""))
+        style(self.design["main"]["style"].as_str().or_no_text())
     }
     fn option(&self, key: &str) -> Option<String> {
         self.spec["options"]
@@ -34,7 +35,11 @@ impl WidgetContext<'_> {
             .map(|v| scalar(Some(v)))
     }
     fn opt(&self, key: &str, default: &str) -> String {
-        self.option(key).unwrap_or_else(|| default.into())
+        // CUSC-029: an option that the field does not declare takes the default of its widget.
+        match self.option(key) {
+            Some(value) => value,
+            None => default.into(),
+        }
     }
     fn text(&self, key: &str) -> String {
         translate(self.spec.get(key), self.language)
@@ -47,7 +52,7 @@ impl WidgetContext<'_> {
         value
             .as_str()
             .or_else(|| value["script"].as_str())
-            .unwrap_or("")
+            .or_no_text()
             .into()
     }
     fn behavior(&self, attrs: &mut Map<String, Value>) {
@@ -69,8 +74,8 @@ impl WidgetContext<'_> {
     fn affixes(&self, model: &mut Value, append: bool) {
         let text = self.text("prepend");
         if !text.is_empty() {
-            let mut affix = json!({"text":text,"class":join_class(&["crudui-widget__affix",self.design["prepend"]["class"].as_str().unwrap_or("")])});
-            let style = style(self.design["prepend"]["style"].as_str().unwrap_or(""));
+            let mut affix = json!({"text":text,"class":join_class(&["crudui-widget__affix",self.design["prepend"]["class"].as_str().or_no_text()])});
+            let style = style(self.design["prepend"]["style"].as_str().or_no_text());
             if !style.is_empty() {
                 affix["style"] = style.into();
             }
@@ -107,17 +112,33 @@ pub(crate) fn widget_kind(name: &str) -> Option<&str> {
     })
 }
 
-fn source(items: &Value) -> Option<Value> {
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
+static NEWLINE: std::sync::LazyLock<regex::Regex> =
+    std::sync::LazyLock::new(|| regex::Regex::new(r"\r\n|\n\r|\r|\n").expect("newline pattern"));
+
+fn source(items: &Value) -> Option<Map<String, Value>> {
     let items = items.as_object().filter(|m| m.contains_key("model"))?;
-    Some(
+    // A source without relations writes the empty list of relations.
+    let relations = match items.get("relations").filter(|v| !v.is_null()) {
+        Some(relations) => json_text(relations),
+        None => "[]".to_owned(),
+    };
+    Some(literal_members(
         json!({"data-source-model":scalar(items.get("model")),"data-source-method":scalar(items.get("method")),
         "data-source-table":scalar(items.get("table")),
-        "data-source-relations":items.get("relations").filter(|v| !v.is_null()).map_or_else(|| "[]".to_owned(), json_text)}),
-    )
+        "data-source-relations":relations}),
+    ))
 }
 
 fn entries(items: &Value) -> Vec<(String, &Value)> {
     if is_choice_list(items) {
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "CUSC-080: a choice list that gives no pair lists no entry"
+        )]
         return choice_pairs(items, true, true).unwrap_or_default();
     }
     match items {
@@ -167,6 +188,10 @@ fn placeholder_option() -> Value {
     json!({"value":"","label":"select","selected":false,"isDefault":false})
 }
 
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: serde_json writes every str, so the serialization never fails"
+)]
 fn script_string(value: &str) -> String {
     serde_json::to_string(value)
         .expect("string serialization")
@@ -269,9 +294,11 @@ fn text_control(kind: &str, ctx: &WidgetContext<'_>) -> Value {
 
 fn select_control(ctx: &WidgetContext<'_>) -> Value {
     let source = source(&ctx.spec["items"]);
-    let mut attrs = json!({"name":ctx.name(),"class":ctx.class(if source.is_some(){"valid-target crudui-input crudui-input--select valid-target-async"}else{"valid-target crudui-input crudui-input--select"})}).as_object().unwrap().clone();
+    let mut attrs = literal_members(
+        json!({"name":ctx.name(),"class":ctx.class(if source.is_some(){"valid-target crudui-input crudui-input--select valid-target-async"}else{"valid-target crudui-input crudui-input--select"})}),
+    );
     if let Some(ref source) = source {
-        attrs.extend(source.as_object().unwrap().clone());
+        attrs.extend(source.clone());
     }
     put_nonempty(&mut attrs, "style", ctx.style());
     ctx.behavior(&mut attrs);
@@ -307,21 +334,23 @@ fn choices(kind: &str, ctx: &WidgetContext<'_>) -> Value {
             } else {
                 "crudui-choices"
             },
-            ctx.design["group"]["class"].as_str().unwrap_or(""),
+            ctx.design["group"]["class"].as_str().or_no_text(),
         ]),
     );
     put_nonempty(
         &mut attrs,
         "style",
-        style(ctx.design["group"]["style"].as_str().unwrap_or("")),
+        style(ctx.design["group"]["style"].as_str().or_no_text()),
     );
     if let Some(ref source) = source {
-        attrs.extend(source.as_object().unwrap().clone());
+        attrs.extend(source.clone());
     }
     let mut model = json!({"kind":kind,"layout":"choices","attrs":attrs,"source":source,"options":options(ctx,multi,!multi),
         "itemLabelClass":ctx.class("crudui-choices__label")});
     if source.is_none() {
-        let mut input = json!({"name":ctx.name()+if multi{"[]"}else{""},"data-name":leaf_name(ctx.path,ctx.row_segments),"data-rule-name":rule_name(ctx.path,ctx.row_segments)}).as_object().unwrap().clone();
+        let mut input = literal_members(
+            json!({"name":ctx.name()+if multi{"[]"}else{""},"data-name":leaf_name(ctx.path,ctx.row_segments),"data-rule-name":rule_name(ctx.path,ctx.row_segments)}),
+        );
         put_nonempty(&mut input, "onchange", ctx.script("onchange"));
         if !multi {
             put_nonempty(&mut input, "onclick", ctx.script("onclick"));
@@ -333,10 +362,7 @@ fn choices(kind: &str, ctx: &WidgetContext<'_>) -> Value {
 
 fn file_control(kind: &str, ctx: &WidgetContext<'_>) -> Value {
     let base = "valid-target crudui-input crudui-input--file";
-    let mut file = json!({"type":"file","class":ctx.class(base)})
-        .as_object()
-        .unwrap()
-        .clone();
+    let mut file = literal_members(json!({"type":"file","class":ctx.class(base)}));
     for key in [
         "max_width",
         "min_width",
@@ -373,8 +399,13 @@ fn file_control(kind: &str, ctx: &WidgetContext<'_>) -> Value {
     let accept = ctx.spec["validate"]["accept"]
         .as_str()
         .filter(|s| !s.is_empty())
-        .map(str::to_owned)
-        .unwrap_or_else(|| ctx.opt("accept", if kind == "file" { "*/*" } else { "image/*" }));
+        .map(str::to_owned);
+    // CUSC-029: without `validate.accept` the control accepts its `accept` option or every file
+    // of its kind.
+    let accept = match accept {
+        Some(accept) => accept,
+        None => ctx.opt("accept", if kind == "file" { "*/*" } else { "image/*" }),
+    };
     put_string(&mut file, "accept", accept);
     // `display` precedes `file` in the model.
     let mut extra = Map::new();
@@ -395,7 +426,7 @@ fn display(kind: &str, ctx: &WidgetContext<'_>) -> Value {
     put_nonempty(
         &mut attrs,
         "class",
-        ctx.design["main"]["class"].as_str().unwrap_or("").into(),
+        ctx.design["main"]["class"].as_str().or_no_text().into(),
     );
     let raw = if kind == "image-viewer" {
         match ctx
@@ -428,10 +459,7 @@ fn display(kind: &str, ctx: &WidgetContext<'_>) -> Value {
             }
         }
         let text = scalar(value);
-        regex::Regex::new(r"\r\n|\n\r|\r|\n")
-            .expect("newline pattern")
-            .replace_all(&text, "<br />$0")
-            .into_owned()
+        NEWLINE.replace_all(&text, "<br />$0").into_owned()
     };
     json!({"kind":kind,"layout":"display","tag":"div","rawHtml":raw,"attrs":attrs})
 }
@@ -441,7 +469,9 @@ fn search(ctx: &WidgetContext<'_>) -> Value {
     let min = ctx.opt("keyword_min_length", "2");
     let delay = ctx.opt("delay", "250");
     let source = source(&ctx.spec["items"]);
-    let mut attrs = json!({"class":ctx.class(if source.is_some(){"valid-target crudui-input crudui-input--select valid-target-async"}else{"valid-target crudui-input crudui-input--select"})}).as_object().unwrap().clone();
+    let mut attrs = literal_members(
+        json!({"class":ctx.class(if source.is_some(){"valid-target crudui-input crudui-input--select valid-target-async"}else{"valid-target crudui-input crudui-input--select"})}),
+    );
     put_nonempty(&mut attrs, "style", ctx.style());
     for (key, value) in [
         ("name", ctx.name()),
@@ -452,7 +482,7 @@ fn search(ctx: &WidgetContext<'_>) -> Value {
         put_string(&mut attrs, key, value);
     }
     if let Some(ref source) = source {
-        attrs.extend(source.as_object().unwrap().clone());
+        attrs.extend(source.clone());
     }
     put_string(
         &mut attrs,
@@ -529,7 +559,8 @@ fn editor(kind: &str, ctx: &WidgetContext<'_>) -> Value {
             put_string(
                 &mut attrs,
                 "data-type",
-                ctx.spec["type"].as_str().unwrap_or("tinymce"),
+                // An editor field always names its type.
+                ctx.spec["type"].as_str().or_no_text(),
             );
             put_string(&mut attrs, "data-height", &height);
             put_string(&mut attrs, "data-upload-server", &upload);
@@ -622,10 +653,17 @@ fn condition(ctx: &WidgetContext<'_>) -> Value {
     // A structured editor (docs/spec/form-markup.md, Structured condition editor): the textarea keeps the value,
     // hidden while the editor shows it (CUMK-067), visible with a named error otherwise (CUMK-068).
     let editor = structured.then(|| {
+        #[allow(
+            clippy::expect_used,
+            reason = "R-1: binding checked the language before it evaluates a field"
+        )]
         let messages = form_messages(ctx.language).expect("a bound form has a supported language");
         condition_editor(value, ctx.id, ctx.spec, ctx.path, messages)
     });
-    if editor.as_ref().is_some_and(|editor| editor.get("error").is_none()) {
+    if editor
+        .as_ref()
+        .is_some_and(|editor| editor.get("error").is_none())
+    {
         put_string(&mut attrs, "hidden", "");
     }
     let layout = if structured { "condition" } else { "widget" };
@@ -686,8 +724,8 @@ pub(crate) fn evaluate_widget(field_type: &str, ctx: &WidgetContext<'_>) -> Opti
     if model["layout"] == "choices" {
         for (i, option) in model["options"]
             .as_array_mut()
-            .unwrap()
-            .iter_mut()
+            .into_iter()
+            .flatten()
             .enumerate()
         {
             option["id"] = format!("{id}:{i}").into();
@@ -697,11 +735,13 @@ pub(crate) fn evaluate_widget(field_type: &str, ctx: &WidgetContext<'_>) -> Opti
             let appearances = choice_appearances(&ctx.spec["items"]);
             for (option, appearance) in model["options"]
                 .as_array_mut()
-                .unwrap()
-                .iter_mut()
+                .into_iter()
+                .flatten()
                 .zip(appearances)
             {
-                option.as_object_mut().unwrap().extend(appearance);
+                if let Some(option) = option.as_object_mut() {
+                    option.extend(appearance);
+                }
             }
         }
     }

@@ -79,7 +79,11 @@ pub fn validate(
     let loader: &dyn FileLoader = match options.loader {
         Some(l) => l,
         None => {
-            owned_loader = MemoryLoader::new(options.files.clone().unwrap_or_default());
+            // Without files a composition reads no file.
+            owned_loader = match &options.files {
+                Some(files) => MemoryLoader::new(files.clone()),
+                None => MemoryLoader::new(Map::new()),
+            };
             &owned_loader
         }
     };
@@ -103,6 +107,12 @@ pub fn validate(
         compose_properties(spec_map, loader, &opts)?
     } else {
         let composed = compose_spec(spec_map, loader, &opts)?;
+        // A root whose composed `properties` is no object has no fields, as the TypeScript
+        // reference reads it; the 9a audit lists this reading for its P-3 judgement.
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "R-1: listed in the audit of the crudui core"
+        )]
         composed
             .get("properties")
             .and_then(Value::as_object)

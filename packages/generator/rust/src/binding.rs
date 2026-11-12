@@ -4,10 +4,12 @@ use crate::choice_list::{
 use crate::design::resolve_design;
 use crate::messages::{form_messages, format_count, Messages};
 use crate::template::member_ordered_template;
+use crate::util::OrNoList;
+use crate::util::OrNoText;
 use crate::util::*;
 use crate::widget::{declared_attributes, evaluate_widget, widget_kind, WidgetContext};
-use polyspec_crudui_validator::validate::group_source::is_group_source;
 use crate::{FieldTemplate, FormError, FormResult, FormTemplate};
+use polyspec_crudui_validator::validate::group_source::is_group_source;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
 
@@ -115,16 +117,13 @@ pub fn bind_buttons(
     let members = member_ordered_template(template);
     let declared = &members.buttons;
     for button in declared {
-        let kind = button.get("type").and_then(Value::as_str).unwrap_or_default();
+        let kind = button.get("type").and_then(Value::as_str).or_no_text();
         if !matches!(kind, "submit" | "reset" | "button" | "link") {
             return Err(FormError::input(format!("Invalid button type: {kind}")));
         }
     }
     Ok(crate::buttons::button_models(
-        declared,
-        data,
-        language,
-        messages,
+        declared, data, language, messages,
     ))
 }
 
@@ -152,7 +151,12 @@ fn bindable_language<'a>(
     if template.kind != "crudui/form-template" {
         return Err(FormError::input("Unsupported form template"));
     }
-    Ok(string_option(&options.language, "Language must be a string")?.unwrap_or("ko"))
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "form-markup.md, interface text: an absent or null language option uses its default ko"
+    )]
+    let language = string_option(&options.language, "Language must be a string")?.unwrap_or("ko");
+    Ok(language)
 }
 
 /// `bind_form` over a template already in specification member order.
@@ -184,7 +188,11 @@ pub(crate) fn bind_ordered(
     let state = Binding {
         data,
         collapsed,
-        id_prefix: id_prefix.unwrap_or("crudui"),
+        id_prefix: match id_prefix {
+            Some(prefix) => prefix,
+            // form-runtime.md, input labels: the default `idPrefix` is crudui.
+            None => "crudui",
+        },
         key_prefix: key_prefix.or(template.key_prefix.as_deref()),
         unsupported,
         language,
@@ -268,15 +276,18 @@ fn lang(spec: &Value) -> Option<Lang<'_>> {
             group_class: "",
         }),
         Some(Value::Object(l)) => Some(Lang {
-            codes: l
+            codes: match l
                 .get("only")
                 .and_then(Value::as_array)
                 .filter(|codes| !codes.is_empty())
-                .cloned()
-                .unwrap_or_else(defaults),
+            {
+                Some(codes) => codes.clone(),
+                // schema.md, content translation: without `lang.only` the languages are ko, en, ja and zh.
+                None => defaults(),
+            },
             frame: l.get("frame").is_none_or(|v| *v != false),
             title: l.get("title"),
-            group_class: l.get("group_class").and_then(Value::as_str).unwrap_or(""),
+            group_class: l.get("group_class").and_then(Value::as_str).or_no_text(),
         }),
         _ => None,
     }
@@ -306,7 +317,7 @@ fn check_group(value: Option<&Value>, path: &str) -> FormResult<()> {
 }
 
 fn text_at<'a>(value: &'a Value, node: &str, key: &str) -> &'a str {
-    value[node][key].as_str().unwrap_or("")
+    value[node][key].as_str().or_no_text()
 }
 
 fn node_root(kind: &str, path: &str, design: &Value, spec: &Value) -> Map<String, Value> {
@@ -400,8 +411,11 @@ impl Binding<'_> {
         let grouped = is_group_source(&declared["items"])
             .then(|| with_group_choices(declared, self.data, path))
             .transpose()?;
-        let spec = grouped.as_ref().unwrap_or(declared);
-        let field_type = spec["type"].as_str().unwrap_or("").to_lowercase();
+        let spec = match grouped.as_ref() {
+            Some(grouped) => grouped,
+            None => declared,
+        };
+        let field_type = spec["type"].as_str().or_no_text().to_lowercase();
         if is_choice_list(&spec["items"]) {
             // Only the choices of a choice or multichoice field declare their appearance, and
             // only the choice list of a select field has groups.
@@ -427,7 +441,7 @@ impl Binding<'_> {
             language: self.language,
             row_segments,
         };
-        let kind = spec["type"].as_str().unwrap_or("");
+        let kind = spec["type"].as_str().or_no_text();
         match evaluate_widget(kind, &context) {
             Some(widget) => Ok(widget),
             None if self.unsupported == "marker" => Ok(json!({"unsupported": true, "type": kind})),
@@ -528,7 +542,7 @@ impl Binding<'_> {
         description: Option<String>,
         scope: &Scope,
     ) -> FormResult<Value> {
-        let kind = spec["type"].as_str().unwrap_or("");
+        let kind = spec["type"].as_str().or_no_text();
         let mut node = node_root("field", path, design, spec);
         // A field node of an inline layout is one row of a label column and a control column.
         if scope.inline {
@@ -573,7 +587,11 @@ impl Binding<'_> {
                 checkbox["role"] = "switch".into();
             }
             if header_label.is_none() {
-                checkbox["caption"] = label.unwrap_or_default().into();
+                // A checkbox without a label has an empty caption.
+                checkbox["caption"] = match label {
+                    Some(label) => label.into(),
+                    None => "".into(),
+                };
             }
             if let Some(attributes) = declared_attributes(spec, false) {
                 checkbox["attributes"] = attributes.into();
@@ -598,7 +616,10 @@ impl Binding<'_> {
         Ok(node.into())
     }
 
-    #[allow(clippy::too_many_arguments, reason = "the binding step takes the shared inputs")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the binding step takes the shared inputs"
+    )]
     fn collection(
         &self,
         field: &FieldTemplate,
@@ -667,7 +688,10 @@ impl Binding<'_> {
         Ok(node.into())
     }
 
-    #[allow(clippy::too_many_arguments, reason = "the binding step takes the shared inputs")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the binding step takes the shared inputs"
+    )]
     fn row(
         &self,
         field: &FieldTemplate,
@@ -739,7 +763,7 @@ impl Binding<'_> {
         } else {
             let total = nested
                 .iter()
-                .map(|child| child["children"].as_array().map_or(0, Vec::len))
+                .map(|child| child["children"].as_array().or_no_list().len())
                 .sum();
             format_count(messages.children, total)
         };
@@ -772,7 +796,10 @@ impl Binding<'_> {
         Ok(row.into())
     }
 
-    #[allow(clippy::too_many_arguments, reason = "the binding step takes the shared inputs")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the binding step takes the shared inputs"
+    )]
     fn lang(
         &self,
         spec: &Value,

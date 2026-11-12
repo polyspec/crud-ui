@@ -1,3 +1,8 @@
+#![allow(
+    clippy::disallowed_methods,
+    reason = "R-1 holds the library paths; a test reads its fixtures and fails by a panic"
+)]
+
 use super::*;
 use serde_json::{json, Value};
 
@@ -1750,7 +1755,11 @@ fn get_value_tells_absence_from_null() {
     assert_eq!(form.get_value("memo.inner").unwrap(), None);
     assert_eq!(form.get_value("tags.1").unwrap(), Some(json!("b")));
     for segment in ["01", "+1", "-1", "2", "x"] {
-        assert_eq!(form.get_value(&format!("tags.{segment}")).unwrap(), None, "{segment}");
+        assert_eq!(
+            form.get_value(&format!("tags.{segment}")).unwrap(),
+            None,
+            "{segment}"
+        );
     }
 }
 
@@ -1762,15 +1771,24 @@ fn snapshot_reports_the_state_of_the_instance() {
     let first = form.snapshot();
     assert_eq!(first.fields, form.fields());
     assert_eq!(first.buttons, form.buttons());
-    assert_eq!((first.revision, first.can_undo, first.can_redo), (0, false, false));
+    assert_eq!(
+        (first.revision, first.can_undo, first.can_redo),
+        (0, false, false)
+    );
     form.set_value("memo", json!("edited")).unwrap();
     let edited = form.snapshot();
-    assert_eq!((edited.revision, edited.can_undo, edited.can_redo), (1, true, false));
+    assert_eq!(
+        (edited.revision, edited.can_undo, edited.can_redo),
+        (1, true, false)
+    );
     form.set_all_expanded(false).unwrap();
     let collapsed = form.snapshot();
     assert_eq!(collapsed.revision, 1);
     assert_ne!(collapsed.fields, edited.fields);
     form.undo().unwrap();
     let undone = form.snapshot();
-    assert_eq!((undone.revision, undone.can_undo, undone.can_redo), (2, false, true));
+    assert_eq!(
+        (undone.revision, undone.can_undo, undone.can_redo),
+        (2, false, true)
+    );
 }

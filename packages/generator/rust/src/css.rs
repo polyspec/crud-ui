@@ -1,4 +1,12 @@
+use crate::util::OrNoText;
 use serde_json::{Map, Value};
+
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
+static COMMENTS: std::sync::LazyLock<regex::Regex> =
+    std::sync::LazyLock::new(|| regex::Regex::new(r"/\*[\s\S]*?\*/").expect("CSS comment pattern"));
 
 pub(crate) fn declarations(source: &str) -> Vec<(String, String)> {
     if source.trim().is_empty() {
@@ -12,7 +20,7 @@ pub(crate) fn declarations(source: &str) -> Vec<(String, String)> {
     let mut skip = false;
     let mut start = 0;
     let mut colon = None;
-    let comments = regex::Regex::new(r"/\*[\s\S]*?\*/").expect("CSS comment pattern");
+    let comments = &*COMMENTS;
     let finish =
         |end: usize, start: usize, colon: Option<usize>, result: &mut Vec<(String, String)>| {
             if let Some(colon) = colon {
@@ -107,7 +115,7 @@ pub(crate) fn render_style(source: &str) -> String {
     }
     properties
         .iter()
-        .map(|(property, value)| format!("{property}:{}", value.as_str().expect("style value")))
+        .map(|(property, value)| format!("{property}:{}", value.as_str().or_no_text()))
         .collect::<Vec<_>>()
         .join(";")
 }

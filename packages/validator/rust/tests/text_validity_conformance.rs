@@ -3,6 +3,16 @@
 //! `JsonText` reads them and the JSON text entry points report the failure each
 //! case declares.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 use libtest_mimic::{Arguments, Failed, Trial};
@@ -62,7 +72,9 @@ fn check_text_case(feature: &str, case: &JsonText, name: &str) -> Vec<String> {
     let clean = || json!({"valid": true, "errors": []});
     let spec = case.get("spec").expect("spec");
     let files = case.get("files");
-    let basepath = case.get("options").and_then(|options| options.get("basepath"));
+    let basepath = case
+        .get("options")
+        .and_then(|options| options.get("basepath"));
     let result = match feature {
         "validate" => text::validate_text(spec, case.get("data"), files, basepath).map(|result| {
             json!({"valid": result.valid, "errors": result.errors.iter().map(|e| e.to_value()).collect::<Vec<_>>(), "hidden": result.hidden})
@@ -72,11 +84,17 @@ fn check_text_case(feature: &str, case: &JsonText, name: &str) -> Vec<String> {
     };
     let native = native_type(&result);
     let actual = outcome(result);
-    let expected = case.get("expect").and_then(JsonText::to_value).expect("expect");
+    let expected = case
+        .get("expect")
+        .and_then(JsonText::to_value)
+        .expect("expect");
     if actual == expected && native == expected_type(&expected) {
         Vec::new()
     } else {
-        vec![format!("{feature}/{name}: got {actual} ({native}), want {expected} ({})", expected_type(&expected))]
+        vec![format!(
+            "{feature}/{name}: got {actual} ({native}), want {expected} ({})",
+            expected_type(&expected)
+        )]
     }
 }
 
@@ -259,11 +277,7 @@ fn member_mut<'a>(value: &'a mut JsonText, name: &str) -> &'a mut JsonText {
 
 /// Place `value` at the path of a graph: its first name is an input (`spec`, `data` or `files`), the rest are the members
 /// of the objects that hold it, and the last member is replaced or added.
-fn place(
-    inputs: [&mut Option<JsonText>; 3],
-    at: &[String],
-    value: JsonText,
-) {
+fn place(inputs: [&mut Option<JsonText>; 3], at: &[String], value: JsonText) {
     let [spec, data, files] = inputs;
     let root = match at[0].as_str() {
         "spec" => spec,
@@ -271,7 +285,9 @@ fn place(
         "files" => files,
         other => panic!("a graph lies in an input, not {other}"),
     };
-    let mut target = root.as_mut().expect("the graph lies in an input that the case gives");
+    let mut target = root
+        .as_mut()
+        .expect("the graph lies in an input that the case gives");
     let (last, holders) = at[1..].split_last().expect("the graph path names a member");
     for holder in holders {
         target = member_mut(target, holder);
@@ -294,20 +310,34 @@ fn check_graph_case(case: &JsonText, name: &str) -> Vec<String> {
     let mut spec = case.get("spec").cloned();
     let mut data = case.get("data").cloned();
     let mut files = case.get("files").cloned();
-    place([&mut spec, &mut data, &mut files], &graph.at, build_graph(&graph));
+    place(
+        [&mut spec, &mut data, &mut files],
+        &graph.at,
+        build_graph(&graph),
+    );
     let spec = spec.expect("a graph case has a specification");
-    let basepath = case.get("options").and_then(|options| options.get("basepath"));
+    let basepath = case
+        .get("options")
+        .and_then(|options| options.get("basepath"));
     let result = text::validate_text(&spec, data.as_ref(), files.as_ref(), basepath);
     let native = native_type(&result);
     let actual = match result {
-        Ok(result) => json!({"valid": result.valid, "errors": result.errors.iter().map(|e| e.to_value()).collect::<Vec<_>>(), "hidden": result.hidden}),
+        Ok(result) => {
+            json!({"valid": result.valid, "errors": result.errors.iter().map(|e| e.to_value()).collect::<Vec<_>>(), "hidden": result.hidden})
+        }
         Err(error) => json!({"code": error.code(), "message": error.message(), "at": error.at()}),
     };
-    let expected = case.get("expect").and_then(JsonText::to_value).expect("expect");
+    let expected = case
+        .get("expect")
+        .and_then(JsonText::to_value)
+        .expect("expect");
     if actual == expected && native == expected_type(&expected) {
         Vec::new()
     } else {
-        vec![format!("value-graphs/{name}: got {actual} ({native}), want {expected} ({})", expected_type(&expected))]
+        vec![format!(
+            "value-graphs/{name}: got {actual} ({native}), want {expected} ({})",
+            expected_type(&expected)
+        )]
     }
 }
 
@@ -341,7 +371,9 @@ fn main() {
                 })
                 .expect("case name");
             trials.push(Trial::test(format!("{symbol}::{name}"), move || {
-                let failures = common::prove_case(feature, &relative, &name, || check_text_case(feature, &case, &name));
+                let failures = common::prove_case(feature, &relative, &name, || {
+                    check_text_case(feature, &case, &name)
+                });
                 if failures.is_empty() {
                     Ok(())
                 } else {
@@ -354,10 +386,13 @@ fn main() {
         json_text_reads_what_serde_json_reads();
         Ok(())
     }));
-    trials.push(Trial::test("json_text_preserves_object_member_values_for_validation", || {
-        json_text_preserves_object_member_values_for_validation();
-        Ok(())
-    }));
+    trials.push(Trial::test(
+        "json_text_preserves_object_member_values_for_validation",
+        || {
+            json_text_preserves_object_member_values_for_validation();
+            Ok(())
+        },
+    ));
     trials.push(Trial::test("json_text_locates_invalid_text", || {
         json_text_locates_invalid_text();
         Ok(())
@@ -370,14 +405,17 @@ fn main() {
                 _ => None,
             })
             .expect("case name");
-        trials.push(Trial::test(format!("value_graph_limits::{name}"), move || {
-            let failures = check_graph_case(&case, &name);
-            if failures.is_empty() {
-                Ok(())
-            } else {
-                Err(Failed::from(format!("\n{}", failures.join("\n"))))
-            }
-        }));
+        trials.push(Trial::test(
+            format!("value_graph_limits::{name}"),
+            move || {
+                let failures = check_graph_case(&case, &name);
+                if failures.is_empty() {
+                    Ok(())
+                } else {
+                    Err(Failed::from(format!("\n{}", failures.join("\n"))))
+                }
+            },
+        ));
     }
     libtest_mimic::run(&Arguments::from_args(), trials).exit();
 }

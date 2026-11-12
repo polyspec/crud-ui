@@ -1,8 +1,20 @@
 //! The form outline fixture against the Rust generator: each case of `tests/fixtures/form-outline` binds its data and
 //! builds its outline rows, which must equal the recorded rows. Each case is one test.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 use libtest_mimic::{Arguments, Trial};
-use polyspec_crudui_generator::{bind_form, build_outline, compile_form, BindOptions, CompileOptions};
+use polyspec_crudui_generator::{
+    bind_form, build_outline, compile_form, BindOptions, CompileOptions,
+};
 use serde_json::Value;
 
 fn cases() -> Vec<Value> {
@@ -31,7 +43,10 @@ fn main() {
     let trials = cases()
         .into_iter()
         .map(|case| {
-            let name = case["name"].as_str().expect("a case has a name").to_string();
+            let name = case["name"]
+                .as_str()
+                .expect("a case has a name")
+                .to_string();
             Trial::test(format!("native_outline_fixture::{name}"), move || {
                 check_case(&case);
                 Ok(())

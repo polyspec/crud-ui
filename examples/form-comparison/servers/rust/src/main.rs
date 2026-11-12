@@ -1,4 +1,9 @@
 //! Parse, validate and persist form comparison requests with the Rust libraries.
+#![allow(
+    clippy::disallowed_methods,
+    reason = "R-1 holds the library paths of the crudui cores; this program reads its requests with their documented defaults"
+)]
+
 mod form;
 mod generation;
 mod json;

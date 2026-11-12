@@ -21,7 +21,10 @@ pub(crate) fn is_reference_target(properties: &Map<String, Value>, path: &str) -
     let mut fields = Some(properties);
     let mut field: Option<&Map<String, Value>> = None;
     for name in path.split('.') {
-        let Some(next) = fields.and_then(|map| map.get(name)).and_then(Value::as_object) else {
+        let Some(next) = fields
+            .and_then(|map| map.get(name))
+            .and_then(Value::as_object)
+        else {
             return false;
         };
         field = Some(next);
@@ -37,7 +40,10 @@ pub(crate) fn is_reference_target(properties: &Map<String, Value>, path: &str) -
     if field.get("type").and_then(Value::as_str) == Some("group") {
         return false;
     }
-    matches!(field.get("lang"), None | Some(Value::Null) | Some(Value::Bool(false)))
+    matches!(
+        field.get("lang"),
+        None | Some(Value::Null) | Some(Value::Bool(false))
+    )
 }
 
 /// The member of an id: a string, a number or a boolean whose canonical text is not empty after
@@ -56,10 +62,19 @@ fn values_of<'a>(field: &Value, value: &'a Value) -> Vec<&'a Value> {
     if !is_multiple(field) {
         return vec![value];
     }
-    value.as_object().map(|rows| rows.values().collect()).unwrap_or_default()
+    // CURT-003: repeated data that is no keyed object fails the shape check, so it holds no id.
+    match value.as_object() {
+        Some(rows) => rows.values().collect(),
+        None => Vec::new(),
+    }
 }
 
-fn collect(fields: &Map<String, Value>, value: &Value, segments: &[&str], ids: &mut Vec<Comparable>) {
+fn collect(
+    fields: &Map<String, Value>,
+    value: &Value,
+    segments: &[&str],
+    ids: &mut Vec<Comparable>,
+) {
     let Some((name, rest)) = segments.split_first() else {
         return;
     };
@@ -80,7 +95,11 @@ fn collect(fields: &Map<String, Value>, value: &Value, segments: &[&str], ids: &
 
 /// The ids of the declaration path `path` in `data` (CUVR-072) as members. Data of another shape
 /// at a step and a missing value hold no ids.
-pub(crate) fn reference_ids(properties: &Map<String, Value>, data: &Value, path: &str) -> Vec<Comparable> {
+pub(crate) fn reference_ids(
+    properties: &Map<String, Value>,
+    data: &Value,
+    path: &str,
+) -> Vec<Comparable> {
     let segments: Vec<&str> = path.split('.').collect();
     let mut ids = Vec::new();
     collect(properties, data, &segments, &mut ids);

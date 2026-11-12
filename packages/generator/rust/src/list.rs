@@ -1,3 +1,4 @@
+use crate::util::{OrNoList, OrNoText};
 use polyspec_crudui_validator::compose::{
     compose_properties, member_ordered, ComposeOptions, FileLoader, MemoryLoader,
 };
@@ -58,6 +59,25 @@ pub fn list_rows(rows: Option<&Value>) -> FormResult<&[Value]> {
     }
 }
 
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
+static INTERPOLATION: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+    regex::Regex::new(r"\{=[A-Za-z_][\w.]*\}").expect("field interpolation pattern")
+});
+
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
+static DIGITS: std::sync::LazyLock<regex::Regex> =
+    std::sync::LazyLock::new(|| regex::Regex::new(r"[0-9]+").expect("digit grouping pattern"));
+
+#[allow(
+    clippy::disallowed_methods,
+    reason = "CUDF-005: a format without a type is text"
+)]
 fn format(value: Option<&Value>) -> Value {
     match value {
         Some(Value::String(kind)) if !kind.is_empty() => json!({"type":kind,"options":{}}),
@@ -69,8 +89,7 @@ fn format(value: Option<&Value>) -> Value {
 }
 
 fn interpolate(template: &str, row: &Value, value: Option<&Value>) -> String {
-    let pattern = regex::Regex::new(r"\{=[A-Za-z_][\w.]*\}").expect("field interpolation pattern");
-    pattern
+    INTERPOLATION
         .replace_all(template, |capture: &regex::Captures<'_>| {
             let path = &capture[0][2..capture[0].len() - 1];
             scalar(if path == "field" {
@@ -92,6 +111,10 @@ fn truthy(value: Option<&Value>) -> bool {
     }
 }
 
+#[allow(
+    clippy::disallowed_methods,
+    reason = "display-formats.md: a format option that the column omits takes its default, and a label that it omits is the value"
+)]
 fn cell_display(
     format: &Value,
     value: Option<&Value>,
@@ -118,7 +141,13 @@ fn cell_display(
             let mut buffer = ryu_js::Buffer::new();
             let mut body = match options["decimals"].as_f64() {
                 Some(decimals) if (0.0..=100.0).contains(&decimals.trunc()) => {
-                    buffer.format_to_fixed(number, decimals as u8).to_owned()
+                    #[allow(
+                        clippy::cast_possible_truncation,
+                        clippy::cast_sign_loss,
+                        reason = "R-1: the decimals are an integer from 0 to 100 here"
+                    )]
+                    let decimals = decimals.trunc() as u8;
+                    buffer.format_to_fixed(number, decimals).to_owned()
                 }
                 Some(_) => {
                     return Err(FormError::input(
@@ -128,12 +157,11 @@ fn cell_display(
                 _ => buffer.format(number).to_owned(),
             };
             if truthy(options.get("thousands")) {
-                let (integer, fraction) = body
-                    .split_once('.')
-                    .map(|(i, f)| (i, Some(f)))
-                    .unwrap_or((&body, None));
-                let grouped = regex::Regex::new(r"[0-9]+")
-                    .expect("digit grouping pattern")
+                let (integer, fraction) = match body.split_once('.') {
+                    Some((integer, fraction)) => (integer, Some(fraction)),
+                    None => (body.as_str(), None),
+                };
+                let grouped = DIGITS
                     .replace_all(integer, |capture: &regex::Captures<'_>| {
                         let digits = &capture[0];
                         let mut grouped = String::new();
@@ -146,7 +174,10 @@ fn cell_display(
                         grouped
                     })
                     .into_owned();
-                body = grouped + &fraction.map(|f| format!(".{f}")).unwrap_or_default();
+                body = match fraction {
+                    Some(fraction) => format!("{grouped}.{fraction}"),
+                    None => grouped,
+                };
             }
             (translate(options.get("prefix"), language)
                 + &body
@@ -185,7 +216,10 @@ fn cell_display(
                 None
             } else if let Some(array) = items.as_array() {
                 // A text that is no position selects no choice, and the label is the text itself.
-                #[allow(clippy::disallowed_methods, reason = "no position: a label, not an error")]
+                #[allow(
+                    clippy::disallowed_methods,
+                    reason = "no position: a label, not an error"
+                )]
                 let position = text.parse::<usize>().ok();
                 position.and_then(|i| array.get(i))
             } else {
@@ -220,7 +254,15 @@ fn cell_display(
                 .map(f64::trunc)
                 .filter(|limit| *limit >= 1.0 && text.chars().count() as f64 > *limit);
             match limit {
-                Some(limit) => (text.chars().take(limit as usize).collect::<String>() + "…").into(),
+                Some(limit) => {
+                    #[allow(
+                        clippy::cast_possible_truncation,
+                        clippy::cast_sign_loss,
+                        reason = "R-1: the limit is an integer from 1 below the length of the text"
+                    )]
+                    let limit = limit as usize;
+                    (text.chars().take(limit).collect::<String>() + "…").into()
+                }
                 None => text.into(),
             }
         }
@@ -241,7 +283,15 @@ fn list_integer(value: &Value, minimum: u64, message: &str) -> FormResult<Option
             number
                 .as_f64()
                 .filter(|v| v.fract() == 0.0 && *v >= 0.0 && *v <= MAX_SAFE_INTEGER as f64)
-                .map(|v| v as u64)
+                .map(|v| {
+                    #[allow(
+                        clippy::cast_possible_truncation,
+                        clippy::cast_sign_loss,
+                        reason = "R-1: the value is an integer from 0 to 2^53 - 1, which a u64 holds exactly"
+                    )]
+                    let integer = v as u64;
+                    integer
+                })
         }),
         _ => None,
     };
@@ -304,6 +354,10 @@ pub fn build_list(spec: &Value, rows: &[Value], options: &ListOptions<'_>) -> Fo
 /// `members` names the member map, `columns` or `fields`. The member map and a list `search` with
 /// `$ref` or `$patch` are composed, the composed specification is scanned for forbidden keys, and
 /// its declarations are checked.
+#[allow(
+    clippy::disallowed_methods,
+    reason = "display-formats.md: a column or an action without a label is labelled by its key, and a cell of an absent path holds null (CURP-024)"
+)]
 pub(crate) fn build_display(
     spec: &Value,
     rows: &[Value],
@@ -314,7 +368,11 @@ pub(crate) fn build_display(
 ) -> FormResult<Value> {
     let context = &checked.data;
     let memory = MemoryLoader::new(options.files.clone());
-    let loader = options.loader.unwrap_or(&memory);
+    // Without a loader, composition reads the files of the options.
+    let loader: &dyn FileLoader = match options.loader {
+        Some(loader) => loader,
+        None => &memory,
+    };
     let compose_options = ComposeOptions::with_basepath(&options.basepath);
     let Some(declared) = spec[members].as_object() else {
         return Err(FormError::input(format!(
@@ -354,13 +412,13 @@ pub(crate) fn build_display(
         if design["show"] == false {
             continue;
         }
-        visible.push(json!({"key":key,"field":raw["field"].as_str().unwrap_or(""),"label":raw.get("label").map(|v|translate(Some(v),&options.language)).unwrap_or_else(||key.clone()),"format":format(raw.get("format")),"sortable":raw.get("sortable").filter(|v|!v.is_null()).is_some_and(|v|flag(Some(v),context,&[],&[])),"design":design}));
+        visible.push(json!({"key":key,"field":raw["field"].as_str().or_no_text(),"label":raw.get("label").map(|v|translate(Some(v),&options.language)).unwrap_or_else(||key.clone()),"format":format(raw.get("format")),"sortable":raw.get("sortable").filter(|v|!v.is_null()).is_some_and(|v|flag(Some(v),context,&[],&[])),"design":design}));
     }
     let bound_rows = rows.iter().map(|row| {
         let cells = visible.iter().map(|column| {
-            let path = column["field"].as_str().unwrap_or("");
+            let path = column["field"].as_str().or_no_text();
             let value = if path.is_empty() {None} else {value_at(row,path)};
-            let raw = &columns[column["key"].as_str().unwrap()];
+            let raw = &columns[column["key"].as_str().or_no_text()];
             // A model is JSON: a path absent from the row is null, and the member is always present.
             Ok(json!({"format":column["format"],"value":value.cloned().unwrap_or(Value::Null),"display":cell_display(&column["format"],value,row,path,&options.language)?,"design":resolve_design(raw.get("design"),row,path,&[])}))
         }).collect::<FormResult<Vec<_>>>()?;
@@ -426,7 +484,7 @@ pub(crate) fn build_display(
 }
 
 fn str_at<'a>(value: &'a Value, key: &str) -> &'a str {
-    value[key].as_str().unwrap_or("")
+    value[key].as_str().or_no_text()
 }
 
 fn cell_body(display: &Value) -> String {
@@ -499,6 +557,10 @@ pub(crate) fn cell_html(cell: &Value, tag: &str, base: &str) -> String {
 
 /// The actions of a list or detail: `{block}__actions` with one `{block}__action` span per
 /// action holding a link or button with its behavior attributes; nothing without actions.
+#[allow(
+    clippy::disallowed_methods,
+    reason = "CURP-024: a link action without a href writes #, as every renderer reads the model"
+)]
 pub(crate) fn actions_html(actions: &Value, block: &str) -> String {
     let mut toolbar = String::new();
     for action in actions.as_array().into_iter().flatten() {
@@ -537,6 +599,10 @@ pub(crate) fn actions_html(actions: &Value, block: &str) -> String {
 }
 
 /// Render a list with supplied display rows in table or card layout.
+#[allow(
+    clippy::disallowed_methods,
+    reason = "CURP-024: a pagination button without a page is page 1, as every renderer reads the model"
+)]
 pub fn render_list(spec: &Value, rows: &[Value], options: &ListOptions<'_>) -> FormResult<String> {
     list_context(spec, rows, options)?;
     let layout = match &options.layout {
@@ -555,8 +621,8 @@ pub fn render_list(spec: &Value, rows: &[Value], options: &ListOptions<'_>) -> F
         );
     }
     content += &actions_html(&model["actions"], "crudui-list");
-    let columns = model["columns"].as_array().unwrap();
-    let rows = model["rows"].as_array().unwrap();
+    let columns = model["columns"].as_array().or_no_list();
+    let rows = model["rows"].as_array().or_no_list();
     if rows.is_empty() {
         content += &element(
             "div",
@@ -569,7 +635,7 @@ pub fn render_list(spec: &Value, rows: &[Value], options: &ListOptions<'_>) -> F
             .map(|row| {
                 let cells = row["cells"]
                     .as_array()
-                    .unwrap()
+                    .or_no_list()
                     .iter()
                     .enumerate()
                     .map(|(index, cell)| {
@@ -635,7 +701,7 @@ pub fn render_list(spec: &Value, rows: &[Value], options: &ListOptions<'_>) -> F
                     &json!({}),
                     &row["cells"]
                         .as_array()
-                        .unwrap()
+                        .or_no_list()
                         .iter()
                         .map(|cell| {
                             cell_html(
@@ -675,11 +741,11 @@ pub fn render_list(spec: &Value, rows: &[Value], options: &ListOptions<'_>) -> F
         let mut controls = String::new();
         if let Some(buttons) = pagination.get("buttons").and_then(Value::as_array) {
             for button_data in buttons {
-                let role = button_data["role"].as_str().unwrap_or("");
+                let role = button_data["role"].as_str().or_no_text();
                 let page_num = button_data["page"].as_u64().unwrap_or(1);
-                let label = button_data["label"].as_str().unwrap_or("");
-                let current = button_data["current"].as_bool().unwrap_or(false);
-                let disabled = button_data["disabled"].as_bool().unwrap_or(false);
+                let label = button_data["label"].as_str().or_no_text();
+                let current = button_data["current"] == true;
+                let disabled = button_data["disabled"] == true;
 
                 let class = match role {
                     "previous" => "crudui-list__pagination-prev",
@@ -780,6 +846,10 @@ pub(crate) fn check_pagination_declaration(pagination: &Value, path: &str) -> Fo
 /// The pagination model, in member order: enabled, then for enabled paging perPage, mode and
 /// page with their defaults, the supplied total and pageCount. Disabled paging keeps only the
 /// supplied page and total.
+#[allow(
+    clippy::disallowed_methods,
+    reason = "display-formats.md, pagination: perPage 20, mode pages and page 1 are the defaults, and an unknown total has no page"
+)]
 fn pagination_model(
     declared: &Value,
     page: Option<u64>,

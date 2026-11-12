@@ -12,6 +12,16 @@
 //!   { name, note, spec, files?, expect: "ok" }
 //!   { name, note, spec, files?, expect: { error_code, at_path } }
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 const FEATURE: &str = "validate";
@@ -127,7 +137,10 @@ fn spec_validity_case_failures(case: &Value) -> Vec<String> {
 
 fn main() {
     let cases = load_cases();
-    assert!(!cases.is_empty(), "no spec-validity fixture cases were loaded");
+    assert!(
+        !cases.is_empty(),
+        "no spec-validity fixture cases were loaded"
+    );
     let trials: Vec<Trial> = cases
         .into_iter()
         .map(|case| {
@@ -136,14 +149,17 @@ fn main() {
                 .and_then(Value::as_str)
                 .unwrap_or_else(|| panic!("fixture case missing name"))
                 .to_owned();
-            Trial::test(format!("spec_validity_matches_fixture::{name}"), move || {
-                let failures = spec_validity_case_failures(&case);
-                if failures.is_empty() {
-                    Ok(())
-                } else {
-                    Err(Failed::from(failures.join("\n")))
-                }
-            })
+            Trial::test(
+                format!("spec_validity_matches_fixture::{name}"),
+                move || {
+                    let failures = spec_validity_case_failures(&case);
+                    if failures.is_empty() {
+                        Ok(())
+                    } else {
+                        Err(Failed::from(failures.join("\n")))
+                    }
+                },
+            )
         })
         .collect();
     libtest_mimic::run(&Arguments::from_args(), trials).exit();

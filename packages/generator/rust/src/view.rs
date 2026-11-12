@@ -1,5 +1,7 @@
 //! Row view state of form instances, kept outside the record data.
 
+use crate::util::OrNoList;
+use crate::util::OrNoText;
 use serde_json::Value;
 
 /// The row paths `{collection}.{key}` rendered collapsed, in the order the rows were collapsed and without duplicates.
@@ -31,9 +33,7 @@ pub fn collapsible_rows(nodes: &[Value]) -> Vec<String> {
 }
 
 fn children(node: &Value) -> &[Value] {
-    node.get("children")
-        .and_then(Value::as_array)
-        .map_or(&[], Vec::as_slice)
+    node.get("children").and_then(Value::as_array).or_no_list()
 }
 
 fn collect(nodes: &[Value], rows: &mut Vec<String>) {
@@ -46,8 +46,8 @@ fn collect(nodes: &[Value], rows: &mut Vec<String>) {
             if row["collapsible"] == true {
                 rows.push(format!(
                     "{}.{}",
-                    node["path"].as_str().unwrap_or_default(),
-                    row["key"].as_str().unwrap_or_default()
+                    node["path"].as_str().or_no_text(),
+                    row["key"].as_str().or_no_text()
                 ));
             }
             collect(children(row), rows);

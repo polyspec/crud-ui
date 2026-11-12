@@ -3,6 +3,16 @@
 //! is decoded with `FormTemplate::from_json` first, which refuses a shape that is not the compiled one; the case's
 //! operation then runs on the decoded template, one trial per case.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 #[path = "support/evidence.rs"]
 mod evidence;
 

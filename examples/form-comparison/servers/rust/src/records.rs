@@ -93,7 +93,10 @@ fn allow(request: &Request, method: Method) -> Result<()> {
 /// A decimal integer from 1 without sign or leading zero; a value beyond `u64` is beyond every page.
 // The fallback is needed: digits-only text fails to parse only when it exceeds `u64`, and such a
 // page number is beyond every page.
-#[allow(clippy::disallowed_methods, reason = "digits beyond u64 are beyond every page")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "digits beyond u64 are beyond every page"
+)]
 fn positive_decimal(text: &str) -> Option<u64> {
     if text.is_empty() || text.starts_with('0') || !text.bytes().all(|b| b.is_ascii_digit()) {
         return None;
@@ -240,13 +243,12 @@ fn page_data(records: &[Value], page: u64) -> Result<Value> {
 }
 
 fn specs(server: &Server) -> Result<Value> {
-    let specs = codec::decode(&fs::read(server.public.join(SPECS_FILE))?)
-        .map_err(|error| {
-            internal(format!(
-                "The record specifications are malformed: {}",
-                error.message
-            ))
-        })?;
+    let specs = codec::decode(&fs::read(server.public.join(SPECS_FILE))?).map_err(|error| {
+        internal(format!(
+            "The record specifications are malformed: {}",
+            error.message
+        ))
+    })?;
     if !["list", "detail", "form"]
         .iter()
         .all(|name| specs[name].is_object())

@@ -5,6 +5,16 @@
 //! `"pass"` requires successful composition and forbidden-key scanning; `{ code, at }` requires the declared
 //! load-error code and complete dotted trace. Record data validation does not apply.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 const FEATURE: &str = "validateDetail";
@@ -138,7 +148,10 @@ fn every_case_declares_an_engine_channel() {
 
 fn main() {
     let cases = load_cases();
-    assert!(!cases.is_empty(), "no detail-validity fixture cases were loaded");
+    assert!(
+        !cases.is_empty(),
+        "no detail-validity fixture cases were loaded"
+    );
     let mut trials: Vec<Trial> = cases
         .into_iter()
         .map(|case| {
@@ -147,14 +160,17 @@ fn main() {
                 .and_then(Value::as_str)
                 .unwrap_or_else(|| panic!("fixture case missing name"))
                 .to_owned();
-            Trial::test(format!("detail_engine_matches_fixture::{name}"), move || {
-                let failures = detail_engine_case_failures(&case);
-                if failures.is_empty() {
-                    Ok(())
-                } else {
-                    Err(Failed::from(failures.join("\n")))
-                }
-            })
+            Trial::test(
+                format!("detail_engine_matches_fixture::{name}"),
+                move || {
+                    let failures = detail_engine_case_failures(&case);
+                    if failures.is_empty() {
+                        Ok(())
+                    } else {
+                        Err(Failed::from(failures.join("\n")))
+                    }
+                },
+            )
         })
         .collect();
     trials.push(Trial::test("every_case_declares_an_engine_channel", || {

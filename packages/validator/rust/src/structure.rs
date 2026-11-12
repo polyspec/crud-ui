@@ -28,7 +28,11 @@ where
     let loader: &dyn FileLoader = match loader {
         Some(l) => l,
         None => {
-            owned_loader = MemoryLoader::new(files.cloned().unwrap_or_default());
+            // Without files a composition reads no file.
+            owned_loader = match files {
+                Some(files) => MemoryLoader::new(files.clone()),
+                None => MemoryLoader::new(Map::new()),
+            };
             &owned_loader
         }
     };

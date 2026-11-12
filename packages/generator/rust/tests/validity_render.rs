@@ -4,6 +4,16 @@
 //! tests/fixtures/list-validity is a trial `list_render_validity::<case>`, and each case of tests/fixtures/detail-validity
 //! is a trial `detail_render_validity::<case>`.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 use libtest_mimic::{Arguments, Failed, Trial};
 use polyspec_crudui_generator::{build_detail, build_list, DetailOptions, FormError, ListOptions};
 use serde_json::{json, Map, Value};
@@ -69,26 +79,38 @@ fn check(case: &Value, observed: Value) -> Result<(), Failed> {
 fn main() {
     let mut trials = Vec::new();
     for case in cases("list-validity") {
-        let name = case["name"].as_str().expect("a case has a name").to_string();
-        trials.push(Trial::test(format!("list_render_validity::{name}"), move || {
-            let options = ListOptions {
-                files: files(&case),
-                ..Default::default()
-            };
-            let result = build_list(&case["spec"], &[], &options).map(|_| ());
-            check(&case, outcome(result))
-        }));
+        let name = case["name"]
+            .as_str()
+            .expect("a case has a name")
+            .to_string();
+        trials.push(Trial::test(
+            format!("list_render_validity::{name}"),
+            move || {
+                let options = ListOptions {
+                    files: files(&case),
+                    ..Default::default()
+                };
+                let result = build_list(&case["spec"], &[], &options).map(|_| ());
+                check(&case, outcome(result))
+            },
+        ));
     }
     for case in cases("detail-validity") {
-        let name = case["name"].as_str().expect("a case has a name").to_string();
-        trials.push(Trial::test(format!("detail_render_validity::{name}"), move || {
-            let options = DetailOptions {
-                files: files(&case),
-                ..Default::default()
-            };
-            let result = build_detail(&case["spec"], &json!({}), &options).map(|_| ());
-            check(&case, outcome(result))
-        }));
+        let name = case["name"]
+            .as_str()
+            .expect("a case has a name")
+            .to_string();
+        trials.push(Trial::test(
+            format!("detail_render_validity::{name}"),
+            move || {
+                let options = DetailOptions {
+                    files: files(&case),
+                    ..Default::default()
+                };
+                let result = build_detail(&case["spec"], &json!({}), &options).map(|_| ());
+                check(&case, outcome(result))
+            },
+        ));
     }
     libtest_mimic::run(&Arguments::from_args(), trials).exit();
 }

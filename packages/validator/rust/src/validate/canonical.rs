@@ -13,6 +13,10 @@ use serde_json::{Number, Value};
 /// `serde_json` keeps an integer token as an `i64` or a `u64`; its conversion to `f64`
 /// rounds to the nearest double with ties to even, as ECMAScript reads the token, so
 /// `9007199254740993` is `9007199254740992`.
+#[allow(
+    clippy::manual_unwrap_or,
+    reason = "R-1: without arbitrary_precision every serde_json number has an f64; the NaN arm is unreachable"
+)]
 pub fn json_number(number: &Number) -> f64 {
     match number.as_f64() {
         Some(value) => value,
@@ -56,33 +60,20 @@ pub fn number_text(x: f64) -> String {
         return "0".to_string();
     }
     let sign = if x < 0.0 { "-" } else { "" };
-    let magnitude = x.abs();
-    let shortest = format!("{magnitude:e}");
-    let digit_count = shortest.split_once('e').map_or(0, |(mantissa, _)| {
-        mantissa.chars().filter(char::is_ascii_digit).count()
-    });
-    let rounded = format!("{magnitude:.*e}", digit_count - 1);
-    let scientific = if rounded.parse::<f64>() == Ok(magnitude) {
-        rounded
-    } else {
-        shortest
-    };
-    let (mantissa, exponent) = scientific
-        .split_once('e')
-        .expect("`{:e}` always writes an exponent");
-    let exponent: i32 = exponent.parse().expect("`{:e}` writes a decimal exponent");
-    let digits: String = mantissa.chars().filter(|c| *c != '.').collect();
-    let k = digits.len() as i32;
-    // x = 0.d1d2…dk × 10^n
-    let n = exponent + 1;
+    let (digits, n) = shortest_digits(x.abs());
+    let k = digit_count(&digits);
+    let digits: String = digits
+        .iter()
+        .map(|digit| char::from(b'0' + digit))
+        .collect();
 
     let body = if k <= n && n <= 21 {
-        format!("{digits}{}", "0".repeat((n - k) as usize))
+        format!("{digits}{}", "0".repeat(span(n - k)))
     } else if 0 < n && n <= 21 {
-        let (int, frac) = digits.split_at(n as usize);
+        let (int, frac) = digits.split_at(span(n));
         format!("{int}.{frac}")
     } else if -6 < n && n <= 0 {
-        format!("0.{}{digits}", "0".repeat((-n) as usize))
+        format!("0.{}{digits}", "0".repeat(span(-n)))
     } else {
         let e = n - 1;
         let e_sign = if e >= 0 { '+' } else { '-' };
@@ -94,6 +85,69 @@ pub fn number_text(x: f64) -> String {
         }
     };
     format!("{sign}{body}")
+}
+
+/// A finite nonzero double as the decimal its canonical text writes: `significand × 10^exponent`,
+/// and `(0, 0)` for zero.
+pub(crate) fn decimal(value: f64) -> (u64, i32) {
+    if value == 0.0 || !value.is_finite() {
+        return (0, 0);
+    }
+    let (digits, n) = shortest_digits(value.abs());
+    // At most 17 digits, so the significand fits in a u64.
+    let significand = digits.iter().fold(0u64, |significand, digit| {
+        significand * 10 + u64::from(*digit)
+    });
+    (significand, n - digit_count(&digits))
+}
+
+/// The digits `d1…dk` and the exponent `n` with `x = 0.d1…dk × 10^n` that ECMAScript
+/// `Number::toString` chooses for a finite positive double (see [`number_text`]).
+fn shortest_digits(magnitude: f64) -> (Vec<u8>, i32) {
+    let shortest = format!("{magnitude:e}");
+    let count = shortest
+        .bytes()
+        .take_while(|byte| *byte != b'e')
+        .filter(u8::is_ascii_digit)
+        .count();
+    let rounded = format!("{magnitude:.*e}", count.saturating_sub(1));
+    let scientific = if rounded.parse::<f64>() == Ok(magnitude) {
+        rounded
+    } else {
+        shortest
+    };
+    // `{:e}` writes the digits, an optional point, `e`, an optional `-` and the decimal exponent.
+    let mut digits = Vec::new();
+    let mut exponent: i32 = 0;
+    let mut negative = false;
+    let mut in_exponent = false;
+    for byte in scientific.bytes() {
+        match byte {
+            b'e' => in_exponent = true,
+            b'-' => negative = true,
+            b'0'..=b'9' if in_exponent => exponent = exponent * 10 + i32::from(byte - b'0'),
+            b'0'..=b'9' => digits.push(byte - b'0'),
+            _ => {}
+        }
+    }
+    let exponent = if negative { -exponent } else { exponent };
+    (digits, exponent + 1)
+}
+
+/// The number of digits of a double's shortest decimal, at most 17.
+#[allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    reason = "R-1: a double has at most 17 significant digits"
+)]
+fn digit_count(digits: &[u8]) -> i32 {
+    digits.len() as i32
+}
+
+/// A count of characters that a branch of [`number_text`] has checked to be nonnegative.
+fn span(count: i32) -> usize {
+    // u32 to usize is lossless on every target of the crate.
+    count.unsigned_abs() as usize
 }
 
 #[cfg(test)]

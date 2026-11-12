@@ -13,7 +13,10 @@
 // (`packages/validator/ts/src/compose/compose.ts`), the byte-for-byte parity
 // source. Renaming would diverge the two engines' file maps; the re-exports
 // below flatten the path for callers (`compose::compose_spec`).
-#[allow(clippy::module_inception, reason = "compose/compose.rs mirrors the file map of the other engines")]
+#[allow(
+    clippy::module_inception,
+    reason = "compose/compose.rs mirrors the file map of the other engines"
+)]
 pub mod compose;
 pub mod errors;
 pub mod loader;

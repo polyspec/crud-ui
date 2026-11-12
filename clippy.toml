@@ -1,10 +1,22 @@
-# The clippy configuration of crudui, from the example of kit (docs/examples/native-settings of @polyspec/kit). clippy reads
-# clippy.toml from the folder of the Cargo workspace and the folders above it.
-# P8 (K334): a Result is never turned into a plausible value. A use that is truly needed says so with
-# #[allow(clippy::disallowed_methods, reason = "...")], which allow_attributes_without_reason requires to carry its reason.
+# The clippy configuration of crudui. clippy reads clippy.toml from the folder of the Cargo workspace and the folders
+# above it, so every Cargo workspace of the repository reads this file.
+# R-1, P-2, P-3: a failure or an absence is never turned into a plausible value: match it or use `?`. A use that a rule
+# needs carries #[allow(clippy::disallowed_methods, reason = "<rule id>: <why>")], which allow_attributes_without_reason
+# requires to carry its reason.
 disallowed-methods = [
-  { path = "core::result::Result::ok", reason = "P8: an Err becomes None and its error is dropped; match it, use ? or state the need" },
-  { path = "core::result::Result::unwrap_or", reason = "P8: an Err becomes a plausible value; handle the error or state the need" },
-  { path = "core::result::Result::unwrap_or_default", reason = "P8: an Err becomes a default value; handle the error or state the need" },
-  { path = "core::result::Result::unwrap_or_else", reason = "P8: an Err becomes a computed fallback; handle the error or state the need" },
+  { path = "core::option::Option::unwrap_or", reason = "R-1: an absence becomes a plausible value; match it or state the rule" },
+  { path = "core::option::Option::unwrap_or_default", reason = "R-1: an absence becomes a default value; match it or state the rule" },
+  { path = "core::option::Option::unwrap_or_else", reason = "R-1: an absence becomes a computed fallback; match it or state the rule" },
+  { path = "core::option::Option::map_or", reason = "R-1: an absence becomes a plausible value; match it or state the rule" },
+  { path = "core::option::Option::map_or_else", reason = "R-1: an absence becomes a computed fallback; match it or state the rule" },
+  { path = "core::result::Result::ok", reason = "R-1: an Err becomes None and its error is dropped; match it, use ? or state the rule" },
+  { path = "core::result::Result::map_or", reason = "R-1: an Err becomes a plausible value; handle the error or state the rule" },
+  { path = "core::result::Result::map_or_else", reason = "R-1: an Err becomes a computed fallback; handle the error or state the rule" },
+  { path = "core::result::Result::unwrap_or", reason = "R-1: an Err becomes a plausible value; handle the error or state the rule" },
+  { path = "core::result::Result::unwrap_or_default", reason = "R-1: an Err becomes a default value; handle the error or state the rule" },
+  { path = "core::result::Result::unwrap_or_else", reason = "R-1: an Err becomes a computed fallback; handle the error or state the rule" },
 ]
+# R-1 holds the library paths: a test fails by a panic, so unwrap and expect stay allowed in #[test] functions and
+# #[cfg(test)] modules.
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true

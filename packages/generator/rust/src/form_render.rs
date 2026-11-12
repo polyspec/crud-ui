@@ -1,6 +1,7 @@
 //! Render options of a complete form (form-runtime.md, "Complete form"): the form element, the
 //! hidden fields, form errors and node errors.
 
+use crate::util::OrNoText;
 use std::collections::HashMap;
 
 use serde_json::{Map, Value};
@@ -48,8 +49,8 @@ fn nodes_by_path<'a>(
         let path = match node["kind"].as_str() {
             Some("row") => Some(format!(
                 "{}.{}",
-                parent.unwrap_or_default(),
-                node["key"].as_str().unwrap_or_default()
+                parent.or_no_text(),
+                node["key"].as_str().or_no_text()
             )),
             Some("lang-item") => None,
             _ => node["path"].as_str().map(str::to_string),
@@ -176,7 +177,7 @@ pub(crate) fn render_model(
     if let Some(hidden) = hidden.and_then(Value::as_object) {
         model.hidden = hidden
             .iter()
-            .map(|(name, value)| (name.clone(), value.as_str().unwrap_or_default().to_string()))
+            .map(|(name, value)| (name.clone(), value.as_str().or_no_text().to_string()))
             .collect();
     }
     Ok(model)

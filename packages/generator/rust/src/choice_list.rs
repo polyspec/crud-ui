@@ -1,9 +1,11 @@
 //! Choice lists: `items` arrays of value and label pairs kept in list order.
 
 use crate::template::check_declared_attributes;
-use polyspec_crudui_validator::validate::group_source::{group_choices, GroupChoicesError};
+use crate::util::OrNoList;
+use crate::util::OrNoText;
 use crate::util::{scalar, style};
 use crate::{FormError, FormResult};
+use polyspec_crudui_validator::validate::group_source::{group_choices, GroupChoicesError};
 use serde_json::{json, Map, Value};
 use std::collections::HashSet;
 
@@ -97,7 +99,7 @@ pub(crate) fn choice_groups(items: &Value) -> Vec<Option<(usize, &Value)>> {
         .enumerate()
         .flat_map(|(index, item)| {
             if is_group(item) {
-                let count = item["choices"].as_array().map_or(0, Vec::len);
+                let count = item["choices"].as_array().or_no_list().len();
                 vec![Some((index, &item["label"])); count]
             } else {
                 vec![None]
@@ -144,7 +146,7 @@ pub(crate) fn choice_appearances(items: &Value) -> Vec<Map<String, Value>> {
             if let Some(class) = choice["class"].as_str().filter(|class| !class.is_empty()) {
                 appearance.insert("className".into(), class.into());
             }
-            let inline = style(choice["style"].as_str().unwrap_or(""));
+            let inline = style(choice["style"].as_str().or_no_text());
             if !inline.is_empty() {
                 appearance.insert("style".into(), inline.into());
             }
@@ -160,7 +162,9 @@ pub(crate) fn choice_appearances(items: &Value) -> Vec<Map<String, Value>> {
 /// list of the group's rows in the root `data` (schema.md, "Choices from a repeated group").
 pub(crate) fn with_group_choices(spec: &Value, data: &Value, path: &str) -> FormResult<Value> {
     let choices = group_choices(&spec["items"], data, path).map_err(|error| match error {
-        GroupChoicesError::Declaration(message) | GroupChoicesError::Repeated(message) => FormError::input(message),
+        GroupChoicesError::Declaration(message) | GroupChoicesError::Repeated(message) => {
+            FormError::input(message)
+        }
     })?;
     let items: Vec<Value> = choices
         .into_iter()

@@ -1,12 +1,12 @@
 //! The structure map model derived from evaluated nodes: one entry per form row.
 
+use crate::util::OrNoList;
+use crate::util::OrNoText;
 use serde_json::{Map, Value};
 
 /// The child nodes of `node`, none when it has no `children` list.
 fn children(node: &Value) -> &[Value] {
-    node.get("children")
-        .and_then(Value::as_array)
-        .map_or(&[], Vec::as_slice)
+    node.get("children").and_then(Value::as_array).or_no_list()
 }
 
 /// The rows under `nodes`, looking through every node that is not a collection.
@@ -15,7 +15,7 @@ fn rows(nodes: &[Value]) -> Vec<Value> {
         .iter()
         .flat_map(|node| {
             if node["kind"] == "collection" {
-                let path = node["path"].as_str().unwrap_or("");
+                let path = node["path"].as_str().or_no_text();
                 children(node).iter().map(|row| entry(path, row)).collect()
             } else {
                 rows(children(node))
@@ -28,7 +28,7 @@ fn rows(nodes: &[Value]) -> Vec<Value> {
 fn entry(path: &str, row: &Value) -> Value {
     let mut entry = Map::new();
     entry.insert("path".into(), path.into());
-    entry.insert("key".into(), row["key"].as_str().unwrap_or("").into());
+    entry.insert("key".into(), row["key"].as_str().or_no_text().into());
     for name in ["number", "title"] {
         if let Some(text) = row["header"].get(name).filter(|text| !text.is_null()) {
             entry.insert(name.into(), text.clone());

@@ -7,6 +7,16 @@
 //! errors are compared IN ORDER (declaration / traversal order), key by key:
 //! path, field, rule, message, value. A reorder is a failure.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 const FEATURE: &str = "validate";
@@ -147,7 +157,8 @@ fn main() {
                 .unwrap_or_else(|| panic!("fixture case missing name"))
                 .to_string();
             Trial::test(format!("validate_matches_fixture::{name}"), move || {
-                let failures = common::prove_case(FEATURE, FIXTURE, &name, || check_case(&case, &name));
+                let failures =
+                    common::prove_case(FEATURE, FIXTURE, &name, || check_case(&case, &name));
                 if failures.is_empty() {
                     Ok(())
                 } else {

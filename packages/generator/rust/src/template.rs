@@ -1,4 +1,5 @@
 use crate::condition_editor::{check_condition_editor, fields_error};
+use crate::util::OrNoText;
 use crate::{FormError, FormResult};
 use polyspec_crudui_validator::compose::{
     compose_properties, member_ordered, member_ordered_map, ComposeOptions, FileLoader,
@@ -527,11 +528,13 @@ fn is_condition(spec: &Map<String, Value>) -> bool {
 /// Reject a condition field whose `validate.conditionTree` is not the literal `true` or `judge`:
 /// every value of the field is checked as a condition tree.
 fn check_condition_declaration(spec: &Map<String, Value>, path: &str) -> FormResult<()> {
-    let parameter = spec
+    let accepted = spec
         .get("validate")
         .and_then(|v| v.get("conditionTree"))
-        .unwrap_or(&Value::Null);
-    if *parameter == Value::Bool(true) || parameter.as_str() == Some("judge") {
+        .is_some_and(|parameter| {
+            *parameter == Value::Bool(true) || parameter.as_str() == Some("judge")
+        });
+    if accepted {
         return Ok(());
     }
     Err(FormError::input(format!(
@@ -543,7 +546,13 @@ fn check_condition_declaration(spec: &Map<String, Value>, path: &str) -> FormRes
 /// is: the slider moves from the minimum in steps.
 fn check_range_declaration(spec: &Map<String, Value>, path: &str) -> FormResult<()> {
     let validate = spec.get("validate").filter(|v| v.is_object());
-    let rule = |key: &str| validate.and_then(|v| v.get(key)).unwrap_or(&Value::Null);
+    // A rule that `validate` does not declare is null, as JSON indexing reads it.
+    let rule = |key: &str| -> &Value {
+        match validate {
+            Some(validate) => &validate[key],
+            None => &Value::Null,
+        }
+    };
     let Some((minimum, _)) = numeric::number_range(rule("range")) else {
         return Err(FormError::input(format!(
             "Invalid validate.range at {path}: expected [minimum, maximum] finite numbers with minimum not above maximum"
@@ -606,7 +615,7 @@ fn check_form_declarations(spec: &Map<String, Value>) -> FormResult<()> {
         let Some(button) = button.as_object() else {
             return fail(&key, "an object");
         };
-        let kind = button.get("type").and_then(Value::as_str).unwrap_or("");
+        let kind = button.get("type").and_then(Value::as_str).or_no_text();
         if !crate::buttons::FORM_BUTTON_TYPES.contains(&kind) {
             return fail(&format!("{key}.type"), "submit, reset, button or link");
         }
@@ -689,12 +698,17 @@ pub(crate) fn member_ordered_template(template: &FormTemplate) -> FormTemplate {
 pub fn compile_form(spec: &Value, options: &CompileOptions<'_>) -> FormResult<FormTemplate> {
     // The specification is read in member order; composition orders every loaded document.
     let spec = &member_ordered(spec);
-    if spec["type"] != "group" || !spec["properties"].is_object() {
+    let (Some(root), Some(declared)) = (spec.as_object(), spec["properties"].as_object()) else {
+        return Err(FormError::input(
+            "A form spec must be a group with properties",
+        ));
+    };
+    if spec["type"] != "group" {
         return Err(FormError::input(
             "A form spec must be a group with properties",
         ));
     }
-    check_form_declarations(spec.as_object().expect("checked group"))?;
+    check_form_declarations(root)?;
     // The form root takes no layout; a group field declares it.
     if spec["design"].get("layout").is_some() {
         return Err(FormError::input(
@@ -702,12 +716,14 @@ pub fn compile_form(spec: &Value, options: &CompileOptions<'_>) -> FormResult<Fo
         ));
     }
     let memory = MemoryLoader::new(options.files.clone());
+    // Without a loader, composition reads the files of the options.
+    let loader: &dyn FileLoader = match options.loader {
+        Some(loader) => loader,
+        None => &memory,
+    };
     let properties = compose_properties(
-        spec["properties"]
-            .as_object()
-            .expect("checked properties")
-            .clone(),
-        options.loader.unwrap_or(&memory),
+        declared.clone(),
+        loader,
         &ComposeOptions::with_basepath(&options.basepath),
     )?;
     Ok(FormTemplate {

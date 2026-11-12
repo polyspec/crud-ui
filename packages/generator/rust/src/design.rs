@@ -4,14 +4,22 @@ use polyspec_crudui_validator::expr::{is_truthy, Evaluator, Expression, Node};
 use polyspec_crudui_validator::validate::rules::is_condition_expression;
 use serde_json::{json, Value};
 
-fn resolve_map(value: &Value, data: &Value, path: &[String], rows: &[usize]) -> Value {
-    let entries = value
-        .as_object()
-        .expect("condition map")
+/// The value that a condition map selects, or null when it selects none: a setting that selects
+/// no value is unset.
+fn resolve_map(
+    map: &serde_json::Map<String, Value>,
+    data: &Value,
+    path: &[String],
+    rows: &[usize],
+) -> Value {
+    let entries = map
         .iter()
         .map(|(k, v)| (k.clone(), v.clone()))
         .collect::<Vec<_>>();
-    condition_map::resolve(&entries, data, path, rows).unwrap_or(Value::Null)
+    match condition_map::resolve(&entries, data, path, rows) {
+        Some(selected) => selected,
+        None => Value::Null,
+    }
 }
 
 /// Form visibility, resolved as the validator resolves it, so a server skips exactly
@@ -23,7 +31,7 @@ pub(crate) use polyspec_crudui_validator::validate::visibility::show;
 pub(crate) fn flag(value: Option<&Value>, data: &Value, path: &[String], rows: &[usize]) -> bool {
     match value {
         None | Some(Value::Null) => true,
-        Some(Value::Object(_)) => is_truthy(&resolve_map(value.unwrap(), data, path, rows)),
+        Some(Value::Object(map)) => is_truthy(&resolve_map(map, data, path, rows)),
         Some(Value::String(s)) => expression_flag(s, data, path, rows),
         Some(v) => is_truthy(v),
     }
@@ -40,8 +48,8 @@ pub(crate) fn appearance(
 ) -> String {
     match value {
         None | Some(Value::Null) => String::new(),
-        Some(Value::Object(_)) => {
-            let result = resolve_map(value.unwrap(), data, path, rows);
+        Some(Value::Object(map)) => {
+            let result = resolve_map(map, data, path, rows);
             if result.is_null() {
                 String::new()
             } else {
@@ -74,7 +82,10 @@ pub(crate) fn appearance(
 }
 
 /// A condition expression that does not evaluate is false, as the TypeScript reference reads it (expr.ts).
-#[allow(clippy::disallowed_methods, reason = "the reference expression is not evaluated as false")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "the reference expression is not evaluated as false"
+)]
 fn expression_flag(text: &str, data: &Value, path: &[String], rows: &[usize]) -> bool {
     Expression::evaluate(text, data, path, rows).unwrap_or(false)
 }
@@ -91,7 +102,11 @@ pub(crate) fn resolve_design(
     rows: &[usize],
 ) -> Value {
     let empty = json!({});
-    let design = design.filter(|v| v.is_object()).unwrap_or(&empty);
+    // A field without a design object has no design settings.
+    let design = match design.filter(|v| v.is_object()) {
+        Some(design) => design,
+        None => &empty,
+    };
     let path = segments(path);
     let node = |value: &Value| {
         json!({

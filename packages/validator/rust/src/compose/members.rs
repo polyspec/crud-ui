@@ -4,8 +4,8 @@
 use serde_json::{Map, Value};
 
 use super::errors::ComposeResult;
-use crate::json_type::js_type_of;
 use super::patch::apply_patch;
+use crate::json_type::js_type_of;
 
 /// Layer the members of a node in declaration order: a `$ref` lays its resolved base over the
 /// members declared before it, the members declared after it override that base (an

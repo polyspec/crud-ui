@@ -1,3 +1,13 @@
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 use polyspec_crudui_generator::{
     compile_form, render_detail, render_form, render_list, sequence_row_key, BindOptions,
     CompileOptions, DetailOptions, Form, ListOptions,

@@ -6,6 +6,13 @@
 //! The shared fixture tests/fixtures/expr/cases.json defines the expected tokens,
 //! syntax tree and evaluation result for every runtime.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 const FEATURE: &str = "validate";
@@ -305,7 +312,8 @@ fn main() {
                 .unwrap_or_else(|| panic!("fixture case missing name"))
                 .to_string();
             Trial::test(format!("expression_fixture_matches::{name}"), move || {
-                let failures = common::prove_case(FEATURE, FIXTURE, &name, || check_case(&spec, &name));
+                let failures =
+                    common::prove_case(FEATURE, FIXTURE, &name, || check_case(&spec, &name));
                 if failures.is_empty() {
                     Ok(())
                 } else {
@@ -314,14 +322,20 @@ fn main() {
             })
         })
         .collect();
-    trials.push(Trial::test("condition_map_resolves_in_declaration_order", || {
-        condition_map_resolves_in_declaration_order();
-        Ok(())
-    }));
-    trials.push(Trial::test("condition_map_default_does_not_short_circuit", || {
-        condition_map_default_does_not_short_circuit();
-        Ok(())
-    }));
+    trials.push(Trial::test(
+        "condition_map_resolves_in_declaration_order",
+        || {
+            condition_map_resolves_in_declaration_order();
+            Ok(())
+        },
+    ));
+    trials.push(Trial::test(
+        "condition_map_default_does_not_short_circuit",
+        || {
+            condition_map_default_does_not_short_circuit();
+            Ok(())
+        },
+    ));
     trials.push(Trial::test("ternary_returns_raw_branch_value", || {
         ternary_returns_raw_branch_value();
         Ok(())

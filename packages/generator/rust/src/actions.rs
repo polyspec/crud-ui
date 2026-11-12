@@ -196,10 +196,12 @@ pub fn run_action(form: &mut Form, target: &ActionTarget) -> FormResult<Option<A
         ActionName::MoveUp | ActionName::MoveDown => {
             let keys = row_keys(form, path)?;
             // A key that the collection lacks gives no position; the move then fails with the unknown row.
-            let from = keys
-                .iter()
-                .position(|known| known == key)
-                .map_or(-1, |index| index as i64);
+            let Some(from) = keys.iter().position(|known| known == key) else {
+                return Err(FormError::input(format!("Unknown row: {key}")));
+            };
+            let Ok(from) = i64::try_from(from) else {
+                return Err(FormError::input(format!("Invalid row position: {from}")));
+            };
             let step = if target.name == ActionName::MoveUp {
                 -1
             } else {

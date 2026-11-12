@@ -3,14 +3,18 @@
 
 use serde_json::Value;
 
-use super::canonical::number_text;
+use super::canonical::decimal;
 use super::whitespace::trim;
 
 /// Whether `text` is numeric text, the HTML valid floating-point number:
 /// `^-?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)(?:[eE][-+]?[0-9]+)?$`.
 fn is_numeric_text(text: &str) -> bool {
     let digits = |part: &str| !part.is_empty() && part.bytes().all(|b| b.is_ascii_digit());
-    let unsigned = text.strip_prefix('-').unwrap_or(text);
+    // The sign is optional.
+    let unsigned = match text.strip_prefix('-') {
+        Some(rest) => rest,
+        None => text,
+    };
     let (mantissa, exponent) = match unsigned.split_once(['e', 'E']) {
         Some((mantissa, exponent)) => (mantissa, Some(exponent)),
         None => (unsigned, None),
@@ -19,8 +23,10 @@ fn is_numeric_text(text: &str) -> bool {
         Some((integer, fraction)) => (integer.is_empty() || digits(integer)) && digits(fraction),
         None => digits(mantissa),
     };
-    let exponent_ok = exponent
-        .is_none_or(|exponent| digits(exponent.strip_prefix(['-', '+']).unwrap_or(exponent)));
+    let exponent_ok = exponent.is_none_or(|exponent| match exponent.strip_prefix(['-', '+']) {
+        Some(rest) => digits(rest),
+        None => digits(exponent),
+    });
     mantissa_ok && exponent_ok
 }
 
@@ -31,8 +37,10 @@ pub(crate) fn numeric_text_value(text: &str) -> Option<f64> {
         return None;
     }
     // `is_numeric_text` admits only the grammar that Rust's `f64` parser reads.
-    let value = text.parse::<f64>().expect("numeric text parses as f64");
-    value.is_finite().then_some(value)
+    match text.parse::<f64>() {
+        Ok(value) => value.is_finite().then_some(value),
+        Err(_) => None,
+    }
 }
 
 /// The value of a numeric value: a finite number, or a string that after trimming
@@ -67,37 +75,13 @@ fn finite(value: &Value) -> Option<f64> {
     value.as_f64().filter(|number| number.is_finite())
 }
 
-/// A finite nonnegative double as the decimal its canonical text writes:
-/// `significand × 10^exponent`.
-fn decimal(value: f64) -> (u64, i32) {
-    let text = number_text(value.abs());
-    let (mantissa, exponent) = match text.split_once('e') {
-        Some((mantissa, exponent)) => (
-            mantissa,
-            exponent
-                .parse::<i32>()
-                .expect("canonical text writes a decimal exponent"),
-        ),
-        None => (text.as_str(), 0),
-    };
-    let (integer, fraction) = mantissa.split_once('.').unwrap_or((mantissa, ""));
-    let digits = format!("{integer}{fraction}");
-    // At most 17 significant digits; the zeros an integer text ends with move into
-    // the exponent, so the significand fits.
-    let significant = digits.trim_end_matches('0');
-    if significant.is_empty() {
-        return (0, 0);
-    }
-    let significand = significant
-        .parse::<u64>()
-        .expect("canonical text has at most 17 significant digits");
-    let zeros = (digits.len() - significant.len()) as i32;
-    (significand, exponent - fraction.len() as i32 + zeros)
-}
-
 /// `(a · b) mod m` without overflow for `m < 2^64`.
+#[allow(
+    clippy::cast_possible_truncation,
+    reason = "R-1: a remainder of a division by a u64 is below it, so it fits a u64"
+)]
 fn mul_mod(a: u64, b: u64, m: u64) -> u64 {
-    ((a as u128 * b as u128) % m as u128) as u64
+    ((u128::from(a) * u128::from(b)) % u128::from(m)) as u64
 }
 
 /// `10^exponent mod m`.
@@ -124,9 +108,9 @@ pub fn is_multiple(value: f64, step: f64) -> bool {
     }
     if p >= q {
         // a · 10^(p−q) mod b
-        mul_mod(a % b, pow10_mod((p - q) as u32, b), b) == 0
+        mul_mod(a % b, pow10_mod((p - q).unsigned_abs(), b), b) == 0
     } else {
-        let shift = (q - p) as u32;
+        let shift = (q - p).unsigned_abs();
         // a < 10^17, so a larger shift leaves a fraction.
         match 10u64.checked_pow(shift) {
             Some(power) if a % power == 0 => (a / power) % b == 0,

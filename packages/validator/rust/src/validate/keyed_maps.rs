@@ -10,7 +10,10 @@ use super::validator::{is_group_with_properties, is_multiple, path_to_string};
 
 /// The declared `multiple.keys` of a field, if it declares one.
 fn keyed_map_reference(field: &Value) -> Option<&Value> {
-    field.get("multiple").and_then(Value::as_object).and_then(|settings| settings.get("keys"))
+    field
+        .get("multiple")
+        .and_then(Value::as_object)
+        .and_then(|settings| settings.get("keys"))
 }
 
 /// Whether `reference`, declared by the field at `declaration`, names a repeated group of the
@@ -18,13 +21,21 @@ fn keyed_map_reference(field: &Value) -> Option<&Value> {
 /// path as it has leading dots (a bare name one; a path with a dot inside and no leading dot
 /// starts at the root), stays within the root, has no empty name and no `*`, passes only through
 /// groups that do not repeat and ends on a repeated group.
-fn names_repeated_group(reference: &Value, declaration: &[String], root: &Map<String, Value>) -> bool {
+fn names_repeated_group(
+    reference: &Value,
+    declaration: &[String],
+    root: &Map<String, Value>,
+) -> bool {
     let Some(text) = reference.as_str() else {
         return false;
     };
     let dots = text.bytes().take_while(|byte| *byte == b'.').count();
     let rest = &text[dots..];
-    let leave = if dots == 0 && rest.contains('.') { declaration.len() } else { dots.max(1) };
+    let leave = if dots == 0 && rest.contains('.') {
+        declaration.len()
+    } else {
+        dots.max(1)
+    };
     if leave > declaration.len() {
         return false;
     }
@@ -32,14 +43,17 @@ fn names_repeated_group(reference: &Value, declaration: &[String], root: &Map<St
     if names.iter().any(|name| name.is_empty() || *name == "*") {
         return false;
     }
-    let empty = Map::new();
     let mut properties = root;
     for name in &declaration[..declaration.len() - leave] {
-        properties = properties
+        // A declaration step without properties holds no named field.
+        let Some(next) = properties
             .get(name)
             .and_then(|field| field.get("properties"))
             .and_then(Value::as_object)
-            .unwrap_or(&empty);
+        else {
+            return false;
+        };
+        properties = next;
     }
     for (index, name) in names.iter().enumerate() {
         let Some(field) = properties.get(*name) else {
@@ -67,11 +81,13 @@ pub(crate) fn check_keyed_map_reference(
     root: &Map<String, Value>,
 ) -> Result<(), ValidateError> {
     match keyed_map_reference(field) {
-        Some(reference) if !names_repeated_group(reference, declaration, root) => Err(FormInputError::new(format!(
-            "Invalid multiple.keys at {}: expected a reference to a repeated group",
-            path_to_string(declaration)
-        ))
-        .into()),
+        Some(reference) if !names_repeated_group(reference, declaration, root) => {
+            Err(FormInputError::new(format!(
+                "Invalid multiple.keys at {}: expected a reference to a repeated group",
+                path_to_string(declaration)
+            ))
+            .into())
+        }
         _ => Ok(()),
     }
 }

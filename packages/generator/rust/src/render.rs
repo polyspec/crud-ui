@@ -1,4 +1,7 @@
 use crate::form_render::{render_model, NodeErrors, RenderModel};
+use crate::util::OrNoList;
+use crate::util::OrNoMembers;
+use crate::util::OrNoText;
 use serde_json::{json, Map, Value};
 
 use crate::util::{join_class, js_string, scalar, style};
@@ -58,9 +61,20 @@ fn attributes(attrs: &Value, raw: bool) -> String {
         .collect()
 }
 
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: a constant expression, which the tests compile"
+)]
+static JAVASCRIPT_URL: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+    regex::RegexBuilder::new(r"^[\x00-\x1f ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*:")
+        .case_insensitive(true)
+        .unicode(false)
+        .build()
+        .expect("URL scheme pattern")
+});
+
 pub(crate) fn sanitize_url(url: &str) -> String {
-    let pattern=regex::RegexBuilder::new(r"^[\x00-\x1f ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*:")
-        .case_insensitive(true).unicode(false).build().expect("URL scheme pattern");
+    let pattern = &*JAVASCRIPT_URL;
     if pattern.is_match(url) {
         "javascript:throw new Error('React has blocked a javascript: URL as a security precaution.')".into()
     } else {
@@ -69,7 +83,7 @@ pub(crate) fn sanitize_url(url: &str) -> String {
 }
 
 pub(crate) fn element(tag: &str, attrs: &Value, content: &str) -> String {
-    let mut attrs = attrs.as_object().cloned().unwrap_or_default();
+    let mut attrs = attrs.as_object().cloned().or_no_members();
     if let Some(value) = attrs.get("style").and_then(Value::as_str) {
         let value = crate::css::render_style(value);
         if value.is_empty() {
@@ -132,7 +146,7 @@ fn has_events(attrs: &Value) -> bool {
 }
 
 fn str_at<'a>(value: &'a Value, key: &str) -> &'a str {
-    value[key].as_str().unwrap_or("")
+    value[key].as_str().or_no_text()
 }
 
 pub(crate) fn appearance_attrs(class: String, inline: &str) -> Value {
@@ -161,6 +175,10 @@ fn affix(affix: &Value, raw: bool) -> String {
 }
 
 fn control(widget: &Value, search: bool) -> String {
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "CURP-024: a widget model without a tag is an input, as every renderer reads the model"
+    )]
     let tag = widget["tag"].as_str().unwrap_or("input");
     let raw = search || widget["layout"] == "condition" || has_events(&widget["attrs"]);
     let text = if raw { raw_text } else { escape };
@@ -175,7 +193,7 @@ fn control(widget: &Value, search: bool) -> String {
         };
         // The options of one group run inside one optgroup element.
         let mut content = String::new();
-        let options = widget["options"].as_array().map_or(&[][..], Vec::as_slice);
+        let options = widget["options"].as_array().or_no_list();
         let mut start = 0;
         while start < options.len() {
             let group = options[start].get("group");
@@ -267,10 +285,7 @@ fn widget(model: &Value) -> String {
                 .into_iter()
                 .flatten()
                 .map(|option| {
-                    let mut attrs = model["extra"]["input"]
-                        .as_object()
-                        .cloned()
-                        .unwrap_or_default();
+                    let mut attrs = model["extra"]["input"].as_object().cloned().or_no_members();
                     attrs.insert(
                         "type".into(),
                         if radio { "radio" } else { "checkbox" }.into(),
@@ -386,7 +401,7 @@ fn condition_widget(model: &Value) -> String {
         content += &raw_element(
             "p",
             &json!({"class":"crudui-condition__error","role":"alert"}),
-            &raw_text(error.as_str().unwrap_or("")),
+            &raw_text(error.as_str().or_no_text()),
         );
     }
     content += &control(model, false);
@@ -408,7 +423,7 @@ fn condition_button(action: &str, label: &Value) -> String {
     raw_element(
         "button",
         &json!({"type":"button","class":"crudui-action crudui-action--text","data-condition-action":action}),
-        &raw_text(label.as_str().unwrap_or("")),
+        &raw_text(label.as_str().or_no_text()),
     )
 }
 
@@ -439,7 +454,7 @@ fn condition_node(node: &Value, editor: &Value) -> String {
         "group" => {
             let items: String = node["items"]
                 .as_array()
-                .map_or(&[][..], Vec::as_slice)
+                .or_no_list()
                 .iter()
                 .map(|item| {
                     raw_element(
@@ -652,7 +667,7 @@ fn body(node: &Value, errors: &NodeErrors) -> String {
             Some(caption) => element(
                 "label",
                 &json!({"for":checkbox["id"]}),
-                &escape(caption.as_str().unwrap_or("")),
+                &escape(caption.as_str().or_no_text()),
             ),
             None => String::new(),
         };
@@ -698,10 +713,7 @@ fn node(node: &Value, errors: &NodeErrors) -> String {
     };
     // A sticky row carries its depth on the root; the stylesheet derives its sticky line from it.
     let depth = if node["sticky"] == true {
-        format!(
-            "--crudui-sticky-depth: {}",
-            node["stickyDepth"].as_u64().unwrap_or(0)
-        )
+        format!("--crudui-sticky-depth: {}", node["stickyDepth"])
     } else {
         String::new()
     };
@@ -812,11 +824,12 @@ pub(crate) fn render_form_html(
             &crate::buttons::form_buttons_html(&template.buttons, data, language, messages),
         ),
     );
-    let block = format!(
-        "{}{footer}</div>",
-        body.strip_suffix("</div>")
-            .expect("form markup ends with its closing tag")
-    );
+    // render_fields writes an element, which ends with its closing tag.
+    let body = match body.strip_suffix("</div>") {
+        Some(open) => open,
+        None => body.as_str(),
+    };
+    let block = format!("{body}{footer}</div>");
     let Some(attrs) = &model.form else {
         return Ok(block);
     };

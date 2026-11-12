@@ -21,6 +21,11 @@
 //! failure exits 2 with `{ "error", "code", "at" }`. An omitted `data` member
 //! validates `{}`; a supplied value is validated as is.
 
+#![allow(
+    clippy::disallowed_methods,
+    reason = "R-1 holds the library paths of the crudui cores; this program reads its requests with their documented defaults"
+)]
+
 use std::io::{self, Read, Write};
 
 use serde_json::{Map, Value};

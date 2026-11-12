@@ -159,7 +159,8 @@ mod order_tests {
 
     /// The composed value of `entry` over the base documents `files`.
     fn composed(files: Value, entry: Value) -> Value {
-        let out = compose_properties(props(entry), &loader(files), &ComposeOptions::default()).unwrap();
+        let out =
+            compose_properties(props(entry), &loader(files), &ComposeOptions::default()).unwrap();
         Value::Object(out)
     }
 
@@ -168,20 +169,26 @@ mod order_tests {
         // Three sibling fields, each with a nested `properties` that composes. The
         // re-insert after composing each child must keep a,b,c in order — a
         // remove()+insert (swap_remove) would scramble them to e.g. c,b,a / a,c,b.
-        let out = composed(json!({}), json!({
-            "a": {"type": "group", "properties": {"x": {"type": "text"}}},
-            "b": {"type": "group", "properties": {"y": {"type": "text"}}},
-            "c": {"type": "group", "properties": {"z": {"type": "text"}}}
-        }));
+        let out = composed(
+            json!({}),
+            json!({
+                "a": {"type": "group", "properties": {"x": {"type": "text"}}},
+                "b": {"type": "group", "properties": {"y": {"type": "text"}}},
+                "c": {"type": "group", "properties": {"z": {"type": "text"}}}
+            }),
+        );
         assert_eq!(keys(&out), vec!["a", "b", "c"]);
     }
 
     #[test]
     fn ref_base_then_sibling_after_keeps_base_order_and_appends_new() {
         // base = {a,b}; entry declares $ref then sibling c → a,b (base order) then c.
-        let out = composed(json!({
-            "base.yml": {"properties": {"a": {"t": 1}, "b": {"t": 2}}}
-        }), json!({"$ref": "base.yml", "c": {"t": 3}}));
+        let out = composed(
+            json!({
+                "base.yml": {"properties": {"a": {"t": 1}, "b": {"t": 2}}}
+            }),
+            json!({"$ref": "base.yml", "c": {"t": 3}}),
+        );
         assert_eq!(keys(&out), vec!["a", "b", "c"]);
     }
 
@@ -189,9 +196,12 @@ mod order_tests {
     fn sibling_after_ref_overrides_base_in_its_base_slot() {
         // a declared AFTER $ref overrides the base value but the key keeps the
         // base's slot (insert on an existing key preserves position): a,b order.
-        let out = composed(json!({
-            "base.yml": {"properties": {"a": {"from": "base"}, "b": {"t": 2}}}
-        }), json!({"$ref": "base.yml", "a": {"from": "override"}}));
+        let out = composed(
+            json!({
+                "base.yml": {"properties": {"a": {"from": "base"}, "b": {"t": 2}}}
+            }),
+            json!({"$ref": "base.yml", "a": {"from": "override"}}),
+        );
         assert_eq!(keys(&out), vec!["a", "b"]);
         assert_eq!(out["a"]["from"], json!("override"));
     }
@@ -216,13 +226,21 @@ mod order_tests {
 
     /// An object with members inserted in exactly the given order.
     fn written(members: &[(&str, Value)]) -> Value {
-        Value::Object(members.iter().map(|(name, value)| ((*name).to_string(), value.clone())).collect())
+        Value::Object(
+            members
+                .iter()
+                .map(|(name, value)| ((*name).to_string(), value.clone()))
+                .collect(),
+        )
     }
 
     #[test]
     fn patched_array_index_member_joins_in_member_order() {
         let base = written(&[("b", json!({"t": "b"})), ("a", json!({"t": "a"}))]);
-        let out = composed(json!({"base.yml": {"properties": base}}), json!({"$ref": "base.yml", "$patch": {"10": {"t": "ten"}}}));
+        let out = composed(
+            json!({"base.yml": {"properties": base}}),
+            json!({"$ref": "base.yml", "$patch": {"10": {"t": "ten"}}}),
+        );
         assert_eq!(keys(&out), vec!["10", "b", "a"]);
     }
 
@@ -291,10 +309,13 @@ mod order_tests {
     fn nested_ref_flatten_keeps_inner_then_own_order() {
         // base.yml: $ref inner.yml (deep) then own → inner base laid first, own
         // appended: deep, own (declaration order across the $ref boundary).
-        let out = composed(json!({
-            "base.yml": {"properties": {"$ref": "inner.yml", "own": {"from": "base"}}},
-            "inner.yml": {"properties": {"deep": {"from": "inner"}}}
-        }), json!({"$ref": "base.yml"}));
+        let out = composed(
+            json!({
+                "base.yml": {"properties": {"$ref": "inner.yml", "own": {"from": "base"}}},
+                "inner.yml": {"properties": {"deep": {"from": "inner"}}}
+            }),
+            json!({"$ref": "base.yml"}),
+        );
         assert_eq!(keys(&out), vec!["deep", "own"]);
     }
 }

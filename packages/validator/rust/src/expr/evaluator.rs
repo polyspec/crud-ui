@@ -21,9 +21,9 @@
 
 use serde_json::{Number, Value};
 
+use super::ast::{LiteralValue, Node, PathSegment};
 use crate::json_type::js_type_of;
 use crate::validate::canonical::{json_number, number_text};
-use super::ast::{LiteralValue, Node, PathSegment};
 
 /// A resolved value is either a single value or a wildcard-produced list of
 /// candidate values (JS `resolveValue` returns an array for unresolved
@@ -249,7 +249,11 @@ impl<'a> Evaluator<'a> {
         };
 
         let mut base_path: Vec<String> = if relative {
-            relative_base(self.current_path, self.row_keys, levels_up.max(0) as usize)
+            // A path has at least one dot, so its level count is never negative.
+            let Ok(levels) = usize::try_from(levels_up) else {
+                return Vec::new();
+            };
+            relative_base(self.current_path, self.row_keys, levels)
         } else {
             Vec::new()
         };
@@ -257,7 +261,7 @@ impl<'a> Evaluator<'a> {
         for seg in segments {
             match seg {
                 PathSegment::Identifier(v) => base_path.push(v.clone()),
-                PathSegment::Index(i) => base_path.push(i.to_string()),
+                PathSegment::Index(i) => base_path.push(number_text(json_number(i))),
                 PathSegment::Wildcard => base_path.push("*".to_string()),
             }
         }
@@ -295,11 +299,9 @@ impl<'a> Evaluator<'a> {
     /// resolveWildcardPath, ANY strategy across the array; object source skips
     /// the wildcard index per multiple:'only').
     fn resolve_wildcard_path(&self, path: &[String]) -> Vec<(Vec<String>, Value)> {
-        let wildcard_index = index_of_wildcard(path);
-        if wildcard_index.is_none() {
+        let Some(wildcard_index) = index_of_wildcard(path) else {
             return vec![(path.to_vec(), self.get_value_by_path(path))];
-        }
-        let wildcard_index = wildcard_index.unwrap();
+        };
 
         let array_path = &path[..wildcard_index];
         let remaining_path = &path[wildcard_index + 1..];
@@ -488,7 +490,10 @@ fn json_equals(a: &Value, b: &Value) -> bool {
 /// JS `Number(value)` for equality: numbers pass; a string is numeric only when
 /// the WHOLE string parses (JS `Number('12abc')` is NaN; `Number('')` is 0);
 /// booleans → 1/0. Returns `None` for a non-numeric string.
-#[allow(clippy::disallowed_methods, reason = "a string that does not parse is NaN")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "a string that does not parse is NaN"
+)]
 fn js_number(value: &Value) -> Option<f64> {
     match value {
         Value::Number(n) => n.as_f64(),
@@ -508,7 +513,11 @@ fn js_number(value: &Value) -> Option<f64> {
 /// through; a string is parseFloat-ed (NaN→0); booleans → 1/0; else 0.
 fn coerce_number(value: &Value) -> f64 {
     match value {
-        Value::Number(n) => n.as_f64().unwrap_or(0.0),
+        Value::Number(n) => json_number(n),
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "CUXP-025: a string without a leading number compares as zero"
+        )]
         Value::String(s) => parse_float_prefix(s).unwrap_or(0.0),
         Value::Bool(true) => 1.0,
         Value::Bool(false) => 0.0,
@@ -575,11 +584,11 @@ fn parse_float_prefix(value: &str) -> Option<f64> {
 
     // A sign, digits with an optional fraction and a well-formed exponent: Rust parses
     // every such prefix, and the check above guarantees at least one digit.
-    Some(
-        value[start..i]
-            .parse::<f64>()
-            .expect("a numeric prefix with a digit parses as f64"),
-    )
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "R-1: a sign, digits and a well-formed exponent always parse, so no error is dropped"
+    )]
+    value[start..i].parse::<f64>().ok()
 }
 
 /// JS `String(value)`: null→"", strings pass, booleans→"true"/"false", and a

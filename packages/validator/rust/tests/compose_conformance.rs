@@ -7,13 +7,25 @@
 //!   { name, input: { files?, entry, basepath?, kind? }, expected }    — success
 //!   { name, input: { files?, entry, basepath?, kind? }, expectError } — load error
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 const FEATURE: &str = "compileForm";
 const FIXTURE: &str = "tests/fixtures/compose/cases.json";
 
 use libtest_mimic::{Arguments, Failed, Trial};
-use polyspec_crudui_validator::compose::{compose_properties, compose_spec, ComposeOptions, MemoryLoader};
+use polyspec_crudui_validator::compose::{
+    compose_properties, compose_spec, ComposeOptions, MemoryLoader,
+};
 use serde_json::{Map, Value};
 use std::path::{Path, PathBuf};
 

@@ -34,7 +34,10 @@ pub(crate) fn parse(source: &str) -> Option<f64> {
 }
 
 /// A decimal number text; a text that is no number is `None`, as the JS reference reads it (NaN).
-#[allow(clippy::disallowed_methods, reason = "the JS reference reads a non-number as NaN")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "the JS reference reads a non-number as NaN"
+)]
 fn decimal(source: &str) -> Option<f64> {
     source.parse::<f64>().ok()
 }

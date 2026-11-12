@@ -2,6 +2,11 @@
 //! on standard input, calls the public API of polyspec-crudui-generator and writes one JSON value on
 //! standard output; ../../README.md defines the protocol.
 
+#![allow(
+    clippy::disallowed_methods,
+    reason = "R-1 holds the library paths of the crudui cores; this program reads its requests with their documented defaults"
+)]
+
 use std::io::{self, Read};
 
 use polyspec_crudui_generator::text::{
@@ -187,9 +192,7 @@ fn generate(request: &Value, text: Option<&JsonText>) -> FormResult<Value> {
             let data = object(request.get("data").unwrap_or(&empty), "Form data")?;
             Ok(bind_buttons(&template, data, &decode::<BindOptions>(options)?)?.into())
         }
-        Some("formButtonsHtml") => {
-            Ok(form_buttons_html(&request["buttons"])?.into())
-        }
+        Some("formButtonsHtml") => Ok(form_buttons_html(&request["buttons"])?.into()),
         Some("buildList") | Some("renderList") => {
             if text.is_some() {
                 check_display(

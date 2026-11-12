@@ -16,7 +16,7 @@ use std::collections::HashSet;
 use crate::expr::evaluator::{numbers_equal, relative_base};
 use crate::expr::Expression;
 
-use super::canonical::{canonical_text, number_text};
+use super::canonical::{canonical_text, json_number, number_text};
 use super::length::value_length;
 use super::membership::is_member;
 use super::numeric::{is_multiple, numeric_value};
@@ -104,6 +104,15 @@ fn message_override<'a>(messages: Option<&'a Value>, key: &str) -> Option<&'a st
         .and_then(Value::as_str)
 }
 
+/// The message of a failed rule: the field's `messages` member under the rule name (CUSC-003),
+/// or the default message of the rule when the field declares none.
+fn rule_message(messages: Option<&Value>, rule: &str, default: &str) -> String {
+    match message_override(messages, rule) {
+        Some(custom) => custom.to_owned(),
+        None => default.to_owned(),
+    }
+}
+
 /// A message with every `{0}` and `{1}` replaced by the parameters.
 fn fill(message: &str, first: &str, second: Option<&str>) -> String {
     let message = message.replace("{0}", first);
@@ -119,7 +128,7 @@ fn js_string(value: &Value) -> String {
         Value::Null => "null".to_string(),
         Value::String(s) => s.clone(),
         Value::Bool(b) => b.to_string(),
-        Value::Number(n) => n.as_f64().map(number_text).unwrap_or_default(),
+        Value::Number(n) => number_text(json_number(n)),
         // Arrays/objects stringify per JS, but rule call sites never reach here
         // with one for the relevant rules; keep a stable fallback.
         Value::Array(_) | Value::Object(_) => value.to_string(),
@@ -136,11 +145,11 @@ fn rule_required(ctx: &RuleContext) -> Option<String> {
         return None;
     }
     if is_empty(ctx.value) {
-        return Some(
-            message_override(ctx.messages, "required")
-                .unwrap_or("This field is required.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "required",
+            "This field is required.",
+        ));
     }
     None
 }
@@ -157,11 +166,11 @@ fn rule_email(ctx: &RuleContext) -> Option<String> {
         return None;
     }
     if !is_valid_email(ctx.value) {
-        return Some(
-            message_override(ctx.messages, "email")
-                .unwrap_or("Please enter a valid email address.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "email",
+            "Please enter a valid email address.",
+        ));
     }
     None
 }
@@ -261,11 +270,11 @@ fn rule_url(ctx: &RuleContext) -> Option<String> {
         return None;
     }
     if !is_valid_url(ctx.value) {
-        return Some(
-            message_override(ctx.messages, "url")
-                .unwrap_or("Please enter a valid URL.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "url",
+            "Please enter a valid URL.",
+        ));
     }
     None
 }
@@ -313,9 +322,11 @@ fn rule_minlength(ctx: &RuleContext) -> Option<String> {
     if value_length(ctx.value).is_some_and(|length| length >= min) {
         return None;
     }
-    let msg = message_override(ctx.messages, "minlength")
-        .map(str::to_string)
-        .unwrap_or_else(|| format!("Please enter at least {min} characters."));
+    let msg = rule_message(
+        ctx.messages,
+        "minlength",
+        &format!("Please enter at least {min} characters."),
+    );
     Some(fill(&msg, &min.to_string(), None))
 }
 
@@ -329,9 +340,11 @@ fn rule_maxlength(ctx: &RuleContext) -> Option<String> {
     if value_length(ctx.value).is_some_and(|length| length <= max) {
         return None;
     }
-    let msg = message_override(ctx.messages, "maxlength")
-        .map(str::to_string)
-        .unwrap_or_else(|| format!("Please enter no more than {max} characters."));
+    let msg = rule_message(
+        ctx.messages,
+        "maxlength",
+        &format!("Please enter no more than {max} characters."),
+    );
     Some(fill(&msg, &max.to_string(), None))
 }
 
@@ -345,9 +358,11 @@ fn rule_rangelength(ctx: &RuleContext) -> Option<String> {
     if value_length(ctx.value).is_some_and(|length| (min..=max).contains(&length)) {
         return None;
     }
-    let msg = message_override(ctx.messages, "rangelength")
-        .map(str::to_string)
-        .unwrap_or_else(|| format!("Please enter a value between {min} and {max} characters."));
+    let msg = rule_message(
+        ctx.messages,
+        "rangelength",
+        &format!("Please enter a value between {min} and {max} characters."),
+    );
     Some(fill(&msg, &min.to_string(), Some(&max.to_string())))
 }
 
@@ -362,11 +377,11 @@ fn rule_number(ctx: &RuleContext) -> Option<String> {
     if numeric_value(ctx.value).is_some() {
         return None;
     }
-    Some(
-        message_override(ctx.messages, "number")
-            .unwrap_or("Please enter a valid number.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "number",
+        "Please enter a valid number.",
+    ))
 }
 
 fn rule_digits(ctx: &RuleContext) -> Option<String> {
@@ -376,11 +391,11 @@ fn rule_digits(ctx: &RuleContext) -> Option<String> {
     if is_digits_only(ctx.value) {
         return None;
     }
-    Some(
-        message_override(ctx.messages, "digits")
-            .unwrap_or("Please enter only digits.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "digits",
+        "Please enter only digits.",
+    ))
 }
 
 /// `conditionTree`: the value is a condition tree; the parameter `judge` permits
@@ -393,11 +408,11 @@ fn rule_condition_tree(ctx: &RuleContext) -> Option<String> {
     if super::condition_tree::is_condition(ctx.value, judge, 1) {
         return None;
     }
-    Some(
-        message_override(ctx.messages, "conditionTree")
-            .unwrap_or("Please enter a valid condition.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "conditionTree",
+        "Please enter a valid condition.",
+    ))
 }
 
 /// A string (trimmed) or a number whose canonical text is ASCII digits only.
@@ -424,9 +439,12 @@ fn rule_min(ctx: &RuleContext) -> Option<String> {
     if is_empty(ctx.value) || numeric_value(ctx.value).is_some_and(|number| number >= min) {
         return None;
     }
-    let msg = message_override(ctx.messages, "min")
-        .unwrap_or("Please enter a value greater than or equal to {0}.");
-    Some(fill(msg, &number_text(min), None))
+    let msg = rule_message(
+        ctx.messages,
+        "min",
+        "Please enter a value greater than or equal to {0}.",
+    );
+    Some(fill(&msg, &number_text(min), None))
 }
 
 fn rule_max(ctx: &RuleContext) -> Option<String> {
@@ -436,9 +454,12 @@ fn rule_max(ctx: &RuleContext) -> Option<String> {
     if is_empty(ctx.value) || numeric_value(ctx.value).is_some_and(|number| number <= max) {
         return None;
     }
-    let msg = message_override(ctx.messages, "max")
-        .unwrap_or("Please enter a value less than or equal to {0}.");
-    Some(fill(msg, &number_text(max), None))
+    let msg = rule_message(
+        ctx.messages,
+        "max",
+        "Please enter a value less than or equal to {0}.",
+    );
+    Some(fill(&msg, &number_text(max), None))
 }
 
 fn rule_range(ctx: &RuleContext) -> Option<String> {
@@ -450,9 +471,12 @@ fn rule_range(ctx: &RuleContext) -> Option<String> {
     {
         return None;
     }
-    let msg = message_override(ctx.messages, "range")
-        .unwrap_or("Please enter a value between {0} and {1}.");
-    Some(fill(msg, &number_text(min), Some(&number_text(max))))
+    let msg = rule_message(
+        ctx.messages,
+        "range",
+        "Please enter a value between {0} and {1}.",
+    );
+    Some(fill(&msg, &number_text(min), Some(&number_text(max))))
 }
 
 fn rule_step(ctx: &RuleContext) -> Option<String> {
@@ -464,9 +488,12 @@ fn rule_step(ctx: &RuleContext) -> Option<String> {
     {
         return None;
     }
-    let msg = message_override(ctx.messages, "step")
-        .unwrap_or("Please enter a value that is a multiple of {0}.");
-    Some(fill(msg, &number_text(step), None))
+    let msg = rule_message(
+        ctx.messages,
+        "step",
+        "Please enter a value that is a multiple of {0}.",
+    );
+    Some(fill(&msg, &number_text(step), None))
 }
 
 // ---------------------------------------------------------------------------
@@ -485,9 +512,8 @@ fn rule_match(ctx: &RuleContext) -> Option<String> {
         return None;
     }
     // The custom message is found under the declared rule name only.
-    let msg =
-        message_override(ctx.messages, ctx.rule_name).unwrap_or("Please enter a valid format.");
-    Some(msg.to_string())
+    let msg = rule_message(ctx.messages, ctx.rule_name, "Please enter a valid format.");
+    Some(msg)
 }
 
 // ---------------------------------------------------------------------------
@@ -501,11 +527,11 @@ fn rule_in(ctx: &RuleContext) -> Option<String> {
     if is_empty(ctx.value) || is_member(ctx.value, members) {
         return None;
     }
-    Some(
-        message_override(ctx.messages, "in")
-            .unwrap_or("Please select a valid option.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "in",
+        "Please select a valid option.",
+    ))
 }
 
 // ---------------------------------------------------------------------------
@@ -528,11 +554,11 @@ fn rule_reference(ctx: &RuleContext) -> Option<String> {
     if is_member(ctx.value, ids) {
         return None;
     }
-    Some(
-        message_override(ctx.messages, "reference")
-            .unwrap_or("Please select an existing value.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "reference",
+        "Please select an existing value.",
+    ))
 }
 
 // ---------------------------------------------------------------------------
@@ -549,17 +575,22 @@ fn referenced_value<'a>(ctx: &RuleContext<'a>) -> Option<&'a Value> {
         Value::String(s) => s.clone(),
         other => js_string(other),
     };
-    Some(resolve_field_reference(&param, ctx.path_segments, ctx.row_keys, ctx.form_data))
+    Some(resolve_field_reference(
+        &param,
+        ctx.path_segments,
+        ctx.row_keys,
+        ctx.form_data,
+    ))
 }
 
 fn rule_equal_to(ctx: &RuleContext) -> Option<String> {
     let target = referenced_value(ctx)?;
     if !strict_eq(ctx.value, target) {
-        return Some(
-            message_override(ctx.messages, "equalTo")
-                .unwrap_or("Please enter the same value again.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "equalTo",
+            "Please enter the same value again.",
+        ));
     }
     None
 }
@@ -578,11 +609,11 @@ fn rule_not_equal(ctx: &RuleContext) -> Option<String> {
         other => other,
     };
     if strict_eq(ctx.value, compare) {
-        return Some(
-            message_override(ctx.messages, "notEqual")
-                .unwrap_or("Please enter a different value.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "notEqual",
+            "Please enter a different value.",
+        ));
     }
     None
 }
@@ -596,11 +627,11 @@ fn rule_contained_in(ctx: &RuleContext) -> Option<String> {
             return None;
         }
     }
-    Some(
-        message_override(ctx.messages, "containedIn")
-            .unwrap_or("Please enter a value that the referenced field contains.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "containedIn",
+        "Please enter a value that the referenced field contains.",
+    ))
 }
 
 /// typeFrom: the value has the type that the value of the referenced field names: bool a boolean, int a finite
@@ -610,7 +641,10 @@ fn rule_type_from(ctx: &RuleContext) -> Option<String> {
     let typed = match (declared, ctx.value) {
         (Value::String(name), Value::Bool(_)) => name == "bool",
         (Value::String(name), Value::Number(number)) => {
-            name == "int" && number.as_f64().is_some_and(|n| n.is_finite() && n.fract() == 0.0)
+            name == "int"
+                && number
+                    .as_f64()
+                    .is_some_and(|n| n.is_finite() && n.fract() == 0.0)
         }
         (Value::String(name), Value::String(_)) => name == "enum",
         _ => false,
@@ -618,21 +652,31 @@ fn rule_type_from(ctx: &RuleContext) -> Option<String> {
     if typed {
         return None;
     }
-    Some(
-        message_override(ctx.messages, "typeFrom")
-            .unwrap_or("Please enter a value of the declared type.")
-            .to_string(),
-    )
+    Some(rule_message(
+        ctx.messages,
+        "typeFrom",
+        "Please enter a value of the declared type.",
+    ))
 }
 
 /// minFrom: a finite number at or above the value of the referenced field; a missing or null bound declares none.
 fn rule_min_from(ctx: &RuleContext) -> Option<String> {
-    bound_from(ctx, "minFrom", "Please enter a value at or above the declared minimum.", |value, bound| value >= bound)
+    bound_from(
+        ctx,
+        "minFrom",
+        "Please enter a value at or above the declared minimum.",
+        |value, bound| value >= bound,
+    )
 }
 
 /// maxFrom: a finite number at or below the value of the referenced field; a missing or null bound declares none.
 fn rule_max_from(ctx: &RuleContext) -> Option<String> {
-    bound_from(ctx, "maxFrom", "Please enter a value at or below the declared maximum.", |value, bound| value <= bound)
+    bound_from(
+        ctx,
+        "maxFrom",
+        "Please enter a value at or below the declared maximum.",
+        |value, bound| value <= bound,
+    )
 }
 
 /// The finite number of a JSON value; a boolean is none.
@@ -643,7 +687,12 @@ fn finite_bound(value: &Value) -> Option<f64> {
     }
 }
 
-fn bound_from(ctx: &RuleContext, rule: &str, fallback: &str, within: fn(f64, f64) -> bool) -> Option<String> {
+fn bound_from(
+    ctx: &RuleContext,
+    rule: &str,
+    fallback: &str,
+    within: fn(f64, f64) -> bool,
+) -> Option<String> {
     let bound = referenced_value(ctx)?;
     let number = finite_bound(ctx.value);
     let holds = match (number, bound) {
@@ -654,7 +703,7 @@ fn bound_from(ctx: &RuleContext, rule: &str, fallback: &str, within: fn(f64, f64
     if holds {
         return None;
     }
-    Some(message_override(ctx.messages, rule).unwrap_or(fallback).to_string())
+    Some(rule_message(ctx.messages, rule, fallback))
 }
 
 /// JS `===` for the equalTo/notEqual comparison. Different JSON types never equal;
@@ -682,11 +731,11 @@ fn rule_date(ctx: &RuleContext) -> Option<String> {
         return None;
     }
     if !is_valid_date(ctx.value) {
-        return Some(
-            message_override(ctx.messages, "date")
-                .unwrap_or("Please enter a valid date.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "date",
+            "Please enter a valid date.",
+        ));
     }
     None
 }
@@ -717,14 +766,25 @@ fn is_calendar_date(s: &str) -> bool {
     let parts: Vec<&str> = s.split('/').collect();
     let digits = |part: &str| part.bytes().all(|b| b.is_ascii_digit());
     match parts.as_slice() {
-        [y, m, d] if y.len() == 4 && m.len() == 2 && d.len() == 2 && [y, m, d].iter().all(|p| digits(p)) => {
+        [y, m, d]
+            if y.len() == 4
+                && m.len() == 2
+                && d.len() == 2
+                && [y, m, d].iter().all(|p| digits(p)) =>
+        {
             let (year, month, day) = (parse_part(y), parse_part(m), parse_part(d));
             valid_ymd(year, month, day)
         }
-        [a, b, y] if a.len() == 2 && b.len() == 2 && y.len() == 4 && [a, b, y].iter().all(|p| digits(p)) => {
+        [a, b, y]
+            if a.len() == 2
+                && b.len() == 2
+                && y.len() == 4
+                && [a, b, y].iter().all(|p| digits(p)) =>
+        {
             let year = parse_part(y);
             // MM/DD/YYYY and DD/MM/YYYY are both accepted layouts.
-            valid_ymd(year, parse_part(a), parse_part(b)) || valid_ymd(year, parse_part(b), parse_part(a))
+            valid_ymd(year, parse_part(a), parse_part(b))
+                || valid_ymd(year, parse_part(b), parse_part(a))
         }
         _ => false,
     }
@@ -735,9 +795,11 @@ fn is_iso_calendar(s: &str) -> bool {
     is_valid_date_iso(&Value::String(s.to_string()))
 }
 
-/// The digits of a part that `is_calendar_date` has checked to be ASCII digits.
+/// The value of a part of at most four ASCII digits, which the caller has checked.
 fn parse_part(part: &str) -> i64 {
-    part.parse().expect("the caller checked the part is ASCII digits")
+    part.bytes().fold(0, |value, digit| {
+        value * 10 + i64::from(digit.wrapping_sub(b'0'))
+    })
 }
 
 fn valid_ymd(year: i64, month: i64, day: i64) -> bool {
@@ -751,19 +813,34 @@ fn is_rfc3339_time(time: &str) -> bool {
         return false;
     }
     let clock = &bytes[..8];
-    let shape = clock[2] == b':' && clock[5] == b':' && [0, 1, 3, 4, 6, 7].iter().all(|&i| clock[i].is_ascii_digit());
+    let shape = clock[2] == b':'
+        && clock[5] == b':'
+        && [0, 1, 3, 4, 6, 7]
+            .iter()
+            .all(|&i| clock[i].is_ascii_digit());
     if !shape {
         return false;
     }
-    let (hour, minute, second) = (parse_bytes(&clock[0..2]), parse_bytes(&clock[3..5]), parse_bytes(&clock[6..8]));
+    let (hour, minute, second) = (
+        parse_bytes(&clock[0..2]),
+        parse_bytes(&clock[3..5]),
+        parse_bytes(&clock[6..8]),
+    );
     if hour > 23 || minute > 59 || second > 59 {
         return false;
     }
     match &bytes[8..] {
         b"Z" => true,
-        [sign, rest @ ..] if (*sign == b'+' || *sign == b'-') && rest.len() == 5 && rest[2] == b':' => {
+        [sign, rest @ ..]
+            if (*sign == b'+' || *sign == b'-') && rest.len() == 5 && rest[2] == b':' =>
+        {
             let digit = |i: usize| rest[i].is_ascii_digit();
-            digit(0) && digit(1) && digit(3) && digit(4) && parse_bytes(&rest[0..2]) <= 23 && parse_bytes(&rest[3..5]) <= 59
+            digit(0)
+                && digit(1)
+                && digit(3)
+                && digit(4)
+                && parse_bytes(&rest[0..2]) <= 23
+                && parse_bytes(&rest[3..5]) <= 59
         }
         _ => false,
     }
@@ -771,7 +848,9 @@ fn is_rfc3339_time(time: &str) -> bool {
 
 /// The value of ASCII digits; the callers check the digits first.
 fn parse_bytes(digits: &[u8]) -> i64 {
-    digits.iter().fold(0, |value, &b| value * 10 + i64::from(b - b'0'))
+    digits
+        .iter()
+        .fold(0, |value, &b| value * 10 + i64::from(b - b'0'))
 }
 
 /// Parse a date string to (year, month, day) ordinal for comparison, returning
@@ -816,11 +895,11 @@ fn rule_date_iso(ctx: &RuleContext) -> Option<String> {
         return None;
     }
     if !is_valid_date_iso(ctx.value) {
-        return Some(
-            message_override(ctx.messages, "dateISO")
-                .unwrap_or("Please enter a valid date in ISO format (YYYY-MM-DD).")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "dateISO",
+            "Please enter a valid date in ISO format (YYYY-MM-DD).",
+        ));
     }
     None
 }
@@ -846,9 +925,9 @@ fn is_valid_date_iso(value: &Value) -> bool {
         return false;
     }
     // The shape check above admits only ASCII digits in these ranges.
-    let year: i64 = s[0..4].parse().expect("four ASCII digits parse as i64");
-    let month: i64 = s[5..7].parse().expect("two ASCII digits parse as i64");
-    let day: i64 = s[8..10].parse().expect("two ASCII digits parse as i64");
+    let year = parse_part(&s[0..4]);
+    let month = parse_part(&s[5..7]);
+    let day = parse_part(&s[8..10]);
     if !(1..=12).contains(&month) {
         return false;
     }
@@ -906,11 +985,11 @@ fn rule_enddate(ctx: &RuleContext) -> Option<String> {
         _ => return None,
     };
     if end < start {
-        return Some(
-            message_override(ctx.messages, "enddate")
-                .unwrap_or("End date must be after the start date.")
-                .to_string(),
-        );
+        return Some(rule_message(
+            ctx.messages,
+            "enddate",
+            "End date must be after the start date.",
+        ));
     }
     None
 }
@@ -926,14 +1005,14 @@ fn file_accepted(file: &Map<String, Value>, accept_list: &[String]) -> bool {
         .get("type")
         .or_else(|| file.get("mimeType"))
         .and_then(Value::as_str)
-        .unwrap_or("");
+        .filter(|mime| !mime.is_empty());
     let name = file
         .get("name")
         .or_else(|| file.get("filename"))
         .and_then(Value::as_str)
-        .unwrap_or("");
-    (!mime.is_empty() && matches_mime_type(mime, accept_list))
-        || (!name.is_empty() && matches_extension(name, accept_list))
+        .filter(|name| !name.is_empty());
+    mime.is_some_and(|mime| matches_mime_type(mime, accept_list))
+        || name.is_some_and(|name| matches_extension(name, accept_list))
 }
 
 fn rule_accept(ctx: &RuleContext) -> Option<String> {
@@ -949,11 +1028,11 @@ fn rule_accept(ctx: &RuleContext) -> Option<String> {
     }
 
     let fail = || {
-        Some(
-            message_override(ctx.messages, "accept")
-                .unwrap_or("Please upload a file with a valid format.")
-                .to_string(),
-        )
+        Some(rule_message(
+            ctx.messages,
+            "accept",
+            "Please upload a file with a valid format.",
+        ))
     };
 
     match ctx.value {
@@ -1114,9 +1193,12 @@ fn rule_mincount(ctx: &RuleContext) -> Option<String> {
     if count(ctx.value) >= min {
         return None;
     }
-    let msg =
-        message_override(ctx.messages, "mincount").unwrap_or("Please select at least {0} items.");
-    Some(fill(msg, &min.to_string(), None))
+    let msg = rule_message(
+        ctx.messages,
+        "mincount",
+        "Please select at least {0} items.",
+    );
+    Some(fill(&msg, &min.to_string(), None))
 }
 
 fn rule_maxcount(ctx: &RuleContext) -> Option<String> {
@@ -1126,9 +1208,12 @@ fn rule_maxcount(ctx: &RuleContext) -> Option<String> {
     if count(ctx.value) <= max {
         return None;
     }
-    let msg = message_override(ctx.messages, "maxcount")
-        .unwrap_or("Please select no more than {0} items.");
-    Some(fill(msg, &max.to_string(), None))
+    let msg = rule_message(
+        ctx.messages,
+        "maxcount",
+        "Please select no more than {0} items.",
+    );
+    Some(fill(&msg, &max.to_string(), None))
 }
 
 /// The count of a value: array elements or object keys; a missing value, `null`
@@ -1156,9 +1241,7 @@ fn rule_unique(ctx: &RuleContext) -> Option<String> {
         Value::String(s) if is_condition_expression(s) => Some(s.as_str()),
         _ => None,
     };
-    let error_message = message_override(ctx.messages, "unique")
-        .unwrap_or("Values must be unique.")
-        .to_string();
+    let error_message = rule_message(ctx.messages, "unique", "Values must be unique.");
 
     // Array-level: the field value is the array itself.
     if ctx.value.is_array() || ctx.value.is_object() {
@@ -1234,11 +1317,16 @@ fn rule_unique(ctx: &RuleContext) -> Option<String> {
 
     // The rows of this collection field are walked once per validation: the filter is evaluated
     // once per row and each row whose value an earlier row holds is recorded.
+    // A filter is written after a marker that tells it from no filter.
+    let filter_key = match filter_condition {
+        Some(filter) => format!("1{filter}"),
+        None => "0".to_owned(),
+    };
     let cache_key = format!(
         "{}\u{0}{}\u{0}{}",
         container_path.join("\u{0}"),
         field_name,
-        filter_condition.unwrap_or("")
+        filter_key
     );
     let mut memo = ctx.run.unique_duplicates.borrow_mut();
     let duplicate_set = memo.entry(cache_key).or_insert_with(|| {
@@ -1316,7 +1404,7 @@ fn comparison_key(value: &Value) -> String {
     match value {
         Value::Null => "null".to_string(),
         Value::Bool(b) => b.to_string(),
-        Value::Number(n) => number_text(n.as_f64().unwrap_or(0.0)),
+        Value::Number(n) => number_text(json_number(n)),
         Value::String(s) => Value::String(s.clone()).to_string(),
         Value::Array(items) => {
             let items: Vec<String> = items.iter().map(comparison_key).collect();
@@ -1353,7 +1441,10 @@ fn are_all_unique(values: &[&Value]) -> bool {
 
 /// A condition that does not parse is false: the JS reference `evaluateCondition`
 /// catches the parse error and returns false (packages/validator/ts/src/validate/validator.ts).
-#[allow(clippy::disallowed_methods, reason = "a condition that does not parse is false")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "a condition that does not parse is false"
+)]
 fn item_passes_condition(
     condition: &str,
     item_field_path: &[String],
@@ -1500,13 +1591,33 @@ mod tests {
 
     #[test]
     fn date_rule_accepts_only_the_explicit_layouts() {
-        for text in ["2026-02-28", "2026/02/28", "28/02/2026", "02/28/2026", "2026-02-28T10:30:00Z", "2026-02-28T10:30:00+01:00"] {
+        for text in [
+            "2026-02-28",
+            "2026/02/28",
+            "28/02/2026",
+            "02/28/2026",
+            "2026-02-28T10:30:00Z",
+            "2026-02-28T10:30:00+01:00",
+        ] {
             assert!(is_valid_date(&serde_json::json!(text)), "{text} is a date");
         }
-        for text in ["not a date", "2026-02-30", "02/30/2026", "2026-02-28T25:00:00Z", "2026-02-28T10:30:00", "2026-02-28 10:30"] {
-            assert!(!is_valid_date(&serde_json::json!(text)), "{text} is no date");
+        for text in [
+            "not a date",
+            "2026-02-30",
+            "02/30/2026",
+            "2026-02-28T25:00:00Z",
+            "2026-02-28T10:30:00",
+            "2026-02-28 10:30",
+        ] {
+            assert!(
+                !is_valid_date(&serde_json::json!(text)),
+                "{text} is no date"
+            );
         }
-        assert!(!is_valid_date(&serde_json::json!(1_700_000_000_000_i64)), "a number is no date");
+        assert!(
+            !is_valid_date(&serde_json::json!(1_700_000_000_000_i64)),
+            "a number is no date"
+        );
     }
 
     #[test]

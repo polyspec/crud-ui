@@ -20,7 +20,11 @@ pub fn show(value: Option<&Value>, data: &Value, path: &[String], row_keys: &[us
         Some(Value::Object(map)) => {
             let entries: Vec<(String, Value)> =
                 map.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
-            condition_map::resolve(&entries, data, path, row_keys).unwrap_or(Value::Null)
+            // A condition map that selects no value leaves the field shown: only `false` hides it.
+            match condition_map::resolve(&entries, data, path, row_keys) {
+                Some(selected) => selected,
+                None => return true,
+            }
         }
         Some(Value::String(expression)) => match Expression::parse(expression) {
             Ok(node @ Node::Ternary { .. }) => {

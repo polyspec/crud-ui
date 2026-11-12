@@ -2,6 +2,16 @@
 //! to the recorded layout, or raises the recorded code and message. Results are compared as normalized layout trees
 //! (tests/support) without the image preload links, as the Python runner does. One trial per case.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod support;
 
 use libtest_mimic::{Arguments, Trial};

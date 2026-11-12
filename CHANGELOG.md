@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- R-1: the Rust crates deny `unwrap_used`, `expect_used`, `let_underscore_must_use`, `let_underscore_untyped`, the casts that truncate, wrap or lose a sign, and through `clippy.toml` the `unwrap_or` and `map_or` families of `Option` and `Result` and `Result::ok`; every remaining use names its rule in its `allow` reason. The path segment `1e3` of an expression names `1000` as ECMAScript writes it instead of a truncated integer, `moveRow` refuses a position beyond the platform index, and the validator reads dates, hex escapes and numbers without a panic path. The relational conversion of expressions has the id CUXP-025 (R-1).
 - 9c: the Rust and PHP generators write an integer beyond 2^53 as its nearest double in every text (CURP-028, CUMK-066); the Rust expression lexer reads characters instead of bytes (CUXP-024); Rust `validate` refuses a specification that is no object with `Form specification must be an object` (CUVR-088); Rust `Form::get_value` returns `None` when the data holds no value at the path (CURT-093) and `Form::snapshot` returns the fields, the buttons, the revision and the history state (CURP-029), with `Form::buttons` and `Form::description`; `JsonText` has no shared or linked values, and the Rust core tests build the value graphs that are trees (CUIT-042) (9c).
 
 ## 0.0.20

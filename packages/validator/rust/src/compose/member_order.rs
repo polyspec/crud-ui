@@ -23,9 +23,9 @@ fn array_index(name: &str) -> Option<u64> {
         return None;
     }
     // The checks above leave at most ten ASCII digits, which always fit a u64.
-    let index = name
-        .parse::<u64>()
-        .expect("ten ASCII digits always fit a u64");
+    let index = bytes
+        .iter()
+        .fold(0u64, |index, digit| index * 10 + u64::from(digit - b'0'));
     (index <= MAX_ARRAY_INDEX).then_some(index)
 }
 

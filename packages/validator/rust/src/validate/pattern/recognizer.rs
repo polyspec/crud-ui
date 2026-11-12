@@ -186,8 +186,12 @@ impl Recognizer {
         if min > BOUND_LIMIT || max.is_some_and(|max| max > BOUND_LIMIT || max < min) {
             return Err(invalid);
         }
-        // Both bounds are at most 1000 here.
-        Ok((min as u32, max.map(|max| max as u32)))
+        #[allow(
+            clippy::cast_possible_truncation,
+            reason = "R-1: both bounds are at most 1000 here"
+        )]
+        let bounds = (min as u32, max.map(|max| max as u32));
+        Ok(bounds)
     }
 
     /// One or more decimal digits.

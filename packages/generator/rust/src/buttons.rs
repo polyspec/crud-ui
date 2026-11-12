@@ -5,6 +5,7 @@ use crate::design::resolve_design;
 use crate::messages::Messages;
 use crate::render::{raw_attribute, raw_text};
 use crate::util::translate;
+use crate::util::OrNoText;
 use crate::{FormError, FormResult};
 use serde_json::{Map, Value};
 
@@ -38,11 +39,14 @@ fn button_label(button: &Map<String, Value>, language: &str, fallback: &str) -> 
 
 /// A non-empty behavior script: a string or the script of a `{ label, script }` action.
 fn button_script(button: &Map<String, Value>, action: &str) -> String {
-    let value = button.get("behavior").map_or(&Value::Null, |b| &b[action]);
+    let Some(behavior) = button.get("behavior") else {
+        return String::new();
+    };
+    let value = &behavior[action];
     value
         .as_str()
         .or_else(|| value["script"].as_str())
-        .unwrap_or("")
+        .or_no_text()
         .into()
 }
 
@@ -57,14 +61,14 @@ pub(crate) fn button_models(
     buttons
         .iter()
         .map(|button| {
-            let kind = button.get("type").and_then(Value::as_str).unwrap_or("");
+            let kind = button.get("type").and_then(Value::as_str).or_no_text();
             let design = resolve_design(button.get("design"), data, "", &[]);
             let tag = if kind == "link" { "a" } else { "button" };
             let mut attrs = Map::new();
             if kind != "link" {
                 attrs.insert("type".into(), kind.into());
             }
-            let class = design["main"]["class"].as_str().unwrap_or("");
+            let class = design["main"]["class"].as_str().or_no_text();
             attrs.insert(
                 "class".into(),
                 if class.is_empty() {
@@ -73,7 +77,7 @@ pub(crate) fn button_models(
                     format!("crudui-action crudui-action--text {class}").into()
                 },
             );
-            let style = style_string(design["main"]["style"].as_str().unwrap_or(""));
+            let style = style_string(design["main"]["style"].as_str().or_no_text());
             if !style.is_empty() {
                 attrs.insert("style".into(), style.into());
             }
@@ -134,6 +138,11 @@ pub(crate) fn form_buttons_html(
     language: &str,
     messages: &Messages,
 ) -> String {
-    buttons_markup(&button_models(buttons, data, language, messages))
-        .expect("evaluated buttons are valid")
+    #[allow(
+        clippy::expect_used,
+        reason = "R-1: button_models writes only the buttons that buttons_markup accepts"
+    )]
+    let markup = buttons_markup(&button_models(buttons, data, language, messages))
+        .expect("evaluated buttons are valid");
+    markup
 }

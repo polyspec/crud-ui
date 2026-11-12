@@ -73,10 +73,16 @@ fn check_fields(
         }
         path.push(key.clone());
         // The shape of multiple is checked before the field's group source and rules (schema.md, Acceptance criteria).
-        if field.get("multiple").is_some_and(|multiple| !is_multiple_shape(multiple)) {
+        if field
+            .get("multiple")
+            .is_some_and(|multiple| !is_multiple_shape(multiple))
+        {
             return Err(ValidateError::Load(ComposeLoadError::with_trace(
                 ComposeErrorCode::InvalidRuleParameter,
-                format!("Invalid multiple at {}: expected a boolean, only or an object", path.join(".")),
+                format!(
+                    "Invalid multiple at {}: expected a boolean, only or an object",
+                    path.join(".")
+                ),
                 path.clone(),
             )));
         }
@@ -103,7 +109,10 @@ fn check_fields(
                 }
                 if rule == "reference" {
                     check(rule, value, path, patterns)?;
-                    if !value.as_str().is_some_and(|target| is_reference_target(root, target)) {
+                    if !value
+                        .as_str()
+                        .is_some_and(|target| is_reference_target(root, target))
+                    {
                         return Err(ValidateError::Load(ComposeLoadError::with_trace(
                             ComposeErrorCode::InvalidRuleParameter,
                             REFERENCE_PARAMETER_MESSAGE.to_string(),
@@ -207,12 +216,14 @@ pub(crate) fn check(
         "in" => members(parameter)
             .map(Parameter::Members)
             .map_err(|error| invalid(error.message().to_string())),
-        "equalTo" | "containedIn" | "typeFrom" | "minFrom" | "maxFrom" | "enddate" => match parameter {
-            Value::String(_) => Ok(Parameter::Unchecked),
-            _ => Err(invalid(format!(
-                "Invalid {rule} parameter: expected a field reference string"
-            ))),
-        },
+        "equalTo" | "containedIn" | "typeFrom" | "minFrom" | "maxFrom" | "enddate" => {
+            match parameter {
+                Value::String(_) => Ok(Parameter::Unchecked),
+                _ => Err(invalid(format!(
+                    "Invalid {rule} parameter: expected a field reference string"
+                ))),
+            }
+        }
         "notEqual" => match parameter {
             Value::String(_) | Value::Number(_) | Value::Bool(_) => Ok(Parameter::Unchecked),
             _ => Err(invalid(

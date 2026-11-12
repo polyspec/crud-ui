@@ -1,5 +1,6 @@
 //! Read-only detail models and HTML rendering.
 
+use crate::util::{OrNoList, OrNoText};
 use polyspec_crudui_validator::compose::member_ordered;
 use serde_json::{json, Value};
 
@@ -51,13 +52,14 @@ pub fn build_detail(
         "detail",
         "fields",
     )?;
-    let columns = list["columns"].as_array().cloned().unwrap_or_default();
+    let columns = list["columns"].as_array().or_no_list().to_vec();
+    // A detail without a record row has no cells.
     let cells = list["rows"]
         .as_array()
         .and_then(|rows| rows.first())
         .and_then(|row| row["cells"].as_array())
-        .cloned()
-        .unwrap_or_default();
+        .or_no_list()
+        .to_vec();
     let fields = columns
         .iter()
         .zip(cells.iter())
@@ -82,22 +84,19 @@ pub fn render_detail(
     let design = &model["design"];
     let class = join_class(&[
         "crudui-detail",
-        design["wrapper"]["class"].as_str().unwrap_or(""),
+        design["wrapper"]["class"].as_str().or_no_text(),
     ]);
     let body = model["fields"]
         .as_array()
-        .map(|fields| {
-            fields
-                .iter()
+        .or_no_list()
+        .iter()
                 .map(|field| {
                     let cell = json!({"display": field["display"], "design": field["design"], "format": field["format"]});
-                    let label = element("dt", &json!({"class":"crudui-detail__label"}), &escape(field["label"].as_str().unwrap_or("")));
-                    let value = cell_html(&cell, "dd", &format!("crudui-detail__value crudui-value crudui-value--{}", field["format"]["type"].as_str().unwrap_or("text")));
+                    let label = element("dt", &json!({"class":"crudui-detail__label"}), &escape(field["label"].as_str().or_no_text()));
+                    let value = cell_html(&cell, "dd", &format!("crudui-detail__value crudui-value crudui-value--{}", format_type(&field["format"])));
                     element("div", &json!({"class":"crudui-detail__field"}), &format!("{label}{value}"))
                 })
-                .collect::<String>()
-        })
-        .unwrap_or_default();
+                .collect::<String>();
     let mut attrs = json!({"class": class});
     if let Some(style) = design["wrapper"]["style"]
         .as_str()
@@ -132,6 +131,14 @@ pub fn render_detail(
         "{preloads}{actions}{}",
         element("dl", &attrs, &body)
     ))
+}
+
+/// The type of a display format; CUDF-005: a format without a type is `text`.
+fn format_type(format: &Value) -> &str {
+    match format["type"].as_str() {
+        Some(kind) => kind,
+        None => "text",
+    }
 }
 
 #[cfg(test)]

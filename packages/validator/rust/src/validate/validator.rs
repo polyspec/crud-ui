@@ -21,8 +21,8 @@ use crate::compose::{ComposeErrorCode, ComposeLoadError};
 use crate::expr::{Evaluator, Expression, Node};
 
 use super::choice_data::{check_single_choice_data, is_single_choice};
-use super::group_source::{group_choices, group_source_repeat, is_group_source, GroupChoicesError};
 use super::errors::{FormInputError, ValidateError};
+use super::group_source::{group_choices, group_source_repeat, is_group_source, GroupChoicesError};
 use super::keyed_maps::check_keyed_map_keys;
 use super::membership::Comparable;
 use super::parameters::{check, check_declared, Patterns};
@@ -77,7 +77,17 @@ pub struct ValidationResult {
 const ARRAY_LEVEL_RULES: &[&str] = &["required", "unique", "mincount", "maxcount"];
 
 /// Rules whose param is a field reference / filter — preserved verbatim.
-const PATH_REFERENCE_RULES: &[&str] = &["equalTo", "containedIn", "typeFrom", "minFrom", "maxFrom", "notEqual", "unique", "enddate", "reference"];
+const PATH_REFERENCE_RULES: &[&str] = &[
+    "equalTo",
+    "containedIn",
+    "typeFrom",
+    "minFrom",
+    "maxFrom",
+    "notEqual",
+    "unique",
+    "enddate",
+    "reference",
+];
 
 /// Rules whose param is a literal value, never a condition or a condition map.
 const LITERAL_PARAM_RULES: &[&str] = &["accept", "conditionTree"];
@@ -165,7 +175,10 @@ impl Validator {
     /// `current_path` is the data path (with row keys); `declaration_path` is the
     /// field's declaration path (without row keys); `hidden` says an enclosing field
     /// is hidden, so only the data shape is checked.
-    #[allow(clippy::too_many_arguments, reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do"
+    )]
     fn validate_properties(
         &self,
         properties: &Map<String, Value>,
@@ -209,6 +222,10 @@ impl Validator {
             // evaluated; the data shape is checked all the same.
             let hidden = hidden || !is_visible(field, all_data, &field_path, row_keys);
             let present = data.get(property_key);
+            #[allow(
+                clippy::disallowed_methods,
+                reason = "R-1: listed in the audit of the crudui core: an absent value is validated as null (CUVR-001)"
+            )]
             let field_value = present.cloned().unwrap_or(Value::Null);
 
             if is_multiple && present.is_some_and(|value| !value.is_object()) {
@@ -277,6 +294,10 @@ impl Validator {
                         ))
                         .into());
                     }
+                    #[allow(
+                        clippy::disallowed_methods,
+                        reason = "CURT-002: missing group data is no failure and holds no value"
+                    )]
                     let nested = present.unwrap_or(&empty);
                     self.validate_properties(
                         child_props,
@@ -339,7 +360,10 @@ impl Validator {
     // =====================================================================
 
     /// Collection rules and per-row rules for a repeated scalar field.
-    #[allow(clippy::too_many_arguments, reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do"
+    )]
     fn validate_multiple_field_rules(
         &self,
         field: &Value,
@@ -404,7 +428,10 @@ impl Validator {
 
     /// All rules for a single (scalar or group-as-whole) field, or, with `element_level`, the
     /// element-level rules of one element of a `multiple` field (no array-level rule).
-    #[allow(clippy::too_many_arguments, reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do"
+    )]
     fn validate_field_rules(
         &self,
         field: &Value,
@@ -423,9 +450,15 @@ impl Validator {
         {
             return Ok(Some(error));
         }
-        if let Some(error) =
-            self.run_group_source(field, value, field_path, row_keys, declaration, messages, run)?
-        {
+        if let Some(error) = self.run_group_source(
+            field,
+            value,
+            field_path,
+            row_keys,
+            declaration,
+            messages,
+            run,
+        )? {
             return Ok(Some(error));
         }
         let rules = match rules {
@@ -461,7 +494,10 @@ impl Validator {
     /// A field whose `items` is a group source runs an implicit `in` check against the choices
     /// that the source gives for the root data, before its declared rules (validation-rules.md,
     /// "Values"). Returns the error of the check when it fails.
-    #[allow(clippy::too_many_arguments, reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do"
+    )]
     fn run_group_source(
         &self,
         field: &Value,
@@ -479,22 +515,37 @@ impl Validator {
         if let Some(repeat) = group_source_repeat(items, run.data) {
             return Err(FormInputError::new(repeat).into());
         }
-        let choices = group_choices(items, run.data, &declaration.join(".")).map_err(|error| match error {
-            GroupChoicesError::Declaration(message) => ValidateError::Load(ComposeLoadError::with_trace(
-                ComposeErrorCode::InvalidRuleParameter,
-                message,
-                declaration.to_vec(),
-            )),
-            GroupChoicesError::Repeated(message) => ValidateError::Input(FormInputError::new(message)),
-        })?;
+        let choices =
+            group_choices(items, run.data, &declaration.join(".")).map_err(
+                |error| match error {
+                    GroupChoicesError::Declaration(message) => {
+                        ValidateError::Load(ComposeLoadError::with_trace(
+                            ComposeErrorCode::InvalidRuleParameter,
+                            message,
+                            declaration.to_vec(),
+                        ))
+                    }
+                    GroupChoicesError::Repeated(message) => {
+                        ValidateError::Input(FormInputError::new(message))
+                    }
+                },
+            )?;
         let members = Value::Array(
             choices
                 .into_iter()
                 .map(|choice| Value::String(choice.value))
                 .collect(),
         );
-        let Some(message) =
-            self.run_rule("in", &members, value, path, row_keys, declaration, messages, run)?
+        let Some(message) = self.run_rule(
+            "in",
+            &members,
+            value,
+            path,
+            row_keys,
+            declaration,
+            messages,
+            run,
+        )?
         else {
             return Ok(None);
         };
@@ -509,7 +560,10 @@ impl Validator {
 
     /// `type:number` runs an implicit `number` rule first when no explicit
     /// `number` rule is declared. Returns the error of the rule when it fails.
-    #[allow(clippy::too_many_arguments, reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do"
+    )]
     fn run_implicit_number(
         &self,
         field: &Value,
@@ -523,7 +577,7 @@ impl Validator {
         if field.get("type").and_then(Value::as_str) != Some("number") {
             return Ok(None);
         }
-        if rules.map(|r| r.contains_key("number")).unwrap_or(false) {
+        if rules.is_some_and(|r| r.contains_key("number")) {
             return Ok(None);
         }
         // The implicit `number` parameter is `true`; it has nothing to check.
@@ -556,7 +610,10 @@ impl Validator {
     /// param, skip on false/null, check the parameter, else call the rule.
     /// Returns the error message, `None` on a pass, or the failure of a selected
     /// parameter located at `declaration`.
-    #[allow(clippy::too_many_arguments, reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do")]
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "the walk of the validator passes its traversal state explicitly, as the engines of the other languages do"
+    )]
     fn run_rule(
         &self,
         rule_name: &str,
@@ -763,6 +820,10 @@ fn collect_hidden(
             continue;
         };
         let empty = Value::Object(Map::new());
+        #[allow(
+            clippy::disallowed_methods,
+            reason = "CURT-002: data that is missing or no object holds no hidden value"
+        )]
         let value = data
             .get(name)
             .filter(|value| value.is_object())
@@ -771,7 +832,9 @@ fn collect_hidden(
             collect_hidden(children, value, &field_path, row_keys, all_data, hidden);
             continue;
         }
-        let rows = value.as_object().expect("an object");
+        let Some(rows) = value.as_object() else {
+            continue;
+        };
         let mut keys: Vec<&String> = rows.keys().collect();
         keys.sort();
         for key in keys {
@@ -779,6 +842,10 @@ fn collect_hidden(
             row_path.push(key.clone());
             let mut row_rows = row_keys.to_vec();
             row_rows.push(field_path.len());
+            #[allow(
+                clippy::disallowed_methods,
+                reason = "CURT-002: a row that is no object holds no hidden value"
+            )]
             let row = Some(&rows[key.as_str()])
                 .filter(|row| row.is_object())
                 .unwrap_or(&empty);
@@ -802,7 +869,10 @@ pub(crate) fn is_group_with_properties(field: &Value) -> Option<&Map<String, Val
 /// A condition that does not parse is not a condition: the JS reference
 /// `evaluateCondition` catches the parse error and returns false
 /// (packages/validator/ts/src/validate/validator.ts).
-#[allow(clippy::disallowed_methods, reason = "a condition that does not parse is false")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "a condition that does not parse is false"
+)]
 fn evaluate_condition(
     expression: &str,
     form_data: &Value,
@@ -815,7 +885,10 @@ fn evaluate_condition(
 /// A value expression that does not parse is false: the JS reference
 /// `evaluateExpressionValue` catches the parse error and returns false
 /// (packages/validator/ts/src/validate/validator.ts).
-#[allow(clippy::disallowed_methods, reason = "a value expression that does not parse is false")]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "a value expression that does not parse is false"
+)]
 fn evaluate_expression_value(
     expression: &str,
     form_data: &Value,
@@ -857,7 +930,11 @@ pub(crate) fn path_to_string(path: &[String]) -> String {
 }
 
 fn field_name(path: &[String]) -> String {
-    path.last().cloned().unwrap_or_default()
+    match path.last() {
+        Some(name) => name.clone(),
+        // A field path names at least its field.
+        None => String::new(),
+    }
 }
 
 // ---------------------------------------------------------------------------

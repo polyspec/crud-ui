@@ -2,6 +2,8 @@
 
 use crate::{FormError, FormResult};
 
+// The table is written by its generator from contracts/interface-messages.json; its layout is the generator's.
+#[rustfmt::skip]
 mod interface_messages;
 pub(crate) use interface_messages::{EN, EN_LIST, JA, JA_LIST, KO, KO_LIST, ZH, ZH_LIST};
 
@@ -114,6 +116,10 @@ pub(crate) fn format_page(template: &str, page: u64) -> String {
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::disallowed_methods,
+    reason = "R-1 holds the library paths; a test fails by a panic"
+)]
 mod tests {
     use super::*;
     use serde_json::Value;

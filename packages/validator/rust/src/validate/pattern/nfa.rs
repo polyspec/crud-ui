@@ -151,6 +151,10 @@ impl Compiler {
                     // Every empty alternative matches only empty text.
                     entries.push(self.push(State::Epsilon(next)));
                 }
+                #[allow(
+                    clippy::expect_used,
+                    reason = "R-1: an alternation has an alternative of positive size or the empty one pushed above"
+                )]
                 let last = entries.pop().expect("an alternative of positive size");
                 entries
                     .into_iter()

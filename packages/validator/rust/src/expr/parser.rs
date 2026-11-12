@@ -16,6 +16,8 @@
 //! Priority and right-associativity come from the grammar productions, not a
 //! heuristic. No eval, no split (GRAMMAR §10).
 
+use serde_json::Number;
+
 use super::ast::{LiteralValue, Node, PathSegment};
 use super::error::ParseError;
 use super::token::{Literal, Token, TokenType};
@@ -317,12 +319,25 @@ impl Parser {
             if self.match_type(TokenType::Asterisk) {
                 segments.push(PathSegment::Wildcard);
             } else if self.match_type(TokenType::Number) {
-                let idx = match &self.previous().literal {
-                    Literal::Int(n) => *n,
-                    Literal::Float(f) => *f as i64,
-                    _ => 0,
+                let index = match &self.previous().literal {
+                    Literal::Int(n) => Number::from(*n),
+                    Literal::Float(f) => match Number::from_f64(*f) {
+                        Some(number) => number,
+                        None => {
+                            return Err(ParseError::new(format!(
+                                "Invalid path segment after dot: {}",
+                                self.previous().value
+                            )))
+                        }
+                    },
+                    _ => {
+                        return Err(ParseError::new(format!(
+                            "Invalid path segment after dot: {}",
+                            self.previous().value
+                        )))
+                    }
                 };
-                segments.push(PathSegment::Index(idx));
+                segments.push(PathSegment::Index(index));
             } else if self.match_type(TokenType::Identifier) {
                 segments.push(PathSegment::Identifier(self.previous().value.clone()));
             } else {

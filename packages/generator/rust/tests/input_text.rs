@@ -5,6 +5,16 @@
 //!
 //! CUIT-041: the generator reports a load failure and an input failure both as FormError, as its entry of the table says.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 use libtest_mimic::{Arguments, Failed, Trial};
 use polyspec_crudui_generator::text::{
     check_bind, check_compile_form, check_display, check_form_method,
@@ -249,21 +259,18 @@ fn main() {
                 .and_then(JsonText::to_value)
                 .and_then(|value| value.as_str().map(str::to_owned))
                 .expect("a case has a name");
-            trials.push(Trial::test(
-                format!("{symbol}::{name}"),
-                move || {
-                    let expected = case
-                        .get("expect")
-                        .and_then(JsonText::to_value)
-                        .expect("a case has an expectation");
-                    let observed = outcome(run_case(feature, &case));
-                    if observed == expected {
-                        Ok(())
-                    } else {
-                        Err(Failed::from(format!("\n got {observed}\nwant {expected}")))
-                    }
-                },
-            ));
+            trials.push(Trial::test(format!("{symbol}::{name}"), move || {
+                let expected = case
+                    .get("expect")
+                    .and_then(JsonText::to_value)
+                    .expect("a case has an expectation");
+                let observed = outcome(run_case(feature, &case));
+                if observed == expected {
+                    Ok(())
+                } else {
+                    Err(Failed::from(format!("\n got {observed}\nwant {expected}")))
+                }
+            }));
         }
     }
     libtest_mimic::run(&Arguments::from_args(), trials).exit();

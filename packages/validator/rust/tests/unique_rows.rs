@@ -1,6 +1,16 @@
 //! The row-level `unique` check: duplicates belong to one validation, and the rows are walked once
 //! per validation.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 use polyspec_crudui_validator::validate::{validate, ValidateOptions};
 use serde_json::{json, Map, Value};
 

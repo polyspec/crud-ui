@@ -41,6 +41,10 @@ impl Node {
 }
 
 /// Build the tree and the sets of a recognized, balanced token sequence.
+#[allow(
+    clippy::expect_used,
+    reason = "R-1: the recognizer passes only balanced tokens in which a quantifier follows an item"
+)]
 pub(crate) fn build(tokens: Vec<Token>) -> (Node, Vec<CodeSet>) {
     let mut sets = Vec::new();
     // Each open group (and the pattern) holds its finished alternatives and the

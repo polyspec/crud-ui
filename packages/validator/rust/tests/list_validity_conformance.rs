@@ -5,6 +5,16 @@
 //! `"pass"` requires successful composition and forbidden-key scanning; `{ code, at }` requires the declared
 //! load-error code and complete dotted trace. Row validation does not apply.
 
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::disallowed_methods,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    reason = "R-1 holds the library paths; this harness reads fixtures and fails a case by a panic"
+)]
+
 mod common;
 
 const FEATURE: &str = "validateList";
@@ -138,7 +148,10 @@ fn every_case_declares_an_engine_channel() {
 
 fn main() {
     let cases = load_cases();
-    assert!(!cases.is_empty(), "no list-validity fixture cases were loaded");
+    assert!(
+        !cases.is_empty(),
+        "no list-validity fixture cases were loaded"
+    );
     let mut trials: Vec<Trial> = cases
         .into_iter()
         .map(|case| {
