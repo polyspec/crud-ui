@@ -84,6 +84,9 @@ The value is parsed with the [date value rules](form-runtime.md#date-values) and
 `mm` (minute) and `ss` (second); other characters are kept.
 
 - **CUDF-090** A date format without a nonempty `pattern` takes the pattern `YYYY-MM-DD`.
+- **CUDF-091** `validateList` and `validateDetail` check the specification against CUDF-024 and CUDF-032 before its
+  composition: a list or detail specification that is not an object fails with `INVALID_FORM_INPUT` and the message of
+  that rule, and is never passed as a declaration without members.
 
 A value that is not a supported date is displayed unchanged.
 

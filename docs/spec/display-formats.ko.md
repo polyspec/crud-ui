@@ -1,6 +1,6 @@
 # 표시 형식
 <!-- doc-id: docs-spec-display-formats -->
-<!-- source-sha256: 38959dc4e15fa2d27236d2d05b0ca2eb1f5b9514301e0040a990f2cb82280d51 -->
+<!-- source-sha256: d7ecccf53cde5fdaa4b0fd1876f4a1a85ae4786ecbf64f36650d0ab9099cac8b -->
 
 [English](display-formats.md).
 
@@ -76,6 +76,8 @@ columns:
 `DD`(일), `HH`(24시간제 시), `mm`(분), `ss`(초) 토큰을 바꾸고 나머지 문자는 유지합니다.
 
 - **CUDF-090** 비어 있지 않은 `pattern`이 없는 날짜 형식은 패턴 `YYYY-MM-DD`를 씁니다.
+- **CUDF-091** `validateList`와 `validateDetail`은 조합 전에 명세를 CUDF-024와 CUDF-032로 검사합니다. 객체가 아닌 목록이나 상세
+  명세는 `INVALID_FORM_INPUT`와 그 규칙의 메시지로 실패하며, 멤버가 없는 선언으로 통과시키지 않습니다.
  지원하는 날짜가 아닌 값은 그대로 표시합니다.
 
 ### number
