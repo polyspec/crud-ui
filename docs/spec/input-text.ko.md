@@ -1,6 +1,6 @@
 # 입력 텍스트
 <!-- doc-id: docs-spec-input-text -->
-<!-- source-sha256: ab8750d5cc1a93dc8ea0ed20815fe657790a60cb9fd5e1f7d1c9e0592df23cd1 -->
+<!-- source-sha256: 33efd720a02427c4224a0cde49eb954b04bf4894e792ae3c7a120c10ddcccec0 -->
 
 [English](input-text.md).
 
@@ -115,7 +115,7 @@ PHP 라이브러리의 값 복사와 확장의 값 변환은 변환하는 모든
   - Go: 로드 실패는 `*compose.ComposeLoadError`입니다. 입력 실패는 검증에서 `*validate.FormInputError`, 생성에서는
     메시지를 담은 오류입니다.
   - Rust: 로드 실패는 `ValidateError::Load` 또는 `FormError` 안의 `ComposeLoadError`이고, 입력 실패는
-    `ValidateError::Input` 또는 `FormError` 안의 `FormInputError`입니다.
+    `ValidateError::InvalidFormInput` 또는 `FormError` 안의 `FormInputError`입니다.
   - Python: 검증에서 로드 실패는 `ComposeLoadError`, 입력 실패는 `FormInputError`입니다. 생성에서 로드 실패는
     `ComposeLoadError`, 입력 실패는 `FormError`입니다.
 - **CUIT-037** JavaScript: `JSON.parse`는 각 이스케이프를 코드 유닛으로 보존합니다.

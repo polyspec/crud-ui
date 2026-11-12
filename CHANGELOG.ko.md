@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: bc2122aae18f9c6f4871fa1ef6a43d6e2b2bb1c70bcd710cfb9f185b0c6a1da7 -->
+<!-- source-sha256: 3191bf0880d23b671aed7a4b484b5c6a123620c2d4ddcfd5c8c115939689f690 -->
 
 ## Unreleased
 
+- E-1: Rust validator의 입력 실패는 변형 `ValidateError::InvalidFormInput`이며, 그 kind `invalid_form_input`은 인터페이스 계약이 그 이름에서 이끌어 내는 kind와 같습니다. legacy 구현은 같은 실패를 코드 `INVALID_FORM_INPUT`으로 냅니다(E-1).
 - C16.1: lock이 binding branch 끝인 polyspec-binding-core f4e30c6을 받고, binding scaffold가 두 계약의 target go와 wasm의 package를 씁니다: `packages/<component>/go`(Go module `github.com/polyspec/crud-ui/packages/<component>/go`와 FFI crate `go/internal/ffi`)와 `packages/<component>/ts/wasm`이며 루트 workspace의 구성원입니다. `packages/<component>/ts/package.json`에 browser 진입점이 붙습니다. wasm crate는 wasm-bindgen 0.2.130과 js-sys 0.3.107을 고정합니다(C16.1).
 - G-5: `contracts/generator-cases.json`과 `contracts/validator-cases.json`은 fixture가 다른 형식의 규칙 corpus인 member의 계약 case를 담습니다: `compile_form`, `form_template.from_json`, `build_outline`, `render_outline_view`, `render_data_panel`, `form_buttons_html`, `resolve_action`, `initial_view`, `collapsible_rows`, `set_all_expanded_view`, `empty_history`, `sequence_row_key`, `create_row_key`, `hidden_paths`. 각 case는 member를 한 번 부르고 member가 내는 kind마다 case가 하나씩 있으며, 각 crate의 Rust 시험 `contract_cases`가 경계에서 실행합니다. 계약은 컴파일이 내지 않는 규칙과 금지 키의 kind를 `compile_form`의 raises에서 뺍니다(G-5).
 - G-5: 목록·상세 렌더링 case인 `tests/fixtures/list-render`, `detail-render`를 binding 생성 시험의 case 형식으로 쓰고, 레코드 `options`는 모든 필드를 적습니다. 행이 목록이 아닌 목록 case는 계약이 가리키지 않는 group `row_shapes`에 둡니다. generator 계약은 이 case만 가리킵니다. 다른 family는 단계의 세션을 담거나 member에 class handle을 주는데 case는 그것을 줄 수 없고, `form-state`에는 case 파일이 없습니다. legacy TypeScript 구현으로 실행하는 fixture 생성기는 legacy 구현의 도구이며 실행하지 않습니다(G-5).

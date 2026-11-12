@@ -1,6 +1,6 @@
 # CRUDUI Rust 검증기
 <!-- doc-id: packages-validator-rust-readme -->
-<!-- source-sha256: 2a8713d3baec8bb9f94c2a4a2ac0b57707a82a43dff912f78506ae2cac645be2 -->
+<!-- source-sha256: 8cd7c03ae03089c2a0b632acc1bcde2f7a4191de80a376bcc61595bedf38e529 -->
 
 [English](README.md).
 
@@ -25,7 +25,7 @@ let result = validate(&spec, &data, &ValidateOptions::default())?;
 
 옵션은 `$ref`용 가상 파일 집합 `files`, `loader`, 상대 참조용 `basepath`를
 받습니다. `validate`는 합성 실패나 금지 키 실패에 `Err(ValidateError::Load)`를,
-형태가 잘못된 데이터에 코드 `INVALID_FORM_INPUT`의 `Err(ValidateError::Input)`을
+형태가 잘못된 데이터에 코드 `INVALID_FORM_INPUT`의 `Err(ValidateError::InvalidFormInput)`을
 반환하고, 구조 검사는 `ComposeLoadError`를 `Err`로 반환합니다. 실패는 데이터 검증
 결과가 아닙니다. [검증 절차](../../../docs/operations/validation.ko.md)가 모든 언어의
 사용법을 보여 줍니다.

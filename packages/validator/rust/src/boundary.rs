@@ -56,7 +56,7 @@ pub struct ValidationResult {
 /// the conversion fails only on a broken invariant of polyspec-json.
 pub(crate) fn text_of(value: &JsonValue) -> Result<JsonText, ValidateError> {
     from_ordered(value).map_err(|error| {
-        ValidateError::Input(FormInputError::new(format!(
+        ValidateError::InvalidFormInput(FormInputError::new(format!(
             "Invalid JSON value at byte {}",
             error.offset
         )))

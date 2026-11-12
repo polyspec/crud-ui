@@ -177,7 +177,7 @@
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::ValidateError::Input",
+        "variant": "polyspec_crud_ui_validator::ValidateError::InvalidFormInput",
         "category": "value",
         "class": "form_input_error"
       }
@@ -493,7 +493,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate"
@@ -541,7 +541,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_list"
@@ -587,7 +587,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::hidden_paths"
@@ -635,7 +635,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_detail"
@@ -702,7 +702,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_with_loader"
@@ -761,7 +761,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_list_with_loader"
@@ -820,7 +820,7 @@
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
             "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::Input"
+            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_detail_with_loader"
@@ -901,7 +901,7 @@
     {
       "id": "errors",
       "rule": "E-2",
-      "reason": "E-2, E-3: every error is a library class with kind(); the code getter getErrorCode() and the code strings (REF_FILE_NOT_FOUND) become the kinds in lower snake case, and PHP \\RuntimeException subclasses become CruduiValueError subclasses",
+      "reason": "E-2, E-3: every error is a library class with kind(); the code getter getErrorCode() and the code strings (REF_FILE_NOT_FOUND) become the kinds in lower snake case, and PHP \\RuntimeException subclasses become CrudUiValueError subclasses",
       "symbol": "ComposeLoadError, FormInputError",
       "from": {
         "php": "final class ComposeLoadError extends \\RuntimeException { getErrorCode(): string; getCompositionTrace(): array; __get; __isset }; final class FormInputError extends \\RuntimeException { getErrorCode(): string }",

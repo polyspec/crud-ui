@@ -26,7 +26,7 @@ let result = validate(&spec, &data, &ValidateOptions::default())?;
 Options accept `files`, a virtual file set for `$ref`, a `loader` and a
 `basepath` for relative references. `validate` returns
 `Err(ValidateError::Load)` for a composition or forbidden-key failure and
-`Err(ValidateError::Input)` with code `INVALID_FORM_INPUT` for data with the wrong
+`Err(ValidateError::InvalidFormInput)` with code `INVALID_FORM_INPUT` for data with the wrong
 shape; the structure checks return the `ComposeLoadError` as `Err`. A failure is
 not a data validation result. The
 [validation procedure](../../../docs/operations/validation.md) shows usage in every

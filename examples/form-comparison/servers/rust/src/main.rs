@@ -243,7 +243,9 @@ async fn handle(
     let spec = read_object(&server.public.join("spec.json"))?;
     let validation = validate(&spec, &data, &ValidateOptions::default()).map_err(|e| Error {
         status: match e {
-            polyspec_crud_ui_validator::ValidateError::Input(_) => StatusCode::BAD_REQUEST,
+            polyspec_crud_ui_validator::ValidateError::InvalidFormInput(_) => {
+                StatusCode::BAD_REQUEST
+            }
             polyspec_crud_ui_validator::ValidateError::Load(_) => StatusCode::INTERNAL_SERVER_ERROR,
         },
         message: e.to_string(),

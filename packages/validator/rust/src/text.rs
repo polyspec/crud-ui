@@ -365,9 +365,9 @@ pub fn check_specification(
         if let Some(value) = value {
             match value_failure(value) {
                 Some(ValueFailure::Limit) => {
-                    return Err(ValidateError::Input(FormInputError::new(format!(
-                        "{VALUE_LIMIT_MESSAGE}: {name}"
-                    ))));
+                    return Err(ValidateError::InvalidFormInput(FormInputError::new(
+                        format!("{VALUE_LIMIT_MESSAGE}: {name}"),
+                    )));
                 }
                 Some(ValueFailure::Text(trace)) => {
                     return Err(ValidateError::Load(ComposeLoadError::with_trace(
@@ -458,7 +458,7 @@ fn decoded(value: Option<&JsonText>) -> Result<Option<Value>, ValidateError> {
 /// A JSON text value, or the failure of a number that `serde_json` does not accept.
 pub(crate) fn decode(value: &JsonText) -> Result<Value, ValidateError> {
     json_text_to_value(value).ok_or_else(|| {
-        ValidateError::Input(FormInputError::new("Numbers must be finite JSON numbers"))
+        ValidateError::InvalidFormInput(FormInputError::new("Numbers must be finite JSON numbers"))
     })
 }
 
@@ -475,7 +475,7 @@ fn composition(
         None => None,
         Some(Value::Object(files)) => Some(files),
         Some(_) => {
-            return Err(ValidateError::Input(FormInputError::new(
+            return Err(ValidateError::InvalidFormInput(FormInputError::new(
                 "Files must be an object",
             )))
         }
@@ -484,7 +484,7 @@ fn composition(
         None => None,
         Some(Value::String(basepath)) => Some(basepath),
         Some(_) => {
-            return Err(ValidateError::Input(FormInputError::new(
+            return Err(ValidateError::InvalidFormInput(FormInputError::new(
                 "Basepath must be a string",
             )))
         }

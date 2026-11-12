@@ -59,7 +59,7 @@ pub struct ValidateOptions<'a> {
 /// expanded first via the compose pass. An unresolved composition or a rule
 /// parameter outside the validation-rule definitions returns
 /// `Err(ValidateError::Load)` and data with the wrong shape returns
-/// `Err(ValidateError::Input)`; neither produces a validation result.
+/// `Err(ValidateError::InvalidFormInput)`; neither produces a validation result.
 ///
 /// Two entry shapes (JS `validate`):
 ///   (a) a full root group spec `{ type:'group', properties:{…} }` — compose the
@@ -169,7 +169,7 @@ mod tests {
     fn a_specification_that_is_not_an_object_fails() {
         for spec in [json!([]), json!("form"), json!(5), json!(null), json!(true)] {
             match validate(&spec, &json!({}), &ValidateOptions::default()) {
-                Err(ValidateError::Input(error)) => {
+                Err(ValidateError::InvalidFormInput(error)) => {
                     assert_eq!(error.message, "Form specification must be an object");
                 }
                 other => panic!("{spec} gave {other:?}"),

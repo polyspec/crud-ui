@@ -537,7 +537,7 @@ impl Validator {
                         ))
                     }
                     GroupChoicesError::Repeated(message) => {
-                        ValidateError::Input(FormInputError::new(message))
+                        ValidateError::InvalidFormInput(FormInputError::new(message))
                     }
                 },
             )?;

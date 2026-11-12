@@ -27,7 +27,7 @@ fn inputs(values: &[(&str, Option<&JsonText>)]) -> FormResult<()> {
 /// text a load failure.
 fn specification(spec: Option<&JsonText>, files: Option<&JsonText>) -> FormResult<()> {
     check_specification(spec, files).map_err(|error| match error {
-        ValidateError::Input(error) => FormError::input(error.message),
+        ValidateError::InvalidFormInput(error) => FormError::input(error.message),
         ValidateError::Load(error) => error.into(),
     })
 }

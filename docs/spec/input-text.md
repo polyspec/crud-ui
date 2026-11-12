@@ -123,7 +123,7 @@ A value beyond the value limits is an input failure in every argument and option
   - Go: a load failure is `*compose.ComposeLoadError`; an input failure is `*validate.FormInputError` in validation and an
     error with the message in generation.
   - Rust: a load failure is `ComposeLoadError` in `ValidateError::Load` or `FormError`, and an input failure is
-    `FormInputError` in `ValidateError::Input` or `FormError`.
+    `FormInputError` in `ValidateError::InvalidFormInput` or `FormError`.
   - Python: in validation a load failure is `ComposeLoadError`, and an input failure is `FormInputError`; in generation a
     load failure is `ComposeLoadError`, and an input failure is `FormError`.
 - **CUIT-037** JavaScript: `JSON.parse` keeps each escape as a code unit.

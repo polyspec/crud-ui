@@ -85,7 +85,9 @@ impl From<polyspec_crud_ui_validator::ValidateError> for FormError {
     fn from(error: polyspec_crud_ui_validator::ValidateError) -> Self {
         match error {
             polyspec_crud_ui_validator::ValidateError::Load(error) => error.into(),
-            polyspec_crud_ui_validator::ValidateError::Input(error) => Self::input(error.message),
+            polyspec_crud_ui_validator::ValidateError::InvalidFormInput(error) => {
+                Self::input(error.message)
+            }
         }
     }
 }

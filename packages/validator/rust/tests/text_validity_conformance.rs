@@ -42,12 +42,12 @@ fn fixture(feature: &str) -> (String, Vec<JsonText>) {
 }
 
 /// The native type of a run (CUIT-041): a load failure is ComposeLoadError in ValidateError::Load, an input failure
-/// FormInputError in ValidateError::Input, and a run that passes is none.
+/// FormInputError in ValidateError::InvalidFormInput, and a run that passes is none.
 fn native_type<T>(result: &Result<T, polyspec_crud_ui_validator::ValidateError>) -> &'static str {
     match result {
         Ok(_) => "none",
         Err(polyspec_crud_ui_validator::ValidateError::Load(_)) => "ComposeLoadError",
-        Err(polyspec_crud_ui_validator::ValidateError::Input(_)) => "FormInputError",
+        Err(polyspec_crud_ui_validator::ValidateError::InvalidFormInput(_)) => "FormInputError",
     }
 }
 

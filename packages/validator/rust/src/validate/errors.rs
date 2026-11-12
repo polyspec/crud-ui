@@ -36,7 +36,7 @@ pub enum ValidateError {
     /// The specification could not be composed.
     Load(ComposeLoadError),
     /// Submitted data has the wrong shape.
-    Input(FormInputError),
+    InvalidFormInput(FormInputError),
 }
 
 impl ValidateError {
@@ -44,7 +44,7 @@ impl ValidateError {
     pub fn code(&self) -> &str {
         match self {
             ValidateError::Load(error) => error.code.as_str(),
-            ValidateError::Input(_) => FormInputError::CODE,
+            ValidateError::InvalidFormInput(_) => FormInputError::CODE,
         }
     }
 
@@ -52,7 +52,7 @@ impl ValidateError {
     pub fn message(&self) -> &str {
         match self {
             ValidateError::Load(error) => &error.message,
-            ValidateError::Input(error) => &error.message,
+            ValidateError::InvalidFormInput(error) => &error.message,
         }
     }
 
@@ -61,7 +61,7 @@ impl ValidateError {
     pub fn at(&self) -> String {
         match self {
             ValidateError::Load(error) => error.trace.join("."),
-            ValidateError::Input(_) => String::new(),
+            ValidateError::InvalidFormInput(_) => String::new(),
         }
     }
 }
@@ -70,7 +70,7 @@ impl fmt::Display for ValidateError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             ValidateError::Load(error) => error.fmt(f),
-            ValidateError::Input(error) => error.fmt(f),
+            ValidateError::InvalidFormInput(error) => error.fmt(f),
         }
     }
 }
@@ -85,7 +85,7 @@ impl From<ComposeLoadError> for ValidateError {
 
 impl From<FormInputError> for ValidateError {
     fn from(error: FormInputError) -> Self {
-        ValidateError::Input(error)
+        ValidateError::InvalidFormInput(error)
     }
 }
 
@@ -107,7 +107,7 @@ impl binding_core::Kinds for ValidateError {
     fn kind(&self) -> &'static str {
         match self {
             ValidateError::Load(error) => error.kind(),
-            ValidateError::Input(error) => error.kind(),
+            ValidateError::InvalidFormInput(error) => error.kind(),
         }
     }
     fn status(&self) -> Option<u16> {

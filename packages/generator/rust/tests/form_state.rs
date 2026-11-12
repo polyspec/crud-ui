@@ -226,7 +226,7 @@ fn perform(form: &mut Form, spec: &Value, op: &str, args: &[Value]) -> FormResul
                     polyspec_crud_ui_validator::ValidateError::Load(load) => {
                         polyspec_crud_ui_generator::FormErrorCode::Compose(load.code)
                     }
-                    polyspec_crud_ui_validator::ValidateError::Input(_) => {
+                    polyspec_crud_ui_validator::ValidateError::InvalidFormInput(_) => {
                         polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput
                     }
                 },
