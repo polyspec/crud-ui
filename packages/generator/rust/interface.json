@@ -185,6 +185,10 @@
         "variant": "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
         "category": "value",
         "class": "form_error"
+      },
+      {
+        "variant": "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable",
+        "category": "io"
       }
     ],
     "binding": [],
@@ -1339,7 +1343,8 @@
           "returns": "text",
           "raises": [
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
+            "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
           "core": {
@@ -1385,7 +1390,8 @@
           "returns": "text",
           "raises": [
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
+            "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
           "core": {
@@ -2724,7 +2730,8 @@
           },
           "raises": [
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
+            "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::boundary::run_action",
@@ -3135,7 +3142,7 @@
           "parameters": [],
           "returns": "text",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+            "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::create_row_key"
@@ -3323,6 +3330,16 @@
         "node": "decodeFormTemplate(value): FormTemplate; decodeFormRenderOptions(value)"
       },
       "to": null
+    },
+    {
+      "id": "random-unavailable",
+      "rule": "CURT-095",
+      "reason": "CURT-095, P-2: a failure of the random source of the system is the kind random_unavailable in the category io, not a thrown error of the platform; create_row_key, add_row, copy_row and run_action raise it",
+      "symbol": "createRowKey",
+      "from": {
+        "node": "createRowKey(): string, which lets the error of crypto.getRandomValues through"
+      },
+      "to": "generator.create_row_key"
     },
     {
       "id": "loader",

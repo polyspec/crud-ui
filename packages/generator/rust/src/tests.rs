@@ -1841,3 +1841,20 @@ fn snapshot_reports_the_state_of_the_instance() {
         (2, false, true)
     );
 }
+
+/// CURT-095: a failure of the random source is RANDOM_UNAVAILABLE, and the row that would take a new key is not added.
+#[test]
+fn a_failure_of_the_random_source_is_random_unavailable() {
+    crate::instance::fail_random_source(true);
+    let key = create_row_key();
+    let mut form = Form::new(template(), &record(), BindOptions::default()).unwrap();
+    let added = form.add_row("companies", AddRowOptions::default());
+    crate::instance::fail_random_source(false);
+    let error = key.unwrap_err();
+    assert_eq!(error.code, FormErrorCode::RandomUnavailable);
+    assert_eq!(error.code.kind(), "random_unavailable");
+    assert!(error.message.starts_with("Unable to generate a row key: "));
+    assert_eq!(added.unwrap_err().code, FormErrorCode::RandomUnavailable);
+    assert_eq!(form.get_data(), record());
+    assert!(create_row_key().is_ok());
+}

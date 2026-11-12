@@ -100,6 +100,33 @@ fn argument<'a>(case: &'a Value, name: &str) -> &'a Value {
         .unwrap_or_else(|| panic!("the case gives no {name}"))
 }
 
+/// The category of a kind in the kinds of the generator contract: the kind of a variant is its name in lower snake
+/// case (binding design E-1).
+fn category_of(kind: &str) -> String {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("interface.json");
+    let contract: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    for row in contract["errors"]["kinds"].as_array().unwrap() {
+        let variant = row["variant"]
+            .as_str()
+            .unwrap()
+            .rsplit("::")
+            .next()
+            .unwrap();
+        let mut snake = String::new();
+        for (index, letter) in variant.char_indices() {
+            if letter.is_uppercase() && index > 0 {
+                snake.push('_');
+            }
+            snake.extend(letter.to_lowercase());
+        }
+        if snake == kind {
+            return row["category"].as_str().unwrap().to_owned();
+        }
+    }
+    panic!("the contract names no kind {kind}")
+}
+
 /// The outcome of a member: success, or the failure's kind, status and category.
 fn check(case: &Value, result: Result<(), FormError>) -> Result<(), Failed> {
     let raises = case.get("raises").unwrap();
@@ -118,7 +145,10 @@ fn check(case: &Value, result: Result<(), FormError>) -> Result<(), Failed> {
             let want = text(raises.get("kind").unwrap().unwrap());
             let status = raises.get("status").unwrap().unwrap().kind() == Kind::Null;
             let category = text(raises.get("category").unwrap().unwrap());
-            if error.kind() == want && status == error.status().is_none() && category == "value" {
+            if error.kind() == want
+                && status == error.status().is_none()
+                && category == category_of(&want)
+            {
                 Ok(())
             } else {
                 Err(Failed::from(format!(
@@ -224,6 +254,22 @@ fn run(member: &str, case: &Value) -> Result<(), FormError> {
     }
 }
 
+/// Run `run` with the failure that a case injects: `random_source` makes the random source of this thread fail
+/// (CURT-095, feature `random-failure-test`).
+fn with_injected<T>(injected: Option<&str>, run: impl FnOnce() -> T) -> T {
+    match injected {
+        None => run(),
+        #[cfg(feature = "random-failure-test")]
+        Some("random_source") => {
+            polyspec_crud_ui_generator::fail_random_source(true);
+            let result = run();
+            polyspec_crud_ui_generator::fail_random_source(false);
+            result
+        }
+        Some(other) => panic!("no injected failure {other} in this build"),
+    }
+}
+
 fn main() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../../contracts/generator-cases.json");
@@ -259,9 +305,14 @@ fn main() {
         assert!(!cases.is_empty(), "the group {member} holds no case");
         for case in cases {
             let id = text(argument(&case, "id"));
-            trials.push(Trial::test(format!("{member}::{id}"), move || {
-                check(&case, run(member, &case))
-            }));
+            // A case that injects a failure of the environment runs with the test feature that injects it.
+            let injected = case.get("inject").unwrap().map(text);
+            let ignored = injected.is_some() && !cfg!(feature = "random-failure-test");
+            let trial = Trial::test(format!("{member}::{id}"), move || {
+                let result = with_injected(injected.as_deref(), || run(member, &case));
+                check(&case, result)
+            });
+            trials.push(trial.with_ignored_flag(ignored));
         }
     }
     libtest_mimic::run(&Arguments::from_args(), trials).exit();

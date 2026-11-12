@@ -10,6 +10,8 @@ pub enum FormErrorCode {
     InvalidFormInput,
     /// A field type that binding does not support (`UNSUPPORTED_FIELD_TYPE`).
     UnsupportedFieldType,
+    /// The random source of the system failed (`RANDOM_UNAVAILABLE`, CURT-095).
+    RandomUnavailable,
 }
 
 impl FormErrorCode {
@@ -19,6 +21,7 @@ impl FormErrorCode {
             FormErrorCode::Compose(code) => code.as_str(),
             FormErrorCode::InvalidFormInput => "INVALID_FORM_INPUT",
             FormErrorCode::UnsupportedFieldType => "UNSUPPORTED_FIELD_TYPE",
+            FormErrorCode::RandomUnavailable => "RANDOM_UNAVAILABLE",
         }
     }
 
@@ -28,6 +31,7 @@ impl FormErrorCode {
             FormErrorCode::Compose(code) => code.kind(),
             FormErrorCode::InvalidFormInput => "invalid_form_input",
             FormErrorCode::UnsupportedFieldType => "unsupported_field_type",
+            FormErrorCode::RandomUnavailable => "random_unavailable",
         }
     }
 }
@@ -64,6 +68,16 @@ pub struct FormError {
 }
 
 impl FormError {
+    /// A failure of the random source of the system (CURT-095).
+    pub(crate) fn random_unavailable(cause: impl std::fmt::Display) -> Self {
+        Self {
+            code: FormErrorCode::RandomUnavailable,
+            message: format!("Unable to generate a row key: {cause}"),
+            at: String::new(),
+            trace: Vec::new(),
+        }
+    }
+
     pub(crate) fn input(message: impl Into<String>) -> Self {
         Self {
             code: FormErrorCode::InvalidFormInput,

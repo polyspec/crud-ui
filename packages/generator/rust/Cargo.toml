@@ -9,6 +9,10 @@ license = "MIT"
 include = ["/src/**/*.rs", "/interface.json", "/README.md"]
 description = "CRUDUI form compilation, data binding and HTML rendering"
 
+[features]
+# CURT-095: makes the random source fail on demand, for the tests of RANDOM_UNAVAILABLE; no release build has it.
+random-failure-test = []
+
 [dependencies]
 # The kind interface that the generated bindings read from the core errors (binding design E-1, I-2 (3)). The git
 # source is the binding repository; Cargo.lock pins its commit, the same source as the generated binding crates.

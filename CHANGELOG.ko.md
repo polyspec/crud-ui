@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 654e1f4814af1b521948347ae5a324c728f92a6e0a8bcaea074c6f05b3bda36c -->
+<!-- source-sha256: afedb8cb73bf946c8a383a3bec0b6445b853f6f7f59b0bab188405c50a9c6daa -->
 
 ## Unreleased
 
+- CURT-095: 시스템 난수 원천의 실패는 Rust `create_row_key`, `add_row`, `copy_row`, 행을 추가하거나 복사하는 동작에서 더 이상 `INVALID_FORM_INPUT`이 아니라 `RANDOM_UNAVAILABLE`(kind `random_unavailable`, category io)입니다. generator의 시험 feature `random-failure-test`는 그 kind의 단위 시험과 계약 case를 위해 한 thread의 난수 원천을 실패시키며, 어떤 릴리스 빌드에도 없고 `make test-rust`는 이 feature로 시험을 돌립니다(CURT-095).
 - C16.1: generator의 form-render, list-render, detail-render, form-outline, form-complete, text-validity family의 Rust 시험이 적합성 근거를 기록합니다. 이전에는 `legacy/` 아래 네이티브 생성기 검사기가 Rust 근거를 기록했습니다. list-render와 detail-render는 각 case의 모델도 만듭니다. `legacy/tests/native-generators/cases.mts`의 폼 시나리오는 legacy 런타임만 증명하며, manifest 검사는 `legacy/packages`의 코드를 package 코드로 봅니다(C16.1).
 - G-5: 계약의 각 연산의 raises는 그 연산이 내는 kind만 적고 kind마다 계약 case가 있습니다: `validate` 14개, `hidden_paths` 9개(파일 없이 조합하므로 파일이 필요한 kind는 없음), `validate_list`와 `validate_detail` 11개, `build_list`, `render_list`, `build_detail`, `render_detail` 11개(선언에 규칙이 없음). 로더를 받는 연산은 확장하는 연산의 kind를 받습니다(G-5).
 - CUDF-091: Rust `validate_list`와 `validate_detail`은 객체가 아닌 명세를 멤버 없는 선언으로 통과시키던 대신 조합 전에 `INVALID_FORM_INPUT`와 CUDF-024 또는 CUDF-032의 메시지로 거절하며, `ValidateError`를 반환합니다(CUDF-091).

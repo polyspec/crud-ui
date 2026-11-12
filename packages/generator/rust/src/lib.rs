@@ -37,6 +37,8 @@ pub use history::{
     can_redo, can_undo, empty_history, record_change, redo_change, undo_change, History,
     HistoryResult, HISTORY_LIMIT,
 };
+#[cfg(feature = "random-failure-test")]
+pub use instance::fail_random_source;
 pub use instance::{
     create_row_key, sequence_row_key, AddRowOptions, CopyRowOptions, Form, FormSnapshot,
 };

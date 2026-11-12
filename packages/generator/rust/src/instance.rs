@@ -25,11 +25,37 @@ pub fn sequence_row_key(sequence: &str) -> FormResult<String> {
     Ok(format!("__{sequence:0>13}__"))
 }
 
-/// Generate a random 13-character hexadecimal row key using the OS random source.
+// The failure of the random source that the test feature `random-failure-test` injects; a release build has neither
+// the feature nor this switch, so its random source is always the system's. The switch holds for the thread that sets
+// it, so that a test never makes the keys of another test fail.
+#[cfg(any(test, feature = "random-failure-test"))]
+thread_local! {
+    static RANDOM_FAILS: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+/// Make the random source of this thread fail, or work again, for the tests of CURT-095 (feature
+/// `random-failure-test`).
+#[cfg(any(test, feature = "random-failure-test"))]
+pub fn fail_random_source(fail: bool) {
+    RANDOM_FAILS.with(|fails| fails.set(fail));
+}
+
+/// Fill `bytes` from the random source of the system.
+fn random_bytes(bytes: &mut [u8]) -> FormResult<()> {
+    #[cfg(any(test, feature = "random-failure-test"))]
+    if RANDOM_FAILS.with(std::cell::Cell::get) {
+        return Err(FormError::random_unavailable(
+            "the injected failure of the test feature",
+        ));
+    }
+    getrandom::fill(bytes).map_err(FormError::random_unavailable)
+}
+
+/// Generate a random 13-character hexadecimal row key using the OS random source; a failure of the source is
+/// RANDOM_UNAVAILABLE (CURT-095).
 pub fn create_row_key() -> FormResult<String> {
     let mut bytes = [0u8; 7];
-    getrandom::fill(&mut bytes)
-        .map_err(|e| FormError::input(format!("Unable to generate a row key: {e}")))?;
+    random_bytes(&mut bytes)?;
     let digits = bytes.iter().map(|b| format!("{b:02x}")).collect::<String>();
     Ok(format!("__{}__", &digits[..13]))
 }
