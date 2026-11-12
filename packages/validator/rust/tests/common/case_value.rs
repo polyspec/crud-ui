@@ -12,12 +12,49 @@
 use serde_json::{Map, Value};
 use std::path::Path;
 
+/// The deepest nesting that a case file may have: three levels of the case form for each of the 256 levels of a value
+/// (CUIT-022), and eight for the file, its group, a case, its options, the files and an argument.
+pub const CASE_DEPTH_LIMIT: usize = 3 * 256 + 8;
+
+/// The deepest nesting of arrays and objects in a JSON text, counted outside its strings.
+fn text_depth(text: &str) -> usize {
+    let (mut depth, mut deepest, mut in_string, mut escaped) = (0usize, 0usize, false, false);
+    for byte in text.bytes() {
+        if in_string {
+            match (escaped, byte) {
+                (true, _) => escaped = false,
+                (false, b'\\') => escaped = true,
+                (false, b'"') => in_string = false,
+                _ => {}
+            }
+            continue;
+        }
+        match byte {
+            b'"' => in_string = true,
+            b'[' | b'{' => {
+                depth += 1;
+                deepest = deepest.max(depth);
+            }
+            b']' | b'}' => depth = depth.saturating_sub(1),
+            _ => {}
+        }
+    }
+    deepest
+}
+
 /// The cases of the group `cases` of the fixture at `path`.
 pub fn read_cases(path: &Path) -> Vec<Value> {
     let raw =
         std::fs::read_to_string(path).unwrap_or_else(|e| panic!("read fixture {:?}: {}", path, e));
     // The case form nests a value three levels per level of the value, so a value of 256 levels is beyond the
-    // recursion limit of serde_json.
+    // recursion limit of serde_json; the reader of the cases has its own limit, CASE_DEPTH_LIMIT, checked before the
+    // parse. The libraries keep the limit of serde_json.
+    let depth = text_depth(&raw);
+    assert!(
+        depth <= CASE_DEPTH_LIMIT,
+        "fixture {:?} nests {depth} levels, beyond {CASE_DEPTH_LIMIT}",
+        path
+    );
     let mut reader = serde_json::Deserializer::from_str(&raw);
     reader.disable_recursion_limit();
     let parsed: Value = serde::Deserialize::deserialize(&mut reader)
