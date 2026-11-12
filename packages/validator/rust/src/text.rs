@@ -470,11 +470,25 @@ fn composition(
     files: Option<&JsonText>,
     basepath: Option<&JsonText>,
 ) -> Result<Composition, ValidateError> {
-    let files = decoded(files)?.and_then(|files| match files {
-        Value::Object(files) => Some(files),
-        _ => None,
-    });
-    let basepath = decoded(basepath)?.and_then(|basepath| basepath.as_str().map(str::to_owned));
+    // CUVR-092: files are an object and a base path is a string.
+    let files = match decoded(files)? {
+        None => None,
+        Some(Value::Object(files)) => Some(files),
+        Some(_) => {
+            return Err(ValidateError::Input(FormInputError::new(
+                "Files must be an object",
+            )))
+        }
+    };
+    let basepath = match decoded(basepath)? {
+        None => None,
+        Some(Value::String(basepath)) => Some(basepath),
+        Some(_) => {
+            return Err(ValidateError::Input(FormInputError::new(
+                "Basepath must be a string",
+            )))
+        }
+    };
     Ok((files, basepath))
 }
 
@@ -559,6 +573,18 @@ structure_text_validator! {
 
 #[cfg(test)]
 mod tests {
+
+    /// CUVR-092: files that are no object and a base path that is no string are input failures.
+    #[test]
+    fn options_of_other_types_fail() {
+        let spec = JsonText::parse(r#"{"type":"group","properties":{}}"#).unwrap();
+        let files = JsonText::parse("[]").unwrap();
+        let basepath = JsonText::parse("5").unwrap();
+        let failure = validate_text(&spec, None, Some(&files), None).unwrap_err();
+        assert_eq!(failure.message(), "Files must be an object");
+        let failure = validate_text(&spec, None, None, Some(&basepath)).unwrap_err();
+        assert_eq!(failure.message(), "Basepath must be a string");
+    }
     use super::*;
 
     /// An object of `count` distinct members.

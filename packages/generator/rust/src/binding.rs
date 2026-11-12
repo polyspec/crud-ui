@@ -153,7 +153,7 @@ fn bindable_language<'a>(
     }
     #[allow(
         clippy::disallowed_methods,
-        reason = "form-markup.md, interface text: an absent or null language option uses its default ko"
+        reason = "CUMK-070: an absent or null language option uses its default ko"
     )]
     let language = string_option(&options.language, "Language must be a string")?.unwrap_or("ko");
     Ok(language)
@@ -190,7 +190,7 @@ pub(crate) fn bind_ordered(
         collapsed,
         id_prefix: match id_prefix {
             Some(prefix) => prefix,
-            // form-runtime.md, input labels: the default `idPrefix` is crudui.
+            // CURT-094: the default `idPrefix` is crudui.
             None => "crudui",
         },
         key_prefix: key_prefix.or(template.key_prefix.as_deref()),
@@ -282,7 +282,7 @@ fn lang(spec: &Value) -> Option<Lang<'_>> {
                 .filter(|codes| !codes.is_empty())
             {
                 Some(codes) => codes.clone(),
-                // schema.md, content translation: without `lang.only` the languages are ko, en, ja and zh.
+                // CUSC-091: without `lang.only` the languages are ko, en, ja and zh.
                 None => defaults(),
             },
             frame: l.get("frame").is_none_or(|v| *v != false),

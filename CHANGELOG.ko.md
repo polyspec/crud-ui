@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 9160a4ff06c961572bb223bd68d6e707164b2d720addefe2af8df6c486ce0ac1 -->
+<!-- source-sha256: 4ef5521cbb658b0ea7aec7129ce2ea051fbe28954c6962df2a92938ef6efc566 -->
 
 ## Unreleased
 
+- P-4: Rust 검증은 문자열이 아닌 `messages` 멤버와 객체가 아닌 `messages`(CUVR-089), 합성 뒤 객체인 `properties`가 없는 루트(CUVR-091), 텍스트 진입점의 객체가 아닌 `files`와 문자열이 아닌 `basepath`(CUVR-092)를 건너뛰지 않고 거부한다. 없는 값은 규칙 CUVR-090으로 `null`로 검증하고, 코어가 읽는 기본값은 CUMK-070, CURT-094, CUSC-091, CUDF-089, CUDF-090을 가리킨다(P-4).
 - C-1: Rust crate는 JSON 텍스트를 ordered-json의 읽기로 읽고, 쓰는 JSON 텍스트의 문자열·숫자 토큰과 유일한 실수 텍스트를 ordered-json에서 가져온다. 라이브러리는 더는 serde_json으로 입력 텍스트를 읽지 않으므로 ordered-json이 켜는 feature(`unbounded_depth`, `raw_value`)가 입력에 닿지 않는다(C-1).
 - D-16: 값의 중첩은 최대 256단계이고(CUIT-022) `dataLimits.depth`의 상한도 256이다(CUSC-087, CUVR-084). ordered-json의 읽기 한도다. Rust 읽기와 순회가 이를 따르고, 공유 검증 케이스에 객체가 아닌 명세(CUVR-088)가 생겼다(D-16).
 - C-10: `packages/validator/rust/interface.json`과 `packages/generator/rust/interface.json`이 두 crate의 인터페이스 계약을 bindgen 스키마로 선언하고, 언어 API와 다른 점을 `changes`에 적는다. 각 crate는 계약을 패키지에 담고(`include`) 값 타입 `json_value`의 주인인 `polyspec-ordered-json`에 git 소스로 의존한다. Rust `Form::copy_row`는 `CopyRowOptions { new_key, after_key }`를 받고(CURT-005), `ViewState`와 `History`에 읽기 접근자가 생겼으며, Rust 시험 프로그램은 픽스처의 JavaScript `{ key, afterKey }`를 그것으로 옮긴다(C-10).

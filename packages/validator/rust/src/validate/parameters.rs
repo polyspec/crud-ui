@@ -128,9 +128,28 @@ fn check_fields(
                 }
             }
         }
-        if let Some(Value::Object(messages)) = field.get("messages") {
-            for rule in messages.keys() {
-                check_name(rule, path)?;
+        // CUVR-089: a message override is text; one of another type is a load failure.
+        match field.get("messages") {
+            None => {}
+            Some(Value::Object(messages)) => {
+                for (rule, message) in messages {
+                    check_name(rule, path)?;
+                    if !message.is_string() {
+                        return Err(parameter_failure(
+                            format!(
+                                "Invalid messages.{rule} at {}: expected a string",
+                                path.join(".")
+                            ),
+                            path,
+                        ));
+                    }
+                }
+            }
+            Some(_) => {
+                return Err(parameter_failure(
+                    format!("Invalid messages at {}: expected an object", path.join(".")),
+                    path,
+                ));
             }
         }
         check_keyed_map_reference(field, path, root)?;
@@ -140,6 +159,15 @@ fn check_fields(
         path.pop();
     }
     Ok(())
+}
+
+/// The load failure `INVALID_RULE_PARAMETER` located at the field's declaration path.
+fn parameter_failure(message: String, path: &[String]) -> ValidateError {
+    ValidateError::Load(ComposeLoadError::with_trace(
+        ComposeErrorCode::InvalidRuleParameter,
+        message,
+        path.to_vec(),
+    ))
 }
 
 /// Fail with `UNKNOWN_RULE` when `rule`, a `validate` or `messages` key, is not a

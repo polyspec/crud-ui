@@ -302,7 +302,7 @@ impl Form {
     pub(crate) fn language(&self) -> &str {
         #[allow(
             clippy::disallowed_methods,
-            reason = "form-markup.md, interface text: an absent or null language option uses its default ko"
+            reason = "CUMK-070: an absent or null language option uses its default ko"
         )]
         let language = self.options.language.as_str().unwrap_or("ko");
         language

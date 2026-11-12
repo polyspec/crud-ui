@@ -113,7 +113,7 @@ fn truthy(value: Option<&Value>) -> bool {
 
 #[allow(
     clippy::disallowed_methods,
-    reason = "display-formats.md: a format option that the column omits takes its default, and a label that it omits is the value"
+    reason = "CUDF-005, CUDF-090: a format option that the column omits takes its default, and a label that it omits is the value"
 )]
 fn cell_display(
     format: &Value,
@@ -848,7 +848,7 @@ pub(crate) fn check_pagination_declaration(pagination: &Value, path: &str) -> Fo
 /// supplied page and total.
 #[allow(
     clippy::disallowed_methods,
-    reason = "display-formats.md, pagination: perPage 20, mode pages and page 1 are the defaults, and an unknown total has no page"
+    reason = "CUDF-089: perPage 20, mode pages and page 1 are the defaults, and an unknown total has no page"
 )]
 fn pagination_model(
     declared: &Value,

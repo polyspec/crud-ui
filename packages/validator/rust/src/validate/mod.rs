@@ -107,17 +107,15 @@ pub fn validate(
         compose_properties(spec_map, loader, &opts)?
     } else {
         let composed = compose_spec(spec_map, loader, &opts)?;
-        // A root whose composed `properties` is no object has no fields, as the TypeScript
-        // reference reads it; the 9a audit lists this reading for its P-3 judgement.
-        #[allow(
-            clippy::disallowed_methods,
-            reason = "R-1: listed in the audit of the crudui core"
-        )]
-        composed
-            .get("properties")
-            .and_then(Value::as_object)
-            .cloned()
-            .unwrap_or_default()
+        // CUVR-091: a root without object properties after composition is no form.
+        match composed.get("properties") {
+            Some(Value::Object(properties)) => properties.clone(),
+            _ => {
+                return Err(
+                    FormInputError::new("A form spec must be a group with properties").into(),
+                )
+            }
+        }
     };
 
     // Load-path forbidden-scan (SPEC §6): walk the composed single spec to

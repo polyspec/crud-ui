@@ -224,7 +224,7 @@ impl Validator {
             let present = data.get(property_key);
             #[allow(
                 clippy::disallowed_methods,
-                reason = "R-1: listed in the audit of the crudui core: an absent value is validated as null (CUVR-001)"
+                reason = "CUVR-090: a field whose data has no member is validated with the value null"
             )]
             let field_value = present.cloned().unwrap_or(Value::Null);
 
