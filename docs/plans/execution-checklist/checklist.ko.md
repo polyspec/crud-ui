@@ -1,6 +1,6 @@
 # Execution checklist
 <!-- doc-id: docs-plans-execution-checklist -->
-<!-- source-sha256: 2e42e7c0831de99270179acb16bca95185dc5cd775bfa3322020a3057968aac8 -->
+<!-- source-sha256: a79fad68ff95ad2345a6743fd0d89b18251c8f2b476b74baa0507eb9a5bdfcfd -->
 
 ## [Wave 1](plan.ko.md#wave-1) — 좁은 viewport를 위한 stylesheet와 stylesheet의 Tailwind 버전
 
@@ -356,3 +356,4 @@
 | C19.6 | 파일 로더의 없는 파일을 validator 계약과 그 case에 적는다. 파일 로더는 없는 파일을 recognize 대상 오류로 알리고(CURP-032), validator의 loader 연산은 내는 kind마다 case를 가지며, 연산은 없는 파일의 실패를 스스로 쓰고, `FormError::code`는 실패의 code를 준다(CURP-033). | `docs/spec/runtime-packages.md`, `packages/validator/rust/interface.json`, `contracts/validator-cases.json`, `packages/{validator,generator}/rust` | `make test-rust`; `make lint-rust`; validator 계약의 `binding check`가 발견을 보고하지 않는다 | [o] |
 | C19.7 | Rust 코어의 배치에 대해 `make layout-check`가 보고하는 두 발견을 판정한다. binding이 자기 lint 표를 가지고 `lints.workspace = true` 없이 manifest를 쓰는 바인딩 crate 열 개의 `lint-cargo-lints`, 그리고 `legacy/packages/php-ext/src/polyspec_crudui.stub.php`의 `php-ext-stub-place`. | `config/layout.yml` 또는 판정이 정하는 파일 | `make layout-check` | [o] |
 | C19.8 | binding의 계약 schema에 member가 없어 적지 못한 것을 인터페이스 계약에 적는다(CURP-033). generator의 투영 `FormError::code`와, kind가 `ValidateError::Load` 안 `ComposeLoadError`의 code인 validator의 오류; `FormErrorCode::Compose` 안 합성 code의 중첩 경로; `run_action`의 form의 가변 빌림. case가 다른 계약의 callback을 줄 수 있게 되면 generator의 loader case를 쓴다. | `packages/{validator,generator}/rust/interface.json`, `contracts/generator-cases.json` | `make bindings-check BINDING=<cli of binding>` | [ ] |
+| C19.9 | C19.7의 tree에서 make -k lint test가 낸 실패를 고친다. lint-go는 binding generate가 쓰기 전까지 Go 파일이 없는 packages/{validator,generator}/go에 golangci-lint와 deadcode를 실행한다. phpcs는 legacy/packages/generator/php/tests와 legacy/packages/php-ext/tests/ValidateReport.php에서 120자를 넘는 줄 열두 개를 보고한다. oxlint는 안전하지 않은 타입 단언 두 개(scripts/check-schema.mts:73, tests/form-markup/naming.test.mts:35)를 보고한다. knip은 쓰이지 않는 파일 32개, tests/native-generators의 풀리지 않는 import 4개(examples/form-comparison/check-generation.mjs, legacy/packages/php-ext/tests/comparison/comparison.test.mjs, legacy/packages/php-ext/tests/engine/engine.test.mjs), 쓰이지 않는 export 3개와 export 타입 3개를 보고한다. test-python은 legacy/packages/{validator,generator}/python에서 .venv를 찾지 못한다. | `Makefile`, `knip.json`, `legacy/**`, `scripts/check-schema.mts`, `tests/**`, `examples/form-comparison/check-generation.mjs` | `make -k lint test` on the committed tree | [ ] |
