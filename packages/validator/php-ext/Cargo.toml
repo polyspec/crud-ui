@@ -5,18 +5,21 @@ version = "0.0.20"
 edition = "2021"
 rust-version = "1.99.0"
 publish = false
+build = "build.rs"
 
 [lib]
 name = "polyspec_crud_ui_validator"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
+test = false
+doctest = false
 
 [features]
 panic-test = []
 
 [dependencies]
 polyspec-crud-ui-validator = { path = "../rust" }
-polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", branch = "v1/rust-core", features = ["construct"] }
+polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", branch = "v1/rust-core", features = ["construct", "lock"] }
 polyspec-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
 ext-php-rs = "=0.16.4"
 
