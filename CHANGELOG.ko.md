@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b49d894d618604b9749398cd04e6fbb0554015c9ef7e3e5408890662969689af -->
+<!-- source-sha256: 03eec34453e4ca2f1f23b13f23e6b1decf7972c51d975a0b45b60ea7cc70a28b -->
 
 ## Unreleased
 
+- C19.3: commit된 tree에서 npm 12.2.0의 `npm install --package-lock-only`는 추적된 lock과 차이 없는 `package-lock.json`을 쓰고, `make layout-check`는 `mise.toml`의 alint로 `config/layout.yml`에서 통과합니다. C19.1이 손으로 쓴 lock과 layout은 기록된 도구가 쓰고 받아들이는 것과 같습니다.
 - C19.7: `config/layout.yml`이 Rust 코어 layout에 대한 `make layout-check`의 두 발견을 정합니다. 규칙 `lint-cargo-lints`는 바인딩 crate 열 개의 manifest(`packages/<component>/{ts,ts/wasm,python,php-ext,go/internal/ffi}/Cargo.toml`)를 뺍니다. `binding scaffold`가 이 manifest를 자기 lint로 쓰고 `make bindings-check`가 binding이 쓰는 것과 비교하므로(CK-19) workspace의 lint를 받을 수 없습니다. 규칙 `php-ext-stub-place`는 C19.2가 legacy 확장을 지울 때까지 그 stub `legacy/packages/php-ext/src/polyspec_crudui.stub.php`를 이전 자리에 허용합니다. `.gitignore`는 binding scaffold가 각 PHP 확장 package에 쓰는 `composer.json`의 Composer 설치 `packages/*/php-ext/vendor/`를 포함합니다. `make layout-check`는 이것을 Git이 무시하지 않는 설치 폴더로 보고했습니다. `make layout-check`는 발견 21건을 보고했고 이제 통과합니다.
 - C19.4: lock이 polyspec-binding-core 8faad21을 받고, 그 commit의 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 PHP 확장 crate는 macOS에서 확장의 link에 PHP 기호를 정의되지 않은 채로 두는 build script `build.rs`를 가지며 library 시험 target이 없고, Python·Node·PHP crate는 `polyspec-binding-core`의 feature `lock`을 켭니다. 그 commit의 cli로 실행한 `make bindings-check`는 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 아홉 건과 두 건을 보고했습니다.
 - P-8: `benchmarks/validators/README.md`와 `legacy/examples/cross-check-console/client/README.md`가 한국어 twin `README.ko.md`와 marker `doc-id`를 가지며, `config/documents.json`이 이 둘을 더 이상 빼지 않으므로 `make docs-check`가 두 쌍을 읽습니다. `config/documents.json`은 API Extractor가 영어로만 쓰는 API report `legacy/packages/**/etc/*.api.md`를 뺍니다. `make documents-stamp`는 그 세 파일에 대해 `is missing`으로 실패했습니다. `legacy/tests/fixtures`의 일곱 문서(`buttons`, `expr`, `form-choices`, `form-render`, `history-functions`, `template-shape`, `view-functions`)의 한국어 twin이 영어 파일의 sha256을 가집니다. `legacy/`로의 이동이 그 영어 파일을 바꾸었습니다. `tests/fixtures`와 `legacy/tests/fixtures`의 한국어 `buttons/README.ko.md`는 compile 실패를 보고하는 주체로 runner를 적고, 두 곳의 한국어 `form-render/README.ko.md`는 영어 파일처럼 행 추가 컨트롤을 낱말로 적습니다. `config/owner-checks.json`은 `benchmarks/validators/README*.md`를 소유합니다.
