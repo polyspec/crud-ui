@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: d6f58cbed726e612d734124c734b8e26db5e6de3f19631be35475879c70362ec -->
+<!-- source-sha256: d961eba6fb3e7a0490fb9e3d103d07599cf6e0fcc819b8488759a50823c7b792 -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -48,7 +48,7 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   Enforced by: none, 지원하는 PHP 범위는 저장소 규칙입니다.
 
 - Own: 공유 도구는 root manifest와 lock이 고정한 설치 package `@polyspec/kit`입니다. 첫 make 실행 전에 native npm이
-  `packageManager`에서 정확한 npm release를 읽고 잠긴 설치를 실행합니다(`docs/operations/package-build.md`). `Makefile`은
+  `devEngines.packageManager`에서 정확한 npm release를 읽고 잠긴 설치를 실행합니다(`docs/operations/package-build.md`). `Makefile`은
   이 저장소가 실행하는 recipe를 모두 담으며, kit utility의 recipe는 그 utility를 설치 package(`node_modules/@polyspec/kit`)에서
   명시적인 인자로 시작합니다. 설치 뒤 `make install-tools TOOLS=npm`과 `make install-packages`가 checkout 도구와 package를
   준비합니다. 도구의 설정은 각 도구가 읽는 이 저장소의 파일입니다: `.npmrc`, `mise.toml`의 `[settings]`와 `[env]`,
@@ -57,7 +57,7 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   가져온 이 저장소의 파일입니다. 코드는 package export를 통해 kit module을 import합니다.
   Enforced by: none, 저장소가 어떤 recipe와 도구 설정을 두는지는 저장소의 설계입니다.
 - Own: 모든 도구는 checkout이 기록한 정확한 release로 실행합니다(`mise.toml`과 `mise.lock`, `rust-toolchain.toml`,
-  `config/toolchain.json`, `package.json`의 `packageManager`). image는 digest로, Debian package는 snapshot 날짜로, action은
+  `config/toolchain.json`, `package.json`의 `devEngines.packageManager`). image는 digest로, Debian package는 snapshot 날짜로, action은
   commit SHA로, browser는 잠근 package가 고정한 build로 지정합니다. 어떤 실행도 최신 release나 channel을 registry에
   묻지 않으며, 도구는 스스로 다른 release를 설치하지 않습니다(`RUSTUP_AUTO_INSTALL=0`, `GOTOOLCHAIN=local`). 저장소의
   도구는 checkout 안(`make install-tools`의 `var/tools`)에 설치하며 machine에는 설치하지 않습니다. polyspec 버전이 0.0.x인

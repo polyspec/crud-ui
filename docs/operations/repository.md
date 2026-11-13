@@ -9,7 +9,7 @@ pushes `main`.
 
 ## Checkout bootstrap
 
-Before running make, install the root lock with the exact npm release declared in `packageManager`, using the
+Before running make, install the root lock with the exact npm release declared in `devEngines.packageManager`, using the
 [native npm bootstrap](package-build.md#runtime-and-dependency-versions). The Makefile then includes the bootstrap of the
 installed `@polyspec/kit` package. Its source or packed commands run without requiring a sibling kit checkout. Bootstrap
 files belong to the installed package and are not repository copies. Every workflow job that runs make performs this

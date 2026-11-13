@@ -1,11 +1,11 @@
 # 테스트 실행
 <!-- doc-id: docs-operations-testing -->
-<!-- source-sha256: 5ddba42efd29f9627a2677cafdcdbc3f6cb607689979fec9dcee539037af8d6a -->
+<!-- source-sha256: e139683e0f975f9d57fa99b953920f8dcd61e3485181e82bb38fd52e55dbea9d -->
 
 [English](testing.md).
 
 저장소 루트에서 실행합니다. checkout은 먼저 `make install-tools TOOLS=npm`으로 `scripts/kit/bootstrap`의 copy된 installer가
-`packageManager`의 npm을 설치하게 하고, `make install-packages`로 그 npm이 package `@polyspec/kit`을 포함한 `package-lock.json`을
+`devEngines.packageManager`의 npm을 설치하게 하고, `make install-packages`로 그 npm이 package `@polyspec/kit`을 포함한 `package-lock.json`을
 설치하게 합니다. 그 전에는 다른 target이 실행되지 않습니다. 모든 도구는 checkout이 기록한 release로 실행됩니다(`docs/operations/package-build.ko.md`,
 "런타임과 의존성 버전"). `make install`은 기록한 npm, npm과 Composer 의존성, `rust-toolchain.toml`의 Rust toolchain, comparison의 OrderedJSON checkout과
 모든 Cargo.lock의 crate(`make crudui-install-crates`),

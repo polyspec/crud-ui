@@ -1,6 +1,6 @@
 # 패키지 빌드 검사
 <!-- doc-id: tests-build-readme -->
-<!-- source-sha256: 74605d2f3e2228b8acc96ade533b7990c81b0adecc68228259dd5ad151a0963b -->
+<!-- source-sha256: f453aec650a8e5b20c9de1f8f2275f61c8caa8b36fdd7070f6def7eab76cf00d -->
 
 [English](README.md).
 
@@ -21,7 +21,7 @@ npm run test:packages
 기록된 도구 릴리스는 선언과 manifest 하한이며 kit의 pin이어야 합니다(K854: 도구 검사 삭제). 모든 CI job은 `ubuntu-24.04`에서 실행되고, action을 commit SHA로 지정하며,
 기록한 릴리스를 설치하고 자신이 설치한 도구를 검사합니다. checkout은 컨테이너 정의를
 두지 않습니다. 릴리스 채널이나 machine의 브라우저는 쓰지 않습니다.
-`package.json`의 `packageManager`는 정확한 npm 릴리스 하나를 기록합니다. 검사는 실행 중인
+`package.json`의 `devEngines.packageManager`는 정확한 npm 릴리스 하나를 기록합니다. 검사는 실행 중인
 npm이나 workflow step이 다른 릴리스를 고르면 실패하며, `make install-tools`가
 그 릴리스를 checkout의 `var/tools`에 설치합니다. `tests/build/tool-path.test.mts`는 script, make 대상, CI step이
 npm을 machine에 설치할 때, 또는 make나 CI job이 `var/tools/bin`을 `PATH`의 맨 앞에

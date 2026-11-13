@@ -21,7 +21,7 @@ The recorded releases of the tools are the declarations and manifest floors to b
 the pins of kit. Every CI job runs on `ubuntu-24.04`, names its actions by
 commit SHA, sets up the recorded releases and checks the tools it set up; the checkout tracks
 no container definition; no browser of a release channel or of the machine is used.
-`packageManager` of `package.json` records one exact npm release;
+`devEngines.packageManager` of `package.json` records one exact npm release;
 the check fails when the running npm or a workflow step
 selects another release, and `make install-tools` installs it into `var/tools` of the checkout.
 `tests/build/tool-path.test.mts` fails when a script, a make target or a CI step installs npm into the machine,

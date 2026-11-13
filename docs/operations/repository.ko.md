@@ -1,6 +1,6 @@
 # 저장소
 <!-- doc-id: docs-operations-repository -->
-<!-- source-sha256: 9107178f03725785ccb7dbfa02fdfd973dc706b620f84add0f00909e63f5b6fc -->
+<!-- source-sha256: 3b4f30d1a330977efc79fe5d428d5fd41a8fea7959cd862f52d88d04a97ce3e9 -->
 
 [English](repository.md).
 
@@ -9,7 +9,7 @@ GitHub ruleset은 없습니다. 작업은 checklist row마다 commit하며 로�
 
 ## Checkout bootstrap
 
-Make를 실행하기 전에 [native npm bootstrap](package-build.ko.md#런타임과-의존성-버전)으로 `packageManager`에 선언한 정확한
+Make를 실행하기 전에 [native npm bootstrap](package-build.ko.md#런타임과-의존성-버전)으로 `devEngines.packageManager`에 선언한 정확한
 npm release를 사용해 root lock을 설치합니다. 그 뒤 Makefile이 설치된 `@polyspec/kit` package의 bootstrap을 include합니다.
 Source 또는 packed 명령은 sibling kit checkout 없이 실행할 수 있습니다. Bootstrap 파일은 설치 package에 속하며 저장소
 사본이 아닙니다. Make를 실행하는 모든 workflow job은 첫 make 명령 전에 이 설치를 수행합니다.

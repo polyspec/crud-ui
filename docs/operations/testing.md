@@ -4,7 +4,7 @@
 [한국어](testing.ko.md).
 
 Run from the repository root. A checkout first runs `make install-tools TOOLS=npm`, which installs the npm of
-`packageManager` with the copied installer of `scripts/kit/bootstrap`, and `make install-packages`, which installs
+`devEngines.packageManager` with the copied installer of `scripts/kit/bootstrap`, and `make install-packages`, which installs
 `package-lock.json` with that npm, the package `@polyspec/kit` included; until then no other target runs. Every tool runs at
 the release that the checkout records (`docs/operations/package-build.md`, "Runtime and dependency versions"): `make install` installs the
 recorded npm, the npm and Composer dependencies, the Rust toolchain of `rust-toolchain.toml`, the

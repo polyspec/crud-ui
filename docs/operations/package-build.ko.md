@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: 0f0e49f3c932b9195dd9697b915c770bdeb84338dabd474667e00cf49a8cd603 -->
+<!-- source-sha256: f57e69eb88362aad19318fc0c1025e2eebec930f4ceb6709be33e978d6610979 -->
 
 [English](package-build.md).
 
@@ -152,10 +152,11 @@ Node.js는 활성 LTS 또는 다음 LTS로 지정된 최신 짝수 안정 메이
 사용하지 않습니다. 어떤 실행도 채널의 최신 릴리스를 registry에 묻지 않고, 어떤 도구도 스스로
 다른 버전을 설치하지 않습니다.
 
-첫 `make` 전에 `packageManager`에 선언한 release의 native npm으로 root lock을 설치합니다:
+첫 `make` 전에 `devEngines.packageManager`에 선언한 release의 native npm으로 root lock을 설치합니다:
 
 ```sh
-npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts
+root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"
+(cd "${TMPDIR:-/tmp}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts)
 ```
 
 이 명령은 `@polyspec/kit`을 설치하며, Makefile의 recipe는 그 utility를 packed release의 `node_modules/@polyspec/kit/dist`에서,
@@ -164,7 +165,7 @@ setup-node 뒤 첫 make 명령 전에 이 bootstrap을 실행합니다. Bootstra
 
 - `mise.toml`의 `node`는 정확한 Node.js 릴리스를 기록합니다. `make install-tools TOOLS=npm`이 그것을 mise로
   `var/tools`에 설치하고 `var/tools/bin/node`가 실행하며, CI의 setup-node는 그 bootstrap을 시작하려고만 그것을 읽습니다(kit K171).
-- 루트 `package.json`의 `packageManager`는 정확한 npm 릴리스를 기록합니다. 설치하고 패키징하고
+- 루트 `package.json`의 `devEngines.packageManager`는 정확한 npm 릴리스를 기록합니다. 설치하고 패키징하고
   스크립트를 실행하는 npm이 그 결과를 바꾸기 때문이며, `pack --json` report가 npm 11의 배열에서
   npm 12의 object로 바뀐 것이 그 예입니다. `make install-tools`(`node_modules/@polyspec/kit/dist/install-tools.mjs`)는 정확히 그 릴리스를
   checkout의 무시되는 directory `var/tools/npm`에 설치하며, 다른 모든 checkout이 쓰는

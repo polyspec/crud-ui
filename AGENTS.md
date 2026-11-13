@@ -50,7 +50,7 @@ ships as an example; this file states only the rules of crudui.
   Enforced by: none, the supported PHP range is the repository rule.
 
 - Own: The shared tools are the installed package `@polyspec/kit`, pinned by the root manifest and lock. Before the
-  first make invocation, native npm reads the exact npm release from `packageManager` and runs the locked install
+  first make invocation, native npm reads the exact npm release from `devEngines.packageManager` and runs the locked install
   (`docs/operations/package-build.md`). The `Makefile` holds every recipe that this repository runs; each recipe of a kit
   utility starts it from the installed package (`node_modules/@polyspec/kit`) with explicit arguments. After installation,
   `make install-tools TOOLS=npm` and `make install-packages` prepare the checkout tools and packages. The settings of the
@@ -60,7 +60,7 @@ ships as an example; this file states only the rules of crudui.
   files of this repository too, taken from the examples of kit. Code imports kit modules through package exports.
   Enforced by: none, which recipes and tool settings the repository holds is its own design.
 - Own: Every tool runs at the exact release that the checkout records (`mise.toml` with `mise.lock`, `rust-toolchain.toml`,
-  `config/toolchain.json`, `packageManager` of `package.json`). An image is named by its digest, its Debian packages by a
+  `config/toolchain.json`, `devEngines.packageManager` of `package.json`). An image is named by its digest, its Debian packages by a
   snapshot date, an action by its commit SHA and a browser by the build that the locked package pins. No run queries a
   registry for a latest release or a channel, and no tool installs another release on its own
   (`RUSTUP_AUTO_INSTALL=0`, `GOTOOLCHAIN=local`). A tool of the repository is installed into the checkout (`var/tools` by

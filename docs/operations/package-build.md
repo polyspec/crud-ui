@@ -162,10 +162,11 @@ latest stable release supported by the project. Pre-release versions are exclude
 unless a specification explicitly requires one. No run queries a registry for the
 latest release of a channel, and no tool installs another version on its own.
 
-Before the first `make`, install the root lock with native npm at the release declared in `packageManager`:
+Before the first `make`, install the root lock with native npm at the release declared in `devEngines.packageManager`:
 
 ```sh
-npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts
+root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"
+(cd "${TMPDIR:-/tmp}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts)
 ```
 
 This command installs `@polyspec/kit`, whose utilities the recipes of the Makefile run: from
@@ -176,7 +177,7 @@ belongs to the checkout at `var/bootstrap/npm-cache`.
 
 - `node` of `mise.toml` records the exact Node.js release, which `make install-tools TOOLS=npm` installs into
   `var/tools` with mise and `var/tools/bin/node` runs; CI's setup-node reads it only to start that bootstrap (kit K171).
-- `packageManager` of the root `package.json` records the exact npm release,
+- `devEngines.packageManager` of the root `package.json` records the exact npm release,
   because the npm that installs, packs and runs the scripts changes their results,
   as the `pack --json` report changed from an array in npm 11 to an object in
   npm 12. `make install-tools` (`node_modules/@polyspec/kit/dist/install-tools.mjs`) installs exactly

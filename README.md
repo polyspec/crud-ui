@@ -15,7 +15,8 @@ classes using native generation and validation.
 Run from the repository root:
 
 ```sh
-npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts
+root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"
+(cd "${TMPDIR:-/tmp}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts)
 make install-tools TOOLS=npm
 make install-packages
 make install-tools

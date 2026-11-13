@@ -1,6 +1,6 @@
 # CRUDUI
 <!-- doc-id: readme -->
-<!-- source-sha256: c4a21ae0f1ff0f003faecb04f7e0ee02434b440fd3e716e3903087e7356bfed5 -->
+<!-- source-sha256: 5dadbbf4ce9f4ee48f50599f8f3bcc049a9ed763e319393e200c5c2ade4e4380 -->
 
 [English](README.md).
 
@@ -16,7 +16,8 @@ CRUDUI은 YAML 또는 JavaScript 객체로 폼·목록·상세·검증을 정의
 저장소 루트에서 실행합니다.
 
 ```sh
-npm_config_cache="$PWD/var/bootstrap/npm-cache" npm exec --yes --package="$(node -p 'require("./package.json").packageManager.split("+")[0]')" -- npm ci --ignore-scripts
+root="$PWD"; version="$(node -p 'require("./package.json").devEngines.packageManager.version')"
+(cd "${TMPDIR:-/tmp}" && npm_config_cache="$root/var/bootstrap/npm-cache" npm exec --yes --package="npm@$version" -- npm --prefix "$root" ci --ignore-scripts)
 make install-tools TOOLS=npm
 make install-packages
 make install-tools
