@@ -207,7 +207,7 @@ implementations pass. Earlier reports do not verify the current dependency graph
 ## Deployment
 
 [CRUDUI 0.0.8](https://github.com/polyspec/crudui/releases/tag/v0.0.8) is public with 11 package archives.
-Commit `47612fe4297203d46232646eba8365a6fbda43ef` passed full CI and push checks.
+The release commit of 0.0.8 passed full CI and push checks.
 The release workflow installed and checked all 11 archives outside the checkout before publication.
 Both Go module tags identify the same commit.
 The table records completed browser checks for all four servers.

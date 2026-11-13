@@ -1,6 +1,6 @@
 # 기능 상태
 <!-- doc-id: docs-features -->
-<!-- source-sha256: 11925557ab31f14203ce9d91cb6e2ac39ee2a7fa0b53d264a72e2621bb638244 -->
+<!-- source-sha256: 9423c2b689bbe56b0a644889058dddb18f4e38c225ca398eb4b58998c04272cb -->
 
 [English](features.md). 계약은 [명세](spec/form-runtime.ko.md)에 정의합니다.
 테스트와 배포를 별도로 기록합니다. `pending`은 통과 결과가 아닙니다.
@@ -201,7 +201,7 @@ Git에서 제거했습니다. 새 이미지는 같은 잠금 버전의 PHP 의�
 ## 배포
 
 [CRUDUI 0.0.8](https://github.com/polyspec/crudui/releases/tag/v0.0.8)은 패키지 archive 11개와 함께 공개했습니다.
-Commit `47612fe4297203d46232646eba8365a6fbda43ef`는 전체 CI와 push 검사를 통과했습니다.
+0.0.8의 release commit은 전체 CI와 push 검사를 통과했습니다.
 Release workflow는 공개 전에 checkout 밖에서 archive 11개를 모두 설치하고 검사했습니다.
 두 Go module tag도 같은 commit을 가리킵니다.
 표는 서버별로 완료된 최신 검사를 기록합니다.

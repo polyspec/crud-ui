@@ -54,7 +54,7 @@ parser currently prevents adopting either evaluated release. No VitePress depend
 
 The [security advisory](https://github.com/advisories/GHSA-gfr2-rv44-r23c) identifies markdown-it versions
 `>=14.1.0 <14.3.3` and `>=15.0.0 <15.0.3` as affected. The
-[parser fix](https://github.com/markdown-it/markdown-it/commit/48fbc46) replaces the repeated string accumulation with
+parser fix of 14.3.3 and 15.0.3 replaces the repeated string accumulation with
 position-based handling and bounds reference labels. The release archives inspected were obtained by
 `npm pack vitepress@1.6.4` and `npm pack vitepress@2.0.0-alpha.21`. The fresh archive SHA-256 values are `37f38a64e1e8ea1e9db68ad201488327c8df1303d3cdb2ceb0e3754259d65114`
 for 1.6.4 and `770f3dd5521427e11959059f6bffd339ec71ce63fa6e9059a4d491c810dcd11a` for 2.0.0-alpha.21.

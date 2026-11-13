@@ -1,5 +1,5 @@
 <!-- doc-id: rebuild-documentation-web -->
-<!-- source-sha256: 34aef9e1e870df4dc8ed272ec88f7b0d5d028f4c2ba12d85c3b6835e37f8f17c -->
+<!-- source-sha256: 1e08c771ae7e5a447bd75f0a8f54763ed3a1ab93fbfe06f5b9d78e04872aebd3 -->
 # 재구현 기록: documentation web
 
 [English](documentation-web.md)
@@ -54,7 +54,7 @@ VitePress는 필요한 route 규칙, base 설정, navigation, static asset과 de
 
 [Security advisory](https://github.com/advisories/GHSA-gfr2-rv44-r23c)는 markdown-it의
 `>=14.1.0 <14.3.3`과 `>=15.0.0 <15.0.3`을 영향받는 version으로 명시합니다.
-[Parser fix](https://github.com/markdown-it/markdown-it/commit/48fbc46)는 반복 string 누적을 position 기반 처리로 대체하고
+14.3.3과 15.0.3의 parser fix는 반복 string 누적을 position 기반 처리로 대체하고
 reference label 길이를 제한합니다. 검사한 release archive는 `npm pack vitepress@1.6.4`와
 `npm pack vitepress@2.0.0-alpha.21`로 받았습니다. 새 archive의 SHA-256은 1.6.4가 `37f38a64e1e8ea1e9db68ad201488327c8df1303d3cdb2ceb0e3754259d65114`,
 2.0.0-alpha.21이 `770f3dd5521427e11959059f6bffd339ec71ce63fa6e9059a4d491c810dcd11a`입니다.

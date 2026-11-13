@@ -1,5 +1,5 @@
 <!-- doc-id: plan-release-readiness -->
-<!-- source-sha256: 55bf8a35dd152fea23adb20daa97e1ddbc605b236c326201ed5935bc64a7e117 -->
+<!-- source-sha256: 363e82c9fd9fcea768a7c0e121a220ddaa866a3ea02328b24b514fa5016db512 -->
 # 로컬 release candidate 준비
 
 [English](plan.md)
@@ -7,8 +7,7 @@
 ## 준비 순서
 
 [Checklist](checklist.ko.md)의 C18.1–C18.10은 완료했습니다. C18.12는 CI 환경의 설치 범위를 완료했고 C18.13은 0.0.9 공개를 준비합니다.
-CRUDUI 0.0.8은 commit
-`47612fe4297203d46232646eba8365a6fbda43ef`의 전체 CI와 push 검사, 세 tag의 release workflow를
+CRUDUI 0.0.8은 release commit의 전체 CI와 push 검사, 세 tag의 release workflow를
 통과하고 공개했습니다. Release workflow는 공개 전에 checkout 밖에서 archive 11개를 설치하고 검사했습니다.
 
 ## 현재 결정
@@ -93,7 +92,7 @@ Raw npm audit는 low 항목과 이를 사용하는 plugin을 계속 보고합니
 
 ## 0.0.9 candidate 검증 (C18.13-1)
 
-Candidate archive는 commit `508e5bb4`의 source를 담습니다. Native package manager가 0.0.9 입력을 해석했고
+Candidate archive는 C18.13-2 commit의 source를 담습니다. Native package manager가 0.0.9 입력을 해석했고
 깨끗한 외부 consumer가 archive 11개를 모두 설치하고 검사했습니다. Go workspace는 로컬 module 7개를 선택하며
 Cargo lock 6개는 외부 package version과 checksum을 유지합니다. PHP 검증은 8.4.27에서 실행해 source case 36개와
 native constructor case 2개가 통과했습니다. 공개에는 최종 candidate commit의 CI 성공이 필요합니다.
@@ -113,6 +112,6 @@ runtime 전달 및 native CI 계획을 검증합니다. C18.13은 전체 격리 
 
 ## 최종 candidate 입력 (C18.13-6)
 
-Kit 0.0.63은 source snapshot `1bed34da`에서 archive 11개를 모두 빌드했습니다. 깨끗한 consumer 설치와 release/manifest
+Kit 0.0.63은 C18.13-7의 source snapshot에서 archive 11개를 모두 빌드했습니다. 깨끗한 consumer 설치와 release/manifest
 소유 case 20개가 통과했습니다. Native consumer metadata는 명시적 package repository로 로컬 zip archive를 지정합니다.
 최종 source metadata와 consumer 기록을 main에 반영한 뒤 전체 candidate CI와 공개 검사를 실행합니다.

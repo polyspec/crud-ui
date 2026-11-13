@@ -1,24 +1,25 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b3762521e30a343de16660e61fe628ba0a9d77e496b74b842e7a9e1651e588ac -->
+<!-- source-sha256: 48cc3ce909ff1cf57e8b2c6b2d0909ea5e433506f43e008e22b594a69384942b -->
 
 ## Unreleased
 
+- C19.13: GitHub action의 commit 고정과 lock 말고는 어떤 추적 파일도 Git commit을 이름하지 않는다. changelog, checklist, plan, `docs/features.md`와 `docs/rebuild/documentation-web.md`는 이 저장소, kit, binding, polyspec-json, markdown-it의 commit 55개를 이름했다. 이제 각 기록은 변경을 그 행, 기능이나 release 버전으로 이름하고, Red 실행은 변경 전 tree에서 한 것으로 적는다. `AGENTS.md`가 규칙을 적고, `make records-check`가 실행하는 `tests/docs/tracked-commits.test.mts`는 글자와 숫자를 함께 가진 7~12자리나 40자리 hex token을 실패시킨다. commit을 이름하지 않는 꼴, 곧 지수가 있는 십진수, CSS 색, UUID의 일부, 실행 파일 header 목록, PHP stub 파일의 hash, 순서대로 늘어선 hex 숫자의 꾸민 값은 제외다. Red: 그 테스트가 commit 이름 256개로 실패했다. green: `make records-check`가 exit 0으로 끝난다.
 - C19.8: 인터페이스 계약은 binding의 계약 schema가 이제 받는 것을 적는다. generator의 `errors.code`는 투영 `FormError::code`를 적고, 합성 code의 kind는 중첩 경로 `FormErrorCode::Compose/ComposeErrorCode::*`다. validator는 load 실패나 입력 실패의 code인 `ValidateErrorCode`와, `errors.code`가 적는 `ValidateError::error_code`를 갖는다. 그 kind는 `ValidateErrorCode::Load/ComposeErrorCode::*`와 `ValidateErrorCode::InvalidFormInput`이며, `errors.recognized`가 적는 `ValidateError::recognized`는 file loader가 일으킨 kind의 실패를 만든다. 오류 클래스의 property는 함수 `FormError::at`, `FormError::trace`, `ValidateError::trace`이고, 마지막 것은 입력 실패에서 비어 있다. binding은 property를 코어 오류로 부르므로 `compose_load_error`의 trace는 `ComposeLoadError`가 아니라 `ValidateError`의 함수다. generator의 모든 class parameter는 `core`에 빌림을 적으며, `run_action`의 form은 `&mut`다. 이 member들을 받는 binding 생성기의 cli로 돌린 `make bindings-check`는 CK-17 하나와 CK-67 열여섯을 보고했고 이제 보고하지 않는다. lock이 이 member들을 받는 binding release를 고정할 때까지 CK-20으로 실패한다. 그 cli의 binding generate는 대상마다 validator 계약의 11개와 generator 계약의 58개 항목을 거부하며, 그 가운데 이 member들의 것은 없다. 두 crate의 Rust 시험 `error_code`가 새 함수들을 시험한다.
-- C19.2: lock이 polyspec-binding-core 3b4bc6b를 받고, 그 commit의 `binding scaffold`가 바인딩 crate의 진입 파일을 rustfmt의 꼴로 쓰며 generator의 Go crate에 feature `fault-test`를 더합니다. 3b4bc6b의 `binding check`는 두 계약 모두에 발견을 보고하지 않습니다. binding generate는 target마다 validator 계약의 항목 12개와 generator 계약의 항목 59개를 거부합니다. 49a4e97은 13개와 61개를 거부했습니다. record parameter의 기본값과 module `errors`의 오류 unit은 생성되고, 오류 unit의 `list<text>` 타입 property `trace`가 새 거부입니다.
-- C19.2, C19.8, C19.9: 우회 원인이 binding 49a4e97의 상태를 적습니다. `make e2e`는 두 계약을 읽고 코어를 build하며 코어 시험 1917개로 두 계약의 binding check와 case를 통과하고, binding이 record parameter 기본값을 생성하지 않는 의존 json의 생성에서 멈춥니다. binding generate는 target마다 validator 계약의 항목 13개와 generator 계약의 항목 61개를 거부합니다. C19.8은 우회됩니다. 계약 schema에 투영 `FormError::code`, 합성 code의 중첩 경로, parameter의 빌림을 위한 member가 없습니다.
+- C19.2: lock이 더 새 polyspec-binding-core를 받고, 그 `binding scaffold`가 바인딩 crate의 진입 파일을 rustfmt의 꼴로 쓰며 generator의 Go crate에 feature `fault-test`를 더합니다. 그 binding의 `binding check`는 두 계약 모두에 발견을 보고하지 않습니다. binding generate는 target마다 validator 계약의 항목 12개와 generator 계약의 항목 59개를 거부합니다. G-5의 fault 지점이 있는 binding(C19.12)은 13개와 61개를 거부했습니다. record parameter의 기본값과 module `errors`의 오류 unit은 생성되고, 오류 unit의 `list<text>` 타입 property `trace`가 새 거부입니다.
+- C19.2, C19.8, C19.9: 우회 원인이 G-5의 fault 지점이 있는 binding(C19.12)의 상태를 적습니다. `make e2e`는 두 계약을 읽고 코어를 build하며 코어 시험 1917개로 두 계약의 binding check와 case를 통과하고, binding이 record parameter 기본값을 생성하지 않는 의존 json의 생성에서 멈춥니다. binding generate는 target마다 validator 계약의 항목 13개와 generator 계약의 항목 61개를 거부합니다. C19.8은 우회됩니다. 계약 schema에 투영 `FormError::code`, 합성 code의 중첩 경로, parameter의 빌림을 위한 member가 없습니다.
 - C19.12: generator crate가 feature `fault-test`를 켠 자기 자신을 dev-dependency로 가지므로(binding CK-65), flag 없는 `cargo test -p polyspec-crud-ui-generator`가 지점 `crud_ui_generator.random_source`를 켭니다. CURT-095의 단위 시험과 그 지점을 켜는 계약 case가 모든 시험 build에서 실행됩니다. 이전에는 feature 없이 `contract_cases`가 그중 세 건을 실패시켰습니다. flag 없이 시험 987개가 통과합니다.
-- C19.4: `contracts/generator-cases.json`이 class instance를 받거나 그 위에서 호출되는 generator member 46개의 계약 case를 가집니다. `view_state`와 `history`의 property, `form`의 member 22개, `bind_form`, `bind_buttons`, `render_form`, `render_form_view`, `render_outline`, `render_data`, `run_action`, view와 history 함수, 로더를 받는 연산 다섯 개이며 모두 135 case입니다. receiver와 class 타입 인수는 binding GN-13f의 instance 값이며, `generator.compile_form`, `form.constructor`, `generator.initial_view`, `generator.toggle_row_view`, `generator.empty_history`, `generator.record_change`가 만들고 `then`의 호출이 준비합니다. 로더를 받는 연산은 validator 계약의 로더를 callback fixture로 받고, 각 연산이 확장하는 validator 연산의 case를 씁니다. 계약은 어떤 입력도 닿지 않는 kind를 더 이상 적지 않습니다. compile된 template을 받는 `form.constructor`, `bind_form`, `render_form`, `render_form_view`의 합성 kind, `form`의 method와 `run_action`의 `unsupported_field_type`(생성자가 모든 field와 각 collection의 template 행을 bind하므로 있는 form에는 binding이 거부하는 field 타입이 없습니다), `form.fields`, `form.buttons`, `form.snapshot`, `form.get_data`, `form.set_all_expanded`, `render_outline`, `render_data`의 `invalid_form_input`입니다. 이 member의 코어 경로는 어떤 입력도 실패에 닿지 않는 `Result`를 돌려주므로 `core.result: true`를 적습니다. Rust 시험 `contract_cases`는 instance 값을 만들고 fixture 로더를 실행하며 case의 `result`를 비교합니다. 49a4e97의 `binding check`는 두 계약 모두에 발견을 보고하지 않습니다. 이전에는 case가 없는 member 46개를 보고했습니다.
-- C19.12: 난수 원천의 실패(CURT-095)가 binding G-5의 fault 주입 지점 `crud_ui_generator.random_source`입니다. 코어는 macro `binding_core::fault::point!`(상수 `fault::RANDOM_SOURCE`)로 그 지점을 읽고, kind `io`로 켠 fault는 `create_row_key`, `add_row`, `copy_row`, 행을 추가하거나 복사하는 action을 `RANDOM_UNAVAILABLE`로 실패시킵니다. generator crate는 `random-failure-test`와 그 thread-local 스위치 대신 feature `fault-test`(`polyspec-binding-core/fault-test`)를 선언하므로, 지점은 그 feature가 있는 build에서만 살아 있습니다. generator 계약은 그 지점을 `faults`에 적고(inject `io`, fills `random_unavailable`), 계약 case `create_row_key::random_unavailable`은 `inject` 대신 `faults`에서 그 지점을 켭니다. `contract_cases`는 case의 fault를 그 member에 켜고 모든 fault가 일어났는지 요구하며, `fault-test`가 없는 build에서는 그 case를 실패시킵니다. 이전에는 무시했습니다. `binding check`는 그 case에 대해 지점이 `faults`에 없고 `random_unavailable`을 내는 case가 없다고 보고했고, 이제 둘 다 보고하지 않습니다. lock은 serde_json 1.0.154와 libc 0.2.191을 고정하는 polyspec-binding-core 49a4e97과 polyspec-json 73d2db9를 받고, 49a4e97의 `binding scaffold`는 generator의 Node·WASM·Python·PHP crate에 `fault-test = ["polyspec-crud-ui-generator/fault-test"]`를 더합니다.
+- C19.4: `contracts/generator-cases.json`이 class instance를 받거나 그 위에서 호출되는 generator member 46개의 계약 case를 가집니다. `view_state`와 `history`의 property, `form`의 member 22개, `bind_form`, `bind_buttons`, `render_form`, `render_form_view`, `render_outline`, `render_data`, `run_action`, view와 history 함수, 로더를 받는 연산 다섯 개이며 모두 135 case입니다. receiver와 class 타입 인수는 binding GN-13f의 instance 값이며, `generator.compile_form`, `form.constructor`, `generator.initial_view`, `generator.toggle_row_view`, `generator.empty_history`, `generator.record_change`가 만들고 `then`의 호출이 준비합니다. 로더를 받는 연산은 validator 계약의 로더를 callback fixture로 받고, 각 연산이 확장하는 validator 연산의 case를 씁니다. 계약은 어떤 입력도 닿지 않는 kind를 더 이상 적지 않습니다. compile된 template을 받는 `form.constructor`, `bind_form`, `render_form`, `render_form_view`의 합성 kind, `form`의 method와 `run_action`의 `unsupported_field_type`(생성자가 모든 field와 각 collection의 template 행을 bind하므로 있는 form에는 binding이 거부하는 field 타입이 없습니다), `form.fields`, `form.buttons`, `form.snapshot`, `form.get_data`, `form.set_all_expanded`, `render_outline`, `render_data`의 `invalid_form_input`입니다. 이 member의 코어 경로는 어떤 입력도 실패에 닿지 않는 `Result`를 돌려주므로 `core.result: true`를 적습니다. Rust 시험 `contract_cases`는 instance 값을 만들고 fixture 로더를 실행하며 case의 `result`를 비교합니다. 그 binding의 `binding check`는 두 계약 모두에 발견을 보고하지 않습니다. 이전에는 case가 없는 member 46개를 보고했습니다.
+- C19.12: 난수 원천의 실패(CURT-095)가 binding G-5의 fault 주입 지점 `crud_ui_generator.random_source`입니다. 코어는 macro `binding_core::fault::point!`(상수 `fault::RANDOM_SOURCE`)로 그 지점을 읽고, kind `io`로 켠 fault는 `create_row_key`, `add_row`, `copy_row`, 행을 추가하거나 복사하는 action을 `RANDOM_UNAVAILABLE`로 실패시킵니다. generator crate는 `random-failure-test`와 그 thread-local 스위치 대신 feature `fault-test`(`polyspec-binding-core/fault-test`)를 선언하므로, 지점은 그 feature가 있는 build에서만 살아 있습니다. generator 계약은 그 지점을 `faults`에 적고(inject `io`, fills `random_unavailable`), 계약 case `create_row_key::random_unavailable`은 `inject` 대신 `faults`에서 그 지점을 켭니다. `contract_cases`는 case의 fault를 그 member에 켜고 모든 fault가 일어났는지 요구하며, `fault-test`가 없는 build에서는 그 case를 실패시킵니다. 이전에는 무시했습니다. `binding check`는 그 case에 대해 지점이 `faults`에 없고 `random_unavailable`을 내는 case가 없다고 보고했고, 이제 둘 다 보고하지 않습니다. lock은 serde_json 1.0.154와 libc 0.2.191을 고정하는 G-5의 fault 지점이 있는 polyspec-binding-core와 더 새 polyspec-json을 받고, 그 `binding scaffold`는 generator의 Node·WASM·Python·PHP crate에 `fault-test = ["polyspec-crud-ui-generator/fault-test"]`를 더합니다.
 - C19.11: generator 계약이 `compile_options.basepath`, `list_options.basepath`, `list_options.language`의 기본값에 대해 상수 `boundary::DEFAULT_BASEPATH`(`""`)와 `boundary::DEFAULT_LANGUAGE`(`"ko"`, CUMK-070)를 `default_core`에 적고, Rust `boundary::CompileOptions`와 `boundary::ListOptions`의 field는 `Option<String>`이며 연산은 그 `None`을 상수로 읽습니다. binding generate는 세 field를 `a {literal} or {const} default names the constant of the core in default_core (U-2)`로 거부했습니다. 단위 시험 `a_left_out_option_is_its_default_constant`는 option을 생략한 목록과 상수를 준 목록을 렌더하고 form을 compile하여 같은 결과를 얻습니다.
-- C19.7: lock이 polyspec-binding-core 1bf0025를 받고, 그 commit의 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 manifest는 자기 표 대신 workspace의 lint(`[lints] workspace = true`)를 받고, WASM과 Go crate는 `polyspec-binding-core`의 feature `lock`을 켜고 `polyspec-json`에 의존하며, generator의 것은 Node·Python·PHP crate처럼 `polyspec-crud-ui-validator`에도 의존하고, 진입 파일은 rustfmt처럼 속성을 줄 바꿈합니다. 그 commit의 `binding check`는 두 계약 모두에 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 계약마다 열 건과 한 건을 보고했습니다. `make layout-check`는 `lint-cargo-lints` 발견을 보고하지 않고, C19.2가 지우는 legacy 확장의 stub에 대한 `php-ext-stub-place`로만 실패합니다. 이전에는 발견 21건을 보고했습니다.
+- C19.7: lock이 더 새 polyspec-binding-core를 받고, 그 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 manifest는 자기 표 대신 workspace의 lint(`[lints] workspace = true`)를 받고, WASM과 Go crate는 `polyspec-binding-core`의 feature `lock`을 켜고 `polyspec-json`에 의존하며, generator의 것은 Node·Python·PHP crate처럼 `polyspec-crud-ui-validator`에도 의존하고, 진입 파일은 rustfmt처럼 속성을 줄 바꿈합니다. 그 commit의 `binding check`는 두 계약 모두에 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 계약마다 열 건과 한 건을 보고했습니다. `make layout-check`는 `lint-cargo-lints` 발견을 보고하지 않고, C19.2가 지우는 legacy 확장의 stub에 대한 `php-ext-stub-place`로만 실패합니다. 이전에는 발견 21건을 보고했습니다.
 - C19.9: `make crudui-install-python`이 `PYTHON_ROOTS`의 각 root(`legacy/packages/generator/python`, `legacy/packages/validator/python`)에도 환경 `.venv`를 만들고 uv workspace를 sync합니다. `make test-python`은 kit runner의 `--venv`가 각 root에서 가리키는 폴더인 그 root의 `.venv`의 Python으로 실행하는데, 설치는 `var/python`만 썼습니다. `make test-python`은 두 root에서 `spawn .../.venv/bin/python ENOENT`로 실패했고, 이제 `make crudui-install-python` 뒤에 통과합니다(시험 737개와 714개). `var/python`은 남습니다. `crudui-test-validator-python`과 `crudui-test-generator-python` suite, `contracts/features.json`의 feature 명령, `install-link`, 네이티브 생성기 프로그램, 교차 검증 콘솔이 그 Python을 실행합니다(C19.9).
 - C19.10: `mise.toml`이 WASM 바인딩 crate의 wasm-bindgen crate 판인 wasm-bindgen CLI 0.2.130을 고정하고, `mise.lock`은 binding의 lock이 기록한 플랫폼 linux-arm64, linux-x64, macos-arm64에 대한 release asset의 sha256을 가집니다. `rust-toolchain.toml`은 target `wasm32-unknown-unknown`을 적습니다. `make install-tools`는 CLI를 `var/tools/mise`에 설치하며, 그 CLI는 `wasm-bindgen 0.2.130`을 보고합니다(C19.10).
 - C19.9: `make lint-ts`는 oxlint 발견, 풀리지 않는 import, `tests/case-values.mts`의 쓰이지 않는 export를 보고하지 않습니다. `scripts/check-schema.mts`는 `OBJECT`가 좁힌 `raises` 객체에서 case의 실패 메시지를 꺼내고, `tests/form-markup/naming.test.mts`는 타입을 단언하는 대신 객체가 아닌 case 파일을 거부합니다. `examples/form-comparison/check-generation.mjs`와 `legacy/packages/php-ext`의 시험 `comparison`, `engine`은 `legacy/`로의 이동이 옮긴 자리인 `legacy/tests/native-generators`를 import합니다. `tests/case-values.mts`에는 쓰이지 않는 interface `CaseValue`가 없습니다. 고정 사본 `legacy/tests/fixtures`에는 fixture 생성기가 더 이상 없습니다. `buttons`, `detail-render`, `form-complete`, `form-outline`, `form-state`, `list-render`, `template-shape`, `validate`의 생성기와 case module 22개는 다시 쓰지 않는 case를 썼고 어느 것도 import하지 않았으며, 이 폴더들의 README 쌍은 `tests/fixtures` 아래 공유 fixture의 생성기를 가리킵니다. knip은 여전히 `tests/fixtures/{form-session,form-state,text-validity,view-session}`의 module fixture 열 개와, 그 module만 import하는 `tests/fixtures/form-state/harness.mts`의 export 다섯 개를 보고합니다(C19.9).
 - C19.9: `legacy/packages/generator/php/tests`의 PHP 시험은 class 주석을 120자에서 줄을 나누고, `legacy/packages/php-ext/tests/ValidateReport.php`는 `value-graphs.json`의 경로를 자기 변수에 둡니다. `legacy/`로의 이동이 열두 줄을 phpcs의 한도보다 길게 만들었고, `make lint-php`는 그것을 보고했으며 이제 규칙을 그대로 둔 채 통과합니다.
 - C19.3: commit된 tree에서 npm 12.2.0의 `npm install --package-lock-only`는 C19.1이 손으로 쓴 추적된 lock과 차이 없는 `package-lock.json`을 씁니다. `make layout-check`는 C19.7의 발견으로 실패하므로, 그 발견이 없어질 때까지 C19.3은 우회됩니다.
 - C19.7: `.gitignore`는 `binding scaffold`가 각 PHP 확장 package에 쓰는 `composer.json`의 Composer 설치 `packages/*/php-ext/vendor/`를 포함합니다. `make layout-check`는 이것을 Git이 무시하지 않는 설치 폴더로 보고했습니다. `make layout-check`는 규칙을 그대로 두고 발견 21건으로 실패합니다. `binding scaffold`가 자기 `[lints.rust]`, `[lints.clippy]` 표로 쓰고 `lints.workspace = true`가 없는 바인딩 crate manifest 열 개마다 `lint-cargo-lints` 두 건, C19.2가 지우는 legacy 확장의 stub `legacy/packages/php-ext/src/polyspec_crudui.stub.php`에 `php-ext-stub-place` 한 건입니다. binding scaffold가 workspace의 lint를 받는 manifest를 쓰고 C19.2가 끝날 때까지 C19.7은 우회됩니다.
-- C19.4: lock이 polyspec-binding-core 8faad21을 받고, 그 commit의 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 PHP 확장 crate는 macOS에서 확장의 link에 PHP 기호를 정의되지 않은 채로 두는 build script `build.rs`를 가지며 library 시험 target이 없고, Python·Node·PHP crate는 `polyspec-binding-core`의 feature `lock`을 켭니다. 그 commit의 cli로 실행한 `make bindings-check`는 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 아홉 건과 두 건을 보고했습니다.
+- C19.4: lock이 더 새 polyspec-binding-core를 받고, 그 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 PHP 확장 crate는 macOS에서 확장의 link에 PHP 기호를 정의되지 않은 채로 두는 build script `build.rs`를 가지며 library 시험 target이 없고, Python·Node·PHP crate는 `polyspec-binding-core`의 feature `lock`을 켭니다. 그 commit의 cli로 실행한 `make bindings-check`는 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 아홉 건과 두 건을 보고했습니다.
 - P-8: `benchmarks/validators/README.md`와 `legacy/examples/cross-check-console/client/README.md`가 한국어 twin `README.ko.md`와 marker `doc-id`를 가지며, `config/documents.json`이 이 둘을 더 이상 빼지 않으므로 `make docs-check`가 두 쌍을 읽습니다. `config/documents.json`은 API Extractor가 영어로만 쓰는 API report `legacy/packages/**/etc/*.api.md`를 뺍니다. `make documents-stamp`는 그 세 파일에 대해 `is missing`으로 실패했습니다. `legacy/tests/fixtures`의 일곱 문서(`buttons`, `expr`, `form-choices`, `form-render`, `history-functions`, `template-shape`, `view-functions`)의 한국어 twin이 영어 파일의 sha256을 가집니다. `legacy/`로의 이동이 그 영어 파일을 바꾸었습니다. `tests/fixtures`와 `legacy/tests/fixtures`의 한국어 `buttons/README.ko.md`는 compile 실패를 보고하는 주체로 runner를 적고, 두 곳의 한국어 `form-render/README.ko.md`는 영어 파일처럼 행 추가 컨트롤을 낱말로 적습니다. `config/owner-checks.json`은 `benchmarks/validators/README*.md`를 소유합니다.
 - CURP-032, CURP-033: 파일 로더가 `load`를 kind `ref_file_not_found`의 합성 load 오류로 실패시켜 없다고 알린 파일은 `files`에 없는 파일과 같게 연산을 실패시킵니다: `REF_FILE_NOT_FOUND`, 메시지 `$ref file not found: <key>`, 그 key의 trace. Rust `LoaderBridge`는 로더가 준 오류의 메시지와 trace를 돌려주었습니다. validator 계약은 `file_loader.load`의 `errors.recognize`에 `compose_load_error`를 적고, `contracts/validator-cases.json`은 `validate_with_loader`, `validate_list_with_loader`, `validate_detail_with_loader`가 내는 kind마다 로더를 callback fixture로 준 case를 가집니다. `binding check`는 validator 계약에 발견 3건을 보고했고 이제 보고하지 않습니다. Rust `FormError::code`는 실패의 code를 주며, 계약 schema에 member가 생기면 generator 계약이 투영으로 적는 함수입니다.
 - C19.5: `composer.lock`이 `legacy/packages/{validator,generator}/php`의 manifest에 대해 Composer가 쓰는 lock입니다(test script, path reference, content hash). `make crudui-install-composer`는 추적된 lock을 다시 썼고 이제 바꾸지 않습니다.
@@ -31,7 +32,7 @@
 - G-5: 계약의 각 연산의 raises는 그 연산이 내는 kind만 적고 kind마다 계약 case가 있습니다: `validate` 14개, `hidden_paths` 9개(파일 없이 조합하므로 파일이 필요한 kind는 없음), `validate_list`와 `validate_detail` 11개, `build_list`, `render_list`, `build_detail`, `render_detail` 11개(선언에 규칙이 없음). 로더를 받는 연산은 확장하는 연산의 kind를 받습니다(G-5).
 - CUDF-091: Rust `validate_list`와 `validate_detail`은 객체가 아닌 명세를 멤버 없는 선언으로 통과시키던 대신 조합 전에 `INVALID_FORM_INPUT`와 CUDF-024 또는 CUDF-032의 메시지로 거절하며, `ValidateError`를 반환합니다(CUDF-091).
 - E-1: Rust validator의 입력 실패는 변형 `ValidateError::InvalidFormInput`이며, 그 kind `invalid_form_input`은 인터페이스 계약이 그 이름에서 이끌어 내는 kind와 같습니다. legacy 구현은 같은 실패를 코드 `INVALID_FORM_INPUT`으로 냅니다(E-1).
-- C19.1: lock이 binding branch 끝인 polyspec-binding-core f4e30c6을 받고, binding scaffold가 두 계약의 target go와 wasm의 package를 씁니다: `packages/<component>/go`(Go module `github.com/polyspec/crud-ui/packages/<component>/go`와 FFI crate `go/internal/ffi`)와 `packages/<component>/ts/wasm`이며 루트 workspace의 구성원입니다. `packages/<component>/ts/package.json`에 browser 진입점이 붙습니다. wasm crate는 wasm-bindgen 0.2.130과 js-sys 0.3.107을 고정합니다(C19.1).
+- C19.1: lock이 그때 binding branch 끝의 polyspec-binding-core를 받고, binding scaffold가 두 계약의 target go와 wasm의 package를 씁니다: `packages/<component>/go`(Go module `github.com/polyspec/crud-ui/packages/<component>/go`와 FFI crate `go/internal/ffi`)와 `packages/<component>/ts/wasm`이며 루트 workspace의 구성원입니다. `packages/<component>/ts/package.json`에 browser 진입점이 붙습니다. wasm crate는 wasm-bindgen 0.2.130과 js-sys 0.3.107을 고정합니다(C19.1).
 - G-5: `contracts/generator-cases.json`과 `contracts/validator-cases.json`은 fixture가 다른 형식의 규칙 corpus인 member의 계약 case를 담습니다: `compile_form`, `form_template.from_json`, `build_outline`, `render_outline_view`, `render_data_panel`, `form_buttons_html`, `resolve_action`, `initial_view`, `collapsible_rows`, `set_all_expanded_view`, `empty_history`, `sequence_row_key`, `create_row_key`, `hidden_paths`. 각 case는 member를 한 번 부르고 member가 내는 kind마다 case가 하나씩 있으며, 각 crate의 Rust 시험 `contract_cases`가 경계에서 실행합니다. 계약은 컴파일이 내지 않는 규칙과 금지 키의 kind를 `compile_form`의 raises에서 뺍니다(G-5).
 - G-5: 목록·상세 렌더링 case인 `tests/fixtures/list-render`, `detail-render`를 binding 생성 시험의 case 형식으로 쓰고, 레코드 `options`는 모든 필드를 적습니다. 행이 목록이 아닌 목록 case는 계약이 가리키지 않는 group `row_shapes`에 둡니다. generator 계약은 이 case만 가리킵니다. 다른 family는 단계의 세션을 담거나 member에 class handle을 주는데 case는 그것을 줄 수 없고, `form-state`에는 case 파일이 없습니다. legacy TypeScript 구현으로 실행하는 fixture 생성기는 legacy 구현의 도구이며 실행하지 않습니다(G-5).
 - C19.1: `legacy/` 아래 네이티브 생성기 검사기에서 Rust 대상을 뺍니다. Rust 코어는 `legacy/tests/fixtures`를 고정한 뒤 바뀐 규칙을 따르므로 그 사본 위의 비교는 의미가 없고, Rust 코어는 자기 시험이 `tests/fixtures`로 검사합니다(C19.1).
@@ -208,7 +209,7 @@
 
 ### 2026-10-31 — 0.0.9 게시를 기록한다 (C17.97)
 
-- release run 41090852507이 db740a10의 CI run 41086677097을 사용했다. tag v0.0.9는 db740a10에 annotated(bb3dbf85)로 달렸고, GitHub Release는 draft가 아닌 공개 상태이며 asset은 12개다.
+- release run 41090852507이 0.0.9 release commit의 CI run 41086677097을 사용했다. tag v0.0.9는 그 commit에 annotated로 달렸고, GitHub Release는 draft가 아닌 공개 상태이며 asset은 12개다.
 
 ### 2026-10-31 — kit의 pie-build 대신 PIE를 직접 실행해 OrderedJSON php-ext를 빌드한다 (C17.96)
 
@@ -415,7 +416,7 @@
 
 ### 2026-10-27 — CRUDUI 0.0.8을 공개한다 (C18.10)
 
-- Release v0.0.8은 CI와 push 검사를 통과한 commit `47612fe4297203d46232646eba8365a6fbda43ef`의 패키지 archive 11개를 공개한다. Release workflow는 공개 전에 checkout 밖에서 archive 11개를 모두 설치하고 검사한다. 두 Go module tag도 같은 commit을 가리킨다.
+- Release v0.0.8은 CI와 push 검사를 통과한 0.0.8 release commit의 패키지 archive 11개를 공개한다. Release workflow는 공개 전에 checkout 밖에서 archive 11개를 모두 설치하고 검사한다. 두 Go module tag도 같은 commit을 가리킨다.
 
 ## 0.0.8
 
@@ -793,7 +794,7 @@
 
 ### 2026-10-26 — 구조 조건 편집기 (C17.25)
 
-- C17.25 완료 (C17.25): condition 필드는 design.editor로 text 또는 structured를 선언하고, structured 편집기에서는 비교가 제시하는 서로 다른 필드 이름인 options.fields를 선언한다 (docs/spec/schema.md, CUSC-083~CUSC-086). structured 편집기에서 모든 생성기는 textarea를 숨기고 그 뒤에 조건 트리의 화면을 렌더링한다: 모드 select를 가진 fieldset 그룹, 필드·연산자·값 컨트롤을 가진 비교, conditionTree judge에서의 판정 텍스트, 그리고 비교·그룹·판정 텍스트를 추가하고 조건을 제거하는 버튼 (docs/spec/form-markup.md, CUMK-067). 편집기가 보여 줄 수 없는 값은 conditionTree와 필드 경로를 밝히는 이름 있는 오류 뒤에 textarea를 보이게 둔다 (CUMK-068). connectForm은 이 컨트롤과 버튼으로 트리를 다시 쓴다 (docs/spec/form-runtime.md, Condition values). TypeScript, HTML·React·Vue·Svelte 렌더러, PHP, PHP 확장, Go, Rust, Python이 구현한다. Red: make parity-check UNITS="form-render spec-validity" exit 2 at 976c214b; green: 모든 구현이 form-render 241/241, spec-validity 37/37 사례를 통과한다.
+- C17.25 완료 (C17.25): condition 필드는 design.editor로 text 또는 structured를 선언하고, structured 편집기에서는 비교가 제시하는 서로 다른 필드 이름인 options.fields를 선언한다 (docs/spec/schema.md, CUSC-083~CUSC-086). structured 편집기에서 모든 생성기는 textarea를 숨기고 그 뒤에 조건 트리의 화면을 렌더링한다: 모드 select를 가진 fieldset 그룹, 필드·연산자·값 컨트롤을 가진 비교, conditionTree judge에서의 판정 텍스트, 그리고 비교·그룹·판정 텍스트를 추가하고 조건을 제거하는 버튼 (docs/spec/form-markup.md, CUMK-067). 편집기가 보여 줄 수 없는 값은 conditionTree와 필드 경로를 밝히는 이름 있는 오류 뒤에 textarea를 보이게 둔다 (CUMK-068). connectForm은 이 컨트롤과 버튼으로 트리를 다시 쓴다 (docs/spec/form-runtime.md, Condition values). TypeScript, HTML·React·Vue·Svelte 렌더러, PHP, PHP 확장, Go, Rust, Python이 구현한다. Red: make parity-check UNITS="form-render spec-validity" exit 2 on the tree before the change; green: 모든 구현이 form-render 241/241, spec-validity 37/37 사례를 통과한다.
 
 ### 2026-10-26 — Makefile이 kit 도구를 $(KIT_EXT)로 실행한다 (C17.29)
 
@@ -805,7 +806,7 @@
 
 ### 2026-10-25 — C17.4는 reference 규칙을 더한다(C17.4)
 
-- C17.4 완료(C17.4): reference 규칙은 facts.id 같은 필드의 선언 경로를 받는다. 그 id는 경로 위 모든 행에서 그 필드가 가진, 비어 있지 않은 scalar 값이며 숨긴 필드의 값도 포함하고, 값은 in의 포함 여부 규칙으로 통과한다. 문자열이 아니거나 선언된 필드, group, lang이 있는 필드를 가리키지 않는 매개변수는 INVALID_RULE_PARAMETER로 load에 실패한다(docs/spec/validation-rules.md, CUVR-071~CUVR-074). TypeScript, PHP, PHP 확장, Go, Rust, Python이 구현하고 meta-schema, CLI explain 라벨, TypeScript API report가 이름을 싣는다. red: e198dba8에서 make docs-check가 scripts/check-schema.mts에서 실패했고(meta-schema가 사례 reference-row-ids의 reference를 거부), make parity-check UNITS="validate"는 모든 구현에서 356개 중 341개만 통과하고 reference 사례 15개에 실패했다. green: docs-check가 통과하고 모든 구현이 356개 중 356개를 통과한다.
+- C17.4 완료(C17.4): reference 규칙은 facts.id 같은 필드의 선언 경로를 받는다. 그 id는 경로 위 모든 행에서 그 필드가 가진, 비어 있지 않은 scalar 값이며 숨긴 필드의 값도 포함하고, 값은 in의 포함 여부 규칙으로 통과한다. 문자열이 아니거나 선언된 필드, group, lang이 있는 필드를 가리키지 않는 매개변수는 INVALID_RULE_PARAMETER로 load에 실패한다(docs/spec/validation-rules.md, CUVR-071~CUVR-074). TypeScript, PHP, PHP 확장, Go, Rust, Python이 구현하고 meta-schema, CLI explain 라벨, TypeScript API report가 이름을 싣는다. red: 변경 전 tree에서 make docs-check가 scripts/check-schema.mts에서 실패했고(meta-schema가 사례 reference-row-ids의 reference를 거부), make parity-check UNITS="validate"는 모든 구현에서 356개 중 341개만 통과하고 reference 사례 15개에 실패했다. green: docs-check가 통과하고 모든 구현이 356개 중 356개를 통과한다.
 
 ### 2026-10-25 — crudui는 kit K614와 K621을 따른다 (C17.28)
 
@@ -945,7 +946,7 @@
 
 ### 2026-10-21 — sprintf-js advisory 예외가 두 경로를 모두 적는다 (C16.169-1)
 
-- `config/dependency-policy.json`의 sprintf-js advisory 예외(npm advisory 1241202, GHSA-hp3w-g68c-fv3c, medium)가 sprintf-js 1.0.3을 들여오는 두 경로를 모두 적는다 (C16.169-1): `scripts/gen-api-docs.mts`가 고정 인자로 실행하는 직접 개발 의존성 `@microsoft/api-documenter` 7.30.18과 `@polyspec/kit`의 `@microsoft/api-extractor` 7.59.4이며, 둘 다 `@rushstack/ts-command-line` 5.3.17과 argparse 1.0.10을 거친다; 사유는 kit 경로만 있다고 적었다. advisory를 고친 sprintf-js가 없으므로(취약 범위 <= 1.1.3, 최신) 그 제거(C16.169)는 공동 의존성 일괄 갱신에 들어간다. Red: 옛 문장의 `make text-absent`가 e9d3accc에서 exit 2; green: exit 0.
+- `config/dependency-policy.json`의 sprintf-js advisory 예외(npm advisory 1241202, GHSA-hp3w-g68c-fv3c, medium)가 sprintf-js 1.0.3을 들여오는 두 경로를 모두 적는다 (C16.169-1): `scripts/gen-api-docs.mts`가 고정 인자로 실행하는 직접 개발 의존성 `@microsoft/api-documenter` 7.30.18과 `@polyspec/kit`의 `@microsoft/api-extractor` 7.59.4이며, 둘 다 `@rushstack/ts-command-line` 5.3.17과 argparse 1.0.10을 거친다; 사유는 kit 경로만 있다고 적었다. advisory를 고친 sprintf-js가 없으므로(취약 범위 <= 1.1.3, 최신) 그 제거(C16.169)는 공동 의존성 일괄 갱신에 들어간다. Red: 옛 문장의 `make text-absent`가 변경 전 tree에서 exit 2; green: exit 0.
 
 ### 2026-10-21 — form comparison의 unit pool은 unit을 node:test test로 실행한다 (C16.28-1)
 
@@ -953,7 +954,7 @@
 
 ### 2026-10-21 — go outline case를 이름으로 보고한다 (C16.165-3)
 
-- `packages/generator/go/outline_test.go`의 `TestOutlineFixture`가 `tests/fixtures/form-outline/cases.json`의 각 case를 같은 단언으로 subtest `TestOutlineFixture/<case>`로 실행한다 (C16.165-3); C16.165가 subtest 없는 반복으로 남겨 `make parity-check UNITS=form-outline`이 다섯 case 중 하나도 읽지 못했다. Red: 그 검사가 14a3b7b2에서 `R3 not-executed form-outline go`(5개 중 0)를 보고; green: 5개 중 5개 통과, go R3 줄 없음.
+- `packages/generator/go/outline_test.go`의 `TestOutlineFixture`가 `tests/fixtures/form-outline/cases.json`의 각 case를 같은 단언으로 subtest `TestOutlineFixture/<case>`로 실행한다 (C16.165-3); C16.165가 subtest 없는 반복으로 남겨 `make parity-check UNITS=form-outline`이 다섯 case 중 하나도 읽지 못했다. Red: 그 검사가 변경 전 tree에서 `R3 not-executed form-outline go`(5개 중 0)를 보고; green: 5개 중 5개 통과, go R3 줄 없음.
 
 ### 2026-10-21 — form comparison은 step을 kit의 runCommand로 실행한다 (C16.28)
 
@@ -961,11 +962,11 @@
 
 ### 2026-10-21 — text unit와 expr fixture의 go 바인딩이 케이스를 이름으로 보고한다 (C16.165)
 
-- text-compile-form, text-bind-form, text-create-form, text-build-list, text-build-detail, text-validity-validate, text-validity-validate-list, text-validity-validate-detail unit의 go 바인딩은 각자의 테스트 함수로 실행되고, expr fixture는 항목마다 하위 테스트 하나로 보고하여, `make parity-check`가 go에서 이 unit들의 모든 케이스를 실행된 것으로 보고한다 (C16.165-1, C16.165-2). Red: 094317cc에서 `make parity-check UNITS="text-compile-form text-bind-form text-create-form text-build-list text-build-detail text-validity-validate text-validity-validate-list text-validity-validate-detail expr"`의 go 줄이 케이스를 실행되지 않음 또는 suite에 없음으로 보고; green: 각 go 바인딩이 모든 케이스를 통과하고 go R3 줄이 없다 (C16.165).
+- text-compile-form, text-bind-form, text-create-form, text-build-list, text-build-detail, text-validity-validate, text-validity-validate-list, text-validity-validate-detail unit의 go 바인딩은 각자의 테스트 함수로 실행되고, expr fixture는 항목마다 하위 테스트 하나로 보고하여, `make parity-check`가 go에서 이 unit들의 모든 케이스를 실행된 것으로 보고한다 (C16.165-1, C16.165-2). Red: 변경 전 tree에서 `make parity-check UNITS="text-compile-form text-bind-form text-create-form text-build-list text-build-detail text-validity-validate text-validity-validate-list text-validity-validate-detail expr"`의 go 줄이 케이스를 실행되지 않음 또는 suite에 없음으로 보고; green: 각 go 바인딩이 모든 케이스를 통과하고 go R3 줄이 없다 (C16.165).
 
 ### 2026-10-21 — go validator의 text와 expr unit이 케이스를 이름으로 보고한다 (C16.165-2)
 
-- packages/validator/go/validator/validate/text_conformance_test.go: TestInputTextMatchesFixture는 세 fixture를 하위 테스트로 계속 실행하고, 새 함수 TestInputTextValidate, TestInputTextValidateList, TestInputTextValidateDetail은 fixture 하나씩을 runTextFixture로 실행한다. 하위 테스트는 케이스의 기본 이름이다. packages/validator/go/validator/expr/conformance_test.go: 각 식 항목은 중첩 하위 테스트 대신 자기 테스트 본문에서 단계(tokens, ast, evaluation)를 차례로 확인하고, 실패한 단계는 t.Errorf로 보고한 뒤 반환하여 뒤 단계가 그대로 실행된다. config/parity.json은 text-validity-validate, text-validity-validate-list, text-validity-validate-detail unit을 각자의 함수에 묶는다 (C16.165-2). Red: `make parity-check UNITS="text-validity-validate text-validity-validate-list text-validity-validate-detail expr"` 094317cc에서 exit 2, go 줄 `R3 not-executed text-validity-validate go ...: not executed: pass-paired-surrogates, ...`와 `R3 not-executed expr go ...: not in the suite: path-sibling-truthy/tokens, ...`; green: go 줄 모두 `exit 0`, 케이스 21, 6, 5, 74개 모두 통과, go R3 줄 없음.
+- packages/validator/go/validator/validate/text_conformance_test.go: TestInputTextMatchesFixture는 세 fixture를 하위 테스트로 계속 실행하고, 새 함수 TestInputTextValidate, TestInputTextValidateList, TestInputTextValidateDetail은 fixture 하나씩을 runTextFixture로 실행한다. 하위 테스트는 케이스의 기본 이름이다. packages/validator/go/validator/expr/conformance_test.go: 각 식 항목은 중첩 하위 테스트 대신 자기 테스트 본문에서 단계(tokens, ast, evaluation)를 차례로 확인하고, 실패한 단계는 t.Errorf로 보고한 뒤 반환하여 뒤 단계가 그대로 실행된다. config/parity.json은 text-validity-validate, text-validity-validate-list, text-validity-validate-detail unit을 각자의 함수에 묶는다 (C16.165-2). Red: `make parity-check UNITS="text-validity-validate text-validity-validate-list text-validity-validate-detail expr"` 변경 전 tree에서 exit 2, go 줄 `R3 not-executed text-validity-validate go ...: not executed: pass-paired-surrogates, ...`와 `R3 not-executed expr go ...: not in the suite: path-sibling-truthy/tokens, ...`; green: go 줄 모두 `exit 0`, 케이스 21, 6, 5, 74개 모두 통과, go R3 줄 없음.
 
 ### 2026-10-21 — go input text unit가 케이스를 이름으로 보고한다 (C16.165-1)
 
@@ -1026,35 +1027,35 @@
 
 ### 2026-10-21 — parity 선언이 발견 없이 성립한다 (C16.57)
 
-- docs/spec의 모든 요구사항 id를 그것을 명명하는 테스트의 unit이 인용한다: C16.146..C16.158 뒤 main에서 `make parity-declarations-check`가 발견을 보고하지 않으므로(R4, R13, R14, R15 줄 없음) 행이 끝났다. Red: 1788f7ca에서 exit 2(Unicode 테스트의 R5 다섯 줄); green: exit 0 (C16.57).
+- docs/spec의 모든 요구사항 id를 그것을 명명하는 테스트의 unit이 인용한다: C16.146..C16.158 뒤 main에서 `make parity-declarations-check`가 발견을 보고하지 않으므로(R4, R13, R14, R15 줄 없음) 행이 끝났다. Red: 변경 전 tree에서 exit 2(Unicode 테스트의 R5 다섯 줄); green: exit 0 (C16.57).
 
 ### 2026-10-21 — PRINCIPLES 사본이 kit K431을 따른다 (C16.164)
 
-- `make kit-sync`가 링크된 kit에서 `PRINCIPLES.md`와 `PRINCIPLES.ko.md`를 다시 쓴다 (C16.164): kit K431은 변경으로 낡게 된 주석이나 문서를 그 커밋에서 고치고, 나중에 발견된 것은 Verification이 `make text-absent FILE=<path> TEXT=<stale text>`인 하위 항목으로 둔다는 규칙을 더했다. Red: `make kit-check`가 aaa19888에서 exit 2(두 사본이 다름); green: exit 0.
+- `make kit-sync`가 링크된 kit에서 `PRINCIPLES.md`와 `PRINCIPLES.ko.md`를 다시 쓴다 (C16.164): kit K431은 변경으로 낡게 된 주석이나 문서를 그 커밋에서 고치고, 나중에 발견된 것은 Verification이 `make text-absent FILE=<path> TEXT=<stale text>`인 하위 항목으로 둔다는 규칙을 더했다. Red: `make kit-check`가 변경 전 tree에서 exit 2(두 사본이 다름); green: exit 0.
 
 ### 2026-10-21 — config/rebuild.json이 form comparison의 공유 adapter 진입점을 분류한다 (C16.163)
 
-- `config/rebuild.json`이 C16.58-27이 추가한 `examples/form-comparison/src/adapters/view-entries.ts`를 form comparison 예제의 policy 모듈로 선언한다 (C16.163); 분류가 없어 main에서 `make rebuild-check`가 실패했다. Red: `make rebuild-check`가 ffb7d22a에서 exit 2("the tool has no class in config/rebuild.json"); green: exit 0.
+- `config/rebuild.json`이 C16.58-27이 추가한 `examples/form-comparison/src/adapters/view-entries.ts`를 form comparison 예제의 policy 모듈로 선언한다 (C16.163); 분류가 없어 main에서 `make rebuild-check`가 실패했다. Red: `make rebuild-check`가 변경 전 tree에서 exit 2("the tool has no class in config/rebuild.json"); green: exit 0.
 
 ### 2026-10-21 — 설치 검사가 링크된 checkout의 kit를 받아들인다 (C16.162)
 
-- `tests/build/runtime-version-policy.test.mts`("make installs nothing on its own and make install installs the Rust toolchain")가 `make install`의 install-tools 단계를 `node_modules/@polyspec/kit/dist` 또는 `../kit/dist` 아래에서 찾는다 (C16.162): kit가 형제 checkout에 링크된(make link) checkout에서는 KIT가 `../kit/dist`이므로, make install이 kit의 install-tools를 실행했는데도 링크된 모든 checkout에서 테스트가 실패했다. Red: 테스트 파일이 53d11cac에서 exit 1; green: exit 0.
+- `tests/build/runtime-version-policy.test.mts`("make installs nothing on its own and make install installs the Rust toolchain")가 `make install`의 install-tools 단계를 `node_modules/@polyspec/kit/dist` 또는 `../kit/dist` 아래에서 찾는다 (C16.162): kit가 형제 checkout에 링크된(make link) checkout에서는 KIT가 `../kit/dist`이므로, make install이 kit의 install-tools를 실행했는데도 링크된 모든 checkout에서 테스트가 실패했다. Red: 테스트 파일이 변경 전 tree에서 exit 1; green: exit 0.
 
 ### 2026-10-21 — CI 도구 규칙이 setup-php의 phpize와 php-config를 허용한다 (C16.161)
 
-- `tests/build/runtime-version-policy.test.mts`("every CI job sets up the recorded toolchains and checks the tools it set up")가 `tools: none` 외에 setup-php 입력 `tools: phpize, php-config`를 받아들인다 (C16.161). C16.9는 확장을 phpize로 빌드하며 그것을 빌드하는 CI job 다섯에 setup-php가 설치하는 PHP의 빌드 도구 `tools: phpize, php-config`를 주었지만, setup-php가 도구를 설치하지 않는다는 규칙은 그대로 두어 main에서 테스트가 실패했다. setup-php는 여전히 Composer를 설치하지 않는다: make install-tools가 mise.toml의 Composer를 설치한다. Red: 그 테스트가 77c77235에서 다섯 job을 명명하며 exit 1; green: exit 0.
+- `tests/build/runtime-version-policy.test.mts`("every CI job sets up the recorded toolchains and checks the tools it set up")가 `tools: none` 외에 setup-php 입력 `tools: phpize, php-config`를 받아들인다 (C16.161). C16.9는 확장을 phpize로 빌드하며 그것을 빌드하는 CI job 다섯에 setup-php가 설치하는 PHP의 빌드 도구 `tools: phpize, php-config`를 주었지만, setup-php가 도구를 설치하지 않는다는 규칙은 그대로 두어 main에서 테스트가 실패했다. setup-php는 여전히 Composer를 설치하지 않는다: make install-tools가 mise.toml의 Composer를 설치한다. Red: 그 테스트가 변경 전 tree에서 다섯 job을 명명하며 exit 1; green: exit 0.
 
 ### 2026-10-21 — make crudui-test-php-engine이 PHP 확장의 계약 테스트를 실행한다 (C16.160)
 
-- Makefile의 `crudui-test-php-engine`이 엔진·비교 테스트와 함께 `packages/php-ext/tests/contract/*.test.mjs`를 실행한다 (C16.160). C16.57-3-1과 C16.57-3-2가 unit `compose`와 `expr`의 php-extension binding으로 그곳에 `compose.test.mjs`와 `expr.test.mjs`를 추가했지만 어떤 프로젝트 명령도 이를 실행하지 않아 `tests/build/test-commands.test.mts`("every node:test file runs in a project command")가 거부했다. Red: 그 테스트가 d68d71c6에서 두 파일을 명명하며 exit 1; green: exit 0.
+- Makefile의 `crudui-test-php-engine`이 엔진·비교 테스트와 함께 `packages/php-ext/tests/contract/*.test.mjs`를 실행한다 (C16.160). C16.57-3-1과 C16.57-3-2가 unit `compose`와 `expr`의 php-extension binding으로 그곳에 `compose.test.mjs`와 `expr.test.mjs`를 추가했지만 어떤 프로젝트 명령도 이를 실행하지 않아 `tests/build/test-commands.test.mts`("every node:test file runs in a project command")가 거부했다. Red: 그 테스트가 변경 전 tree에서 두 파일을 명명하며 exit 1; green: exit 0.
 
 ### 2026-10-21 — text-validity 단위의 PHP 바인딩이 모든 사례를 보고한다 (C16.159)
 
-- text-validity 단위 여덟 개의 PHP 테스트를 단위별로 나눈다 (C16.159): `packages/validator/php/tests/Validate/TextValidityConformanceTest.php`는 `testValidateInputTextMatchesFixture`, `testValidateListInputTextMatchesFixture`, `testValidateDetailInputTextMatchesFixture`를 실행하고, `packages/generator/php/tests/InputTextTest.php`는 `testCompileFormCase`, `testBindFormCase`, `testCreateFormCase`, `testBuildListCase`, `testBuildDetailCase`를 실행하며, 데이터 제공자는 각 데이터 세트를 사례 이름으로 키 짓는다. `config/parity.json`에서 단위들의 php와 php-extension 바인딩 열여섯 개가 이 메서드를 명명한다. 데이터 세트 88개(21, 6, 5, 7, 17, 15, 11, 6 사례)와 그 단언은 바뀌지 않는다. Red: Verification이 d68d71c6에서 실패하며, 단위의 모든 php와 php-extension 바인딩이 R3 줄과 함께 `0 of N cases passed`를 보고한다; green: exit 0, 모든 php와 php-extension 바인딩이 `N of N cases passed`를 보고한다.
+- text-validity 단위 여덟 개의 PHP 테스트를 단위별로 나눈다 (C16.159): `packages/validator/php/tests/Validate/TextValidityConformanceTest.php`는 `testValidateInputTextMatchesFixture`, `testValidateListInputTextMatchesFixture`, `testValidateDetailInputTextMatchesFixture`를 실행하고, `packages/generator/php/tests/InputTextTest.php`는 `testCompileFormCase`, `testBindFormCase`, `testCreateFormCase`, `testBuildListCase`, `testBuildDetailCase`를 실행하며, 데이터 제공자는 각 데이터 세트를 사례 이름으로 키 짓는다. `config/parity.json`에서 단위들의 php와 php-extension 바인딩 열여섯 개가 이 메서드를 명명한다. 데이터 세트 88개(21, 6, 5, 7, 17, 15, 11, 6 사례)와 그 단언은 바뀌지 않는다. Red: Verification이 변경 전 tree에서 실패하며, 단위의 모든 php와 php-extension 바인딩이 R3 줄과 함께 `0 of N cases passed`를 보고한다; green: exit 0, 모든 php와 php-extension 바인딩이 `N of N cases passed`를 보고한다.
 
 ### 2026-10-21 — python 바인딩이 각 단위의 케이스를 이름으로 보고한다 (C16.157)
 
-- buttons, validate, form-render, form-view, form-history, form-actions, view-functions, expr 단위의 python 바인딩이 각 케이스를 이름으로 보고한다 (C16.157): `packages/generator/python/tests/conformance.py`와 `packages/validator/python/tests/conformance.py`의 `add_case_tests`가 클래스마다 케이스당 테스트 메서드 `test_<case>` 하나를 만들고, `test_buttons.py`, `test_form_render.py`, `test_form_state.py`, `test_expr.py`, `test_validate.py`가 케이스마다 같은 검증을 실행하며 픽스처 개수는 별도 테스트 클래스에 둔다. `config/parity.json`은 python 구현을 `var/python/bin/python`(패키지의 venv)으로 실행하고 각 바인딩의 테스트 클래스를 지정한다 (C16.157). Red: d68d71c6에서 `make -s parity-check UNITS="buttons validate form-render form-view expr form-history form-actions view-functions"`가 exit 1로 끝나며 각 단위의 python R3 `not executed` 줄이 남는다 (예: `R3 not-executed validate python ... exited with 1`); green: exit 0, 모든 python 단위가 자기 케이스를 전부 통과로 보고하고 (validate 341 of 341, form-render 201 of 201, buttons 22 of 22, expr 74 of 74, form-view 3 of 3, form-history 5 of 5, form-actions 20 of 20, view-functions 11 of 11) `R3 not-executed <단위> python` 줄이 없다.
+- buttons, validate, form-render, form-view, form-history, form-actions, view-functions, expr 단위의 python 바인딩이 각 케이스를 이름으로 보고한다 (C16.157): `packages/generator/python/tests/conformance.py`와 `packages/validator/python/tests/conformance.py`의 `add_case_tests`가 클래스마다 케이스당 테스트 메서드 `test_<case>` 하나를 만들고, `test_buttons.py`, `test_form_render.py`, `test_form_state.py`, `test_expr.py`, `test_validate.py`가 케이스마다 같은 검증을 실행하며 픽스처 개수는 별도 테스트 클래스에 둔다. `config/parity.json`은 python 구현을 `var/python/bin/python`(패키지의 venv)으로 실행하고 각 바인딩의 테스트 클래스를 지정한다 (C16.157). Red: 변경 전 tree에서 `make -s parity-check UNITS="buttons validate form-render form-view expr form-history form-actions view-functions"`가 exit 1로 끝나며 각 단위의 python R3 `not executed` 줄이 남는다 (예: `R3 not-executed validate python ... exited with 1`); green: exit 0, 모든 python 단위가 자기 케이스를 전부 통과로 보고하고 (validate 341 of 341, form-render 201 of 201, buttons 22 of 22, expr 74 of 74, form-view 3 of 3, form-history 5 of 5, form-actions 20 of 20, view-functions 11 of 11) `R3 not-executed <단위> python` 줄이 없다.
 
 ### 2026-10-21 — 확장이 내장한 목록 메시지가 검사된다 (C16.100-2)
 
@@ -1106,19 +1107,19 @@
 
 ### 2026-10-21 — Rust value graph가 공유 값을 포함해 사례 열두 개를 모두 실행한다 (C16.156-1-3)
 
-- Rust `JsonText`가 value-graph fixture의 공유 값을 받는다. `JsonText::Shared(Arc<JsonText>)`는 한 값을 여러 부모에 두고, `JsonText::Link(Weak<JsonText>)`는 자기 자신을 담는 값을 만든다(`packages/validator/rust/src/text.rs`, `packages/validator/rust/README.md`와 `README.ko.md`에 기록). 공유 값의 각 방문이 노드 하나로 세어지며, 검사(`check_specification`, `check_inputs`, `to_value`, `shape`, `invalid_path`)는 TypeScript 순회를 따른다. 먼저 빠른 순회를 하고, 첫 실패를 보고하는 순서 순회를 하며, 두 순회 모두 노드 한도와 중첩 한도를 따로 센다. `packages/validator/rust/tests/text_validity_conformance.rs`의 runner는 graph 기술의 형태 네 가지(`doubled`, `Arc::new_cyclic`을 쓰는 `self-twice`, `chain`, `flat`)를 만들어 `spec`, `data`, `files`에 놓는다 (C16.156-1-3). Red: `make -s parity-check UNITS="text-validity-value-graphs"` 7a6f8d25에서 종료 코드 2, 열두 사례 중 여덟이 not executed; green: rust 바인딩 12/12 사례 통과, rust R3 줄 없음, validity 47/47, input_text 56/56, template_shape 44/44 통과.
+- Rust `JsonText`가 value-graph fixture의 공유 값을 받는다. `JsonText::Shared(Arc<JsonText>)`는 한 값을 여러 부모에 두고, `JsonText::Link(Weak<JsonText>)`는 자기 자신을 담는 값을 만든다(`packages/validator/rust/src/text.rs`, `packages/validator/rust/README.md`와 `README.ko.md`에 기록). 공유 값의 각 방문이 노드 하나로 세어지며, 검사(`check_specification`, `check_inputs`, `to_value`, `shape`, `invalid_path`)는 TypeScript 순회를 따른다. 먼저 빠른 순회를 하고, 첫 실패를 보고하는 순서 순회를 하며, 두 순회 모두 노드 한도와 중첩 한도를 따로 센다. `packages/validator/rust/tests/text_validity_conformance.rs`의 runner는 graph 기술의 형태 네 가지(`doubled`, `Arc::new_cyclic`을 쓰는 `self-twice`, `chain`, `flat`)를 만들어 `spec`, `data`, `files`에 놓는다 (C16.156-1-3). Red: `make -s parity-check UNITS="text-validity-value-graphs"` 변경 전 tree에서 종료 코드 2, 열두 사례 중 여덟이 not executed; green: rust 바인딩 12/12 사례 통과, rust R3 줄 없음, validity 47/47, input_text 56/56, template_shape 44/44 통과.
 
 ### 2026-10-21 — Rust text unit의 고유 symbol이 닫힌다 (C16.156-1-2)
 
-- C16.156-1-2가 닫힌다; 그 Verification은 54b82580에서 통과한다 (여덟 text unit이 고유 symbol로 실행되며 rust R3 줄이 없다). 그 commit은 checklist를 `[~]`로 담았으며, 이 항목이 닫힘을 기록한다 (C16.156-1-2).
+- C16.156-1-2가 닫힌다; 그 Verification은 그 행의 tree에서 통과한다 (여덟 text unit이 고유 symbol로 실행되며 rust R3 줄이 없다). 그 commit은 checklist를 `[~]`로 담았으며, 이 항목이 닫힘을 기록한다 (C16.156-1-2).
 
 ### 2026-10-21 — Rust interface-messages test가 native id로 이름 붙는다 (C16.156-1-5)
 
-- config/parity.json의 interface-messages Rust 바인딩이 cargo가 보고하는 native 이름 `messages::tests::embedded_messages_match_the_contract`(`packages/generator/rust/src/messages/mod.rs`의 `tests` module 안 test)으로 test를 가리켜, feature id가 실행되는 test와 맞는다. test 자체는 바뀌지 않는다. `packages/generator/rust/src/tests.rs`는 config/parity.json에서 Rust 생성기의 internal test 파일로 선언된다. 남은 unit test가 제거된 fixture 바인딩에만 덮여 있었기 때문이다 (C16.156-1-5). Red: `make -s parity-check UNITS="interface-messages"` b79bf13d에서 종료 코드 1, rust 바인딩이 not executed; green: rust 바인딩 종료 코드 0, 1/1 id 통과, rust R3 줄 없음, `make -s parity-declarations-check`에 rust 항목 없음.
+- config/parity.json의 interface-messages Rust 바인딩이 cargo가 보고하는 native 이름 `messages::tests::embedded_messages_match_the_contract`(`packages/generator/rust/src/messages/mod.rs`의 `tests` module 안 test)으로 test를 가리켜, feature id가 실행되는 test와 맞는다. test 자체는 바뀌지 않는다. `packages/generator/rust/src/tests.rs`는 config/parity.json에서 Rust 생성기의 internal test 파일로 선언된다. 남은 unit test가 제거된 fixture 바인딩에만 덮여 있었기 때문이다 (C16.156-1-5). Red: `make -s parity-check UNITS="interface-messages"` 변경 전 tree에서 종료 코드 1, rust 바인딩이 not executed; green: rust 바인딩 종료 코드 0, 1/1 id 통과, rust R3 줄 없음, `make -s parity-declarations-check`에 rust 항목 없음.
 
 ### 2026-10-21 — Rust outline fixture가 사례마다 trial 하나로 통합 test에서 실행된다 (C16.156-1-4)
 
-- Rust 생성기의 outline fixture 검사를 라이브러리 unit test(`packages/generator/rust/src/tests.rs`의 `native_outline_fixture`)에서 통합 test `packages/generator/rust/tests/form_outline.rs`로 옮긴다. `packages/generator/rust/Cargo.toml`의 `harness = false` target이며, 사례마다 `native_outline_fixture::<case>` 이름의 trial 하나를 쓴다. config/parity.json의 form-outline 바인딩이 이 파일을 가리킨다. 사례의 검사는 바뀌지 않으며, `src/tests.rs`의 다른 unit test는 그대로 남는다 (C16.156-1-4). Red: `make -s parity-check UNITS="form-outline"` 54b82580에서 종료 코드 1, rust 바인딩의 다섯 사례가 not executed; green: rust 바인딩의 종료 코드 0, 5/5 사례 통과, rust R3 줄 없음.
+- Rust 생성기의 outline fixture 검사를 라이브러리 unit test(`packages/generator/rust/src/tests.rs`의 `native_outline_fixture`)에서 통합 test `packages/generator/rust/tests/form_outline.rs`로 옮긴다. `packages/generator/rust/Cargo.toml`의 `harness = false` target이며, 사례마다 `native_outline_fixture::<case>` 이름의 trial 하나를 쓴다. config/parity.json의 form-outline 바인딩이 이 파일을 가리킨다. 사례의 검사는 바뀌지 않으며, `src/tests.rs`의 다른 unit test는 그대로 남는다 (C16.156-1-4). Red: `make -s parity-check UNITS="form-outline"` 변경 전 tree에서 종료 코드 1, rust 바인딩의 다섯 사례가 not executed; green: rust 바인딩의 종료 코드 0, 5/5 사례 통과, rust R3 줄 없음.
 
 ### 2026-10-21 — 여덟 Rust text unit이 각자의 symbol로 실행된다 (C16.156-1-2)
 
@@ -1134,7 +1135,7 @@
 
 ### 2026-10-21 — CURP-001의 합성과 표현식 부분이 인용된다 (C16.150-1)
 
-- C16.150을 작성한 뒤 들어온 unit `compose`와 `expr`가 CURP-001을 인용한다 (C16.150-1): `tests/fixtures/compose/cases.json`의 사례 `ref-inherit-base`와 `tests/fixtures/expr/cases.json`의 사례 `path-sibling-truthy`가 그것을 명명하며, 생성기(`packages/validator/ts/scripts/generate-compose-cases.mts`와 `generate-expr-cases.mts`가 사례의 추가 `requirements`를 받는다)가 이를 쓰고 fixture README가 그렇게 적는다. 이제 CURP-001은 네 기능 모두에서 인용된다. Red: Verification이 1fe05704에서 exit 1; green: exit 0 (두 생성기가 fixture를 재현하고, 두 unit과 각 사례 하나가 CURP-001을 명명한다).
+- C16.150을 작성한 뒤 들어온 unit `compose`와 `expr`가 CURP-001을 인용한다 (C16.150-1): `tests/fixtures/compose/cases.json`의 사례 `ref-inherit-base`와 `tests/fixtures/expr/cases.json`의 사례 `path-sibling-truthy`가 그것을 명명하며, 생성기(`packages/validator/ts/scripts/generate-compose-cases.mts`와 `generate-expr-cases.mts`가 사례의 추가 `requirements`를 받는다)가 이를 쓰고 fixture README가 그렇게 적는다. 이제 CURP-001은 네 기능 모두에서 인용된다. Red: Verification이 변경 전 tree에서 exit 1; green: exit 0 (두 생성기가 fixture를 재현하고, 두 unit과 각 사례 하나가 CURP-001을 명명한다).
 
 ### 2026-10-21 — php 기록 서버가 자신의 모듈을 빌드한 PHP의 php-fpm을 실행한다 (C16.62)
 
@@ -1153,14 +1154,14 @@
 | packages/generator/ts/src/patch.test.ts | internal (ts) | packages/html/README.md에 문서화된 브라우저 런타임 (Keeping controls across re-renders, Scripts in rendered markup) |
 | packages/generator/php/tests/Internal/InterfaceMessagesTest.php | internal (php) | 생성된 PHP 소스가 생성 스크립트의 출력과 같다. 메시지 계약은 interface-messages unit이다 |
 
-Red: `make item-red ID=C16.155 BEFORE=69bd6b3b`가 exit 1로, 위 파일의 `R5 undeclared-test` 줄 여섯 개와 함께 실패한다. green: Verification이 exit 0으로 끝나고, 여섯 줄이 사라지며, 새 줄은 나타나지 않고, `make parity-declarations-check`의 findings가 61에서 55로 줄어든다.
+Red: `make item-red ID=C16.155 BEFORE=<the commit before the change>`가 exit 1로, 위 파일의 `R5 undeclared-test` 줄 여섯 개와 함께 실패한다. green: Verification이 exit 0으로 끝나고, 여섯 줄이 사라지며, 새 줄은 나타나지 않고, `make parity-declarations-check`의 findings가 61에서 55로 줄어든다.
 ### 2026-10-21 — CUDF-003은 display를 보이는 마크업을 가진 list-render case가 전부 인용한다 (C16.153)
 
-- `tests/fixtures/list-render/generate.mts`가 case `format-number`에 CUDF-003을 인용한다 (C16.153). 그 열은 서식이 적용되어 원시 값 `1234567.5`가 `$1,234,567.50`으로 쓰이므로, 마크업이 레코드가 아니라 렌더러가 display를 썼음을 보인다. `tests/fixtures/list-render/cases.json`에 그 requirement가 하나 더해지며, `config/parity.json`의 list-render unit이 CUDF-003을 인용한다. Red: `make item-red ID=C16.153` exit 0, Verification이 aee613a9에서 실패하며 R13 줄 `untraced-requirement: docs/spec/display-formats.md defines CUDF-003`이 나온다. Green: 여섯 list-render runner가 fixture를 통과한다(TypeScript `list-conformance.test.ts`, Go `TestListRenderSuite` 166 passed, Python `test_render.py` 3 passed, Rust `list_render` 1 passed, PHP와 PHP 확장 `ListRenderConformanceTest` 166 tests OK). `make -s parity-declarations-check`는 CUDF-003 줄만 사라진다(변경 전 60 findings, 후 59 findings).
+- `tests/fixtures/list-render/generate.mts`가 case `format-number`에 CUDF-003을 인용한다 (C16.153). 그 열은 서식이 적용되어 원시 값 `1234567.5`가 `$1,234,567.50`으로 쓰이므로, 마크업이 레코드가 아니라 렌더러가 display를 썼음을 보인다. `tests/fixtures/list-render/cases.json`에 그 requirement가 하나 더해지며, `config/parity.json`의 list-render unit이 CUDF-003을 인용한다. Red: `make item-red ID=C16.153` exit 0, Verification이 변경 전 tree에서 실패하며 R13 줄 `untraced-requirement: docs/spec/display-formats.md defines CUDF-003`이 나온다. Green: 여섯 list-render runner가 fixture를 통과한다(TypeScript `list-conformance.test.ts`, Go `TestListRenderSuite` 166 passed, Python `test_render.py` 3 passed, Rust `list_render` 1 passed, PHP와 PHP 확장 `ListRenderConformanceTest` 166 tests OK). `make -s parity-declarations-check`는 CUDF-003 줄만 사라진다(변경 전 60 findings, 후 59 findings).
 
 ### 2026-10-21 — CURP-025는 여섯 runner가 통과하는 form-actions case가 전부 인용한다 (C16.152)
 
-- `tests/fixtures/form-state/generate.mts`에 세션 `record-keeps-member-order-and-distinct-empty-values`를 추가한다 (CURP-025, C16.152). 명세의 순서와 다른 멤버와 행 순서, 없는 `members`, 빈 객체, 빈 배열(거부됨), null 값, 그 뒤의 편집을 가진 `setData`다. case는 CURP-025의 각 절을 보인다. 멤버 순서가 유지된다(runner가 데이터의 JSON 텍스트를 비교한다), 배열은 배열로 남는다(목록은 거부됨), 없음, null, `{}`, `[]`가 구분된다, 데이터에 identity나 순서 필드가 나타나지 않는다. `tests/fixtures/form-actions/cases.json`을 재생성하고, `config/parity.json`의 form-actions unit이 CURP-025를 인용한다. Red: `make item-red ID=C16.152` exit 0, Verification이 907530ff에서 실패하며 R13 줄 `untraced-requirement: docs/spec/runtime-packages.md defines CURP-025`이 나온다. Green: TypeScript(`src/form-state.test.ts`, 39 passed), Go(`TestFormActions`, ok), Python(`tests/test_form_state.py`, 4 passed), Rust(`--test form_state`, 4 passed), PHP(`FormStateTest`, 39 tests OK), PHP 확장(`make test-php-ext CASES="FormStateTest"`, 39 tests OK) runner가 모두 통과한다. `make -s parity-declarations-check`는 CURP-025 줄만 사라지고 다른 줄은 그대로다(변경 전 61 findings, 후 60 findings).
+- `tests/fixtures/form-state/generate.mts`에 세션 `record-keeps-member-order-and-distinct-empty-values`를 추가한다 (CURP-025, C16.152). 명세의 순서와 다른 멤버와 행 순서, 없는 `members`, 빈 객체, 빈 배열(거부됨), null 값, 그 뒤의 편집을 가진 `setData`다. case는 CURP-025의 각 절을 보인다. 멤버 순서가 유지된다(runner가 데이터의 JSON 텍스트를 비교한다), 배열은 배열로 남는다(목록은 거부됨), 없음, null, `{}`, `[]`가 구분된다, 데이터에 identity나 순서 필드가 나타나지 않는다. `tests/fixtures/form-actions/cases.json`을 재생성하고, `config/parity.json`의 form-actions unit이 CURP-025를 인용한다. Red: `make item-red ID=C16.152` exit 0, Verification이 변경 전 tree에서 실패하며 R13 줄 `untraced-requirement: docs/spec/runtime-packages.md defines CURP-025`이 나온다. Green: TypeScript(`src/form-state.test.ts`, 39 passed), Go(`TestFormActions`, ok), Python(`tests/test_form_state.py`, 4 passed), Rust(`--test form_state`, 4 passed), PHP(`FormStateTest`, 39 tests OK), PHP 확장(`make test-php-ext CASES="FormStateTest"`, 39 tests OK) runner가 모두 통과한다. `make -s parity-declarations-check`는 CURP-025 줄만 사라지고 다른 줄은 그대로다(변경 전 61 findings, 후 60 findings).
 
 ### 2026-10-21 — form-view와 form-history의 cases가 생성기와 같다 (C16.154)
 
@@ -1175,7 +1176,7 @@ Red: `make item-red ID=C16.155 BEFORE=69bd6b3b`가 exit 1로, 위 파일의 `R5 
 | --- | --- | --- |
 | CURP-023 | 2 (본질상 한 런타임) | 브라우저에서 사용자 입력과 행 작업을 적용하는 것은 TypeScript 브라우저 런타임(`packages/form-binding`)뿐이며, 서버 런타임에는 브라우저 포커스, 선택 영역, 스크롤 동작이 없다 |
 
-Red: `sh -c 'make -s parity-declarations-check > var/pd-C16.151.log 2>&1; ! grep -E "R13 untraced-requirement: .* defines CURP-023," var/pd-C16.151.log'` exit 1, CURP-023 R13 줄 하나, 56 findings (9ec2ffc4 기준); green: exit 0, CURP-023 줄 없음, 55 findings, 사라진 줄은 그 하나뿐; `check-documents` 통과; `make lint-ts` exit 0 (C16.151).
+Red: `sh -c 'make -s parity-declarations-check > var/pd-C16.151.log 2>&1; ! grep -E "R13 untraced-requirement: .* defines CURP-023," var/pd-C16.151.log'` exit 1, CURP-023 R13 줄 하나, 56 findings (변경 전 tree 기준); green: exit 0, CURP-023 줄 없음, 55 findings, 사라진 줄은 그 하나뿐; `check-documents` 통과; `make lint-ts` exit 0 (C16.151).
 
 ### 2026-10-21 — 여섯 런타임이 중립 항목 하나(CURP-001)의 런타임 능력을 제공한다 (C16.150)
 
@@ -1189,7 +1190,7 @@ Red: `sh -c 'make -s parity-declarations-check > var/pd-C16.151.log 2>&1; ! grep
 Red: `sh -c 'make -s parity-declarations-check > var/pd-C16.150.log 2>&1; ! grep -E "R13 untraced-requirement: .* defines CURP-00[1-5]," var/pd-C16.150.log'` exit 1, R13 줄 다섯 개(CURP-001부터 CURP-005까지 정의되고 어떤 단위도 인용하지 않음), 61 findings; green: exit 0, CURP-001부터 CURP-005까지의 줄이 남지 않음, 56 findings, `check-documents` 통과 (C16.150).
 ### 2026-10-21 — 중복은 0이다: make duplication-check가 보고한 마지막 clone 10개가 공유된다 (C16.58)
 
-- `make duplication-check`가 main에서 보고한 clone 10개가 사라졌다(C16.58). Go form-comparison server의 number text는 `validate.CanonicalNumber`를 쓴다(C16.58-25). PHP record store는 NumberValue로 number text를 파싱한다(C16.58-26). TypeScript adapter는 mountView와 hydrateView를 view-entries.ts에서 받는다(C16.58-27). C expression 값들은 parse와 release 단계를 공유한다(C16.58-28). C row view 연산들은 하나의 list 복사를 공유한다(C16.58-29). React collection scenario는 spec을 공유한다(C16.58-30). Red: 기반 커밋 69bd6b3b에서 `make duplication-check`가 exit 2, clone 10개(item-red BEFORE, exit 0). Green: 이 커밋에서 `make duplication-check` exit 0, `make lint-go`, `make lint-php`, `make lint-ts`, `make lint-php-ext`가 통과한다.
+- `make duplication-check`가 main에서 보고한 clone 10개가 사라졌다(C16.58). Go form-comparison server의 number text는 `validate.CanonicalNumber`를 쓴다(C16.58-25). PHP record store는 NumberValue로 number text를 파싱한다(C16.58-26). TypeScript adapter는 mountView와 hydrateView를 view-entries.ts에서 받는다(C16.58-27). C expression 값들은 parse와 release 단계를 공유한다(C16.58-28). C row view 연산들은 하나의 list 복사를 공유한다(C16.58-29). React collection scenario는 spec을 공유한다(C16.58-30). Red: 변경 전 tree에서 `make duplication-check`가 exit 2, clone 10개(item-red BEFORE, exit 0). Green: 이 커밋에서 `make duplication-check` exit 0, `make lint-go`, `make lint-php`, `make lint-ts`, `make lint-php-ext`가 통과한다.
 
 ### 2026-10-21 — React form render scenario의 두 collection case가 spec을 공유한다 (C16.58-30)
 
@@ -1217,7 +1218,7 @@ Red: `sh -c 'make -s parity-declarations-check > var/pd-C16.150.log 2>&1; ! grep
 
 ### 2026-10-21 — 새 worktree의 make install이 끝까지 실행된다 (C16.149)
 
-- Makefile의 `crudui-install`이 `crudui-install-python`과 `crudui-install-composer` 뒤, `crudui-install-phpdocumentor` 앞에서 `install-link`를 실행한다 (C16.149). composer install은 추적되는 `composer.lock`에서 `vendor/composer/platform_check.php`를 쓰는데, 배포된 polyspec/ordered-json 0.0.9 때문에 PHP 8.5를 요구한다. `.php-version`의 PHP 8.4.1로 검사를 다시 쓰는 link는 `make install`의 끝에서만 실행되어, `make worktree-setup`이 phpDocumentor에서 "Composer detected issues in your platform"으로 멈췄다. Red: `make -n crudui-install`의 순서 검사가 379832f3에서 exit 1; green: exit 0, worktree에서 `make install-link` 뒤 `make crudui-install-phpdocumentor`가 phpDocumentor 3.10.0을 설치한다.
+- Makefile의 `crudui-install`이 `crudui-install-python`과 `crudui-install-composer` 뒤, `crudui-install-phpdocumentor` 앞에서 `install-link`를 실행한다 (C16.149). composer install은 추적되는 `composer.lock`에서 `vendor/composer/platform_check.php`를 쓰는데, 배포된 polyspec/ordered-json 0.0.9 때문에 PHP 8.5를 요구한다. `.php-version`의 PHP 8.4.1로 검사를 다시 쓰는 link는 `make install`의 끝에서만 실행되어, `make worktree-setup`이 phpDocumentor에서 "Composer detected issues in your platform"으로 멈췄다. Red: `make -n crudui-install`의 순서 검사가 변경 전 tree에서 exit 1; green: exit 0, worktree에서 `make install-link` 뒤 `make crudui-install-phpdocumentor`가 phpDocumentor 3.10.0을 설치한다.
 
 ### 2026-10-21 — validator의 남은 compose와 expression test에 자리를 준다 (C16.57-3-3)
 
@@ -1324,7 +1325,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 | CUSC-044 multiple.copy와 multiple.sortable | 인용 | `multiple-settings-bucket` (form-render) | `sortable`과 `copy`에 대해 위로, 아래로, 행 복사 컨트롤이 표시됩니다. |
 | CUSC-046 multiple.controls의 header, footer, outline | 신규 | `multiple-controls-header`, `multiple-controls-footer`, `multiple-controls-outline` (form-render) | 각 값이 문장대로 행 컨트롤의 위치를 정합니다. |
 
-유닛 `form-render`와 `validate`가 id를 나열합니다. `packages/react/scripts/generate-form-render-cases.mts`의 표가 이를 인용하고, `tests/fixtures/form-render/cases.json`을 다시 생성했습니다. 새 사례 6개가 추가되고, 인용한 사례 4개는 `requirements` 멤버만 늘어납니다. Go, Rust, Python form-render runner와 Python validate runner가 새 사례 수(결과 150개, 전체 201개, validate 결과 202개)를 확인합니다. 빨강: a3ef53a5에서 `make item-red ID=C16.144`, 수정 전에는 이 id들의 R13 grep이 실패합니다.
+유닛 `form-render`와 `validate`가 id를 나열합니다. `packages/react/scripts/generate-form-render-cases.mts`의 표가 이를 인용하고, `tests/fixtures/form-render/cases.json`을 다시 생성했습니다. 새 사례 6개가 추가되고, 인용한 사례 4개는 `requirements` 멤버만 늘어납니다. Go, Rust, Python form-render runner와 Python validate runner가 새 사례 수(결과 150개, 전체 201개, validate 결과 202개)를 확인합니다. 빨강: 변경 전 tree에서 `make item-red ID=C16.144`, 수정 전에는 이 id들의 R13 grep이 실패합니다.
 
 실행: 두 suite의 각 runner를 한 번씩 소유자 선택으로 실행했고 모두 0으로 끝났습니다. Validate: ts, php, php 확장, go, rust, python. Form-render: ts, go, python, php, php 확장, rust. 린트: 변경된 언어에 대해 `make lint-ts`, `lint-go`, `lint-rust`, `lint-python`.
 
@@ -1338,7 +1339,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 | CUMK-057 (펼침은 레코드 데이터가 아닌 뷰 상태) | 인용 | form-view 사례 3개: `toggle-row-collapses-and-expands`, `set-all-expanded-collapses-every-collapsible-row`, `row-removal-drops-and-rekey-moves-view`. 유닛 `form-view`가 id를 나열합니다. |
 | CUMK-061 (실행 취소는 모든 데이터 변경을 기록하고 한 경로의 연속 편집을 합칩니다) | 인용 | form-history 사례 4개: `undo-and-redo-restore-the-record`, `same-path-edits-share-one-record`, `a-change-after-undo-clears-redo`, `history-keeps-100-records`. 유닛 `form-history`가 id를 나열합니다. |
 
-빨강: a3ef53a5에서 `make item-red ID=C16.145`, 수정 전에는 이 id들의 R13 grep이 실패합니다. 초록: 수정 후 같은 grep이 비어 있습니다(parity 결과가 115에서 77로 줄어듭니다). `make lint-ts`가 통과합니다. form-render, form-view, form-history의 변경된 픽스처에 대해 TypeScript 소유자 테스트를 실행합니다.
+빨강: 변경 전 tree에서 `make item-red ID=C16.145`, 수정 전에는 이 id들의 R13 grep이 실패합니다. 초록: 수정 후 같은 grep이 비어 있습니다(parity 결과가 115에서 77로 줄어듭니다). `make lint-ts`가 통과합니다. form-render, form-view, form-history의 변경된 픽스처에 대해 TypeScript 소유자 테스트를 실행합니다.
 
 ### 2026-10-21 — 검사할 수 없는 두 스키마 요구사항은 평문입니다 (C16.143)
 
@@ -1349,11 +1350,11 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 | CUSC-037 (구조, 콘텐츠, 검증, 외형, 위젯 옵션을 분리) | 평문, id 제거 | 설계 원칙이며 테스트로 확인할 수 없습니다. 스펙에 평문 문장으로 남습니다. |
 | CUSC-040 (4개 언어의 공유 검증 사례와 3개 프레임워크의 SSR 출력 비교, 마운트한 뷰에서 편집 동작 검증) | 평문, id 제거 | 테스트 과정을 서술하며 테스트로 확인할 수 없습니다. 스펙에 평문 문장으로 남습니다. |
 
-인수 기준에는 CUSC-036, 038, 039가 남습니다. 나머지 추적되지 않은 CUSC id(005, 016, 022, 043, 044, 046)는 이 행에서 바꾸지 않고 C16.144에서 다룹니다. 빨강: 8eac4a0a에서 `make item-red ID=C16.143`, 수정 전에는 `defines CUSC-037|CUSC-040` R13 grep이 실패합니다. 초록: 수정 후 같은 grep이 비어 있습니다. `make docs-check`가 통과합니다.
+인수 기준에는 CUSC-036, 038, 039가 남습니다. 나머지 추적되지 않은 CUSC id(005, 016, 022, 043, 044, 046)는 이 행에서 바꾸지 않고 C16.144에서 다룹니다. 빨강: 변경 전 tree에서 `make item-red ID=C16.143`, 수정 전에는 `defines CUSC-037|CUSC-040` R13 grep이 실패합니다. 초록: 수정 후 같은 grep이 비어 있습니다. `make docs-check`가 통과합니다.
 
 ### 2026-10-21 — kit copy들이 kit에만 있는 check를 이름으로 대지 않는다 (C16.139)
 
-- `PRINCIPLES.md`와 `PRINCIPLES.ko.md`는 K359-2(`f9f80e60`, "Name no check that only kit has")가 든 kit 0.0.54의 copy입니다. P10은 kit에만 있는 `tests/kit/worktree-setup.test.mts`를 더 이상 이름으로 대지 않으므로 `make rules-check`가 그 file이 없다고 보고하지 않습니다(C16.139). Red: 0afab14d에서 `make rules-check` exit 2, `PRINCIPLES.md:44: tests/kit/worktree-setup.test.mts does not exist`. Green: `make rules-check`, `make kit-check`, `make layout-check`, `make link-state-check` exit 0입니다.
+- `PRINCIPLES.md`와 `PRINCIPLES.ko.md`는 K359-2("Name no check that only kit has")가 든 kit 0.0.54의 copy입니다. P10은 kit에만 있는 `tests/kit/worktree-setup.test.mts`를 더 이상 이름으로 대지 않으므로 `make rules-check`가 그 file이 없다고 보고하지 않습니다(C16.139). Red: 변경 전 tree에서 `make rules-check` exit 2, `PRINCIPLES.md:44: tests/kit/worktree-setup.test.mts does not exist`. Green: `make rules-check`, `make kit-check`, `make layout-check`, `make link-state-check` exit 0입니다.
 
 ### 2026-10-21 — 양식 마크업의 추적되지 않은 요구사항을 배치하거나 보고합니다 (C16.142)
 
@@ -1367,7 +1368,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 | CUMK-001/002/003 (BEM 클래스 이름 짓기) | 보고 | 모든 생성기가 BEM 클래스 이름을 내보내므로 모든 구현이 지켜야 하는 계약입니다. 공유 케이스가 필요하며 옮기지 않았습니다. |
 | CUMK-057 (펼침은 뷰 상태), CUMK-061 (실행 취소는 모든 데이터 변경을 기록) | 보고 | 뷰와 기록 함수가 모든 생성기에 있습니다. 공유 form-view와 history 함수 픽스처가 필요하며 옮기지 않았습니다. |
 
-스펙에는 옮긴 각 블록의 포인터가 남아 있습니다. 옮긴 텍스트에는 요구사항 id가 없고 영어와 한국어로 유지됩니다. 빨강: 0afab14d에서 `make parity-declarations-check`의 R13 `untraced-requirement`가 CUMK-039..056, 008, 009 id에 대해 나옵니다. 초록: R13 grep(`defines CUMK-039..056|CUMK-008|CUMK-009`)이 비어 있습니다. `make docs-check`와 `make lint-ts`가 통과합니다.
+스펙에는 옮긴 각 블록의 포인터가 남아 있습니다. 옮긴 텍스트에는 요구사항 id가 없고 영어와 한국어로 유지됩니다. 빨강: 변경 전 tree에서 `make parity-declarations-check`의 R13 `untraced-requirement`가 CUMK-039..056, 008, 009 id에 대해 나옵니다. 초록: R13 grep(`defines CUMK-039..056|CUMK-008|CUMK-009`)이 비어 있습니다. `make docs-check`와 `make lint-ts`가 통과합니다.
 ### 2026-10-21 — 브라우저 런타임 문서가 명세에서 런타임을 가진 패키지로 옮겨진다 (C16.141)
 
 범위 규칙(한 런타임의 특성)에 따라 `docs/spec/form-runtime.md`의 미추적 CURT 요구사항 35개에 대한 결정입니다. 경로 2는 본문을 런타임을 가진 패키지의 문서로 옮기고 보존하며 id를 제거하는 것이고, 경로 1(네이티브 통합)은 이 중 어느 것에도 적용되지 않습니다.
@@ -1397,7 +1398,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-21 — 생성된 Go table은 생성 파일 예외로 선언한다 (C16.136)
 
-- `config/generated.json`: 예외 `packages/generator/go/interface_messages.go`와 `packages/validator/go/validator/validate/unicode_data.go`는 `go generate`가 `contracts/interface-messages.json`과 `contracts/unicode-properties.json`에서 쓰는 두 Go table을 선언합니다(C16.136). `go get`은 generator를 실행하지 않으므로(S6) Go module이 이 파일들을 배포하며, 그래서 추적합니다. 다른 언어의 생성 table에는 생성 파일 header가 없어 표시되지 않습니다. schema는 glob만 허용하므로 이유는 여기에 기록합니다. Red: 2bf1b1b5에서 `make layout-check` exit 2, 두 파일 모두 `has a generated-file header (Code generated ... DO NOT EDIT)`. Green: `make layout-check` exit 0, `no tracked file is generated`.
+- `config/generated.json`: 예외 `packages/generator/go/interface_messages.go`와 `packages/validator/go/validator/validate/unicode_data.go`는 `go generate`가 `contracts/interface-messages.json`과 `contracts/unicode-properties.json`에서 쓰는 두 Go table을 선언합니다(C16.136). `go get`은 generator를 실행하지 않으므로(S6) Go module이 이 파일들을 배포하며, 그래서 추적합니다. 다른 언어의 생성 table에는 생성 파일 header가 없어 표시되지 않습니다. schema는 glob만 허용하므로 이유는 여기에 기록합니다. Red: 변경 전 tree에서 `make layout-check` exit 2, 두 파일 모두 `has a generated-file header (Code generated ... DO NOT EDIT)`. Green: `make layout-check` exit 0, `no tracked file is generated`.
 
 ### 2026-10-21 — PHP와 Go generator가 generation 실패마다 error type을 검사한다 (C16.138)
 
@@ -1421,7 +1422,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-21 — make install-packages는 npm ci 뒤 svelte 도구를 설치하고 link를 실행하지 않는다 (C16.134)
 
-- kit K428(kit 76e340de)은 `install-packages`의 npm ci 뒤에 `INSTALL_PACKAGES_EXTRA`의 target을 실행합니다. `Makefile`은 `INSTALL_PACKAGES_EXTRA := crudui-install-svelte-tools`를 두며, `make install`은 그 뒤에 `install-link`로 link합니다. svelte recipe는 더 이상 `make link`(와 `UV_PROJECT_ENVIRONMENT`)를 실행하지 않고, `crudui-install`은 더 이상 `crudui-install-svelte-tools`를 이름으로 두지 않으며(`install-packages`의 extra로만 남음), C16.117이 추가한 CI step(Python 설치와 svelte step)은 job에서 제거되어 그 job들은 `make install-packages`로 svelte 도구를 받습니다. kit copy는 `make kit-sync`로 kit 0.0.54에서 동기화했습니다(`scripts/kit/kit-bootstrap.mk`의 extra target, `install-npm.mts`의 comment, 그 kit의 PRINCIPLES P10과 P36 ~ P38). `tests/build/ci-local.test.mts`의 `install-packages installs the svelte tools after its npm ci and runs no link` test가 C16.117의 test를 대체합니다(C16.134). Red: 새 test가 03403a2f에서 실패합니다(install-packages dry run에 svelte 도구가 없음). Green: `make link-state-check` exit 0, ci-local test 18 passed, `make kit-check` exit 0, 새 worktree의 fresh `make install-packages`가 exit 0이고 svelte 도구가 설치됩니다.
+- kit K428(kit 0.0.55)은 `install-packages`의 npm ci 뒤에 `INSTALL_PACKAGES_EXTRA`의 target을 실행합니다. `Makefile`은 `INSTALL_PACKAGES_EXTRA := crudui-install-svelte-tools`를 두며, `make install`은 그 뒤에 `install-link`로 link합니다. svelte recipe는 더 이상 `make link`(와 `UV_PROJECT_ENVIRONMENT`)를 실행하지 않고, `crudui-install`은 더 이상 `crudui-install-svelte-tools`를 이름으로 두지 않으며(`install-packages`의 extra로만 남음), C16.117이 추가한 CI step(Python 설치와 svelte step)은 job에서 제거되어 그 job들은 `make install-packages`로 svelte 도구를 받습니다. kit copy는 `make kit-sync`로 kit 0.0.54에서 동기화했습니다(`scripts/kit/kit-bootstrap.mk`의 extra target, `install-npm.mts`의 comment, 그 kit의 PRINCIPLES P10과 P36 ~ P38). `tests/build/ci-local.test.mts`의 `install-packages installs the svelte tools after its npm ci and runs no link` test가 C16.117의 test를 대체합니다(C16.134). Red: 새 test가 변경 전 tree에서 실패합니다(install-packages dry run에 svelte 도구가 없음). Green: `make link-state-check` exit 0, ci-local test 18 passed, `make kit-check` exit 0, 새 worktree의 fresh `make install-packages`가 exit 0이고 svelte 도구가 설치됩니다.
 
 ### 2026-10-21 — 명시적 빈 collection이 suite에 인용되고, 그 unit test는 internal입니다 (C16.57-17)
 
@@ -1526,7 +1527,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-21 — make hooks-check가 CI 검사에서 실행되고, AGENTS.md 규칙이 검사를 이름으로 든다 (C16.44)
 
-- `make rules-check`는 `make hooks-check`가 건너뛸 수 없는 지점에서 실행되지 않는다는 규칙에서 실패했습니다. 앞선 원인, 즉 TARGETS를 준 `make ci-targets`가 뒤의 호출을 건너뛰던 문제는 kit(da0d0e07, K312)가 고쳤습니다.
+- `make rules-check`는 `make hooks-check`가 건너뛸 수 없는 지점에서 실행되지 않는다는 규칙에서 실패했습니다. 앞선 원인, 즉 TARGETS를 준 `make ci-targets`가 뒤의 호출을 건너뛰던 문제는 kit(K312, kit 0.0.55)가 고쳤습니다.
 - `.github/workflows/ci.yml`의 첫 job은 `make ci-targets TARGETS`에 `hooks-check`를 실행하고, Makefile의 `CI_TARGETS`도 `typecheck` 뒤에 같은 순서로 이를 적으므로 규칙이 이 실행에 닿습니다.
 
 ### 2026-10-21 — layout check가 native program의 Go test와 Composer vendor folder를 받아들인다 (C16.115)
@@ -1535,8 +1536,8 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-21 — kit copy들이 kit 0.0.54를 따른다 (C16.112)
 
-- kit copy는 `.oxlintrc.json`(preserve-caught-error, K334), `phpcs.xml.dist`(Generic.PHP.NoSilencedErrors, K334), `PRINCIPLES.md`와 `PRINCIPLES.ko.md`(gate `suppression-check`, K334), `scripts/kit/bootstrap/install-mise.mts`(worktree의 공유 install, K387, 전역 설정 root의 신뢰, K397-1), `config/commit-identity.json`(commit identity, K405), 생성된 hook `.githooks/prepare-commit-msg`(K380-2, K380-3)입니다. 이 copy들은 kit 0.0.54(9b8b4444)의 것이며, `make kit-sync`와 `make hooks`가 가져옵니다(C16.112). Makefile은 `CHECK_TARGETS`에 `suppression-check`를 더하고(K334), svelte 도구 install 뒤에 link를 둡니다(K349). gate를 위해 코드를 고쳤습니다. Rust `#[allow]` 16곳은 줄마다 이유를 한 줄에 둡니다(gate는 한 줄을 읽습니다). Python `noqa`와 `eslint-disable` 2곳은 gate의 형식으로 이유를 적습니다. `FormTest.php`는 `@` 대신 libxml 오류 처리로 `loadHTML`을 읽고, `scripts/repository-files.mts`의 새 오류는 cause를 가집니다. 검사: `make kit-check`, `make suppression-check`, `make lint-php`, `make lint-ts`, `make lint-rust`, `make lint-python`과 `repository-files.mts`의 owner test가 exit 0입니다. `make link-state-check`는 다른 worktree에 남은 병합된 branch 17개를 보고하고(`make worktree-prune`), `make layout-check`와 `make rules-check`는 main이 가진 finding을 보고합니다(루트의 link file과 C16.79의 `tests/native-generators/programs/go/main_test.go`, C16.68의 `AGENTS.md:18`).
-- `config/layout.kit.yml`은 link 출력 `composer.link.json`과 `composer.link.lock`을 root 파일로 선언하므로(K423, kit 03c3c405) link된 worktree도 main처럼 `make layout-check`를 통과하며, `config/owner-checks.json`은 `config/commit-identity.json`을 kit의 다른 사본과 함께 소유합니다(C16.112).
+- kit copy는 `.oxlintrc.json`(preserve-caught-error, K334), `phpcs.xml.dist`(Generic.PHP.NoSilencedErrors, K334), `PRINCIPLES.md`와 `PRINCIPLES.ko.md`(gate `suppression-check`, K334), `scripts/kit/bootstrap/install-mise.mts`(worktree의 공유 install, K387, 전역 설정 root의 신뢰, K397-1), `config/commit-identity.json`(commit identity, K405), 생성된 hook `.githooks/prepare-commit-msg`(K380-2, K380-3)입니다. 이 copy들은 kit 0.0.54의 것이며, `make kit-sync`와 `make hooks`가 가져옵니다(C16.112). Makefile은 `CHECK_TARGETS`에 `suppression-check`를 더하고(K334), svelte 도구 install 뒤에 link를 둡니다(K349). gate를 위해 코드를 고쳤습니다. Rust `#[allow]` 16곳은 줄마다 이유를 한 줄에 둡니다(gate는 한 줄을 읽습니다). Python `noqa`와 `eslint-disable` 2곳은 gate의 형식으로 이유를 적습니다. `FormTest.php`는 `@` 대신 libxml 오류 처리로 `loadHTML`을 읽고, `scripts/repository-files.mts`의 새 오류는 cause를 가집니다. 검사: `make kit-check`, `make suppression-check`, `make lint-php`, `make lint-ts`, `make lint-rust`, `make lint-python`과 `repository-files.mts`의 owner test가 exit 0입니다. `make link-state-check`는 다른 worktree에 남은 병합된 branch 17개를 보고하고(`make worktree-prune`), `make layout-check`와 `make rules-check`는 main이 가진 finding을 보고합니다(루트의 link file과 C16.79의 `tests/native-generators/programs/go/main_test.go`, C16.68의 `AGENTS.md:18`).
+- `config/layout.kit.yml`은 link 출력 `composer.link.json`과 `composer.link.lock`을 root 파일로 선언하므로(K423, kit 0.0.55) link된 worktree도 main처럼 `make layout-check`를 통과하며, `config/owner-checks.json`은 `config/commit-identity.json`을 kit의 다른 사본과 함께 소유합니다(C16.112).
 
 ### 2026-10-21 — 확장 API 테스트가 빌드된 모듈을 찾고 보고서 호출이 API와 맞는다 (C16.116)
 
@@ -1852,7 +1853,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-20 — viewState를 php-native에 선언한다 (C16.51)
 
-- `contracts/features.json`에서 `viewState`의 `php-native` support를 `pass`로 바꿉니다(C16.51). 모든 implementation이 C16.51-7(f6b52795)부터 view state를 가지며 PHP extension도 포함됩니다. 생성된 feature contract 문서가 이를 따릅니다. Red: `make divergence-check`가 exit 2이며 `contracts/features.json`이 `viewState`의 `php-native`를 unsupported로 명명; green: 이 check는 `viewState`의 entry를 명명하지 않으며 남은 finding은 다른 row의 것입니다. 이 worktree에서는 Composer 의존성이 PHP 8.5 이상을 요구하여 php-ext의 `FormStateTest` 검증을 실행할 수 없었으므로 검증 목록에 추가하지 않았습니다.
+- `contracts/features.json`에서 `viewState`의 `php-native` support를 `pass`로 바꿉니다(C16.51). 모든 implementation이 C16.51-7부터 view state를 가지며 PHP extension도 포함됩니다. 생성된 feature contract 문서가 이를 따릅니다. Red: `make divergence-check`가 exit 2이며 `contracts/features.json`이 `viewState`의 `php-native`를 unsupported로 명명; green: 이 check는 `viewState`의 entry를 명명하지 않으며 남은 finding은 다른 row의 것입니다. 이 worktree에서는 Composer 의존성이 PHP 8.5 이상을 요구하여 php-ext의 `FormStateTest` 검증을 실행할 수 없었으므로 검증 목록에 추가하지 않았습니다.
 
 ### 2026-10-20 — PHP validator contract test는 library의 내부 class를 읽지 않는다 (C16.70)
 
@@ -1862,9 +1863,9 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 - `tests/native-generators/programs/go`는 요청 member를 Rust program과 같이 읽습니다(C16.79). `compileOptions`와 `optionText`는 `basepath`, `keyPrefix`, `language`와 `files` object가 text 또는 object가 아니면 입력 오류로 반환하고, 없는 member는 없는 채로 둡니다. `stringArg`와 `addOptions`는 타입이 잘못되었거나 없는 action 인자를 보고하며, `main_test.go`(신규)가 각 경우를 보입니다. Red: `go test -run Test ./...`가 exit 1이며, 잘못된 `basepath`, `keyPrefix`, `files`, `language`가 오류 없이 지나갔고 `getValue` 인자는 `Invalid form path: `로 보고되었습니다; green: exit 0, `go build` exit 0, `golangci-lint run` exit 0이며 `0 issues`.
 
-### 2026-10-20 — kit 사본은 kit f7c1f10c를 따른다 (C16.80)
+### 2026-10-20 — kit 사본은 0.0.55로 가는 kit 개발을 따른다 (C16.80)
 
-- `scripts/kit/kit-bootstrap.mk`와 `scripts/kit/bootstrap/install-mise.mts`는 `make kit-sync`가 쓴 0b74e988(f7c1f10c 포함)의 kit 사본이며(K354, K394, K386, K348-1, K360-2, K349-2, K390-1, K392-1, K393), `make hooks`가 hook과 그 merge 설정을 설치합니다(C16.80). Red: `make kit-check`가 다른 사본 1개(`scripts/kit/kit-bootstrap.mk`)로 exit 2였고, green: 통과합니다.
+- `scripts/kit/kit-bootstrap.mk`와 `scripts/kit/bootstrap/install-mise.mts`는 `make kit-sync`가 쓴 0.0.55로 가는 kit 개발의 kit 사본이며(K354, K394, K386, K348-1, K360-2, K349-2, K390-1, K392-1, K393), `make hooks`가 hook과 그 merge 설정을 설치합니다(C16.80). Red: `make kit-check`가 다른 사본 1개(`scripts/kit/kit-bootstrap.mk`)로 exit 2였고, green: 통과합니다.
 
 ### 2026-10-20 — native generator Go 프로그램은 숨은 오류를 처리한다 (C16.67-5)
 
@@ -1888,7 +1889,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-20 — Rust appearance는 expression을 한 번 파싱하고 fallback 없이 평가한다 (C16.77)
 
-- `packages/generator/rust/src/design.rs`의 `appearance`는 문자열의 파싱을 한 번만 대조합니다. ternary와 condition expression은 파싱된 node를 `Evaluator::evaluate_value`로 평가하고, 파싱되지 않는 문자열은 literal text로 남으며, `unwrap_or(false)`를 가진 헬퍼 `expression_value`는 제거됩니다. `packages/generator/rust/src/tests.rs`에 `appearance_string_that_does_not_parse_stays_literal_text`와 `appearance_ternary_gives_the_branch_value`가 추가됩니다(C16.77). Rust evaluator는 오류를 보고하지 않으므로(데이터에 없는 path는 null), Python과 Go(b396f53e, 9e4be128)와 달리 되돌려 줄 평가 오류가 없습니다. 실패 주입은 validator crate의 변경이 필요하며 이 row의 범위가 아닙니다. Red: main에서 `appearance` test는 변경 전후 모두 통과(3 passed, 기존 test 포함)하므로 red를 기록할 수 없습니다. Green: exit 0, `appearance` 3 passed, `--test form_state --test history_functions` 17 passed, crate clippy exit 0입니다.
+- `packages/generator/rust/src/design.rs`의 `appearance`는 문자열의 파싱을 한 번만 대조합니다. ternary와 condition expression은 파싱된 node를 `Evaluator::evaluate_value`로 평가하고, 파싱되지 않는 문자열은 literal text로 남으며, `unwrap_or(false)`를 가진 헬퍼 `expression_value`는 제거됩니다. `packages/generator/rust/src/tests.rs`에 `appearance_string_that_does_not_parse_stays_literal_text`와 `appearance_ternary_gives_the_branch_value`가 추가됩니다(C16.77). Rust evaluator는 오류를 보고하지 않으므로(데이터에 없는 path는 null), Python과 Go(C16.67-11, C16.72)와 달리 되돌려 줄 평가 오류가 없습니다. 실패 주입은 validator crate의 변경이 필요하며 이 row의 범위가 아닙니다. Red: main에서 `appearance` test는 변경 전후 모두 통과(3 passed, 기존 test 포함)하므로 red를 기록할 수 없습니다. Green: exit 0, `appearance` 3 passed, `--test form_state --test history_functions` 17 passed, crate clippy exit 0입니다.
 
 ### 2026-10-20 — runAction은 열한 개 작업 중 어느 것도 아닌 이름을 거부한다 (C16.78)
 
@@ -1930,9 +1931,9 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 - `benchmarks/validators/go`는 `loadFixture`와 `benchSpec`의 오류(JSON이 아닌 fixture, JSON object가 아닌 spec, properties가 없는 spec)를 panic 대신 반환하고, `main`은 이를 출력한 뒤 exit 1로 끝납니다. `main`의 report JSON 인코딩은 메시지와 함께 invariant로 명시합니다. `main_test.go`는 잘못된 입력 경우를 검사합니다(C16.67-3). Red: `golangci-lint run`이 `3 issues`(errcheck 3)로 exit 1이었고, `go test -run Test ./...`는 `assignment mismatch: 3 variables but loadFixture returns 2 values`로 빌드되지 않았습니다; green: exit 0이며 `0 issues`, `go test -run Test ./...`는 `5 passed, 0 failed`입니다.
 
-### 2026-10-20 — kit 사본은 kit f9eb43dd를 따른다 (C16.71)
+### 2026-10-20 — kit 사본은 0.0.55로 가는 kit 개발을 따른다 (C16.71)
 
-- `scripts/kit/kit-bootstrap.mk`, `config/layout.kit.yml`과 새 commit-msg hook `.githooks/commit-msg`는 `make kit-sync`와 `make hooks`가 쓴 f9eb43dd의 kit 사본입니다(K348, K385, K384, K360-1, K383, K380, K382, K375)(C16.71). Red: `make kit-check`가 다른 사본 2개(`scripts/kit/kit-bootstrap.mk`, `config/layout.kit.yml`)로 exit 2였고, green: 통과합니다. `make link-check`는 아직 `@polyspec/ordered-json`(C16.69 행)과, `make link-check`에 주어지지 않는 Python 환경 `var/python`을 보고합니다.
+- `scripts/kit/kit-bootstrap.mk`, `config/layout.kit.yml`과 새 commit-msg hook `.githooks/commit-msg`는 `make kit-sync`와 `make hooks`가 쓴 0.0.55로 가는 kit 개발의 kit 사본입니다(K348, K385, K384, K360-1, K383, K380, K382, K375)(C16.71). Red: `make kit-check`가 다른 사본 2개(`scripts/kit/kit-bootstrap.mk`, `config/layout.kit.yml`)로 exit 2였고, green: 통과합니다. `make link-check`는 아직 `@polyspec/ordered-json`(C16.69 행)과, `make link-check`에 주어지지 않는 Python 환경 `var/python`을 보고합니다.
 
 ### 2026-10-20 — Python generator는 resolveAction과 runAction을 가진다 (C16.50-2)
 
@@ -2150,7 +2151,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-20 — record server가 OrderedJSON module을 빌드한다 (C16.60)
 
-- `prepareRecordServers`는 OrderedJSON checkout의 `packages/php-ext/src` 내용을 `orderedJsonCopyArguments`로 build directory에 복사합니다. `path.join`이 source 끝의 `/.`을 없애 `cp -R`이 directory를 destination 안에 넣었고 `phpize`가 `config.m4`를 찾지 못했습니다(C16.60). Red: `examples/form-comparison/record-stores.test.mjs`는 `7cafb4fb^`와 `HEAD`에서 `ordered-json-phpize: failed (exit 1)`로 `0 passed, 130 failed`였고, green: `local-servers.test.mjs`의 새 test가 통과하고(6 passed) record-stores 실행은 `78 passed, 52 failed`입니다. js, go, rust store는 통과하고 실패 52건은 Composer link item이 설치할 `vendor/polyspec/ordered-json`을 읽는 php와 php-ext store입니다.
+- `prepareRecordServers`는 OrderedJSON checkout의 `packages/php-ext/src` 내용을 `orderedJsonCopyArguments`로 build directory에 복사합니다. `path.join`이 source 끝의 `/.`을 없애 `cp -R`이 directory를 destination 안에 넣었고 `phpize`가 `config.m4`를 찾지 못했습니다(C16.60). Red: `examples/form-comparison/record-stores.test.mjs`는 C16.59 전과 현재 tree에서 `ordered-json-phpize: failed (exit 1)`로 `0 passed, 130 failed`였고, green: `local-servers.test.mjs`의 새 test가 통과하고(6 passed) record-stores 실행은 `78 passed, 52 failed`입니다. js, go, rust store는 통과하고 실패 52건은 Composer link item이 설치할 `vendor/polyspec/ordered-json`을 읽는 php와 php-ext store입니다.
 
 ### 2026-10-20 — docs/spec에는 implementation의 규칙만 둔다 (C16.59)
 
@@ -2592,7 +2593,7 @@ C16.141이 보고한 인수 기준 여섯 개(CURT-050부터 CURT-056까지)에 
 
 ### 2026-10-09 — 패키지 파일이 이 저장소의 release version을 적는다 (C13.1-34)
 
-- release version은 `config/release.json`이 적은 모든 manifest와 그 lock, `packages/generator-python`의 git pin, `contracts/features.json`, `packages/php-ext`의 module version에 설정되어 있다. 이 저장소의 release는 0.0.5(74fd5956)다. version 0.0.4는 tag된 적이 없으므로 package 파일을 0.0.4로 되돌리지 않는다. `make release-pins TAG=v0.0.5`와 `make release-coverage`가 exit 0이고, `tests/build/contract-manifest.test.mjs`가 통과한다. change log의 `## 0.0.4` section은 `## 0.0.5` 아래에 남고, tag `v0.0.4`는 로컬에도 origin에도 없다.
+- release version은 `config/release.json`이 적은 모든 manifest와 그 lock, `packages/generator-python`의 git pin, `contracts/features.json`, `packages/php-ext`의 module version에 설정되어 있다. 이 저장소의 release는 0.0.5다. version 0.0.4는 tag된 적이 없으므로 package 파일을 0.0.4로 되돌리지 않는다. `make release-pins TAG=v0.0.5`와 `make release-coverage`가 exit 0이고, `tests/build/contract-manifest.test.mjs`가 통과한다. change log의 `## 0.0.4` section은 `## 0.0.5` 아래에 남고, tag `v0.0.4`는 로컬에도 origin에도 없다.
 
 ### 2026-10-09 — CI job python이 node를 설치하고 기록된 toolchain을 검사한다 (C13.1-30)
 

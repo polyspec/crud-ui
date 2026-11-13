@@ -6,8 +6,8 @@
 ## Preparation order
 
 C18.1–C18.10 of the [checklist](checklist.md) are complete. C18.12 completes scoped CI environments; C18.13 prepares publication of 0.0.9.
-CRUDUI 0.0.8 is public from commit
-`47612fe4297203d46232646eba8365a6fbda43ef`, which passed full CI, push checks and all three tag release workflows.
+CRUDUI 0.0.8 is public from its release commit,
+which passed full CI, push checks and all three tag release workflows.
 The release workflow installed and checked all 11 archives outside the checkout before publication.
 
 ## Current decisions
@@ -95,7 +95,7 @@ The raw npm audit still reports the low finding and its dependent plugin. No exc
 
 ## 0.0.9 candidate verification (C18.13-1)
 
-The candidate archives contain the committed source of `508e5bb4`. Native package managers resolved 0.0.9 inputs,
+The candidate archives contain the committed source of C18.13-2. Native package managers resolved 0.0.9 inputs,
 and clean external consumers installed and checked all 11 archives. Go workspace resolution selects seven local modules;
 all six Cargo locks retain the external package versions and checksums. PHP verification ran on 8.4.27, with 36 source
 cases and two native constructor cases passing. Publication requires successful CI for the final candidate commit.
@@ -115,6 +115,6 @@ remain mandatory under C18.13. The actual consumer CI result is reported to [Kit
 
 ## Final candidate inputs (C18.13-6)
 
-Kit 0.0.63 built all 11 archives from source snapshot `1bed34da`. Clean consumer installs and the 20 release/manifest
+Kit 0.0.63 built all 11 archives from the source snapshot of C18.13-7. Clean consumer installs and the 20 release/manifest
 owner cases passed. Native consumer metadata names local zip archives through explicit package repositories.
 The final source metadata and consumer records reach main before the complete candidate CI and publication checks.
