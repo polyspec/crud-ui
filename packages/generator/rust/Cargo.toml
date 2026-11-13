@@ -34,6 +34,8 @@ num-traits = "0.2"
 
 [dev-dependencies]
 libtest-mimic = "0.8"
+# The tests of the crate arm its fault injection points without flags (binding CK-65, GN-5).
+polyspec-crud-ui-generator = { path = ".", features = ["fault-test"] }
 
 [[test]]
 name = "history_functions"

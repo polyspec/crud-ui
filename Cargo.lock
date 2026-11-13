@@ -1229,6 +1229,7 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "polyspec-binding-core",
+ "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
  "regex",
