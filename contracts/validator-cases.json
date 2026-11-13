@@ -1,5 +1,5 @@
 {
-  "comment": "The contract cases of the validator (binding G-5): each case calls its member once with the arguments that it names by their parameter names, each json_value written as {kind, value}. A case without raises succeeds; raises names the kind of the failure. The rules themselves are tested by the shared fixtures of tests/fixtures.",
+  "comment": "The contract cases of the validator (binding G-5): each case calls its member once with the arguments that it names by their parameter names, each json_value written as {kind, value}. A case without raises succeeds; raises names the kind of the failure. A case of an operation with a file loader gives the loader as a callback fixture: the rows of normalize and load, each with its arguments and its result or the error that it raises. The rules themselves are tested by the shared fixtures of tests/fixtures.",
   "validate": [
     {
       "id": "validates",
@@ -2731,6 +2731,2892 @@
         "kind": "invalid_form_input",
         "status": null,
         "category": "value"
+      }
+    }
+  ],
+  "validate_with_loader": [
+    {
+      "id": "validates",
+      "note": "data that passes.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      }
+    },
+    {
+      "id": "ref_file_not_found",
+      "note": "the loader reports that no file is at the key (CURP-032).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "missing.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "missing.yml",
+                "basepath": ""
+              },
+              "result": "missing.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "missing.yml"
+              },
+              "raise": {
+                "error": "compose_load_error",
+                "kind": "ref_file_not_found"
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_file_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_format_error",
+      "note": "a case of the kind ref_format_error.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": ""
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_format_error",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_detect_key_not_found",
+      "note": "a case of the kind ref_detect_key_not_found.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "fields",
+                    {
+                      "kind": "map",
+                      "value": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_detect_key_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_cycle",
+      "note": "a case of the kind ref_cycle.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "a.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "a.yml",
+                "basepath": ""
+              },
+              "result": "a.yml"
+            },
+            {
+              "args": {
+                "path": "b.yml",
+                "basepath": ""
+              },
+              "result": "b.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "a.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "$ref",
+                          {
+                            "kind": "text",
+                            "value": "b.yml"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "args": {
+                "key": "b.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "$ref",
+                          {
+                            "kind": "text",
+                            "value": "a.yml"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_cycle",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_value_type",
+      "note": "a case of the kind ref_value_type.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "number",
+                    "value": "5"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_value_type",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_shape",
+      "note": "a case of the kind patch_shape.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "text",
+                    "value": "x"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "a",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "type",
+                                {
+                                  "kind": "text",
+                                  "value": "text"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_shape",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_path_conflict",
+      "note": "a case of the kind patch_path_conflict.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "a.type.x",
+                        {
+                          "kind": "text",
+                          "value": "y"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "a",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "type",
+                                {
+                                  "kind": "text",
+                                  "value": "text"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_path_conflict",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_remove_target_missing",
+      "note": "a case of the kind patch_remove_target_missing.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "remove",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "text",
+                              "value": "ghost.subkey"
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "a",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "type",
+                                {
+                                  "kind": "text",
+                                  "value": "text"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_remove_target_missing",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "forbidden_meta_key",
+      "note": "a case of the kind forbidden_meta_key.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "if",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "forbidden_meta_key",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_rule_parameter",
+      "note": "a case of the kind invalid_rule_parameter.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "minlength",
+                              {
+                                "kind": "number",
+                                "value": "-1"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_rule_parameter",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_rule_pattern",
+      "note": "a case of the kind invalid_rule_pattern.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "pattern",
+                              {
+                                "kind": "text",
+                                "value": "("
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_rule_pattern",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "unknown_rule",
+      "note": "a case of the kind unknown_rule.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "nope",
+                              {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "unknown_rule",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_text",
+      "note": "a case of the kind invalid_text.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "\ud800"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_text",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "data that is no object.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "list",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "loads_a_file",
+      "note": "the loader gives the file that the specification names (CURP-031).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": []
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": "specs"
+              },
+              "result": "specs/base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "specs/base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "type",
+                                {
+                                  "kind": "text",
+                                  "value": "text"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": "specs"
+      }
+    }
+  ],
+  "validate_list_with_loader": [
+    {
+      "id": "loads",
+      "note": "a list declaration that loads.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "Name"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      }
+    },
+    {
+      "id": "ref_file_not_found",
+      "note": "the loader reports that no file is at the key (CURP-032).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "missing.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "missing.yml",
+                "basepath": ""
+              },
+              "result": "missing.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "missing.yml"
+              },
+              "raise": {
+                "error": "compose_load_error",
+                "kind": "ref_file_not_found"
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_file_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_format_error",
+      "note": "a case of the kind ref_format_error.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": ""
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_format_error",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_detect_key_not_found",
+      "note": "a case of the kind ref_detect_key_not_found.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "fields",
+                    {
+                      "kind": "map",
+                      "value": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_detect_key_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_cycle",
+      "note": "a case of the kind ref_cycle.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "a.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "a.yml",
+                "basepath": ""
+              },
+              "result": "a.yml"
+            },
+            {
+              "args": {
+                "path": "b.yml",
+                "basepath": ""
+              },
+              "result": "b.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "a.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "$ref",
+                          {
+                            "kind": "text",
+                            "value": "b.yml"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "args": {
+                "key": "b.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "$ref",
+                          {
+                            "kind": "text",
+                            "value": "a.yml"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_cycle",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_value_type",
+      "note": "a case of the kind ref_value_type.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "number",
+                    "value": "5"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_value_type",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_shape",
+      "note": "a case of the kind patch_shape.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "text",
+                    "value": "x"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "field",
+                                {
+                                  "kind": "text",
+                                  "value": "name"
+                                }
+                              ],
+                              [
+                                "label",
+                                {
+                                  "kind": "text",
+                                  "value": "Name"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_shape",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_path_conflict",
+      "note": "a case of the kind patch_path_conflict.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "name.field.x",
+                        {
+                          "kind": "text",
+                          "value": "y"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "field",
+                                {
+                                  "kind": "text",
+                                  "value": "name"
+                                }
+                              ],
+                              [
+                                "label",
+                                {
+                                  "kind": "text",
+                                  "value": "Name"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_path_conflict",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_remove_target_missing",
+      "note": "a case of the kind patch_remove_target_missing.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "remove",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "text",
+                              "value": "ghost.subkey"
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "field",
+                                {
+                                  "kind": "text",
+                                  "value": "name"
+                                }
+                              ],
+                              [
+                                "label",
+                                {
+                                  "kind": "text",
+                                  "value": "Name"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_remove_target_missing",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "forbidden_meta_key",
+      "note": "a case of the kind forbidden_meta_key.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "if",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "forbidden_meta_key",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_text",
+      "note": "a case of the kind invalid_text.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "\ud800"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_text",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a declaration that is no object (CUDF-091).",
+      "spec": {
+        "kind": "list",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "loads_a_file",
+      "note": "the loader gives the file that the specification names (CURP-031).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "$ref",
+            {
+              "kind": "text",
+              "value": "base.yml"
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": "specs"
+              },
+              "result": "specs/base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "specs/base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "type",
+                                {
+                                  "kind": "text",
+                                  "value": "text"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": "specs"
+      }
+    }
+  ],
+  "validate_detail_with_loader": [
+    {
+      "id": "loads",
+      "note": "a detail declaration that loads.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "Name"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      }
+    },
+    {
+      "id": "ref_file_not_found",
+      "note": "the loader reports that no file is at the key (CURP-032).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "missing.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "missing.yml",
+                "basepath": ""
+              },
+              "result": "missing.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "missing.yml"
+              },
+              "raise": {
+                "error": "compose_load_error",
+                "kind": "ref_file_not_found"
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_file_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_format_error",
+      "note": "a case of the kind ref_format_error.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": ""
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_format_error",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_detect_key_not_found",
+      "note": "a case of the kind ref_detect_key_not_found.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "fields",
+                    {
+                      "kind": "map",
+                      "value": []
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_detect_key_not_found",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_cycle",
+      "note": "a case of the kind ref_cycle.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "a.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "a.yml",
+                "basepath": ""
+              },
+              "result": "a.yml"
+            },
+            {
+              "args": {
+                "path": "b.yml",
+                "basepath": ""
+              },
+              "result": "b.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "a.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "$ref",
+                          {
+                            "kind": "text",
+                            "value": "b.yml"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "args": {
+                "key": "b.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "$ref",
+                          {
+                            "kind": "text",
+                            "value": "a.yml"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_cycle",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "ref_value_type",
+      "note": "a case of the kind ref_value_type.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "number",
+                    "value": "5"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "ref_value_type",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_shape",
+      "note": "a case of the kind patch_shape.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "text",
+                    "value": "x"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "field",
+                                {
+                                  "kind": "text",
+                                  "value": "name"
+                                }
+                              ],
+                              [
+                                "label",
+                                {
+                                  "kind": "text",
+                                  "value": "Name"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_shape",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_path_conflict",
+      "note": "a case of the kind patch_path_conflict.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "name.field.x",
+                        {
+                          "kind": "text",
+                          "value": "y"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "field",
+                                {
+                                  "kind": "text",
+                                  "value": "name"
+                                }
+                              ],
+                              [
+                                "label",
+                                {
+                                  "kind": "text",
+                                  "value": "Name"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_path_conflict",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "patch_remove_target_missing",
+      "note": "a case of the kind patch_remove_target_missing.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "base.yml"
+                  }
+                ],
+                [
+                  "$patch",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "remove",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "text",
+                              "value": "ghost.subkey"
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": ""
+              },
+              "result": "base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "field",
+                                {
+                                  "kind": "text",
+                                  "value": "name"
+                                }
+                              ],
+                              [
+                                "label",
+                                {
+                                  "kind": "text",
+                                  "value": "Name"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "patch_remove_target_missing",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "forbidden_meta_key",
+      "note": "a case of the kind forbidden_meta_key.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "if",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "forbidden_meta_key",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_text",
+      "note": "a case of the kind invalid_text.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "\ud800"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_text",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a declaration that is no object (CUDF-091).",
+      "spec": {
+        "kind": "list",
+        "value": []
+      },
+      "loader": {
+        "callback": {}
+      },
+      "options": {
+        "files": null,
+        "basepath": null
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
+    },
+    {
+      "id": "loads_a_file",
+      "note": "the loader gives the file that the specification names (CURP-031).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "$ref",
+            {
+              "kind": "text",
+              "value": "base.yml"
+            }
+          ]
+        ]
+      },
+      "loader": {
+        "callback": {
+          "file_loader.normalize": [
+            {
+              "args": {
+                "path": "base.yml",
+                "basepath": "specs"
+              },
+              "result": "specs/base.yml"
+            }
+          ],
+          "file_loader.load": [
+            {
+              "args": {
+                "key": "specs/base.yml"
+              },
+              "result": {
+                "kind": "map",
+                "value": [
+                  [
+                    "properties",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "map",
+                            "value": [
+                              [
+                                "type",
+                                {
+                                  "kind": "text",
+                                  "value": "text"
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "options": {
+        "files": null,
+        "basepath": "specs"
       }
     }
   ]

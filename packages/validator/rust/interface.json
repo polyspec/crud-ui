@@ -250,6 +250,14 @@
           "core": {
             "path": "polyspec_crud_ui_validator::boundary::FileLoader::load",
             "receiver": "&mut self"
+          },
+          "errors": {
+            "recognize": [
+              {
+                "unit": "compose_load_error"
+              }
+            ],
+            "reason": "CURP-032"
           }
         }
       ]
@@ -938,6 +946,21 @@
       "member": "validator.validate_detail",
       "file": "contracts/validator-cases.json",
       "group": "validate_detail"
+    },
+    {
+      "member": "validator.validate_with_loader",
+      "file": "contracts/validator-cases.json",
+      "group": "validate_with_loader"
+    },
+    {
+      "member": "validator.validate_list_with_loader",
+      "file": "contracts/validator-cases.json",
+      "group": "validate_list_with_loader"
+    },
+    {
+      "member": "validator.validate_detail_with_loader",
+      "file": "contracts/validator-cases.json",
+      "group": "validate_detail_with_loader"
     }
   ]
 }
