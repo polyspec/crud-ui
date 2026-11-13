@@ -340,3 +340,14 @@ test('no program waits in an interval loop', () => {
   }
   assert.deepEqual(loops, []);
 });
+
+// cargo fmt formats the crate of a manifest and fails with `Failed to find targets` at a manifest with no package, the
+// manifest of a workspace alone; --all formats every member of that workspace.
+test('make format-check formats a manifest without a package with --all', () => {
+  const manifests = execFileSync('git', ['ls-files', '*Cargo.toml'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(file => file && existsSync(path.join(ROOT, file)));
+  const virtual = manifests.filter(file => !/^\[package\]$/m.test(read(file)));
+  assert.deepEqual(virtual, ['Cargo.toml']);
+  const recipe = declaredCommands().make['format-check']?.commands.join('\n') ?? '';
+  assert.match(recipe, /if grep -q '\^\\\[package\\\]' "\$\$manifest"; then all=; else all=--all; fi/);
+  assert.match(recipe, /run-rust-command\.mts fmt --check \$\$all --manifest-path "\$\$manifest"/);
+});

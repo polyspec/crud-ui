@@ -254,7 +254,6 @@ func parseDate(s string) *time.Time {
 	return nil
 }
 
-
 // isValidURL reports a valid http/https/ftp URL with a host (JS-equivalent URL
 // rule semantics).
 func isValidURL(s string) bool {

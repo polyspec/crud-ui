@@ -843,7 +843,8 @@ WORKTREE_FILES = git ls-files --cached --others --exclude-standard $(1) | while 
 format-check:
 	@status=0; \
 	for manifest in $$($(call WORKTREE_FILES,'*Cargo.toml')); do \
-		$(NODE) scripts/run-rust-command.mts fmt --check --manifest-path "$$manifest" || status=1; \
+		if grep -q '^\[package\]' "$$manifest"; then all=; else all=--all; fi; \
+		$(NODE) scripts/run-rust-command.mts fmt --check $$all --manifest-path "$$manifest" || status=1; \
 	done; \
 	unformatted="$$(gofmt -l $$($(call WORKTREE_FILES,'*.go')))"; \
 	if [ -n "$$unformatted" ]; then echo "gofmt differences:"; echo "$$unformatted"; status=1; fi; \

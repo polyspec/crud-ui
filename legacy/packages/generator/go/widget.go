@@ -198,6 +198,7 @@ func (c widgetContext) options(selected []string, defaults *string) []*Object {
 	}
 	return out
 }
+
 // placeholderOption is the one option of a select or search field with no option: value "" and the
 // untranslated text select (CUSC-080).
 func placeholderOption() *Object {
