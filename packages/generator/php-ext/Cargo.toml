@@ -16,6 +16,7 @@ doctest = false
 
 [features]
 panic-test = []
+fault-test = ["polyspec-crud-ui-generator/fault-test"]
 
 [dependencies]
 polyspec-crud-ui-generator = { path = "../rust" }

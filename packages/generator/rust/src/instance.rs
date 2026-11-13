@@ -25,30 +25,19 @@ pub fn sequence_row_key(sequence: &str) -> FormResult<String> {
     Ok(format!("__{sequence:0>13}__"))
 }
 
-// The failure of the random source that the test feature `random-failure-test` injects; a release build has neither
-// the feature nor this switch, so its random source is always the system's. The switch holds for the thread that sets
-// it, so that a test never makes the keys of another test fail.
-#[cfg(any(test, feature = "random-failure-test"))]
-thread_local! {
-    static RANDOM_FAILS: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
-}
-
-/// Make the random source of this thread fail, or work again, for the tests of CURT-095 (feature
-/// `random-failure-test`).
-#[cfg(any(test, feature = "random-failure-test"))]
-pub fn fail_random_source(fail: bool) {
-    RANDOM_FAILS.with(|fails| fails.set(fail));
-}
-
-/// Fill `bytes` from the random source of the system.
+/// Fill `bytes` from the random source of the system. The fault injection point `crud_ui_generator.random_source`
+/// (feature `fault-test`, binding G-5) makes the source fail as an I/O failure, for the tests of CURT-095; a release
+/// build has no such feature, so its random source is always the system's.
 fn random_bytes(bytes: &mut [u8]) -> FormResult<()> {
-    #[cfg(any(test, feature = "random-failure-test"))]
-    if RANDOM_FAILS.with(std::cell::Cell::get) {
-        return Err(FormError::random_unavailable(
-            "the injected failure of the test feature",
-        ));
+    match binding_core::fault::point!(crate::fault::RANDOM_SOURCE) {
+        Some(binding_core::fault::Injected::Io { .. }) => Err(FormError::random_unavailable(
+            "the injected failure of the fault injection point",
+        )),
+        Some(
+            binding_core::fault::Injected::Short { .. } | binding_core::fault::Injected::Broken,
+        )
+        | None => getrandom::fill(bytes).map_err(FormError::random_unavailable),
     }
-    getrandom::fill(bytes).map_err(FormError::random_unavailable)
 }
 
 /// Generate a random 13-character hexadecimal row key using the OS random source; a failure of the source is

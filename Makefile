@@ -201,7 +201,7 @@ test-php: php-tables ## Run the unit tests of each PHP package with CASES=<patte
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner php --roots legacy/packages/generator/php legacy/packages/validator/php
 test-python: python-tables ## Run the unit tests of each Python package with CASES=<pattern>; offline
 	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots $(PYTHON_ROOTS) --venv .venv
-test-rust: ## Run the unit tests of each Rust package with CASES=<pattern> and the test features (random-failure-test); offline
+test-rust: ## Run the unit tests of each Rust package with CASES=<pattern> and the test features (fault-test); offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner cargo --roots packages/generator/rust packages/validator/rust -- --all-features -- --test-threads=1
 test-ts: require-build ## Run the unit tests of each TypeScript package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner vitest --roots legacy/packages/generator/ts legacy/packages/validator/ts -- --testTimeout=30000 --hookTimeout=30000
@@ -770,7 +770,7 @@ crudui-test-generator-go:
 	$(NODE) tests/conformance/run-suite.mts go --cwd legacy/packages/generator/go -- -count=1 -timeout=0 -race ./...
 
 crudui-test-generator-rust:
-	$(NODE) tests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml --features random-failure-test -- --test-threads=1
+	$(NODE) tests/conformance/run-suite.mts cargo -- --locked --manifest-path packages/generator/rust/Cargo.toml --features fault-test -- --test-threads=1
 
 crudui-test-generator-js: require-build
 	@status=0; \

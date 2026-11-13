@@ -194,6 +194,20 @@
     "binding": [],
     "wrapped": []
   },
+  "faults": [
+    {
+      "id": "random_source",
+      "core": "polyspec_crud_ui_generator::fault::RANDOM_SOURCE",
+      "inject": [
+        "io"
+      ],
+      "fills": [
+        "random_unavailable"
+      ],
+      "reason": "CURT-095",
+      "place": "polyspec_crud_ui_generator::instance::random_bytes"
+    }
+  ],
   "units": [
     {
       "id": "form_template",

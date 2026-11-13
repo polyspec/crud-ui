@@ -10,8 +10,9 @@ include = ["/src/**/*.rs", "/interface.json", "/README.md"]
 description = "CRUDUI form compilation, data binding and HTML rendering"
 
 [features]
-# CURT-095: makes the random source fail on demand, for the tests of RANDOM_UNAVAILABLE; no release build has it.
-random-failure-test = []
+# Compiles the fault injection points of the core (binding G-5, GN-5), such as the random source of CURT-095, for the
+# tests only: a point is live only in a crate whose own feature fault-test is on; no release build has it.
+fault-test = ["polyspec-binding-core/fault-test"]
 
 [dependencies]
 # The kind interface that the generated bindings read from the core errors (binding design E-1, I-2 (3)). The git

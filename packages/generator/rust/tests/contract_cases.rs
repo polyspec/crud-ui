@@ -254,19 +254,37 @@ fn run(member: &str, case: &Value) -> Result<(), FormError> {
     }
 }
 
-/// Run `run` with the failure that a case injects: `random_source` makes the random source of this thread fail
-/// (CURT-095, feature `random-failure-test`).
-fn with_injected<T>(injected: Option<&str>, run: impl FnOnce() -> T) -> T {
-    match injected {
-        None => run(),
-        #[cfg(feature = "random-failure-test")]
-        Some("random_source") => {
-            polyspec_crud_ui_generator::fail_random_source(true);
-            let result = run();
-            polyspec_crud_ui_generator::fail_random_source(false);
-            result
+/// Run `run` with the fault injection points that a case arms (binding G-5): the faults are armed for the member on
+/// this thread, the call runs with them installed, and every fault must have fired. Without the feature `fault-test`
+/// no point is live, so such a case fails.
+fn with_faults<T>(
+    member: &str,
+    faults: Option<&Value>,
+    run: impl FnOnce() -> T,
+) -> Result<T, Failed> {
+    let Some(faults) = faults else {
+        return Ok(run());
+    };
+    #[cfg(feature = "fault-test")]
+    {
+        let id = binding_core::fault::arm(member, faults.raw())
+            .map_err(|error| Failed::from(format!("the faults of the case: {error}")))?;
+        let result = binding_core::fault::take(member).run(run);
+        let left = binding_core::fault::left(id)
+            .map_err(|error| Failed::from(format!("the faults of the case: {error}")))?;
+        if left.is_empty() {
+            Ok(result)
+        } else {
+            Err(Failed::from(format!("the faults {left:?} did not fire")))
         }
-        Some(other) => panic!("no injected failure {other} in this build"),
+    }
+    #[cfg(not(feature = "fault-test"))]
+    {
+        drop(run);
+        Err(Failed::from(format!(
+            "the case of {member} arms {}, which only a build with the feature fault-test has",
+            faults.raw()
+        )))
     }
 }
 
@@ -305,14 +323,12 @@ fn main() {
         assert!(!cases.is_empty(), "the group {member} holds no case");
         for case in cases {
             let id = text(argument(&case, "id"));
-            // A case that injects a failure of the environment runs with the test feature that injects it.
-            let injected = case.get("inject").unwrap().map(text);
-            let ignored = injected.is_some() && !cfg!(feature = "random-failure-test");
+            let faults = case.get("faults").unwrap().cloned();
             let trial = Trial::test(format!("{member}::{id}"), move || {
-                let result = with_injected(injected.as_deref(), || run(member, &case));
+                let result = with_faults(member, faults.as_ref(), || run(member, &case))?;
                 check(&case, result)
             });
-            trials.push(trial.with_ignored_flag(ignored));
+            trials.push(trial);
         }
     }
     libtest_mimic::run(&Arguments::from_args(), trials).exit();

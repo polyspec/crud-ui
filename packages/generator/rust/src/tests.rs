@@ -1842,14 +1842,26 @@ fn snapshot_reports_the_state_of_the_instance() {
     );
 }
 
+/// Runs `work` with the fault injection point of the random source armed as an I/O failure for one visit (binding
+/// G-5), and requires the fault to have fired.
+#[cfg(feature = "fault-test")]
+fn with_random_source_failing<T>(member: &str, work: impl FnOnce() -> T) -> T {
+    let faults = r#"[{"point": "crud_ui_generator.random_source", "kind": "io"}]"#;
+    let id = binding_core::fault::arm(member, faults).unwrap();
+    let result = binding_core::fault::take(member).run(work);
+    assert_eq!(binding_core::fault::left(id).unwrap(), Vec::<String>::new());
+    result
+}
+
 /// CURT-095: a failure of the random source is RANDOM_UNAVAILABLE, and the row that would take a new key is not added.
+#[cfg(feature = "fault-test")]
 #[test]
 fn a_failure_of_the_random_source_is_random_unavailable() {
-    crate::instance::fail_random_source(true);
-    let key = create_row_key();
+    let key = with_random_source_failing("test.create_row_key", create_row_key);
     let mut form = Form::new(template(), &record(), BindOptions::default()).unwrap();
-    let added = form.add_row("companies", AddRowOptions::default());
-    crate::instance::fail_random_source(false);
+    let added = with_random_source_failing("test.add_row", || {
+        form.add_row("companies", AddRowOptions::default())
+    });
     let error = key.unwrap_err();
     assert_eq!(error.code, FormErrorCode::RandomUnavailable);
     assert_eq!(error.code.kind(), "random_unavailable");
