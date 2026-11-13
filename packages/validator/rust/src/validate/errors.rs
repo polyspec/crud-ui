@@ -30,14 +30,87 @@ impl fmt::Display for FormInputError {
 
 impl std::error::Error for FormInputError {}
 
-/// The code of a validation failure, whose variants the interface contract lists as kinds (CURP-033): the code of
-/// the composition of a load failure, or the code of an input failure.
+/// The code of a validation failure, whose variants the interface contract lists as kinds (CURP-033): each code of
+/// the composition of a load failure, and the code of an input failure. The enum holds no other enum, because the
+/// contract names a kind of this library by one variant (binding GN-7c).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ValidateErrorCode {
-    /// A load failure with the code of its composition.
-    Load(ComposeErrorCode),
+    /// A load failure with the composition code `RefFileNotFound`.
+    RefFileNotFound,
+    /// A load failure with the composition code `RefFormatError`.
+    RefFormatError,
+    /// A load failure with the composition code `RefDetectKeyNotFound`.
+    RefDetectKeyNotFound,
+    /// A load failure with the composition code `RefCycle`.
+    RefCycle,
+    /// A load failure with the composition code `RefValueType`.
+    RefValueType,
+    /// A load failure with the composition code `PatchShape`.
+    PatchShape,
+    /// A load failure with the composition code `PatchPathConflict`.
+    PatchPathConflict,
+    /// A load failure with the composition code `PatchRemoveTargetMissing`.
+    PatchRemoveTargetMissing,
+    /// A load failure with the composition code `ForbiddenMetaKey`.
+    ForbiddenMetaKey,
+    /// A load failure with the composition code `InvalidRuleParameter`.
+    InvalidRuleParameter,
+    /// A load failure with the composition code `InvalidRulePattern`.
+    InvalidRulePattern,
+    /// A load failure with the composition code `UnknownRule`.
+    UnknownRule,
+    /// A load failure with the composition code `InvalidText`.
+    InvalidText,
     /// Submitted data has the wrong shape.
     InvalidFormInput,
+}
+
+impl ValidateErrorCode {
+    /// The composition code of the code of a load failure; none for the code of an input failure.
+    pub fn compose(self) -> Option<ComposeErrorCode> {
+        match self {
+            ValidateErrorCode::RefFileNotFound => Some(ComposeErrorCode::RefFileNotFound),
+            ValidateErrorCode::RefFormatError => Some(ComposeErrorCode::RefFormatError),
+            ValidateErrorCode::RefDetectKeyNotFound => Some(ComposeErrorCode::RefDetectKeyNotFound),
+            ValidateErrorCode::RefCycle => Some(ComposeErrorCode::RefCycle),
+            ValidateErrorCode::RefValueType => Some(ComposeErrorCode::RefValueType),
+            ValidateErrorCode::PatchShape => Some(ComposeErrorCode::PatchShape),
+            ValidateErrorCode::PatchPathConflict => Some(ComposeErrorCode::PatchPathConflict),
+            ValidateErrorCode::PatchRemoveTargetMissing => {
+                Some(ComposeErrorCode::PatchRemoveTargetMissing)
+            }
+            ValidateErrorCode::ForbiddenMetaKey => Some(ComposeErrorCode::ForbiddenMetaKey),
+            ValidateErrorCode::InvalidRuleParameter => Some(ComposeErrorCode::InvalidRuleParameter),
+            ValidateErrorCode::InvalidRulePattern => Some(ComposeErrorCode::InvalidRulePattern),
+            ValidateErrorCode::UnknownRule => Some(ComposeErrorCode::UnknownRule),
+            ValidateErrorCode::InvalidText => Some(ComposeErrorCode::InvalidText),
+            ValidateErrorCode::InvalidFormInput => None,
+        }
+    }
+}
+
+/// The code of a load failure with a composition code. The match names every composition code, so a new one does
+/// not compile until this enum and the interface contract have its variant.
+impl From<ComposeErrorCode> for ValidateErrorCode {
+    fn from(code: ComposeErrorCode) -> Self {
+        match code {
+            ComposeErrorCode::RefFileNotFound => ValidateErrorCode::RefFileNotFound,
+            ComposeErrorCode::RefFormatError => ValidateErrorCode::RefFormatError,
+            ComposeErrorCode::RefDetectKeyNotFound => ValidateErrorCode::RefDetectKeyNotFound,
+            ComposeErrorCode::RefCycle => ValidateErrorCode::RefCycle,
+            ComposeErrorCode::RefValueType => ValidateErrorCode::RefValueType,
+            ComposeErrorCode::PatchShape => ValidateErrorCode::PatchShape,
+            ComposeErrorCode::PatchPathConflict => ValidateErrorCode::PatchPathConflict,
+            ComposeErrorCode::PatchRemoveTargetMissing => {
+                ValidateErrorCode::PatchRemoveTargetMissing
+            }
+            ComposeErrorCode::ForbiddenMetaKey => ValidateErrorCode::ForbiddenMetaKey,
+            ComposeErrorCode::InvalidRuleParameter => ValidateErrorCode::InvalidRuleParameter,
+            ComposeErrorCode::InvalidRulePattern => ValidateErrorCode::InvalidRulePattern,
+            ComposeErrorCode::UnknownRule => ValidateErrorCode::UnknownRule,
+            ComposeErrorCode::InvalidText => ValidateErrorCode::InvalidText,
+        }
+    }
 }
 
 /// A validation run that produced no validation result.
@@ -70,7 +143,7 @@ impl ValidateError {
     /// (CURP-033, binding GN-7b).
     pub fn error_code(&self) -> ValidateErrorCode {
         match self {
-            ValidateError::Load(error) => ValidateErrorCode::Load(error.code),
+            ValidateError::Load(error) => error.code.into(),
             ValidateError::InvalidFormInput(_) => ValidateErrorCode::InvalidFormInput,
         }
     }
@@ -78,13 +151,9 @@ impl ValidateError {
     /// The failure of the kind `code` that a file loader raised with `message`, as an instance of a recognized error
     /// class (CURP-032, binding GN-6d): a load failure has no trace.
     pub fn recognized(code: ValidateErrorCode, message: &str) -> Self {
-        match code {
-            ValidateErrorCode::Load(code) => {
-                ValidateError::Load(ComposeLoadError::new(code, message))
-            }
-            ValidateErrorCode::InvalidFormInput => {
-                ValidateError::InvalidFormInput(FormInputError::new(message))
-            }
+        match code.compose() {
+            Some(code) => ValidateError::Load(ComposeLoadError::new(code, message)),
+            None => ValidateError::InvalidFormInput(FormInputError::new(message)),
         }
     }
 

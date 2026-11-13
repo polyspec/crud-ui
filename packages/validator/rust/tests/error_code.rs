@@ -12,19 +12,13 @@ fn a_load_failure_projects_to_the_code_of_its_composition_and_gives_its_trace() 
         "a cycle",
         vec!["a.json".to_owned(), "b.json".to_owned()],
     ));
-    assert_eq!(
-        error.error_code(),
-        ValidateErrorCode::Load(ComposeErrorCode::RefCycle)
-    );
+    assert_eq!(error.error_code(), ValidateErrorCode::RefCycle);
     assert_eq!(error.trace(), ["a.json", "b.json"]);
 }
 
 #[test]
 fn a_recognized_load_kind_is_a_load_failure_with_its_message_and_no_trace() {
-    let error = ValidateError::recognized(
-        ValidateErrorCode::Load(ComposeErrorCode::RefFileNotFound),
-        "no file at a.json",
-    );
+    let error = ValidateError::recognized(ValidateErrorCode::RefFileNotFound, "no file at a.json");
     assert_eq!(
         error,
         ValidateError::Load(ComposeLoadError::new(
@@ -42,4 +36,65 @@ fn a_recognized_input_kind_is_an_input_failure_with_its_message() {
     assert_eq!(error.message(), "not an object");
     assert_eq!(error.code(), "INVALID_FORM_INPUT");
     assert!(error.trace().is_empty());
+}
+
+/// Binding GN-7c: a kind of this library is one variant of the code, so every composition code has a code of its own,
+/// whose kind is the kind of the composition code and which gives the composition code back.
+#[test]
+fn every_composition_code_is_a_code_of_its_own() {
+    let codes = [
+        (
+            ComposeErrorCode::RefFileNotFound,
+            ValidateErrorCode::RefFileNotFound,
+        ),
+        (
+            ComposeErrorCode::RefFormatError,
+            ValidateErrorCode::RefFormatError,
+        ),
+        (
+            ComposeErrorCode::RefDetectKeyNotFound,
+            ValidateErrorCode::RefDetectKeyNotFound,
+        ),
+        (ComposeErrorCode::RefCycle, ValidateErrorCode::RefCycle),
+        (
+            ComposeErrorCode::RefValueType,
+            ValidateErrorCode::RefValueType,
+        ),
+        (ComposeErrorCode::PatchShape, ValidateErrorCode::PatchShape),
+        (
+            ComposeErrorCode::PatchPathConflict,
+            ValidateErrorCode::PatchPathConflict,
+        ),
+        (
+            ComposeErrorCode::PatchRemoveTargetMissing,
+            ValidateErrorCode::PatchRemoveTargetMissing,
+        ),
+        (
+            ComposeErrorCode::ForbiddenMetaKey,
+            ValidateErrorCode::ForbiddenMetaKey,
+        ),
+        (
+            ComposeErrorCode::InvalidRuleParameter,
+            ValidateErrorCode::InvalidRuleParameter,
+        ),
+        (
+            ComposeErrorCode::InvalidRulePattern,
+            ValidateErrorCode::InvalidRulePattern,
+        ),
+        (
+            ComposeErrorCode::UnknownRule,
+            ValidateErrorCode::UnknownRule,
+        ),
+        (
+            ComposeErrorCode::InvalidText,
+            ValidateErrorCode::InvalidText,
+        ),
+    ];
+    for (compose, code) in codes {
+        let error = ValidateError::Load(ComposeLoadError::new(compose, "a load failure"));
+        assert_eq!(error.error_code(), code);
+        assert_eq!(code.compose(), Some(compose));
+        assert_eq!(ValidateError::recognized(code, "a load failure"), error);
+    }
+    assert_eq!(ValidateErrorCode::InvalidFormInput.compose(), None);
 }

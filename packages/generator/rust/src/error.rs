@@ -1,11 +1,36 @@
 use polyspec_crud_ui_validator::compose::{ComposeErrorCode, ComposeLoadError};
 
-/// The code of a failed form operation: a composition load failure, an input failure or a field
-/// type that binding does not support.
+/// The code of a failed form operation: each code of a composition load failure, an input failure, a field type
+/// that binding does not support or a failure of the random source. The enum holds no other enum, because the
+/// interface contract names a kind of this library by one variant (CURP-033, binding GN-7c).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FormErrorCode {
-    /// A composition load failure.
-    Compose(ComposeErrorCode),
+    /// A composition load failure with the composition code `RefFileNotFound`.
+    RefFileNotFound,
+    /// A composition load failure with the composition code `RefFormatError`.
+    RefFormatError,
+    /// A composition load failure with the composition code `RefDetectKeyNotFound`.
+    RefDetectKeyNotFound,
+    /// A composition load failure with the composition code `RefCycle`.
+    RefCycle,
+    /// A composition load failure with the composition code `RefValueType`.
+    RefValueType,
+    /// A composition load failure with the composition code `PatchShape`.
+    PatchShape,
+    /// A composition load failure with the composition code `PatchPathConflict`.
+    PatchPathConflict,
+    /// A composition load failure with the composition code `PatchRemoveTargetMissing`.
+    PatchRemoveTargetMissing,
+    /// A composition load failure with the composition code `ForbiddenMetaKey`.
+    ForbiddenMetaKey,
+    /// A composition load failure with the composition code `InvalidRuleParameter`.
+    InvalidRuleParameter,
+    /// A composition load failure with the composition code `InvalidRulePattern`.
+    InvalidRulePattern,
+    /// A composition load failure with the composition code `UnknownRule`.
+    UnknownRule,
+    /// A composition load failure with the composition code `InvalidText`.
+    InvalidText,
     /// A value that the operation does not accept (`INVALID_FORM_INPUT`).
     InvalidFormInput,
     /// A field type that binding does not support (`UNSUPPORTED_FIELD_TYPE`).
@@ -15,23 +40,68 @@ pub enum FormErrorCode {
 }
 
 impl FormErrorCode {
+    /// The composition code of the code of a composition load failure, or the code and the kind of a code of this
+    /// crate.
+    fn origin(self) -> Result<ComposeErrorCode, (&'static str, &'static str)> {
+        match self {
+            FormErrorCode::RefFileNotFound => Ok(ComposeErrorCode::RefFileNotFound),
+            FormErrorCode::RefFormatError => Ok(ComposeErrorCode::RefFormatError),
+            FormErrorCode::RefDetectKeyNotFound => Ok(ComposeErrorCode::RefDetectKeyNotFound),
+            FormErrorCode::RefCycle => Ok(ComposeErrorCode::RefCycle),
+            FormErrorCode::RefValueType => Ok(ComposeErrorCode::RefValueType),
+            FormErrorCode::PatchShape => Ok(ComposeErrorCode::PatchShape),
+            FormErrorCode::PatchPathConflict => Ok(ComposeErrorCode::PatchPathConflict),
+            FormErrorCode::PatchRemoveTargetMissing => {
+                Ok(ComposeErrorCode::PatchRemoveTargetMissing)
+            }
+            FormErrorCode::ForbiddenMetaKey => Ok(ComposeErrorCode::ForbiddenMetaKey),
+            FormErrorCode::InvalidRuleParameter => Ok(ComposeErrorCode::InvalidRuleParameter),
+            FormErrorCode::InvalidRulePattern => Ok(ComposeErrorCode::InvalidRulePattern),
+            FormErrorCode::UnknownRule => Ok(ComposeErrorCode::UnknownRule),
+            FormErrorCode::InvalidText => Ok(ComposeErrorCode::InvalidText),
+            FormErrorCode::InvalidFormInput => Err(("INVALID_FORM_INPUT", "invalid_form_input")),
+            FormErrorCode::UnsupportedFieldType => {
+                Err(("UNSUPPORTED_FIELD_TYPE", "unsupported_field_type"))
+            }
+            FormErrorCode::RandomUnavailable => Err(("RANDOM_UNAVAILABLE", "random_unavailable")),
+        }
+    }
+
     /// The code as the specification writes it, such as `INVALID_FORM_INPUT`.
     pub fn as_str(self) -> &'static str {
-        match self {
-            FormErrorCode::Compose(code) => code.as_str(),
-            FormErrorCode::InvalidFormInput => "INVALID_FORM_INPUT",
-            FormErrorCode::UnsupportedFieldType => "UNSUPPORTED_FIELD_TYPE",
-            FormErrorCode::RandomUnavailable => "RANDOM_UNAVAILABLE",
+        match self.origin() {
+            Ok(code) => code.as_str(),
+            Err((code, _)) => code,
         }
     }
 
     /// The kind of the failure (binding design E-1): the code in lower snake case.
     pub fn kind(self) -> &'static str {
-        match self {
-            FormErrorCode::Compose(code) => code.kind(),
-            FormErrorCode::InvalidFormInput => "invalid_form_input",
-            FormErrorCode::UnsupportedFieldType => "unsupported_field_type",
-            FormErrorCode::RandomUnavailable => "random_unavailable",
+        match self.origin() {
+            Ok(code) => code.kind(),
+            Err((_, kind)) => kind,
+        }
+    }
+}
+
+/// The code of a composition load failure with a composition code. The match names every composition code, so a new
+/// one does not compile until this enum and the interface contract have its variant.
+impl From<ComposeErrorCode> for FormErrorCode {
+    fn from(code: ComposeErrorCode) -> Self {
+        match code {
+            ComposeErrorCode::RefFileNotFound => FormErrorCode::RefFileNotFound,
+            ComposeErrorCode::RefFormatError => FormErrorCode::RefFormatError,
+            ComposeErrorCode::RefDetectKeyNotFound => FormErrorCode::RefDetectKeyNotFound,
+            ComposeErrorCode::RefCycle => FormErrorCode::RefCycle,
+            ComposeErrorCode::RefValueType => FormErrorCode::RefValueType,
+            ComposeErrorCode::PatchShape => FormErrorCode::PatchShape,
+            ComposeErrorCode::PatchPathConflict => FormErrorCode::PatchPathConflict,
+            ComposeErrorCode::PatchRemoveTargetMissing => FormErrorCode::PatchRemoveTargetMissing,
+            ComposeErrorCode::ForbiddenMetaKey => FormErrorCode::ForbiddenMetaKey,
+            ComposeErrorCode::InvalidRuleParameter => FormErrorCode::InvalidRuleParameter,
+            ComposeErrorCode::InvalidRulePattern => FormErrorCode::InvalidRulePattern,
+            ComposeErrorCode::UnknownRule => FormErrorCode::UnknownRule,
+            ComposeErrorCode::InvalidText => FormErrorCode::InvalidText,
         }
     }
 }
@@ -126,7 +196,7 @@ impl From<polyspec_crud_ui_validator::ValidateError> for FormError {
 impl From<ComposeLoadError> for FormError {
     fn from(error: ComposeLoadError) -> Self {
         Self {
-            code: FormErrorCode::Compose(error.code),
+            code: error.code.into(),
             message: error.message,
             at: error.trace.join("."),
             trace: error.trace,

@@ -832,10 +832,7 @@ mod tests {
         else {
             panic!("the file is missing");
         };
-        assert!(matches!(
-            error.code(),
-            FormErrorCode::Compose(ComposeErrorCode::RefFileNotFound)
-        ));
+        assert!(matches!(error.code(), FormErrorCode::RefFileNotFound));
         assert_eq!(error.message, "$ref file not found: Base.yml");
         assert_eq!(error.trace, ["Base.yml"]);
         assert_eq!(binding_core::Kinds::kind(&error), "ref_file_not_found");

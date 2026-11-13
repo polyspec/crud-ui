@@ -1,6 +1,6 @@
 # 런타임 패키지
 <!-- doc-id: docs-spec-runtime-packages -->
-<!-- source-sha256: 6288d4858e6a154d7d36c486f569360dc1d112fc30cf8c03e4b1df60cc3003cd -->
+<!-- source-sha256: 66b1554c06c74ecb7b71b57d8c7941d057abe28cff993d11c905f825dfbd5d14 -->
 
 [English](runtime-packages.md).
 구현과 검증 결과는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -125,9 +125,16 @@ Composer가 PHP 클래스를 자동 로드합니다. 예제는 두 설정에서 
   class의 오류, `normalize`의 실패는 로더의 실패입니다(CURP-031).
 - **CURP-033** generator 연산의 실패는 구조체 `FormError`입니다. code, 메시지, form 경로, 합성 trace를 가지며, 모든 code가
   이 member를 가지므로 code마다 variant를 두면 같은 member를 반복하게 됩니다. generator 인터페이스 계약의 kind는 구조체가
-  아니라 code(`FormErrorCode`)의 variant이고, `FormError::code`가 실패의 code를 줍니다. 계약은 이 함수를 오류에서 code로
-  가는 투영으로 적습니다. 구현되지 않음: 계약은 투영, `FormErrorCode::Compose` 안 합성 code의 중첩 경로, `run_action`의
-  form의 가변 빌림을 적지 않습니다. binding의 계약 schema에 그 member가 없기 때문입니다.
+  아니라 code(`FormErrorCode`)의 variant이고, `FormError::code`가 실패의 code를 줍니다. 계약은 이 함수를 `errors.code`에
+  오류에서 code로 가는 투영으로 적습니다. validator 연산의 실패는 `ValidateError`이고, 그 code는 `ValidateErrorCode`이며
+  투영은 `ValidateError::error_code`입니다. 각 code enum은 kind마다 variant 하나를 가지며 다른 enum을 담지 않습니다. 모든
+  합성 code(`ComposeErrorCode`)는 `FormErrorCode`와 `ValidateErrorCode`에서 같은 이름의 variant이고, 그 옆에 각 crate
+  자신의 code(`InvalidFormInput`, `UnsupportedFieldType`, `RandomUnavailable`)가 있습니다. 이유: 계약은 라이브러리의 kind를
+  code의 variant 하나로 적고, 두 enum을 지나는 경로는 코어가 그대로 전달하는 다른 라이브러리의 kind에만 적습니다(binding
+  GN-7c). 두 crate 모두 그렇게 전달하지 않습니다. generator는 합성 load 실패의 code, 메시지, trace를 자기 `FormError`로
+  옮기고, validator의 합성 code는 validator 자신의 것입니다. 각 code enum의 `From<ComposeErrorCode>`는 모든 합성 code를
+  match하므로, 새 합성 code는 code enum이 그 variant를 가질 때까지 compile되지 않습니다. 구현되지 않음: 두 계약의 바인딩은
+  생성되지 않습니다. binding 생성기가 각 계약의 항목을 거부하기 때문입니다(C19.2).
 
 ## 구현 패키지
 

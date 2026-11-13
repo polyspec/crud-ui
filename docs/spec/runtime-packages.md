@@ -138,10 +138,18 @@ structure or validation rules.
 - **CURP-033** The failure of a generator operation is the structure `FormError`: its code, its message, its form path
   and its composition trace, which every code has, so that a variant per code would repeat them. The kinds of the
   interface contract of the generator are variants of the code (`FormErrorCode`), not of the structure, and
-  `FormError::code` gives the code of a failure; it is the function that the contract names as the projection from the
-  error to its code. Not implemented: the contracts do not name the projection, the nested path of a composition code
-  inside `FormErrorCode::Compose` or the mutable borrow of the form of `run_action`, because the contract schema of
-  binding has no member for them.
+  `FormError::code` gives the code of a failure; it is the function that the contract names in `errors.code` as the
+  projection from the error to its code. The failure of a validator operation is `ValidateError`, whose code is
+  `ValidateErrorCode` and whose projection is `ValidateError::error_code`. Each code enum has one variant for each kind
+  and holds no other enum: every composition code (`ComposeErrorCode`) is a variant of the same name in
+  `FormErrorCode` and in `ValidateErrorCode`, beside the codes of each crate itself (`InvalidFormInput`,
+  `UnsupportedFieldType`, `RandomUnavailable`). Why: the contract names a kind of the library by one variant of the
+  code, and names a path through two enums only for the kind of another library that the core passes on (binding
+  GN-7c), which neither crate does: the generator copies the code, the message and the trace of a composition load
+  failure into its own `FormError`, and the composition codes of the validator are its own. `From<ComposeErrorCode>` of
+  each code enum matches every composition code, so a new composition code does not compile until the code enum has
+  its variant. Not implemented: the bindings of both contracts are not generated, because the binding generator
+  refuses items of each contract (C19.2).
 
 ## Implementation packages
 
