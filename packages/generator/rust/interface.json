@@ -267,7 +267,8 @@
           "type": "text",
           "default": {
             "literal": ""
-          }
+          },
+          "default_core": "polyspec_crud_ui_generator::boundary::DEFAULT_BASEPATH"
         },
         {
           "name": [
@@ -389,7 +390,8 @@
           "type": "text",
           "default": {
             "literal": ""
-          }
+          },
+          "default_core": "polyspec_crud_ui_generator::boundary::DEFAULT_BASEPATH"
         },
         {
           "name": [
@@ -398,7 +400,8 @@
           "type": "text",
           "default": {
             "literal": "ko"
-          }
+          },
+          "default_core": "polyspec_crud_ui_generator::boundary::DEFAULT_LANGUAGE"
         },
         {
           "name": [

@@ -82,8 +82,8 @@ fn list_options(case: &Value) -> ListOptions {
     let data = argument(options, "data");
     ListOptions {
         files,
-        basepath: text(argument(options, "basepath")),
-        language: text(argument(options, "language")),
+        basepath: Some(text(argument(options, "basepath"))),
+        language: Some(text(argument(options, "language"))),
         data: (data.kind() != Kind::Null).then(|| case_value(data)),
         page: number("page"),
         total: number("total"),
@@ -172,7 +172,7 @@ fn run(member: &str, case: &Value) -> Result<(), FormError> {
             let key_prefix = argument(options, "key_prefix");
             let options = CompileOptions {
                 files,
-                basepath: text(argument(options, "basepath")),
+                basepath: Some(text(argument(options, "basepath"))),
                 key_prefix: (key_prefix.kind() != Kind::Null).then(|| text(key_prefix)),
             };
             compile_form(&case_value(argument(case, "spec")), &options).map(|_| ())

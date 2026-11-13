@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 6e4cbd20f8c1ee4d558abd56d367218ee1970287dcdfdba4ff208f95cdf1c943 -->
+<!-- source-sha256: e478af5fa06b0df11367a9caebf42dc64dcaa6446b09df3e83c4cfc408a584ca -->
 
 ## Unreleased
 
+- C19.11: generator 계약이 `compile_options.basepath`, `list_options.basepath`, `list_options.language`의 기본값에 대해 상수 `boundary::DEFAULT_BASEPATH`(`""`)와 `boundary::DEFAULT_LANGUAGE`(`"ko"`, CUMK-070)를 `default_core`에 적고, Rust `boundary::CompileOptions`와 `boundary::ListOptions`의 field는 `Option<String>`이며 연산은 그 `None`을 상수로 읽습니다. binding generate는 세 field를 `a {literal} or {const} default names the constant of the core in default_core (U-2)`로 거부했습니다. 단위 시험 `a_left_out_option_is_its_default_constant`는 option을 생략한 목록과 상수를 준 목록을 렌더하고 form을 compile하여 같은 결과를 얻습니다.
 - C19.7: lock이 polyspec-binding-core 1bf0025를 받고, 그 commit의 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 manifest는 자기 표 대신 workspace의 lint(`[lints] workspace = true`)를 받고, WASM과 Go crate는 `polyspec-binding-core`의 feature `lock`을 켜고 `polyspec-json`에 의존하며, generator의 것은 Node·Python·PHP crate처럼 `polyspec-crud-ui-validator`에도 의존하고, 진입 파일은 rustfmt처럼 속성을 줄 바꿈합니다. 그 commit의 `binding check`는 두 계약 모두에 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 계약마다 열 건과 한 건을 보고했습니다. `make layout-check`는 `lint-cargo-lints` 발견을 보고하지 않고, C19.2가 지우는 legacy 확장의 stub에 대한 `php-ext-stub-place`로만 실패합니다. 이전에는 발견 21건을 보고했습니다.
 - C19.9: `make crudui-install-python`이 `PYTHON_ROOTS`의 각 root(`legacy/packages/generator/python`, `legacy/packages/validator/python`)에도 환경 `.venv`를 만들고 uv workspace를 sync합니다. `make test-python`은 kit runner의 `--venv`가 각 root에서 가리키는 폴더인 그 root의 `.venv`의 Python으로 실행하는데, 설치는 `var/python`만 썼습니다. `make test-python`은 두 root에서 `spawn .../.venv/bin/python ENOENT`로 실패했고, 이제 `make crudui-install-python` 뒤에 통과합니다(시험 737개와 714개). `var/python`은 남습니다. `crudui-test-validator-python`과 `crudui-test-generator-python` suite, `contracts/features.json`의 feature 명령, `install-link`, 네이티브 생성기 프로그램, 교차 검증 콘솔이 그 Python을 실행합니다(C19.9).
 - C19.10: `mise.toml`이 WASM 바인딩 crate의 wasm-bindgen crate 판인 wasm-bindgen CLI 0.2.130을 고정하고, `mise.lock`은 binding의 lock이 기록한 플랫폼 linux-arm64, linux-x64, macos-arm64에 대한 release asset의 sha256을 가집니다. `rust-toolchain.toml`은 target `wasm32-unknown-unknown`을 적습니다. `make install-tools`는 CLI를 `var/tools/mise`에 설치하며, 그 CLI는 `wasm-bindgen 0.2.130`을 보고합니다(C19.10).

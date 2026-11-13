@@ -70,13 +70,27 @@ fn leave_list(values: &[Value]) -> FormResult<Vec<JsonValue>> {
     values.iter().map(leave).collect()
 }
 
+/// The base path of relative references that an operation takes when its options leave it out (binding U-2).
+pub const DEFAULT_BASEPATH: &str = "";
+
+/// The content language of a list or a detail whose options leave it out (CUMK-070, binding U-2).
+pub const DEFAULT_LANGUAGE: &str = "ko";
+
+/// The text of an option, or `default` when the options leave it out (binding U-2).
+fn or_default(value: Option<&String>, default: &str) -> String {
+    match value {
+        Some(text) => text.clone(),
+        None => default.to_owned(),
+    }
+}
+
 /// The options of [`compile_form`].
 #[derive(Debug, Clone, Default)]
 pub struct CompileOptions {
     /// The composition files by name.
     pub files: OrderedMap<JsonValue>,
-    /// The base path of relative references.
-    pub basepath: String,
+    /// The base path of relative references; none is [`DEFAULT_BASEPATH`].
+    pub basepath: Option<String>,
     /// The root prefix of input names.
     pub key_prefix: Option<String>,
 }
@@ -114,34 +128,20 @@ impl BindOptions {
 }
 
 /// The options of the list and detail operations.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ListOptions {
     /// The composition files by name.
     pub files: OrderedMap<JsonValue>,
-    /// The base path of relative references.
-    pub basepath: String,
-    /// The content language.
-    pub language: String,
+    /// The base path of relative references; none is [`DEFAULT_BASEPATH`].
+    pub basepath: Option<String>,
+    /// The content language; none is [`DEFAULT_LANGUAGE`].
+    pub language: Option<String>,
     /// The list-level data of column visibility; none is no data.
     pub data: Option<JsonValue>,
     /// The current page.
     pub page: Option<u64>,
     /// The total number of rows.
     pub total: Option<u64>,
-}
-
-impl Default for ListOptions {
-    fn default() -> Self {
-        Self {
-            files: OrderedMap::new(),
-            basepath: String::new(),
-            // CUMK-070: the default language is ko.
-            language: "ko".to_owned(),
-            data: None,
-            page: None,
-            total: None,
-        }
-    }
 }
 
 impl ListOptions {
@@ -162,8 +162,8 @@ impl ListOptions {
         Ok(crate::ListOptions {
             files: enter_files(&self.files)?,
             loader: None,
-            basepath: self.basepath.clone(),
-            language: self.language.clone(),
+            basepath: or_default(self.basepath.as_ref(), DEFAULT_BASEPATH),
+            language: or_default(self.language.as_ref(), DEFAULT_LANGUAGE),
             data: match &self.data {
                 Some(data) => enter("options.data", data)?,
                 None => Value::Null,
@@ -181,7 +181,7 @@ pub fn compile_form(spec: &JsonValue, options: &CompileOptions) -> FormResult<Fo
     let options = crate::CompileOptions {
         files: enter_files(&options.files)?,
         loader: None,
-        basepath: options.basepath.clone(),
+        basepath: or_default(options.basepath.as_ref(), DEFAULT_BASEPATH),
         key_prefix: options.key_prefix.clone(),
     };
     crate::compile_form(&spec, &options)
@@ -203,7 +203,7 @@ pub fn compile_form_with_loader(
         let options = crate::CompileOptions {
             files: Map::new(),
             loader: Some(&bridge),
-            basepath: options.basepath.clone(),
+            basepath: or_default(options.basepath.as_ref(), DEFAULT_BASEPATH),
             key_prefix: options.key_prefix.clone(),
         };
         crate::compile_form(&spec, &options)
@@ -700,6 +700,43 @@ mod tests {
             }
             Ok(json(r#"{"properties":{"name":{"type":"text"}}}"#))
         }
+    }
+
+    /// U-2 of binding: an option that the options leave out is the constant that the interface contract names in
+    /// `default_core`, so a list without a language is the list in `ko` and a form without a base path is the form
+    /// with the empty one.
+    #[test]
+    fn a_left_out_option_is_its_default_constant() {
+        assert_eq!(DEFAULT_BASEPATH, "");
+        assert_eq!(DEFAULT_LANGUAGE, "ko");
+        let list =
+            json(r#"{"columns":{"name":{"field":"name","label":{"ko":"이름","en":"Name"}}}}"#);
+        let rows = [json(r#"{"name":"x"}"#)];
+        let explicit = ListOptions {
+            basepath: Some(DEFAULT_BASEPATH.to_owned()),
+            language: Some(DEFAULT_LANGUAGE.to_owned()),
+            ..ListOptions::default()
+        };
+        let left_out = render_list(&list, &rows, &ListOptions::default()).unwrap();
+        assert_eq!(left_out, render_list(&list, &rows, &explicit).unwrap());
+        assert!(left_out.contains("이름"));
+        let english = ListOptions {
+            language: Some("en".to_owned()),
+            ..ListOptions::default()
+        };
+        assert!(render_list(&list, &rows, &english)
+            .unwrap()
+            .contains("Name"));
+        let spec = json(r#"{"type":"group","properties":{"name":{"type":"text"}}}"#);
+        let explicit = CompileOptions {
+            basepath: Some(DEFAULT_BASEPATH.to_owned()),
+            ..CompileOptions::default()
+        };
+        assert_eq!(
+            serde_json::to_string(&compile_form(&spec, &CompileOptions::default()).unwrap())
+                .unwrap(),
+            serde_json::to_string(&compile_form(&spec, &explicit).unwrap()).unwrap()
+        );
     }
 
     /// CURP-031: the operations with a loader read its files, refuse `files` beside it and return
