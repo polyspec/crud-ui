@@ -6,7 +6,7 @@ import path from 'node:path';
 import test, { describe } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { setup, teardown } from '@polyspec/kit/test-hooks';
-import { dispatch } from '../../../../../tests/native-generators/javascript.mts';
+import { dispatch } from '../../../../tests/native-generators/javascript.mts';
 import { contractPath, outputPath, unicodeDataSource } from '../../tools/generate-unicode-data.mjs';
 
 import { cString, cText, cTextInitializer, EngineFixtureSource, caseProgramStart, caseProgramEnd, caseReport, caseResults, recordCases, fixtureProgram, commaLocaleEnvironment, runUnderCommaLocale, ENGINE_TEST_BUDGET, ENGINE_SANITIZER_BUDGET, ENGINE_INSPECTION_BUDGET, compileAndRunEngineProgram, compileAndRunEngineFixture, compileEngineFixture, runEngineProgram } from './support.mjs';

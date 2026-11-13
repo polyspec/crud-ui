@@ -64,13 +64,14 @@ function decodedCase(item: Record<string, unknown>): Record<string, unknown> {
   const { id: _id, options: _options, raises, spec, data, ...rest } = item;
   const files = caseFiles(item);
   const failure = OBJECT(raises) ? { code: String(raises.kind).toUpperCase(), at: raises.at } : undefined;
+  const message = OBJECT(raises) ? raises.message : undefined;
   const failureKey = 'expect' in rest ? 'engine' : 'expected_html' in rest || 'rows' in item || 'record' in item ? 'expectError' : 'expectFailure';
   return {
     ...rest,
     ...(spec === undefined ? {} : { spec: caseValue(spec) }),
     ...(data === undefined ? {} : { data: caseValue(data) }),
     ...(files === undefined ? {} : { files }),
-    ...(failureKey === 'engine' ? { engine: failure ?? 'pass' } : failure === undefined ? {} : { [failureKey]: { ...failure, message: (raises as Record<string, unknown>).message } }),
+    ...(failureKey === 'engine' ? { engine: failure ?? 'pass' } : failure === undefined ? {} : { [failureKey]: { ...failure, message } }),
   };
 }
 /** The cases of a fixture: the group `cases` of a file in the case form, decoded, or the list of a file of its own form. */

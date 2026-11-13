@@ -8,7 +8,7 @@
 Each case has `name`, `note`, `spec`, `data`, binding `options`, the render options `render`, and
 either `expected_html` or `expectError` (`{ code, message }`).
 
-`expected_html` is written from the specification in [`generate.mts`](generate.mts) and never
+`expected_html` is written from the specification in [`tests/fixtures/form-complete/generate.mts`](../../../../tests/fixtures/form-complete/generate.mts) and never
 rendered: the node and footer markup is the markup the form-render fixture defines, and the form
 element, the hidden inputs and the error elements are placed where the specification places them.
 The cases cover attribute and text escaping, the template action and its members, the root
@@ -26,8 +26,4 @@ and Svelte
 ([`form-complete.conformance.test.mjs`](../../../../packages/svelte/tests/form-complete.conformance.test.mjs))
 compare after the shared normalization, because they write their own serialization.
 
-Regenerate from the repository root and review the change against the specification:
-
-```sh
-node legacy/tests/fixtures/form-complete/generate.mts > legacy/tests/fixtures/form-complete/cases.json
-```
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/form-complete` is [`tests/fixtures/form-complete/generate.mts`](../../../../tests/fixtures/form-complete/generate.mts).

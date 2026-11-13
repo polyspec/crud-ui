@@ -1,6 +1,6 @@
 # 폼 상태 고정 데이터 (공유 module)
 <!-- doc-id: tests-fixtures-form-state-readme -->
-<!-- source-sha256: 629ee96730b9663f02c771a204d35407234e0ce194e3267d133672480fe47aec -->
+<!-- source-sha256: 3d1dc0dfcb528b83d63e541ea5483f9dd3986887a38b749742a5457265795bf8 -->
 
 [English](README.md).
 
@@ -32,10 +32,4 @@ TypeScript test [form-state.test.ts](../../../packages/generator/ts/src/form-sta
 
 ## 재생성
 
-`cases.json`을 손으로 고치지 않습니다. 기대 관찰은 TypeScript reference의 출력입니다.
-
-```
-node legacy/tests/fixtures/form-state/generate.mts
-```
-
-이 script는 여섯 family의 `cases.json`을 씁니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/form-state`의 생성기는 [`tests/fixtures/form-state/generate.mts`](../../../../tests/fixtures/form-state/generate.mts)입니다.

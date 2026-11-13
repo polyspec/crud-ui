@@ -1,6 +1,6 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: cdc135249f3d5ff414302e5cadd6822a50d1ada0028e5793f3554b5b6494de9a -->
+<!-- source-sha256: 582d760e2add1573f4beb7404d36e8849268c1163878bd32b6094a477fd3e041 -->
 
 [English](README.md).
 
@@ -38,7 +38,7 @@ id, id가 없는 form, 매개변수 오류를 확인합니다.
 Go·Rust·PHP는 숫자를 값으로 비교하므로 `5`와 `5.0`은 같습니다.
 [PHP 확장 실행기](../../../packages/php-ext/tests/ValidateReport.php)는 JSON 문자열을 비교하므로 멤버 순서도
 비교합니다. 실패 사례는 `code`, `message`, `at`을 정확히 비교하며, 모든 사례는 `expected`와
-`expectFailure` 중 정확히 하나를 선언해야 합니다. [빈 collection](../../../../docs/spec/empty-collections.ko.md) 또는 [검증 규칙](../../../../docs/spec/validation-rules.ko.md)의 requirement를 시험하는 case는 `requirements`에 id를 나열하며, 이는 `generate.mts`의 `REQUIREMENTS` map에서 지정합니다.
+`expectFailure` 중 정확히 하나를 선언해야 합니다. [빈 collection](../../../../docs/spec/empty-collections.ko.md) 또는 [검증 규칙](../../../../docs/spec/validation-rules.ko.md)의 requirement를 시험하는 case는 `requirements`에 id를 나열하며, 이는 [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts)의 `REQUIREMENTS` map에서 지정합니다.
 
 교차 검증 콘솔의 검증기 프로세스는 각 사례를 표준 입력으로 받습니다. 결과 사례는 종료 코드 `0`과 함께
 결과를 표준 출력에 쓰고, 실패 사례는 종료 코드 `2`와 함께 `{ error, code, at }`을 씁니다.
@@ -56,14 +56,4 @@ PHP 검증기와 네이티브 검증기를 실행하는 [PHP 확장 API 검사](
 
 ## 재생성
 
-저장소 루트에서 실행합니다.
-
-```sh
-node legacy/tests/fixtures/validate/generate.mts > legacy/tests/fixtures/validate/cases.json
-```
-
-생성기는 TypeScript 검증기를 실행해 각 결과 또는 실패 기록을 기록합니다. 다만 명세에서 작성한 두
-묶음은 예외입니다. [`value-rules.mts`](value-rules.mts)는 필드별 결과를, [`visibility.mts`](visibility.mts)는
-전체 결과 기록을 명시하며, 둘 다 `visibility.mts`의 기본 규칙 메시지를 사용합니다. 생성기가 JSON 문자열로 가진
-명세는 `cases.json`에서도 멤버 순서를 유지합니다. 변경을 반영하기 전에 명세와 비교하여 검토하고 모든
-사용처를 실행합니다. 재생성만으로 검증이 완료되지는 않습니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/validate`의 생성기는 [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts)입니다.

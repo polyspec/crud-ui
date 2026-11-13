@@ -36,14 +36,4 @@ expected HTML strings.
 
 ## Regeneration
 
-Run from the repository root after building the packages:
-
-```sh
-node legacy/tests/fixtures/form-outline/generate.mts
-npm run test:forms
-```
-
-The generator writes `cases.json` itself from the normalized static markup of React's
-`OutlineView` and `DataPanel`; a structure map declared on a case (`outline-only-rows-en`) is
-written from the specification and kept as written. Review changes against the specification before accepting them.
-Regeneration alone is not verification.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/form-outline` is [`tests/fixtures/form-outline/generate.mts`](../../../../tests/fixtures/form-outline/generate.mts).

@@ -36,10 +36,4 @@ The cases of view functions and history functions call the pure functions of the
 
 ## Regeneration
 
-Do not edit `cases.json` by hand. The expected observations are the output of the TypeScript reference:
-
-```
-node legacy/tests/fixtures/form-state/generate.mts
-```
-
-The script writes the `cases.json` of the six families.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/form-state` is [`tests/fixtures/form-state/generate.mts`](../../../../tests/fixtures/form-state/generate.mts).

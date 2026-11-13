@@ -32,7 +32,8 @@ function read<Case>(path: string, schema: JTDSchemaType<Case[]>): Case[] {
 }
 /** The cases of every group of a file in the case form of binding (G-5), with the specification decoded. */
 function readGroups(path: string): RenderCase[] {
-  const document = JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as Record<string, unknown>;
+  const document: unknown = JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
+  if (typeof document !== 'object' || document === null) throw new Error(`${path} holds no object of case groups`);
   return Object.keys(document).flatMap(group => caseGroup(document, group))
     .map(item => ({ ...item, name: String(item.name), ...(typeof item.expected_html === 'string' ? { expected_html: item.expected_html } : {}), spec: caseValue(item.spec) }));
 }

@@ -1,6 +1,6 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: ee40fccbe835d6fd7cd886f9101e14d18f57f4a941ed893e33a898de79a599c1 -->
+<!-- source-sha256: 6b9debbb082a7cfa9be91060e0b0b7073d5a2050d1cbbb9248f333be63921847 -->
 
 [English](README.md).
 
@@ -36,12 +36,4 @@ React와 같은 전체 원본 HTML을 반환해야 합니다. 필드의 `value`�
 
 ## 재생성
 
-저장소 루트에서 실행합니다.
-
-```sh
-node legacy/tests/fixtures/detail-render/generate.mts \
-  > legacy/tests/fixtures/detail-render/cases.json
-```
-
-생성기는 React에서 정규화한 상세 본문을 생성합니다. 변경을 반영하기 전에 명세와 비교하여 검토합니다.
-재생성만으로 검증이 완료되지는 않습니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/detail-render`의 생성기는 [`tests/fixtures/detail-render/generate.mts`](../../../../tests/fixtures/detail-render/generate.mts)입니다.

@@ -10,8 +10,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Node } from '@polyspec/crudui-generator-react';
 import { buildDetail } from '@polyspec/crudui-generator-core';
-import { dateCases, dateListSpec, imageCase, numberCases, urlCase } from '../../../../../tests/native-generators/cases.mts';
-import { dispatch, errorRecord } from '../../../../../tests/native-generators/javascript.mts';
+import { dateCases, dateListSpec, imageCase, numberCases, urlCase } from '../../../../tests/native-generators/cases.mts';
+import { dispatch, errorRecord } from '../../../../tests/native-generators/javascript.mts';
 
 import { cString, cText, EngineFixtureSource, assertCasesReported, casePassed, fixtureProgram, runUnderCommaLocale, ENGINE_TEST_BUDGET, ENGINE_SANITIZER_BUDGET, compileAndRunEngineFixture, compileEngineFixture, runEngineProgram } from '../engine/support.mjs';
 

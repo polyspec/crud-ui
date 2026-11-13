@@ -1,6 +1,6 @@
 # 구조 지도와 데이터 보기 고정 데이터
 <!-- doc-id: tests-fixtures-form-outline-readme -->
-<!-- source-sha256: 96f092851a9167355f57d834c25a2d6746a03c41dac3b1d9aef73220d0619b23 -->
+<!-- source-sha256: c9e3e185ab68709ca778d0d2d1b35f93d113194d64138574cfcf0c3ed68bfff0 -->
 
 [English](README.md).
 
@@ -35,13 +35,4 @@ node에 적용한 결과와 `expected_outline_rows`를 비교합니다.
 
 ## 재생성
 
-패키지를 빌드한 뒤 저장소 루트에서 실행합니다.
-
-```sh
-node legacy/tests/fixtures/form-outline/generate.mts
-npm run test:forms
-```
-
-생성기는 React `OutlineView`와 `DataPanel`의 정규화한 정적 마크업으로 `cases.json`을 직접 씁니다. 사례에
-선언한 구조 지도(`outline-only-rows-en`)는 명세에서 작성하며 작성한 그대로 둡니다. 변경을
-반영하기 전에 명세와 비교하여 검토합니다. 재생성만으로 검증이 완료되지는 않습니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/form-outline`의 생성기는 [`tests/fixtures/form-outline/generate.mts`](../../../../tests/fixtures/form-outline/generate.mts)입니다.

@@ -5,7 +5,7 @@
 
 These cases define the form buttons of [form markup](../../../../docs/spec/form-markup.md#form-buttons): `bindButtons`
 evaluates the buttons of a template for a record, and `formButtonsHtml` renders evaluated buttons as markup. The
-TypeScript reference writes every expectation (`generate.mts`); no implementation writes one by hand.
+TypeScript reference writes every expectation ([`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts)); no implementation writes one by hand.
 
 `cases.json` holds one list of cases. Each case has `name`, `note`, `requirements` and `operation`:
 
@@ -20,4 +20,4 @@ TypeScript reference writes every expectation (`generate.mts`); no implementatio
 Every runner compares the two results with the expectation of the case: the buttons as ordered JSON, the markup as a
 string, and the error by its code and message.
 
-Run `node legacy/tests/fixtures/buttons/generate.mts` from the checkout root to regenerate the cases.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/buttons` is [`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts).

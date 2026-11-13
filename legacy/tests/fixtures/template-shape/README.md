@@ -15,13 +15,11 @@ member of the wrong type, a field without `children`, a field with an unknown me
 `requirements` (CURT-092), `operation`, `template`, `data`, `options` and `expect`: `"pass"`, or `{ code, message, at }` with
 `at` empty.
 
-The TypeScript reference writes every expectation, through `generate.mts`:
-
-    node legacy/tests/fixtures/template-shape/generate.mts
+The TypeScript reference writes every expectation, through [`tests/fixtures/template-shape/generate.mts`](../../../../tests/fixtures/template-shape/generate.mts).
 
 The JSON Pointers of `decodeFormTemplate` are not in these cases. That decoder is a TypeScript API, and its pointers are checked
 by the TypeScript tests of `decode-template.test.ts`.
 
 ## Changing cases
 
-Change `generate.mts` and run it again; do not edit `cases.json` by hand. Run every runner after a change.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/template-shape` is [`tests/fixtures/template-shape/generate.mts`](../../../../tests/fixtures/template-shape/generate.mts).

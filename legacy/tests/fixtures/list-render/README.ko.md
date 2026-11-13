@@ -1,6 +1,6 @@
 # 목록 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-list-render-readme -->
-<!-- source-sha256: 12d0638aca02adc7b27ce1af7d49afe30ed7908a8af85c8ec96e40324186e025 -->
+<!-- source-sha256: 202f6b8262417da1196ba997a67cf1b17383323674b22ed27764c52082284086 -->
 
 [English](README.md).
 
@@ -32,13 +32,4 @@
 
 ## 재생성
 
-패키지를 빌드한 다음 저장소 루트에서 실행합니다.
-
-```sh
-node legacy/tests/fixtures/list-render/generate.mts \
-  > legacy/tests/fixtures/list-render/cases.json
-npm run test:forms
-```
-
-생성기는 React에서 정규화한 목록 본문을 생성합니다. 변경을 반영하기 전에 명세와
-비교하여 검토합니다. 재생성만으로 검증이 완료되지는 않습니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/list-render`의 생성기는 [`tests/fixtures/list-render/generate.mts`](../../../../tests/fixtures/list-render/generate.mts)입니다.

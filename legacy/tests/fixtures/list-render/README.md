@@ -34,13 +34,4 @@ Composition error cases require the recorded error code.
 
 ## Regeneration
 
-Run from the repository root after building the packages:
-
-```sh
-node legacy/tests/fixtures/list-render/generate.mts \
-  > legacy/tests/fixtures/list-render/cases.json
-npm run test:forms
-```
-
-The generator derives normalized list bodies from React. Review changes against
-the specification before accepting them. Regeneration alone is not verification.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/list-render` is [`tests/fixtures/list-render/generate.mts`](../../../../tests/fixtures/list-render/generate.mts).

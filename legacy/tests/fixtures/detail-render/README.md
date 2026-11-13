@@ -39,12 +39,4 @@ The cases are read by the detail conformance tests in
 
 ## Regeneration
 
-Run from the repository root:
-
-```sh
-node legacy/tests/fixtures/detail-render/generate.mts \
-  > legacy/tests/fixtures/detail-render/cases.json
-```
-
-The generator derives normalized detail bodies from React. Review changes against the
-specification before accepting them. Regeneration alone is not verification.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/detail-render` is [`tests/fixtures/detail-render/generate.mts`](../../../../tests/fixtures/detail-render/generate.mts).

@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 // Runtimes share one comparison: values and object member order at every depth.
-import { equalModels, equalOrdered } from '../../tests/native-generators/protocol.mts';
+import { equalModels, equalOrdered } from '../../legacy/tests/native-generators/protocol.mts';
 import { encodeJson, decodeJson } from './src/json.mjs';
 import { readFrameDocument } from './src/frame-document.mjs';
 import { frameUrl } from './src/frame-readiness.mjs';

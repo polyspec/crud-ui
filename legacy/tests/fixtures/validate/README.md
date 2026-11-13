@@ -48,7 +48,7 @@ The [PHP extension runner](../../../packages/php-ext/tests/ValidateReport.php) c
 member order is compared there as well. A failure case compares `code`, `message` and `at`
 exactly, and every case must declare exactly one of `expected` and `expectFailure`. A case that tests a requirement of
 [empty collections](../../../../docs/spec/empty-collections.md) or of [validation rules](../../../../docs/spec/validation-rules.md)
-lists its ids in `requirements`; `generate.mts` names those
+lists its ids in `requirements`; [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts) names those
 cases in its `REQUIREMENTS` map, which is how they are added.
 
 The cross-check console's validator processes receive each case on standard input. A result case
@@ -69,16 +69,4 @@ which compares the four language results.
 
 ## Regeneration
 
-Run from the repository root:
-
-```sh
-node legacy/tests/fixtures/validate/generate.mts > legacy/tests/fixtures/validate/cases.json
-```
-
-The generator runs the TypeScript validator and records each result or failure record, except
-for two groups written from the specification: [`value-rules.mts`](value-rules.mts) states each
-field's outcome, and [`visibility.mts`](visibility.mts) states the complete result record. Both use
-the default rule messages in `visibility.mts`.
-Specifications that the generator holds as JSON text keep their member order in `cases.json`.
-Review changes against the specification and run every test that reads them before accepting them.
-Regeneration alone is not verification.
+This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/validate` is [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts).

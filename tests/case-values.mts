@@ -3,12 +3,6 @@
 // of the value type `json_value` as `{ kind, value }` (`null` without a value, `bool`, `number` with its literal as
 // text, `text`, `list` with its items, `map` with its `[name, value]` pairs in order).
 
-/** A value in the case form. */
-export interface CaseValue {
-  kind: 'null' | 'bool' | 'number' | 'text' | 'list' | 'map';
-  value?: unknown;
-}
-
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value);
 
 /** The JSON value of a value in the case form; a number is the double of its literal. */

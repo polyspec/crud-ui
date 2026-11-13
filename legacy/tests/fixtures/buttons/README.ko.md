@@ -1,12 +1,12 @@
 # 폼 버튼 fixture
 <!-- doc-id: tests-fixtures-buttons-readme -->
-<!-- source-sha256: 7a2cfc76fd4db7f2951f2f1e376de84f11e6f3b92c53731d1070bbb29f6d4605 -->
+<!-- source-sha256: c721abd55203ce8a28c3dfb8649ad11d12e06ff307e226a868d1249ff9fe9ace -->
 
 [English](README.md).
 
 이 case들은 [폼 마크업](../../../../docs/spec/form-markup.ko.md#폼-버튼)의 폼 버튼을 정의합니다. `bindButtons`는 template의
 버튼을 record에 대해 평가하고, `formButtonsHtml`은 평가한 버튼을 마크업으로 렌더링합니다. TypeScript reference가 모든
-기대값을 씁니다(`generate.mts`). 어떤 구현도 기대값을 손으로 쓰지 않습니다.
+기대값을 씁니다([`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts)). 어떤 구현도 기대값을 손으로 쓰지 않습니다.
 
 `cases.json`은 case 목록 하나입니다. 각 case는 `name`, `note`, `requirements`, `operation`을 가집니다.
 
@@ -21,4 +21,4 @@
 모든 runner는 두 결과를 기대값과 비교합니다. 버튼은 순서가 있는 JSON으로, 마크업은 문자열로, 오류는 코드와 메시지로
 비교합니다.
 
-checkout 루트에서 `node legacy/tests/fixtures/buttons/generate.mts`를 실행하면 case를 다시 생성합니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/buttons`의 생성기는 [`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts)입니다.

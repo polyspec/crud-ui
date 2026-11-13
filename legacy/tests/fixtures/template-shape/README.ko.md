@@ -1,7 +1,7 @@
 # 폼 템플릿 형태
 
 <!-- doc-id: tests-fixtures-template-shape-readme -->
-<!-- source-sha256: 9cab003614d1532bd8985af6b054e6d6dfd3d0f75015611df2d9a10528335ef9 -->
+<!-- source-sha256: 07e4bba6cf0c576f0ea58b33d45e3f29dc59d88dd6cf9172c9a19cc08db39eb9 -->
 
 [English](README.md).
 
@@ -15,13 +15,11 @@
 각 case는 `name`, `note`, `requirements`(CURT-092), `operation`, `template`, `data`, `options`, `expect`를 가집니다.
 `expect`는 `"pass"`이거나 `at`이 빈 `{ code, message, at }`입니다.
 
-모든 expectation은 TypeScript 기준 구현이 `generate.mts`로 씁니다:
-
-    node legacy/tests/fixtures/template-shape/generate.mts
+모든 expectation은 TypeScript 기준 구현이 [`tests/fixtures/template-shape/generate.mts`](../../../../tests/fixtures/template-shape/generate.mts)로 씁니다.
 
 `decodeFormTemplate`의 JSON Pointer는 이 case에 없습니다. 그 decoder는 TypeScript API이며, pointer는
 `decode-template.test.ts`의 TypeScript test가 검사합니다.
 
 ## case 바꾸기
 
-`generate.mts`를 바꾸고 다시 실행합니다. `cases.json`을 손으로 고치지 않습니다. 바꾼 뒤에는 모든 runner를 실행합니다.
+이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/template-shape`의 생성기는 [`tests/fixtures/template-shape/generate.mts`](../../../../tests/fixtures/template-shape/generate.mts)입니다.
