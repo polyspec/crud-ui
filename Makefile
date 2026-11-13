@@ -200,7 +200,7 @@ test-go: ## Run the unit tests of the Go modules with CASES=<pattern>; offline
 test-php: php-tables ## Run the unit tests of each PHP package with CASES=<pattern>; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner php --roots legacy/packages/generator/php legacy/packages/validator/php
 test-python: python-tables ## Run the unit tests of each Python package with CASES=<pattern>; offline
-	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots legacy/packages/generator/python legacy/packages/validator/python --venv .venv
+	PYTHONUNBUFFERED=1 NO_COLOR=1 PYTHON_COLORS=0 $(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner python --roots $(PYTHON_ROOTS) --venv .venv
 test-rust: ## Run the unit tests of each Rust package with CASES=<pattern> and the test features (random-failure-test); offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) test --runner cargo --roots packages/generator/rust packages/validator/rust -- --all-features -- --test-threads=1
 test-ts: require-build ## Run the unit tests of each TypeScript package with CASES=<pattern>; offline
@@ -432,6 +432,9 @@ CONFORMANCE_EVIDENCE ?= $(abspath $(shell git rev-parse --git-path conformance-e
 # python-venv of kit and syncs the uv workspace of the root pyproject.toml into it, so the suites, the native generator
 # program and the cross-check console import the installed packages and change no sys.path.
 PYTHON_VENV := $(CURDIR)/var/python
+# The roots of the Python packages that test-python runs: runtime-targets of kit runs each with the environment .venv of
+# that root (--venv names a folder of each root), so crudui-install-python makes that environment in each root too.
+PYTHON_ROOTS := legacy/packages/generator/python legacy/packages/validator/python
 # install-link (kit) links the Python packages in the environment that crudui-install-python makes: kit's link reads
 # UV_PROJECT_ENVIRONMENT, and without it the link finds no environment of the repository and fails (K360-2).
 install-link link: export UV_PROJECT_ENVIRONMENT := $(PYTHON_VENV)
@@ -543,9 +546,13 @@ crudui-local-composer-check: ## Validate the canonical Composer manifest, lock a
 	$(COMPOSER_BIN) check-platform-reqs || status=1; \
 	exit $$status
 
-crudui-install-python: python-tables ## Make the venv var/python and install the Python packages of the uv workspace into it in editable mode
+crudui-install-python: python-tables ## Make the venv var/python and the venv .venv of each root of PYTHON_ROOTS and install the Python packages of the uv workspace into each in editable mode
 	$(MAKE) --no-print-directory python-venv DIR=$(PYTHON_VENV)
 	UV_PROJECT_ENVIRONMENT=$(PYTHON_VENV) $(MAKE) --no-print-directory uv-install DIR=. SYNC='--quiet --all-packages'
+	@status=0; for root in $(PYTHON_ROOTS); do \
+		$(MAKE) --no-print-directory python-venv DIR=$(CURDIR)/$$root/.venv && \
+		UV_PROJECT_ENVIRONMENT=$(CURDIR)/$$root/.venv $(MAKE) --no-print-directory uv-install DIR=. SYNC='--quiet --all-packages' || status=1; \
+	done; exit $$status
 
 crudui-install-phpdocumentor: ## Install the phpDocumentor release that scripts/install-phpdocumentor.mts checks by its SHA-256
 	$(ONLINE) $(NODE) scripts/install-phpdocumentor.mts
