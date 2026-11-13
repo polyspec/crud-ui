@@ -74,6 +74,17 @@ impl FormError {
         &self.code
     }
 
+    /// The composition trace or the form path of the failure, the property `at` of its error class.
+    pub fn at(&self) -> &str {
+        &self.at
+    }
+
+    /// The original composition trace, the property `trace` of its error class; empty for instance and binding
+    /// failures.
+    pub fn trace(&self) -> &[String] {
+        &self.trace
+    }
+
     /// A failure of the random source of the system (CURT-095).
     pub(crate) fn random_unavailable(cause: impl std::fmt::Display) -> Self {
         Self {
