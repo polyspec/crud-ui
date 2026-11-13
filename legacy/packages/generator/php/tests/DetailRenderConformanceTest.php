@@ -10,14 +10,11 @@ use Polyspec\Crudui\Generator;
 use stdClass;
 
 /**
- * The detail layout fixtures against the PHP generator: each case of legacy/tests/fixtures/detail-render renders its supplied
- * record
- * with its options. The layout of the output equals `expected_html` after the image preload links are removed, as the
- * Python
- * runner compares it (legacy/tests/fixtures/detail-render/README.md); a case with `expectError` raises a FormError with the
- * recorded
- * code and message. The same file runs against the native PHP extension, so it uses only the public API of the library:
- * Generator.
+ * The detail layout fixtures against the PHP generator: each case of legacy/tests/fixtures/detail-render renders its
+ * supplied record with its options. The layout of the output equals `expected_html` after the image preload links are
+ * removed, as the Python runner compares it (legacy/tests/fixtures/detail-render/README.md); a case with `expectError`
+ * raises a FormError with the recorded code and message. The same file runs against the native PHP extension, so it
+ * uses only the public API of the library: Generator.
  */
 final class DetailRenderConformanceTest extends TestCase
 {

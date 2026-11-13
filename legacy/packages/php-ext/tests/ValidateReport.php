@@ -207,9 +207,8 @@ final class ValidateReport
             }
             return $value;
         };
-        foreach (
-            FixtureJson::decode(file_get_contents($root . '/legacy/tests/fixtures/text-validity/value-graphs.json')) as $case
-        ) {
+        $graphsPath = $root . '/legacy/tests/fixtures/text-validity/value-graphs.json';
+        foreach (FixtureJson::decode(file_get_contents($graphsPath)) as $case) {
             $inputs = ['spec' => $case->spec,'files' => $case->files ?? null,'data' => $case->data];
             $target = $inputs[$case->graph->at[0]];
             $members = array_slice($case->graph->at, 1);

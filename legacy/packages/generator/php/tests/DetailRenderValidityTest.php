@@ -10,8 +10,8 @@ use Polyspec\Crudui\Generator;
 use stdClass;
 
 /**
- * The detail-validity cases through Generator::buildDetail: each case of legacy/tests/fixtures/detail-validity is a data
- * set named by the case (the detail-render-validity unit). The same file runs against the native PHP extension.
+ * The detail-validity cases through Generator::buildDetail: each case of legacy/tests/fixtures/detail-validity is a
+ * data set named by the case (the detail-render-validity unit). The same file runs against the native PHP extension.
  */
 final class DetailRenderValidityTest extends TestCase
 {

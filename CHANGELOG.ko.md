@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 790bd45c9e27f93d3aca31c75c5636b5b3bc4cbf1b0885e96eccf703bc0fded5 -->
+<!-- source-sha256: cd29185e1b13dfb3ee63eeb825424b41205e986caa1d930bafa91aa4abc22f84 -->
 
 ## Unreleased
 
+- C19.9: `legacy/packages/generator/php/tests`의 PHP 시험은 class 주석을 120자에서 줄을 나누고, `legacy/packages/php-ext/tests/ValidateReport.php`는 `value-graphs.json`의 경로를 자기 변수에 둡니다. `legacy/`로의 이동이 열두 줄을 phpcs의 한도보다 길게 만들었고, `make lint-php`는 그것을 보고했으며 이제 규칙을 그대로 둔 채 통과합니다.
 - C19.3: commit된 tree에서 npm 12.2.0의 `npm install --package-lock-only`는 C19.1이 손으로 쓴 추적된 lock과 차이 없는 `package-lock.json`을 씁니다. `make layout-check`는 C19.7의 발견으로 실패하므로, 그 발견이 없어질 때까지 C19.3은 우회됩니다.
 - C19.7: `.gitignore`는 `binding scaffold`가 각 PHP 확장 package에 쓰는 `composer.json`의 Composer 설치 `packages/*/php-ext/vendor/`를 포함합니다. `make layout-check`는 이것을 Git이 무시하지 않는 설치 폴더로 보고했습니다. `make layout-check`는 규칙을 그대로 두고 발견 21건으로 실패합니다. `binding scaffold`가 자기 `[lints.rust]`, `[lints.clippy]` 표로 쓰고 `lints.workspace = true`가 없는 바인딩 crate manifest 열 개마다 `lint-cargo-lints` 두 건, C19.2가 지우는 legacy 확장의 stub `legacy/packages/php-ext/src/polyspec_crudui.stub.php`에 `php-ext-stub-place` 한 건입니다. binding scaffold가 workspace의 lint를 받는 manifest를 쓰고 C19.2가 끝날 때까지 C19.7은 우회됩니다.
 - C19.4: lock이 polyspec-binding-core 8faad21을 받고, 그 commit의 `binding scaffold`가 두 계약의 바인딩 crate를 씁니다. 각 PHP 확장 crate는 macOS에서 확장의 link에 PHP 기호를 정의되지 않은 채로 두는 build script `build.rs`를 가지며 library 시험 target이 없고, Python·Node·PHP crate는 `polyspec-binding-core`의 feature `lock`을 켭니다. 그 commit의 cli로 실행한 `make bindings-check`는 CK-19와 CK-20 발견을 보고하지 않습니다. 이전에는 아홉 건과 두 건을 보고했습니다.

@@ -7,10 +7,10 @@ namespace Polyspec\Crudui\Generator\Tests;
 use stdClass;
 
 /**
- * The outcome of one list or detail validity case (legacy/tests/fixtures/list-validity, legacy/tests/fixtures/detail-validity)
- * through the library build: a case with a recorded engine failure is refused with that code and composition trace;
- * a case with expect "fail" and engine "pass" is refused with INVALID_FORM_INPUT (CUDF-036 to CUDF-062); every other
- * case builds.
+ * The outcome of one list or detail validity case (legacy/tests/fixtures/list-validity,
+ * legacy/tests/fixtures/detail-validity) through the library build: a case with a recorded engine failure is refused
+ * with that code and composition trace; a case with expect "fail" and engine "pass" is refused with INVALID_FORM_INPUT
+ * (CUDF-036 to CUDF-062); every other case builds.
  */
 trait ValidityOutcome
 {

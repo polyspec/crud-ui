@@ -13,9 +13,9 @@ use stdClass;
 use Throwable;
 
 /**
- * The form button fixtures against the PHP generator: each case of legacy/tests/fixtures/buttons runs bindButtons (CURP-008)
- * or formButtonsHtml (CURP-009), and its observation equals the recorded one as JSON text, so the order of the
- * attributes counts. A failure is observed with its code and message.
+ * The form button fixtures against the PHP generator: each case of legacy/tests/fixtures/buttons runs bindButtons
+ * (CURP-008) or formButtonsHtml (CURP-009), and its observation equals the recorded one as JSON text, so the order of
+ * the attributes counts. A failure is observed with its code and message.
  */
 final class ButtonsConformanceTest extends TestCase
 {

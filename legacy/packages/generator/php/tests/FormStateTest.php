@@ -14,11 +14,11 @@ use Polyspec\Crudui\Validator;
 use stdClass;
 
 /**
- * The form state fixtures against the PHP generator: the cases of legacy/tests/fixtures/form-view run their steps on a form
- * instance and those of legacy/tests/fixtures/view-functions call the view functions. Each observation equals the one that the
- * TypeScript reference recorded, as JSON text so that the order of object members counts. A row key that a case does
- * not write is one that an operation generated, and the observation names it `$1`, `$2` in the order of its first
- * appearance (legacy/tests/fixtures/form-state/README.md).
+ * The form state fixtures against the PHP generator: the cases of legacy/tests/fixtures/form-view run their steps on a
+ * form instance and those of legacy/tests/fixtures/view-functions call the view functions. Each observation equals the
+ * one that the TypeScript reference recorded, as JSON text so that the order of object members counts. A row key that a
+ * case does not write is one that an operation generated, and the observation names it `$1`, `$2` in the order of its
+ * first appearance (legacy/tests/fixtures/form-state/README.md).
  */
 final class FormStateTest extends TestCase
 {

@@ -10,15 +10,11 @@ use Polyspec\Crudui\Generator;
 use stdClass;
 
 /**
- * The list layout fixtures against the PHP generator: each case of legacy/tests/fixtures/list-render renders its supplied rows
- * with its
- * options. The layout of the output equals `expected_html` after the image preload links are removed, as the Python
- * runner
- * compares it (legacy/tests/fixtures/list-render/README.md); a case with `expectError` raises a FormError with the recorded
- * code and,
- * when the case records one, its message. The same file runs against the native PHP extension, so it uses only the
- * public API
- * of the library: Generator.
+ * The list layout fixtures against the PHP generator: each case of legacy/tests/fixtures/list-render renders its
+ * supplied rows with its options. The layout of the output equals `expected_html` after the image preload links are
+ * removed, as the Python runner compares it (legacy/tests/fixtures/list-render/README.md); a case with `expectError`
+ * raises a FormError with the recorded code and, when the case records one, its message. The same file runs against the
+ * native PHP extension, so it uses only the public API of the library: Generator.
  */
 final class ListRenderConformanceTest extends TestCase
 {
