@@ -1,6 +1,6 @@
 # CRUDUI Go 생성기
 <!-- doc-id: packages-generator-go-readme -->
-<!-- source-sha256: ecf59c7e791390df4c01c3334e076a82bb11cda5d56d7238062f95c6f9f3ad21 -->
+<!-- source-sha256: a4774808b682a42bdc3df69aa5b1d8e7c52eb2cfb7048ea856c9c53cf80d76b0 -->
 
 [English](README.md).
 
@@ -109,5 +109,5 @@ curl http://127.0.0.1:8087/list
 curl http://127.0.0.1:8087/detail
 ```
 
-[네이티브 공통 검사](../../../../tests/native-generators/README.ko.md)는 이 패키지의 공개 API를
+[네이티브 공통 검사](../../../tests/native-generators/README.ko.md)는 이 패키지의 공개 API를
 호출하는 프로그램으로 다른 런타임과 결과를 비교합니다.

@@ -118,7 +118,7 @@ browser row editing or an ordered JSON HTTP endpoint.
 
 ## Conformance
 
-The [native conformance suite](../../../../tests/native-generators/README.md) compares
+The [native conformance suite](../../../tests/native-generators/README.md) compares
 complete templates and models, original form and list HTML, injection, row
 operations and retained state after failures across runtimes.
 

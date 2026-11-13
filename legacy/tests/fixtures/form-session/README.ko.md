@@ -1,6 +1,6 @@
 # 폼 세션 시나리오
 <!-- doc-id: tests-fixtures-form-session-readme -->
-<!-- source-sha256: 2531f23daa1416ce0ee1c9d3542fdcaabc94d6162d6219773d2743e0240fd340 -->
+<!-- source-sha256: 70fa7d7acd19fae0914d4c1fe432c1569c2c74064b8a2df85dbce42d97a694ff -->
 
 [English](README.md).
 
@@ -51,8 +51,8 @@
 [React](../../../../packages/react/src/tests/Form.test.tsx),
 [Vue](../../../../packages/vue/tests/form-session.test.mjs),
 [Svelte](../../../../packages/svelte/tests/form-session.client.mjs) 폼 검사와
-[HTML 렌더러 세션 검사](../../../legacy/packages/html/src/form-session.test.ts)가 모든 모듈을
-사용합니다. [코어 폼 검사](../../../legacy/packages/generator/ts/src/form.test.ts)는 시나리오의 `spec`,
+[HTML 렌더러 세션 검사](../../../packages/html/src/form-session.test.ts)가 모든 모듈을
+사용합니다. [코어 폼 검사](../../../packages/generator/ts/src/form.test.ts)는 시나리오의 `spec`,
 `data`, 행 키, `storesPath`를 사용합니다.
 
 ## 재생성

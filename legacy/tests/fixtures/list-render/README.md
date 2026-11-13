@@ -21,7 +21,7 @@ links before the list; [`preload-links.mjs`](../preload-links.mts) removes them,
 expectations cover the list body only. This comparison does not establish equality of
 complete original HTML.
 
-The [native generator suite](../../../../tests/native-generators/README.md) uses the same
+The [native generator suite](../../native-generators/README.md) uses the same
 inputs and compares complete original HTML of every string renderer with React, including
 image preload links. It does not remove resource hints or normalize attributes and CSS.
 
@@ -29,7 +29,7 @@ The cases are read by the list conformance tests in
 [React](../../../../packages/react/src/tests/list-render.conformance.test.ts),
 [Vue](../../../../packages/vue/tests/list-render.conformance.test.mjs),
 [Svelte](../../../../packages/svelte/tests/list-render.conformance.test.mjs) and the
-[HTML renderer](../../../legacy/packages/html/src/list-conformance.test.ts).
+[HTML renderer](../../../packages/html/src/list-conformance.test.ts).
 Composition error cases require the recorded error code.
 
 ## Regeneration

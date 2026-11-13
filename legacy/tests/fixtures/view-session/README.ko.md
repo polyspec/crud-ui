@@ -1,6 +1,6 @@
 # 화면 세션 시나리오
 <!-- doc-id: tests-fixtures-view-session-readme -->
-<!-- source-sha256: 4a301655e1d91e292b1c986b86c513a84348b14d671f36bc523e9a038f289d86 -->
+<!-- source-sha256: 9da72639f970711c3638ccc9df4acc38477ac58d5dc300a0cf95cfcae71eb776 -->
 
 [English](README.md).
 
@@ -12,7 +12,7 @@
   작업이 있습니다. 각 화면을 같은 내용의 새 모델과 `html` 값이 바뀐 모델로 다시 보여 주고, 매번 같은
   요소 노드가 유지되고 바뀐 텍스트가 유지한 노드 안에 들어가는지 확인합니다.
 
-[HTML](../../../legacy/packages/html/src/view-session.test.ts),
+[HTML](../../../packages/html/src/view-session.test.ts),
 [React](../../../../packages/react/src/tests/View.test.tsx),
 [Vue](../../../../packages/vue/tests/view-session.test.mjs),
 [Svelte](../../../../packages/svelte/tests/view-session.client.mjs) 테스트가 이를 실행합니다.

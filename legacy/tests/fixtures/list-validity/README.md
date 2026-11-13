@@ -32,7 +32,7 @@ enum values and a malformed format value.
 
 ## Comparisons
 
-The [list meta-schema test](../../../legacy/packages/validator/ts/src/list-metaschema.conformance.test.ts)
+The [list meta-schema test](../../../packages/validator/ts/src/list-metaschema.conformance.test.ts)
 and `check-schema.mts` compile the list entry point and check `expect` and `reason`.
 
 The runtime tests validate `spec` with `files`, read no rows and compare `engine`. The Rust structure
@@ -41,16 +41,16 @@ cross-check console sends every case to its five validator processes, which exit
 result or `2` with `{ error, code, at }`, and requires the same result, code and location from each.
 
 The cases are read at runtime by the list validation tests in
-[TypeScript](../../../legacy/packages/validator/ts/src/validate-list/validate-list.conformance.test.ts),
-[PHP](../../../legacy/packages/validator/php/tests/Validate/ListValidateConformanceTest.php),
-[Go](../../../legacy/packages/validator/go/validator/validate/list_conformance_test.go),
+[TypeScript](../../../packages/validator/ts/src/validate-list/validate-list.conformance.test.ts),
+[PHP](../../../packages/validator/php/tests/Validate/ListValidateConformanceTest.php),
+[Go](../../../packages/validator/go/validator/validate/list_conformance_test.go),
 [Rust](../../../../packages/validator/rust/tests/list_validity_conformance.rs), the
-[PHP extension engine test](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs), the
-[PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) and the cross-check console
-[list runner test](../../../../examples/cross-check-console/server/validate-list-runner.test.mjs) and
-[validator process test](../../../../examples/cross-check-console/server/validator-processes.test.mjs).
+[PHP extension engine test](../../../packages/php-ext/tests/engine/engine.test.mjs), the
+[PHP extension runner](../../../packages/php-ext/tests/ValidateReport.php) and the cross-check console
+[list runner test](../../../examples/cross-check-console/server/validate-list-runner.test.mjs) and
+[validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs).
 
-The [render validity test](../../../legacy/packages/generator/ts/src/display-validity.test.ts) builds
+The [render validity test](../../../packages/generator/ts/src/display-validity.test.ts) builds
 every case with `buildList`: a case builds only when `expect` is `"ok"` and `engine` is `"pass"`, an
 `engine` failure is also the render failure, and any other case fails with `INVALID_FORM_INPUT`
 ([display format declarations](../../../../docs/spec/display-formats.md#declarations)).

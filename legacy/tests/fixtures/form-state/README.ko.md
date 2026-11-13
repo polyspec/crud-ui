@@ -1,6 +1,6 @@
 # 폼 상태 고정 데이터 (공유 module)
 <!-- doc-id: tests-fixtures-form-state-readme -->
-<!-- source-sha256: fe3ac874261b397f76dcf84db3f3b246a5bcd315970e5b372a300d39a9f8652a -->
+<!-- source-sha256: 629ee96730b9663f02c771a204d35407234e0ce194e3267d133672480fe47aec -->
 
 [English](README.md).
 
@@ -26,7 +26,7 @@ case가 `spec`, `data`, `steps`에 쓰지 않은 행 키는 작업이 생성한 
 
 ## 비교
 
-TypeScript test [form-state.test.ts](../../../legacy/packages/generator/ts/src/form-state.test.ts)는 package 소스에서
+TypeScript test [form-state.test.ts](../../../packages/generator/ts/src/form-state.test.ts)는 package 소스에서
 [harness.mts](harness.mts)의 reference를 실행하고, 다른 구현은 같은 step을 자기 폼에서 실행합니다.
 뷰 함수와 이력 함수의 case는 뷰와 이력의 순수 함수를 호출합니다.
 

@@ -1,6 +1,6 @@
 # 입력 텍스트 픽스처
 <!-- doc-id: tests-fixtures-text-validity-readme -->
-<!-- source-sha256: 048dbac18922262d8fbbc97fcf67e3330f763054087b9a215b5b8837fceea40d -->
+<!-- source-sha256: 68b451874243d38096d32f80d307ab4ec5112d0a4eb7c821d32ecd5094813225 -->
 
 [English](README.md).
 
@@ -52,18 +52,18 @@ TypeScript, PHP, Go, PHP 확장 테스트가 실행합니다. Rust 값은 노드
 
 ## 사례를 읽는 테스트
 
-검증 연산은 [TypeScript](../../../legacy/packages/validator/ts/src/text/text-validity.conformance.test.ts),
-[PHP](../../../legacy/packages/validator/php/tests/Validate/TextValidityConformanceTest.php),
-[Go](../../../legacy/packages/validator/go/validator/validate/text_conformance_test.go),
+검증 연산은 [TypeScript](../../../packages/validator/ts/src/text/text-validity.conformance.test.ts),
+[PHP](../../../packages/validator/php/tests/Validate/TextValidityConformanceTest.php),
+[Go](../../../packages/validator/go/validator/validate/text_conformance_test.go),
 [Rust](../../../../packages/validator/rust/tests/text_validity_conformance.rs) 테스트,
-[API 테스트](../../../legacy/packages/php-ext/tests/ApiTest.php)가 실행하는
-[PHP 확장 러너](../../../legacy/packages/php-ext/tests/ValidateReport.php), 그리고 모든 케이스를 다섯 검증
+[API 테스트](../../../packages/php-ext/tests/ApiTest.php)가 실행하는
+[PHP 확장 러너](../../../packages/php-ext/tests/ValidateReport.php), 그리고 모든 케이스를 다섯 검증
 프로세스에 보내는 교차 검증 콘솔
-[검증 프로세스 테스트](../../../../examples/cross-check-console/server/validator-processes.test.mjs)가
+[검증 프로세스 테스트](../../../examples/cross-check-console/server/validator-processes.test.mjs)가
 실행합니다.
 
-생성 연산은 [generator core 테스트](../../../legacy/packages/generator/ts/src/input-text.test.ts)가
-프로세스 안에서 실행하고, [네이티브 생성기 스위트](../../../../tests/native-generators/README.ko.md)가 모든
+생성 연산은 [generator core 테스트](../../../packages/generator/ts/src/input-text.test.ts)가
+프로세스 안에서 실행하고, [네이티브 생성기 스위트](../../native-generators/README.ko.md)가 모든
 프로그램으로 실행하며 JavaScript, PHP, Go, Rust, PHP 확장 런타임의 증거를 기록합니다.
 
 UTF-8이 아닌 바이트 문자열은 JSON 텍스트로 쓸 수 없습니다. PHP, Go, Rust 디코더, PHP 확장 테스트가

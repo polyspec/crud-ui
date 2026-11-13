@@ -54,8 +54,8 @@ restores a value in both forms and requires equal states and the same checkbox e
 The [React](../../../../packages/react/src/tests/Form.test.tsx),
 [Vue](../../../../packages/vue/tests/form-session.test.mjs) and
 [Svelte](../../../../packages/svelte/tests/form-session.client.mjs) form tests and the
-[HTML renderer session test](../../../legacy/packages/html/src/form-session.test.ts) use every
-module. The [core form test](../../../legacy/packages/generator/ts/src/form.test.ts) uses the scenario
+[HTML renderer session test](../../../packages/html/src/form-session.test.ts) use every
+module. The [core form test](../../../packages/generator/ts/src/form.test.ts) uses the scenario
 `spec`, `data`, row keys and `storesPath`.
 
 ## Regeneration

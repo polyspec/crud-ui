@@ -32,7 +32,7 @@ The runtime codes are `FORBIDDEN_META_KEY` and `REF_FILE_NOT_FOUND`.
 
 ## Comparisons
 
-The [detail meta-schema test](../../../legacy/packages/validator/ts/src/detail-metaschema.conformance.test.ts)
+The [detail meta-schema test](../../../packages/validator/ts/src/detail-metaschema.conformance.test.ts)
 and `check-schema.mts` compile the detail entry point and check `expect` and `reason`.
 
 The runtime tests validate `spec` with `files`, read no record data and compare `engine`. The Rust
@@ -41,16 +41,16 @@ cross-check console sends every case to its five validator processes, which exit
 result or `2` with `{ error, code, at }`, and requires the same result, code and location from each.
 
 The cases are read at runtime by the detail validation tests in
-[TypeScript](../../../legacy/packages/validator/ts/src/validate-detail/validate-detail.conformance.test.ts),
-[PHP](../../../legacy/packages/validator/php/tests/Validate/DetailValidateConformanceTest.php),
-[Go](../../../legacy/packages/validator/go/validator/validate/detail_conformance_test.go),
+[TypeScript](../../../packages/validator/ts/src/validate-detail/validate-detail.conformance.test.ts),
+[PHP](../../../packages/validator/php/tests/Validate/DetailValidateConformanceTest.php),
+[Go](../../../packages/validator/go/validator/validate/detail_conformance_test.go),
 [Rust](../../../../packages/validator/rust/tests/detail_validity_conformance.rs), the
-[PHP extension engine test](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs), the
-[PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) and the cross-check console
-[detail runner test](../../../../examples/cross-check-console/server/validate-detail-runner.test.mjs) and
-[validator process test](../../../../examples/cross-check-console/server/validator-processes.test.mjs).
+[PHP extension engine test](../../../packages/php-ext/tests/engine/engine.test.mjs), the
+[PHP extension runner](../../../packages/php-ext/tests/ValidateReport.php) and the cross-check console
+[detail runner test](../../../examples/cross-check-console/server/validate-detail-runner.test.mjs) and
+[validator process test](../../../examples/cross-check-console/server/validator-processes.test.mjs).
 
-The [render validity test](../../../legacy/packages/generator/ts/src/display-validity.test.ts) builds
+The [render validity test](../../../packages/generator/ts/src/display-validity.test.ts) builds
 every case with `buildDetail`: a case builds only when `expect` is `"ok"` and `engine` is `"pass"`, an
 `engine` failure is also the render failure, and any other case fails with `INVALID_FORM_INPUT`
 ([display format declarations](../../../../docs/spec/display-formats.md#declarations)).

@@ -1,6 +1,6 @@
 # CRUDUI PHP 생성기
 <!-- doc-id: packages-generator-php-readme -->
-<!-- source-sha256: 40659efdb91fe92bd32aac80dfcef589a77df885137f21c87e7f448b6d04e681 -->
+<!-- source-sha256: e1173b619b2a72c2efb2b1324b9f9da33b4f7b105059638b933e5b101fb60be4 -->
 
 [English](README.md).
 
@@ -115,7 +115,7 @@ CRUDUI_DATA_FILE=/tmp/crudui-php-example.json php -S 127.0.0.1:8082 -t legacy/pa
 
 ## 공통 검사
 
-[네이티브 공통 검사](../../../../tests/native-generators/README.ko.md)는 런타임별 전체
+[네이티브 공통 검사](../../../tests/native-generators/README.ko.md)는 런타임별 전체
 템플릿과 모델, 폼과 목록 HTML 원문, 데이터 주입, 행 작업과 실패 후 보존한
 상태를 비교합니다.
 

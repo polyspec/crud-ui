@@ -1,6 +1,6 @@
 # 명세 유효성 고정 데이터
 <!-- doc-id: tests-fixtures-spec-validity-readme -->
-<!-- source-sha256: 9136883b9935fecc579d83345c84ba96a1b9690e0b8a41eeea2ac297f518d411 -->
+<!-- source-sha256: a2370564f218195ce7165456c6836342300b06d6d7892166d394c8270c21a3be -->
 
 [English](README.md).
 
@@ -33,17 +33,17 @@
 
 ## 비교
 
-[폼 메타 스키마 검사](../../../legacy/packages/validator/ts/src/form-metaschema.conformance.test.ts)와
+[폼 메타 스키마 검사](../../../packages/validator/ts/src/form-metaschema.conformance.test.ts)와
 `check-schema.mts`는 메타 스키마를 컴파일해 `expect`와 `reason`을 확인합니다.
 
 런타임 검사는 빈 데이터와 사례의 `files`로 전체 폼 로드 과정(합성, 금지 키 검사, 검증)을 실행해 `engine`과
 비교하며 메시지는 비교하지 않습니다.
-[TypeScript](../../../legacy/packages/validator/ts/src/forbidden-scan.conformance.test.ts),
-[PHP](../../../legacy/packages/validator/php/tests/Validate/ForbiddenScanConformanceTest.php),
-[Go](../../../legacy/packages/validator/go/validator/validate/forbidden_scan_conformance_test.go),
+[TypeScript](../../../packages/validator/ts/src/forbidden-scan.conformance.test.ts),
+[PHP](../../../packages/validator/php/tests/Validate/ForbiddenScanConformanceTest.php),
+[Go](../../../packages/validator/go/validator/validate/forbidden_scan_conformance_test.go),
 [Rust](../../../../packages/validator/rust/tests/spec_validity_conformance.rs)의 금지 키 적합성 검사,
-[PHP 확장 엔진 검사](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs),
-[PHP 확장 실행기](../../../legacy/packages/php-ext/tests/ValidateReport.php)가 런타임 사용처입니다. Rust 구조 결과는
+[PHP 확장 엔진 검사](../../../packages/php-ext/tests/engine/engine.test.mjs),
+[PHP 확장 실행기](../../../packages/php-ext/tests/ValidateReport.php)가 런타임 사용처입니다. Rust 구조 결과는
 `valid`와 `errors`를 가진 `Ok(ValidationResult)`입니다.
 
 ## 재생성

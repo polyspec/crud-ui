@@ -38,18 +38,18 @@ which does not read `items`, and `err-in-choice-list-boolean-value` fails with `
 
 ## Comparisons
 
-The [form meta-schema test](../../../legacy/packages/validator/ts/src/form-metaschema.conformance.test.ts)
+The [form meta-schema test](../../../packages/validator/ts/src/form-metaschema.conformance.test.ts)
 and `check-schema.mts` compile the meta-schema and check `expect` and `reason`.
 
 The runtime tests run the complete form load path (composition, forbidden-key scan and validation)
 with empty data and the case `files`, and compare `engine`; the message is not compared. Runtime
 checks are the forbidden-key conformance tests in
-[TypeScript](../../../legacy/packages/validator/ts/src/forbidden-scan.conformance.test.ts),
-[PHP](../../../legacy/packages/validator/php/tests/Validate/ForbiddenScanConformanceTest.php),
-[Go](../../../legacy/packages/validator/go/validator/validate/forbidden_scan_conformance_test.go) and
+[TypeScript](../../../packages/validator/ts/src/forbidden-scan.conformance.test.ts),
+[PHP](../../../packages/validator/php/tests/Validate/ForbiddenScanConformanceTest.php),
+[Go](../../../packages/validator/go/validator/validate/forbidden_scan_conformance_test.go) and
 [Rust](../../../../packages/validator/rust/tests/spec_validity_conformance.rs), the
-[PHP extension engine test](../../../legacy/packages/php-ext/tests/engine/engine.test.mjs) and the
-[PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php). The Rust structure result is
+[PHP extension engine test](../../../packages/php-ext/tests/engine/engine.test.mjs) and the
+[PHP extension runner](../../../packages/php-ext/tests/ValidateReport.php). The Rust structure result is
 `Ok(ValidationResult)` with `valid` and `errors`.
 
 ## Regeneration

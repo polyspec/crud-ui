@@ -114,5 +114,5 @@ curl http://127.0.0.1:8087/list
 curl http://127.0.0.1:8087/detail
 ```
 
-The [native conformance suite](../../../../tests/native-generators/README.md) compares this
+The [native conformance suite](../../../tests/native-generators/README.md) compares this
 package with the other runtimes through a program that calls its public API.
