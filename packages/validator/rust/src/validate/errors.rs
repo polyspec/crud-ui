@@ -2,7 +2,7 @@
 
 use std::fmt;
 
-use crate::compose::ComposeLoadError;
+use crate::compose::{ComposeErrorCode, ComposeLoadError};
 
 /// Submitted form data whose shape does not match the specification.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -30,6 +30,16 @@ impl fmt::Display for FormInputError {
 
 impl std::error::Error for FormInputError {}
 
+/// The code of a validation failure, whose variants the interface contract lists as kinds (CURP-033): the code of
+/// the composition of a load failure, or the code of an input failure.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ValidateErrorCode {
+    /// A load failure with the code of its composition.
+    Load(ComposeErrorCode),
+    /// Submitted data has the wrong shape.
+    InvalidFormInput,
+}
+
 /// A validation run that produced no validation result.
 #[derive(Debug, Clone, PartialEq)]
 pub enum ValidateError {
@@ -53,6 +63,37 @@ impl ValidateError {
         match self {
             ValidateError::Load(error) => &error.message,
             ValidateError::InvalidFormInput(error) => &error.message,
+        }
+    }
+
+    /// The code of the failure: the projection that the bindings match the kinds of the interface contract on
+    /// (CURP-033, binding GN-7b).
+    pub fn error_code(&self) -> ValidateErrorCode {
+        match self {
+            ValidateError::Load(error) => ValidateErrorCode::Load(error.code),
+            ValidateError::InvalidFormInput(_) => ValidateErrorCode::InvalidFormInput,
+        }
+    }
+
+    /// The failure of the kind `code` that a file loader raised with `message`, as an instance of a recognized error
+    /// class (CURP-032, binding GN-6d): a load failure has no trace.
+    pub fn recognized(code: ValidateErrorCode, message: &str) -> Self {
+        match code {
+            ValidateErrorCode::Load(code) => {
+                ValidateError::Load(ComposeLoadError::new(code, message))
+            }
+            ValidateErrorCode::InvalidFormInput => {
+                ValidateError::InvalidFormInput(FormInputError::new(message))
+            }
+        }
+    }
+
+    /// The composition path stack of a load failure, the property `trace` of its error class; empty for an input
+    /// failure.
+    pub fn trace(&self) -> &[String] {
+        match self {
+            ValidateError::Load(error) => &error.trace,
+            ValidateError::InvalidFormInput(_) => &[],
         }
     }
 

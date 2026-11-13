@@ -24,5 +24,6 @@ pub use types::{
 };
 
 pub use validate::{
-    hidden_paths, validate, FormInputError, ValidateError, ValidateOptions, Validator,
+    hidden_paths, validate, FormInputError, ValidateError, ValidateErrorCode, ValidateOptions,
+    Validator,
 };

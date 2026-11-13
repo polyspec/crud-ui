@@ -33,7 +33,7 @@ pub mod validator;
 pub mod visibility;
 mod whitespace;
 
-pub use errors::{FormInputError, ValidateError};
+pub use errors::{FormInputError, ValidateError, ValidateErrorCode};
 pub use validator::{ValidationError, ValidationResult, Validator};
 
 use serde_json::{Map, Value};
