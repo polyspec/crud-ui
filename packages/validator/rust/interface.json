@@ -112,76 +112,81 @@
     ],
     "kinds": [
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
         "category": "value",
         "class": "compose_load_error"
       },
       {
-        "variant": "polyspec_crud_ui_validator::ValidateError::InvalidFormInput",
+        "variant": "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput",
         "category": "value",
         "class": "form_input_error"
       }
     ],
+    "code": {
+      "error": "polyspec_crud_ui_validator::ValidateError",
+      "path": "polyspec_crud_ui_validator::ValidateError::error_code"
+    },
+    "recognized": "polyspec_crud_ui_validator::ValidateError::recognized",
     "binding": [],
     "wrapped": []
   },
@@ -420,7 +425,7 @@
           "raises": [],
           "wait": "none",
           "core": {
-            "path": "polyspec_crud_ui_validator::compose::ComposeLoadError::trace",
+            "path": "polyspec_crud_ui_validator::ValidateError::trace",
             "receiver": "&self"
           }
         }
@@ -488,20 +493,20 @@
             "unit": "validation_result"
           },
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate"
@@ -536,17 +541,17 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_list"
@@ -579,15 +584,15 @@
             "list": "text"
           },
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::hidden_paths"
@@ -622,17 +627,17 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_detail"
@@ -686,20 +691,20 @@
             "unit": "validation_result"
           },
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_with_loader"
@@ -745,17 +750,17 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_list_with_loader"
@@ -801,17 +806,17 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_validator::ValidateError::InvalidFormInput"
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
+            "polyspec_crud_ui_validator::ValidateErrorCode::Load/polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
+            "polyspec_crud_ui_validator::ValidateErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_validator::boundary::validate_detail_with_loader"
