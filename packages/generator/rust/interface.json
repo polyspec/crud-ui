@@ -1086,19 +1086,6 @@
             }
           ],
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
             "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
           ],
@@ -1136,13 +1123,12 @@
           "returns": {
             "list": "json_value"
           },
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
-          ],
+          "raises": [],
           "wait": "none",
           "core": {
             "path": "polyspec_crud_ui_generator::boundary::Form::fields",
-            "receiver": "&self"
+            "receiver": "&self",
+            "result": true
           }
         },
         {
@@ -1156,13 +1142,12 @@
           "returns": {
             "list": "json_value"
           },
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
-          ],
+          "raises": [],
           "wait": "none",
           "core": {
             "path": "polyspec_crud_ui_generator::boundary::Form::buttons",
-            "receiver": "&self"
+            "receiver": "&self",
+            "result": true
           }
         },
         {
@@ -1208,13 +1193,12 @@
           "returns": {
             "unit": "form_snapshot"
           },
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
-          ],
+          "raises": [],
           "wait": "none",
           "core": {
             "path": "polyspec_crud_ui_generator::boundary::Form::snapshot",
-            "receiver": "&self"
+            "receiver": "&self",
+            "result": true
           }
         },
         {
@@ -1227,13 +1211,12 @@
           "visibility": "public",
           "parameters": [],
           "returns": "json_value",
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
-          ],
+          "raises": [],
           "wait": "none",
           "core": {
             "path": "polyspec_crud_ui_generator::boundary::Form::get_data",
-            "receiver": "&self"
+            "receiver": "&self",
+            "result": true
           }
         },
         {
@@ -1285,8 +1268,7 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1320,8 +1302,7 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1360,7 +1341,6 @@
           "returns": "text",
           "raises": [
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
             "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
@@ -1407,7 +1387,6 @@
           "returns": "text",
           "raises": [
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
             "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
@@ -1442,8 +1421,7 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1484,8 +1462,7 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1528,8 +1505,7 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1563,8 +1539,7 @@
           ],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1591,14 +1566,12 @@
             }
           ],
           "returns": "none",
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
-          ],
+          "raises": [],
           "wait": "none",
           "core": {
             "path": "polyspec_crud_ui_generator::boundary::Form::set_all_expanded",
-            "receiver": "&mut self"
+            "receiver": "&mut self",
+            "result": true
           }
         },
         {
@@ -1611,8 +1584,7 @@
           "parameters": [],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1630,8 +1602,7 @@
           "parameters": [],
           "returns": "none",
           "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": {
@@ -1772,19 +1743,6 @@
             "list": "json_value"
           },
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
             "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
           ],
@@ -1896,21 +1854,7 @@
           ],
           "returns": "text",
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
           ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::boundary::render_form"
@@ -2504,19 +2448,6 @@
           ],
           "returns": "text",
           "raises": [
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFileNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefFormatError",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefDetectKeyNotFound",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefCycle",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::RefValueType",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchShape",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchPathConflict",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::PatchRemoveTargetMissing",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::ForbiddenMetaKey",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRuleParameter",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidRulePattern",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::UnknownRule",
-            "polyspec_crud_ui_validator::compose::ComposeErrorCode::InvalidText",
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
             "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType"
           ],
@@ -2543,11 +2474,12 @@
             }
           ],
           "returns": "text",
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
-          ],
+          "raises": [],
           "wait": "none",
-          "core": "polyspec_crud_ui_generator::boundary::render_outline"
+          "core": {
+            "path": "polyspec_crud_ui_generator::boundary::render_outline",
+            "result": true
+          }
         },
         {
           "id": "generator.render_outline_view",
@@ -2619,11 +2551,12 @@
             }
           ],
           "returns": "text",
-          "raises": [
-            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
-          ],
+          "raises": [],
           "wait": "none",
-          "core": "polyspec_crud_ui_generator::boundary::render_data"
+          "core": {
+            "path": "polyspec_crud_ui_generator::boundary::render_data",
+            "result": true
+          }
         },
         {
           "id": "generator.render_data_panel",
@@ -2747,7 +2680,6 @@
           },
           "raises": [
             "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput",
-            "polyspec_crud_ui_generator::FormErrorCode::UnsupportedFieldType",
             "polyspec_crud_ui_generator::FormErrorCode::RandomUnavailable"
           ],
           "wait": "none",
@@ -3494,6 +3426,236 @@
       "member": "generator.render_detail",
       "file": "contracts/generator-cases.json",
       "group": "render_detail"
+    },
+    {
+      "member": "view_state.collapsed",
+      "file": "contracts/generator-cases.json",
+      "group": "view_state_collapsed"
+    },
+    {
+      "member": "history.entries",
+      "file": "contracts/generator-cases.json",
+      "group": "history_entries"
+    },
+    {
+      "member": "history.redo_entries",
+      "file": "contracts/generator-cases.json",
+      "group": "history_redo_entries"
+    },
+    {
+      "member": "history.last_path",
+      "file": "contracts/generator-cases.json",
+      "group": "history_last_path"
+    },
+    {
+      "member": "form.constructor",
+      "file": "contracts/generator-cases.json",
+      "group": "form_constructor"
+    },
+    {
+      "member": "form.template",
+      "file": "contracts/generator-cases.json",
+      "group": "form_template"
+    },
+    {
+      "member": "form.fields",
+      "file": "contracts/generator-cases.json",
+      "group": "form_fields"
+    },
+    {
+      "member": "form.buttons",
+      "file": "contracts/generator-cases.json",
+      "group": "form_buttons"
+    },
+    {
+      "member": "form.description",
+      "file": "contracts/generator-cases.json",
+      "group": "form_description"
+    },
+    {
+      "member": "form.revision",
+      "file": "contracts/generator-cases.json",
+      "group": "form_revision"
+    },
+    {
+      "member": "form.snapshot",
+      "file": "contracts/generator-cases.json",
+      "group": "form_snapshot"
+    },
+    {
+      "member": "form.get_data",
+      "file": "contracts/generator-cases.json",
+      "group": "form_get_data"
+    },
+    {
+      "member": "form.get_value",
+      "file": "contracts/generator-cases.json",
+      "group": "form_get_value"
+    },
+    {
+      "member": "form.set_data",
+      "file": "contracts/generator-cases.json",
+      "group": "form_set_data"
+    },
+    {
+      "member": "form.set_value",
+      "file": "contracts/generator-cases.json",
+      "group": "form_set_value"
+    },
+    {
+      "member": "form.add_row",
+      "file": "contracts/generator-cases.json",
+      "group": "form_add_row"
+    },
+    {
+      "member": "form.copy_row",
+      "file": "contracts/generator-cases.json",
+      "group": "form_copy_row"
+    },
+    {
+      "member": "form.remove_row",
+      "file": "contracts/generator-cases.json",
+      "group": "form_remove_row"
+    },
+    {
+      "member": "form.move_row",
+      "file": "contracts/generator-cases.json",
+      "group": "form_move_row"
+    },
+    {
+      "member": "form.rekey_row",
+      "file": "contracts/generator-cases.json",
+      "group": "form_rekey_row"
+    },
+    {
+      "member": "form.toggle_row",
+      "file": "contracts/generator-cases.json",
+      "group": "form_toggle_row"
+    },
+    {
+      "member": "form.set_all_expanded",
+      "file": "contracts/generator-cases.json",
+      "group": "form_set_all_expanded"
+    },
+    {
+      "member": "form.undo",
+      "file": "contracts/generator-cases.json",
+      "group": "form_undo"
+    },
+    {
+      "member": "form.redo",
+      "file": "contracts/generator-cases.json",
+      "group": "form_redo"
+    },
+    {
+      "member": "form.can_undo",
+      "file": "contracts/generator-cases.json",
+      "group": "form_can_undo"
+    },
+    {
+      "member": "form.can_redo",
+      "file": "contracts/generator-cases.json",
+      "group": "form_can_redo"
+    },
+    {
+      "member": "generator.bind_form",
+      "file": "contracts/generator-cases.json",
+      "group": "bind_form"
+    },
+    {
+      "member": "generator.bind_buttons",
+      "file": "contracts/generator-cases.json",
+      "group": "bind_buttons"
+    },
+    {
+      "member": "generator.render_form",
+      "file": "contracts/generator-cases.json",
+      "group": "render_form"
+    },
+    {
+      "member": "generator.render_form_view",
+      "file": "contracts/generator-cases.json",
+      "group": "render_form_view"
+    },
+    {
+      "member": "generator.render_outline",
+      "file": "contracts/generator-cases.json",
+      "group": "render_outline"
+    },
+    {
+      "member": "generator.render_data",
+      "file": "contracts/generator-cases.json",
+      "group": "render_data"
+    },
+    {
+      "member": "generator.run_action",
+      "file": "contracts/generator-cases.json",
+      "group": "run_action"
+    },
+    {
+      "member": "generator.toggle_row_view",
+      "file": "contracts/generator-cases.json",
+      "group": "toggle_row_view"
+    },
+    {
+      "member": "generator.remove_row_view",
+      "file": "contracts/generator-cases.json",
+      "group": "remove_row_view"
+    },
+    {
+      "member": "generator.rekey_row_view",
+      "file": "contracts/generator-cases.json",
+      "group": "rekey_row_view"
+    },
+    {
+      "member": "generator.record_change",
+      "file": "contracts/generator-cases.json",
+      "group": "record_change"
+    },
+    {
+      "member": "generator.can_undo",
+      "file": "contracts/generator-cases.json",
+      "group": "can_undo"
+    },
+    {
+      "member": "generator.can_redo",
+      "file": "contracts/generator-cases.json",
+      "group": "can_redo"
+    },
+    {
+      "member": "generator.undo_change",
+      "file": "contracts/generator-cases.json",
+      "group": "undo_change"
+    },
+    {
+      "member": "generator.redo_change",
+      "file": "contracts/generator-cases.json",
+      "group": "redo_change"
+    },
+    {
+      "member": "generator.compile_form_with_loader",
+      "file": "contracts/generator-cases.json",
+      "group": "compile_form_with_loader"
+    },
+    {
+      "member": "generator.build_list_with_loader",
+      "file": "contracts/generator-cases.json",
+      "group": "build_list_with_loader"
+    },
+    {
+      "member": "generator.render_list_with_loader",
+      "file": "contracts/generator-cases.json",
+      "group": "render_list_with_loader"
+    },
+    {
+      "member": "generator.build_detail_with_loader",
+      "file": "contracts/generator-cases.json",
+      "group": "build_detail_with_loader"
+    },
+    {
+      "member": "generator.render_detail_with_loader",
+      "file": "contracts/generator-cases.json",
+      "group": "render_detail_with_loader"
     }
   ]
 }

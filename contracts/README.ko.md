@@ -1,6 +1,6 @@
 # CRUDUI 계약 manifest
 <!-- doc-id: contracts-readme -->
-<!-- source-sha256: cf6c4949e2bb5697ed3aa53c1cb09ff1a8d4a8e9a060a4e7f82b293c3628b009 -->
+<!-- source-sha256: dd3c50d59f05ca88afed31d4b3e31d7482c423c54c47f178ac68dca486c72ee1 -->
 
 [English](README.md).
 
@@ -12,7 +12,7 @@
 (`packages/<component>/rust/interface.json`)의 member 가운데 `tests/fixtures`의 fixture가 다른 형식의 규칙 corpus(단계의 세션,
 field map, 인스턴스가 렌더링하는 명세)인 member의 계약 case입니다. member 이름을 딴 각 group은 case마다 member를 한 번
 부르며, 인수는 매개변수 이름으로 적고 각 `json_value`는 `{ "kind", "value" }`로 씁니다(binding G-5). 성공하는 case 몇 건과
-member가 내는 kind마다 `raises`를 가진 case 한 건씩입니다. 파일 로더를 받는 연산의 case는 로더를 callback fixture `{ "callback": { "file_loader.normalize": [<행>], "file_loader.load": [<행>] } }`로 줍니다. 행은 `args`가 같은 호출에 `result`로 답하거나, 없는 파일에 대해 로더가 던지는 오류인 `raise`로 답합니다(CURP-032). validator에 이 case가 있고, generator의 case는 case가 다른 계약의 callback을 줄 수 있을 때까지 기다립니다. 어떤 인수로도 줄 수 없는 환경 실패의 case는 코어의 fault 주입 지점을 `faults`에서 켭니다(binding G-5).
+member가 내는 kind마다 `raises`를 가진 case 한 건씩입니다. 파일 로더를 받는 연산의 case는 로더를 callback fixture `{ "callback": { "file_loader.normalize": [<행>], "file_loader.load": [<행>] } }`로 줍니다. 행은 `args`가 같은 호출에 `result`로 답하거나, 없는 파일에 대해 로더가 던지는 오류인 `raise`로 답합니다(CURP-032). validator에 이 case가 있고, generator는 로더를 받는 연산에 validator 계약의 같은 로더를 줍니다. class(form, history, view_state)의 member나 class 타입 인수를 받는 member의 case는 그 instance를 binding GN-13f의 instance 값 `{ "new": <member id>, "args": { ... }, "then": [<호출>] }`로 줍니다. member `new`가 그 인수로 instance를 만들고 `then`의 호출이 준비합니다. `result`가 있는 case는 결과를 case 형식으로 주고, 결과가 class인 member에는 `result`가 없습니다. 어떤 인수로도 줄 수 없는 환경 실패의 case는 코어의 fault 주입 지점을 `faults`에서 켭니다(binding G-5).
 `crud_ui_generator.random_source`를 kind `io`로 켜면, generator crate의 feature `fault-test`가 있는 build에서 난수
 원천이 실패합니다. 이 case는 `tests/fixtures`에 남는 규칙 corpus의 사본이 아니며, 각
 crate의 Rust 시험 `contract_cases`가 경계에서 실행합니다.
