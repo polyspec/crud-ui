@@ -1,6 +1,6 @@
 # 패키지 빌드
 <!-- doc-id: docs-operations-package-build -->
-<!-- source-sha256: cbb3fd16e5a6382fdcee08571b0de6395acdbb902cc287382d8f57c0c9a8bca2 -->
+<!-- source-sha256: 0f0e49f3c932b9195dd9697b915c770bdeb84338dabd474667e00cf49a8cd603 -->
 
 [English](package-build.md).
 
@@ -170,10 +170,10 @@ setup-node 뒤 첫 make 명령 전에 이 bootstrap을 실행합니다. Bootstra
   checkout의 무시되는 directory `var/tools/npm`에 설치하며, 다른 모든 checkout이 쓰는
   machine의 npm에는 설치하지 않습니다. Makefile은 `var/tools/bin`을 `PATH`의 맨 앞에 두고,
   Native bootstrap 뒤 CI는 저장소 도구를 make 대상으로 시작합니다.
-- checkout의 kit인 `@polyspec/kit`은 toolchain마다 한 릴리스(Node.js 26.12.0, Python 3.14, PHP 8.4, Go 1.27.2, Rust 1.99.0,
+- checkout의 kit인 `@polyspec/kit`은 toolchain마다 한 릴리스(Node.js 26.12.0, Python 3.14, PHP 8.4, Go 1.27.3, Rust 1.99.0,
   TypeScript 7.0.2)를 고정하고, 기록된 release는 선언과 manifest 하한이며 kit이 설치합니다(K854). 대상은
   `mise.toml`의 `node`, 모든 `package.json`의 `engines.node`(`>=26.12.0`), 모든 `composer.json`의 `require.php`(`>=8.4`), 모든
-  `pyproject.toml`의 `requires-python`(`>=3.14`), 모든 `go.mod`의 `go` 줄(`1.27.2`, `toolchain` 줄 없음), 모든 Cargo package의
+  `pyproject.toml`의 `requires-python`(`>=3.14`), 모든 `go.mod`의 `go` 줄(`1.27.3`, `toolchain` 줄 없음), 모든 Cargo package의
   `rust-version`, 모든 manifest와 lock의 `typescript`입니다. 벗어나는 값은 `config/toolchain.json`의 `exceptions` 항목으로 scope,
   이유, 재시도 조건과 함께 선언합니다. `packages/svelte`는 svelte-check와 `@sveltejs/package`가 TypeScript 6 API를
   요구하므로 TypeScript 6.0.3을 유지합니다.

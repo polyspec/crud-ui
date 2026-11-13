@@ -184,10 +184,10 @@ belongs to the checkout at `var/bootstrap/npm-cache`.
   into the machine, whose npm every other checkout uses. The Makefile puts
   `var/tools/bin` first on `PATH`. After the native bootstrap, CI starts repository tools through make targets.
 - The kit of the checkout, `@polyspec/kit`, pins one release of each toolchain (Node.js 26.12.0, Python 3.14, PHP 8.4,
-  Go 1.27.2, Rust 1.99.0, TypeScript 7.0.2), and the declarations and manifest floors are the recorded releases of the checkout
+  Go 1.27.3, Rust 1.99.0, TypeScript 7.0.2), and the declarations and manifest floors are the recorded releases of the checkout
   that is not the pin: `node` of `mise.toml`, `engines.node` of every `package.json` (`>=26.12.0`), `require.php` of every
   `composer.json` (`>=8.4`), `requires-python` of every `pyproject.toml` (`>=3.14`), the `go` line of every `go.mod`
-  (`1.27.2`, with no `toolchain` line), `rust-version` of every Cargo package and `typescript` of every manifest and
+  (`1.27.3`, with no `toolchain` line), `rust-version` of every Cargo package and `typescript` of every manifest and
   lock. A deviation is an entry of `exceptions` in `config/toolchain.json` with its scope, reason and retry condition:
   `packages/svelte` keeps TypeScript 6.0.3, because svelte-check and `@sveltejs/package` require the
   TypeScript 6 API.
