@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 2cc415906a558e8fd674300c9c0a201d80348f8917b8c877d230ea4d7f9eb2f5 -->
+<!-- source-sha256: 4bbb688e65306969c67293fb5819b145a2265f3538dd14691c27989e2489d89b -->
 
 ## Unreleased
 
+- C19.10: `mise.toml`이 WASM 바인딩 crate의 wasm-bindgen crate 판인 wasm-bindgen CLI 0.2.130을 고정하고, `mise.lock`은 binding의 lock이 기록한 플랫폼 linux-arm64, linux-x64, macos-arm64에 대한 release asset의 sha256을 가집니다. `rust-toolchain.toml`은 target `wasm32-unknown-unknown`을 적습니다. `make install-tools`는 CLI를 `var/tools/mise`에 설치하며, 그 CLI는 `wasm-bindgen 0.2.130`을 보고합니다(C19.10).
 - C19.9: `make lint-ts`는 oxlint 발견, 풀리지 않는 import, `tests/case-values.mts`의 쓰이지 않는 export를 보고하지 않습니다. `scripts/check-schema.mts`는 `OBJECT`가 좁힌 `raises` 객체에서 case의 실패 메시지를 꺼내고, `tests/form-markup/naming.test.mts`는 타입을 단언하는 대신 객체가 아닌 case 파일을 거부합니다. `examples/form-comparison/check-generation.mjs`와 `legacy/packages/php-ext`의 시험 `comparison`, `engine`은 `legacy/`로의 이동이 옮긴 자리인 `legacy/tests/native-generators`를 import합니다. `tests/case-values.mts`에는 쓰이지 않는 interface `CaseValue`가 없습니다. 고정 사본 `legacy/tests/fixtures`에는 fixture 생성기가 더 이상 없습니다. `buttons`, `detail-render`, `form-complete`, `form-outline`, `form-state`, `list-render`, `template-shape`, `validate`의 생성기와 case module 22개는 다시 쓰지 않는 case를 썼고 어느 것도 import하지 않았으며, 이 폴더들의 README 쌍은 `tests/fixtures` 아래 공유 fixture의 생성기를 가리킵니다. knip은 여전히 `tests/fixtures/{form-session,form-state,text-validity,view-session}`의 module fixture 열 개와, 그 module만 import하는 `tests/fixtures/form-state/harness.mts`의 export 다섯 개를 보고합니다(C19.9).
 - C19.9: `legacy/packages/generator/php/tests`의 PHP 시험은 class 주석을 120자에서 줄을 나누고, `legacy/packages/php-ext/tests/ValidateReport.php`는 `value-graphs.json`의 경로를 자기 변수에 둡니다. `legacy/`로의 이동이 열두 줄을 phpcs의 한도보다 길게 만들었고, `make lint-php`는 그것을 보고했으며 이제 규칙을 그대로 둔 채 통과합니다.
 - C19.3: commit된 tree에서 npm 12.2.0의 `npm install --package-lock-only`는 C19.1이 손으로 쓴 추적된 lock과 차이 없는 `package-lock.json`을 씁니다. `make layout-check`는 C19.7의 발견으로 실패하므로, 그 발견이 없어질 때까지 C19.3은 우회됩니다.

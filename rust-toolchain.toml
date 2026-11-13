@@ -2,3 +2,5 @@
 channel = "1.99.0"
 profile = "minimal"
 components = ["rustfmt", "clippy"]
+# The WASM binding crates packages/<component>/ts/wasm are built for wasm32-unknown-unknown (binding GN-18).
+targets = ["wasm32-unknown-unknown"]
