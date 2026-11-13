@@ -65,6 +65,6 @@ Depends on: none. The repository takes the tools that every polyspec repository 
 
 Depends on: none. The path rule of AGENTS rejected symbolic links in every path without stating that it governs only what this repository creates, so the standard tool of an ecosystem that creates symbolic links, such as uv for a Python environment, would be rejected by it. AGENTS did not state that outside tools and libraries are used as they are and not rebuilt.
 
-## Wave 16
+## Wave 19
 
 Depends on: none. The validator and the generator had one implementation per language. The Rust crates become the cores, and binding generates the language packages from their interface contracts; the former language implementations stay under `legacy/` until each binding replaces one.
