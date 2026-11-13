@@ -13,6 +13,7 @@ crate-type = ["staticlib"]
 
 [features]
 panic-test = []
+fault-test = ["polyspec-crud-ui-generator/fault-test"]
 codec-test = []
 
 [dependencies]
