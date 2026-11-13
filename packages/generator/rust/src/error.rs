@@ -68,6 +68,12 @@ pub struct FormError {
 }
 
 impl FormError {
+    /// The code of the failure: the projection from the error to the code whose variants the interface contract
+    /// lists as kinds (CURP-033).
+    pub fn code(&self) -> &FormErrorCode {
+        &self.code
+    }
+
     /// A failure of the random source of the system (CURT-095).
     pub(crate) fn random_unavailable(cause: impl std::fmt::Display) -> Self {
         Self {

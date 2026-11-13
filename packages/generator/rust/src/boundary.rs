@@ -763,6 +763,47 @@ mod tests {
         };
     }
 
+    /// CURP-032, CURP-033: a file that the loader reports as missing is the failure of the operation, whose code
+    /// `FormError::code` gives.
+    #[test]
+    fn a_missing_file_of_a_loader_is_the_failure_of_the_operation() {
+        use crate::FormErrorCode;
+        use polyspec_crud_ui_validator::compose::{ComposeErrorCode, ComposeLoadError};
+        struct Missing;
+        impl FileLoader for Missing {
+            fn normalize(
+                &mut self,
+                path: &str,
+                _basepath: &str,
+            ) -> Result<String, Failure<ValidateError>> {
+                Ok(path.to_owned())
+            }
+
+            fn load(&mut self, _key: &str) -> Result<JsonValue, Failure<ValidateError>> {
+                Err(Failure::Kind(ValidateError::Load(
+                    ComposeLoadError::with_trace(
+                        ComposeErrorCode::RefFileNotFound,
+                        "the text of the loader",
+                        Vec::new(),
+                    ),
+                )))
+            }
+        }
+        let spec = json(r#"{"type":"group","properties":{"$ref":"Base.yml"}}"#);
+        let Err(Failure::Kind(error)) =
+            compile_form_with_loader(&spec, &mut Missing, &CompileOptions::default())
+        else {
+            panic!("the file is missing");
+        };
+        assert!(matches!(
+            error.code(),
+            FormErrorCode::Compose(ComposeErrorCode::RefFileNotFound)
+        ));
+        assert_eq!(error.message, "$ref file not found: Base.yml");
+        assert_eq!(error.trace, ["Base.yml"]);
+        assert_eq!(binding_core::Kinds::kind(&error), "ref_file_not_found");
+    }
+
     /// CURP-030: the boundary renders the instance that the crate renders, and data leaves with its
     /// members in order and its numbers as ECMAScript doubles.
     #[test]

@@ -211,16 +211,19 @@ pub trait FileLoader {
     /// The document of the file at `key`.
     ///
     /// # Errors
-    /// The failure of the implementation.
+    /// `Failure::Kind` with a [`ValidateError::Load`] whose code is
+    /// [`ComposeErrorCode::RefFileNotFound`] when no file is at `key` (CURP-032), or the failure
+    /// of the implementation.
     fn load(&mut self, key: &str) -> Result<JsonValue, Failure<ValidateError>>;
 }
 
 /// The message of `files` given with a loader (CURP-031).
 pub const FILES_WITH_LOADER_MESSAGE: &str = "Files and a loader are both given";
 
-/// A caller's loader as the loader of the composition (CURP-031). The composition carries only
-/// load failures, so the first other failure is kept here and the operation that used the loader
-/// returns it with [`LoaderBridge::settle`]; after a failure the caller's loader is not called.
+/// A caller's loader as the loader of the composition (CURP-031). A file that the loader reports
+/// as missing is a load failure of the composition (CURP-032). The composition carries only load
+/// failures, so the first other failure is kept here and the operation that used the loader
+/// returns it with [`LoaderBridge::settle`]; after a kept failure the caller's loader is not called.
 pub struct LoaderBridge<'a> {
     loader: RefCell<&'a mut dyn FileLoader>,
     failure: RefCell<Option<Failure<ValidateError>>>,
@@ -252,18 +255,18 @@ impl<'a> LoaderBridge<'a> {
         }
     }
 
-    /// Keep the first failure and give the load failure that ends the composition.
+    /// Keep the first failure and give the load failure that ends the composition; the operation
+    /// returns the kept failure, never the given one.
     fn keep(&self, failure: Failure<ValidateError>, key: &str) -> ComposeLoadError {
         let mut kept = self.failure.borrow_mut();
         if kept.is_none() {
             *kept = Some(failure);
         }
-        Self::ended(key)
+        Self::missing(key)
     }
 
-    /// The load failure that ends the composition after a kept failure; the operation returns the
-    /// kept failure, never this one.
-    fn ended(key: &str) -> ComposeLoadError {
+    /// The load failure of a key that holds no file, as the files of `files` give it (CURP-032).
+    fn missing(key: &str) -> ComposeLoadError {
         ComposeLoadError::with_trace(
             ComposeErrorCode::RefFileNotFound,
             format!("$ref file not found: {key}"),
@@ -297,11 +300,18 @@ impl crate::compose::FileLoader for LoaderBridge<'_> {
 
     fn load(&self, key: &str) -> ComposeResult<LoadedDoc> {
         if self.failure.borrow().is_some() {
-            return Err(Self::ended(key));
+            return Err(Self::missing(key));
         }
         let document = self.loader.borrow_mut().load(key);
         let document = match document {
             Ok(document) => document,
+            // CURP-032: the loader reports that no file is at the key; the failure is the
+            // operation's, so nothing of the loader's error is kept.
+            Err(Failure::Kind(ValidateError::Load(error)))
+                if error.code == ComposeErrorCode::RefFileNotFound =>
+            {
+                return Err(Self::missing(key));
+            }
             Err(failure) => return Err(self.keep(failure, key)),
         };
         match Self::document(key, &document) {
@@ -545,6 +555,50 @@ mod tests {
             panic!("the file is missing");
         };
         assert_eq!(error.code.as_str(), "REF_FILE_NOT_FOUND");
+    }
+
+    /// CURP-032: a file that the loader reports as missing fails as a file that `files` does not hold, with the
+    /// message and the trace of the operation.
+    #[test]
+    fn a_file_that_the_loader_reports_as_missing_is_no_file() {
+        struct Missing;
+        impl FileLoader for Missing {
+            fn normalize(
+                &mut self,
+                path: &str,
+                _basepath: &str,
+            ) -> Result<String, Failure<ValidateError>> {
+                Ok(format!("key:{path}"))
+            }
+
+            fn load(&mut self, _key: &str) -> Result<JsonValue, Failure<ValidateError>> {
+                Err(Failure::Kind(ValidateError::Load(
+                    ComposeLoadError::with_trace(
+                        ComposeErrorCode::RefFileNotFound,
+                        "the text of the loader",
+                        vec!["the trace of the loader".to_owned()],
+                    ),
+                )))
+            }
+        }
+        let spec = json(r#"{"type":"group","properties":{"$ref":"A.yml"}}"#);
+        let options = ValidateOptions::default();
+        let Err(Failure::Kind(ValidateError::Load(error))) =
+            validate_with_loader(&spec, &json("{}"), &mut Missing, &options)
+        else {
+            panic!("the file is missing");
+        };
+        let files = ValidateOptions {
+            files: Some(OrderedMap::new()),
+            basepath: None,
+        };
+        let Err(ValidateError::Load(held)) = validate(&spec, &json("{}"), &files) else {
+            panic!("the file is missing");
+        };
+        assert_eq!(held.message, "$ref file not found: A.yml");
+        assert_eq!(error.code, ComposeErrorCode::RefFileNotFound);
+        assert_eq!(error.message, "$ref file not found: key:A.yml");
+        assert_eq!(error.trace, ["key:A.yml"]);
     }
 
     /// CURP-031: files given with a loader fail.
