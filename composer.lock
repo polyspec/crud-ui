@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "83fb2f7da9c6db2287da4c7c42890505",
+    "content-hash": "4be1753a8f50c738129a8845750c0ea2",
     "packages": [
         {
             "name": "polyspec/crudui-generator",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "legacy/packages/generator/php",
-                "reference": "9d25a75bfa720aab4d3fe1a30603f888e63d84f3"
+                "reference": "d3423a41b26f2be73a5f5f9ee6a60623e90dafe8"
             },
             "require": {
                 "ext-mbstring": "*",
@@ -37,7 +37,7 @@
             },
             "scripts": {
                 "test": [
-                    "COMPOSER_VENDOR_DIR=../../../vendor node ../../../scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal"
+                    "COMPOSER_VENDOR_DIR=../../../../vendor node ../../../../scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal"
                 ]
             },
             "license": [
@@ -55,7 +55,7 @@
             "dist": {
                 "type": "path",
                 "url": "legacy/packages/validator/php",
-                "reference": "bfad3b500aeee441be546b2a132a372970e0848c"
+                "reference": "a62b7927b96fdf2c609ec8ee95391dd085661734"
             },
             "require": {
                 "php": ">=8.4"
@@ -77,7 +77,7 @@
             },
             "scripts": {
                 "test": [
-                    "COMPOSER_VENDOR_DIR=../../../vendor node ../../../tests/conformance/run-suite.mts phpunit --cwd legacy/packages/validator/php -- --testsuite public,php-source-internal"
+                    "COMPOSER_VENDOR_DIR=../../../../vendor node ../../../../tests/conformance/run-suite.mts phpunit --cwd legacy/packages/validator/php -- --testsuite public,php-source-internal"
                 ]
             },
             "license": [

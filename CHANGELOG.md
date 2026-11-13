@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- C19.5: `composer.lock` is the lock that Composer writes for the manifests of `legacy/packages/{validator,generator}/php`: their test scripts, their path references and the content hash. `make crudui-install-composer` wrote the tracked lock again and leaves it unchanged.
 - C19.5: the layout rules `layout-no-repository-prefix` and `layout-go-module-path` name the repository `crud-ui`. They named `crudui`, so `make layout-check` refused the module paths `github.com/polyspec/crud-ui/packages/<component>/go` of the two binding packages.
 - C19.5: the `go` line of every `go.mod` is Go 1.27.3, the release that `mise.toml` records: the modules of `scripts/go`, `benchmarks/validators/go` and `legacy/` named 1.27.2. `docs/operations/package-build.md` names 1.27.3.
 - C19.5: the documentation checks read the packages where they are: `scripts/package-dist.mts` builds and packs a package of `legacy/packages/` under the lock `dist-legacy-<package folder>` and refuses a folder outside `packages/` and `legacy/packages/`; `scripts/php-doc-coverage.php` reads `legacy/packages/{validator,generator}/php/src`; `scripts/gen-api-docs.mts` documents the crates `polyspec-crud-ui-validator` and `polyspec-crud-ui-generator` at the root workspace and reads `target/doc` of the root; the documentation link of `boundary::validate` names the function `crate::validate()`, which rustdoc refused as ambiguous with the module; `.gitignore` covers the API reports `legacy/packages/**/var/`. `make docs-check` failed at each of these and passes.

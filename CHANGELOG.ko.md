@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: f7a21220021472761b275096fcd2853d231f93077d22beb1c57645adcae5614d -->
+<!-- source-sha256: 3c1e8e2f6682e64dcfd7021a9b7f620ecebb35eab28727c54d056a032969dceb -->
 
 ## Unreleased
 
+- C19.5: `composer.lock`이 `legacy/packages/{validator,generator}/php`의 manifest에 대해 Composer가 쓰는 lock입니다(test script, path reference, content hash). `make crudui-install-composer`는 추적된 lock을 다시 썼고 이제 바꾸지 않습니다.
 - C19.5: layout 규칙 `layout-no-repository-prefix`와 `layout-go-module-path`가 저장소 이름 `crud-ui`를 적습니다. 이전에는 `crudui`를 적어 `make layout-check`가 두 바인딩 package의 module 경로 `github.com/polyspec/crud-ui/packages/<component>/go`를 거부했습니다.
 - C19.5: 모든 `go.mod`의 `go` 줄이 `mise.toml`이 기록한 릴리스 Go 1.27.3입니다. `scripts/go`, `benchmarks/validators/go`, `legacy/`의 module은 1.27.2를 적었습니다. `docs/operations/package-build.md`는 1.27.3을 적습니다.
 - C19.5: 문서 검사가 package를 실제 자리에서 읽습니다. `scripts/package-dist.mts`는 `legacy/packages/`의 package를 lock `dist-legacy-<package 폴더>` 아래에서 build하고 pack하며, `packages/`와 `legacy/packages/` 밖의 폴더를 거부합니다. `scripts/php-doc-coverage.php`는 `legacy/packages/{validator,generator}/php/src`를 읽습니다. `scripts/gen-api-docs.mts`는 루트 workspace에서 crate `polyspec-crud-ui-validator`와 `polyspec-crud-ui-generator`를 문서화하고 루트의 `target/doc`를 읽습니다. `boundary::validate`의 문서 링크는 함수 `crate::validate()`를 가리키며, rustdoc은 module과 겹치는 이전 링크를 거부했습니다. `.gitignore`는 API report `legacy/packages/**/var/`를 포함합니다. `make docs-check`는 이 자리마다 실패했고 이제 통과합니다.
