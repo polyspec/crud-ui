@@ -1204,7 +1204,7 @@ checksum = "f6b464fbc74e149a392436b17d523f769e057cb6877f6a5c4618bc6f11800548"
 [[package]]
 name = "polyspec-binding-core"
 version = "0.0.1"
-source = "git+https://github.com/polyspec/binding.git?branch=v1%2Frust-core#8faad2135d1f163eacf0daeb2f51f8b4db6aeb5d"
+source = "git+https://github.com/polyspec/binding.git?branch=v1%2Frust-core#1bf0025fe38dece8ba53a234ec21bb3be94bc18d"
 dependencies = [
  "indexmap",
  "tokio",
@@ -1235,6 +1235,8 @@ version = "0.0.20"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-crud-ui-generator",
+ "polyspec-crud-ui-validator",
+ "polyspec-json",
 ]
 
 [[package]]
@@ -1279,6 +1281,8 @@ dependencies = [
  "js-sys",
  "polyspec-binding-core",
  "polyspec-crud-ui-generator",
+ "polyspec-crud-ui-validator",
+ "polyspec-json",
  "wasm-bindgen",
 ]
 
@@ -1299,6 +1303,7 @@ version = "0.0.20"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-crud-ui-validator",
+ "polyspec-json",
 ]
 
 [[package]]
@@ -1340,6 +1345,7 @@ dependencies = [
  "js-sys",
  "polyspec-binding-core",
  "polyspec-crud-ui-validator",
+ "polyspec-json",
  "wasm-bindgen",
 ]
 
