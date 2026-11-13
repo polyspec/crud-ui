@@ -14,7 +14,7 @@
         "contracts/schema/README*.md",
         "examples/**/README*.md",
         "tests/**/README*.md",
-        "benchmarks/validators/README.md",
+        "benchmarks/validators/README*.md",
         "packages/**/README*.md",
         "legacy/packages/**/README*.md"
       ],

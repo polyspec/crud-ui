@@ -1,6 +1,6 @@
 # 공통 표현식 고정 사례
 <!-- doc-id: tests-fixtures-expr-readme -->
-<!-- source-sha256: 42e5deb9d3eb83dfa013de11be0a0ecda38e7a8bbbfb3bc3382f323e450dddfe -->
+<!-- source-sha256: 05548a734ad9e5c5b236a4b990b81ac3dbd6f3dc0be36daf8d797d4b844fdbef -->
 
 [English](README.md).
 

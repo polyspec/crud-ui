@@ -1,7 +1,7 @@
 # 폼 템플릿 형태
 
 <!-- doc-id: tests-fixtures-template-shape-readme -->
-<!-- source-sha256: 74ab6bd5ea84e1ded41da919cfa6a9be9381ebda2b5a564d67c40e6422c82319 -->
+<!-- source-sha256: 9cab003614d1532bd8985af6b054e6d6dfd3d0f75015611df2d9a10528335ef9 -->
 
 [English](README.md).
 

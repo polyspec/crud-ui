@@ -1,6 +1,6 @@
 # 폼 버튼 fixture
 <!-- doc-id: tests-fixtures-buttons-readme -->
-<!-- source-sha256: bfcef6be3cbd07e9b467c8999376d0feec8104e50648eead827c01242b2d1891 -->
+<!-- source-sha256: 7a2cfc76fd4db7f2951f2f1e376de84f11e6f3b92c53731d1070bbb29f6d4605 -->
 
 [English](README.md).
 
@@ -11,8 +11,8 @@
 `cases.json`은 case 목록 하나입니다. 각 case는 `name`, `note`, `requirements`, `operation`을 가집니다.
 
 - `bindButtons`(CURP-008): 호출 전에 `spec`을 `compileForm`으로 컴파일하거나, 컴파일된 template이 아닌 값을 `template`으로
-  그대로 넘깁니다. `data`는 record(없으면 `{}`), `options`는 바인드 옵션입니다. `spec`의 컴파일 실패는 case의 실패로
-  보고합니다.
+  그대로 넘깁니다. `data`는 record(없으면 `{}`), `options`는 바인드 옵션입니다. runner는 `spec`의 컴파일 실패를 case의
+  실패로 보고합니다.
 - `formButtonsHtml`(CURP-009): `buttons` 목록을 그대로 넘깁니다.
 
 `expected`는 `{ result }` 또는 `{ error: { code, message } }`입니다. `bindButtons`의 결과는 버튼 목록이며, 각 버튼은

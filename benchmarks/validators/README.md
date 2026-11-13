@@ -1,4 +1,7 @@
 # Validator throughput benchmark (JS / PHP / Go / Rust)
+<!-- doc-id: benchmarks-validators-readme -->
+
+[한국어](README.ko.md).
 
 Runs the four crudui validators over the **same spec + same input**, N times
 each, and reports throughput (ops/sec) and average latency (µs). Purpose: a

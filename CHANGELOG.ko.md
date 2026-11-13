@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 3cddcba066f952c1ce719406ab16ad293ace79e577c0069c857a461cbfd5137c -->
+<!-- source-sha256: 709cfe713985dd48981cc17017674ec8d71896c82cb7aba4905e4deb99b5d0bf -->
 
 ## Unreleased
 
+- P-8: `benchmarks/validators/README.md`와 `legacy/examples/cross-check-console/client/README.md`가 한국어 twin `README.ko.md`와 marker `doc-id`를 가지며, `config/documents.json`이 이 둘을 더 이상 빼지 않으므로 `make docs-check`가 두 쌍을 읽습니다. `config/documents.json`은 API Extractor가 영어로만 쓰는 API report `legacy/packages/**/etc/*.api.md`를 뺍니다. `make documents-stamp`는 그 세 파일에 대해 `is missing`으로 실패했습니다. `legacy/tests/fixtures`의 일곱 문서(`buttons`, `expr`, `form-choices`, `form-render`, `history-functions`, `template-shape`, `view-functions`)의 한국어 twin이 영어 파일의 sha256을 가집니다. `legacy/`로의 이동이 그 영어 파일을 바꾸었습니다. `tests/fixtures`와 `legacy/tests/fixtures`의 한국어 `buttons/README.ko.md`는 compile 실패를 보고하는 주체로 runner를 적고, 두 곳의 한국어 `form-render/README.ko.md`는 영어 파일처럼 행 추가 컨트롤을 낱말로 적습니다. `config/owner-checks.json`은 `benchmarks/validators/README*.md`를 소유합니다.
 - CURP-032, CURP-033: 파일 로더가 `load`를 kind `ref_file_not_found`의 합성 load 오류로 실패시켜 없다고 알린 파일은 `files`에 없는 파일과 같게 연산을 실패시킵니다: `REF_FILE_NOT_FOUND`, 메시지 `$ref file not found: <key>`, 그 key의 trace. Rust `LoaderBridge`는 로더가 준 오류의 메시지와 trace를 돌려주었습니다. validator 계약은 `file_loader.load`의 `errors.recognize`에 `compose_load_error`를 적고, `contracts/validator-cases.json`은 `validate_with_loader`, `validate_list_with_loader`, `validate_detail_with_loader`가 내는 kind마다 로더를 callback fixture로 준 case를 가집니다. `binding check`는 validator 계약에 발견 3건을 보고했고 이제 보고하지 않습니다. Rust `FormError::code`는 실패의 code를 주며, 계약 schema에 member가 생기면 generator 계약이 투영으로 적는 함수입니다.
 - C19.5: `composer.lock`이 `legacy/packages/{validator,generator}/php`의 manifest에 대해 Composer가 쓰는 lock입니다(test script, path reference, content hash). `make crudui-install-composer`는 추적된 lock을 다시 썼고 이제 바꾸지 않습니다.
 - C19.5: layout 규칙 `layout-no-repository-prefix`와 `layout-go-module-path`가 저장소 이름 `crud-ui`를 적습니다. 이전에는 `crudui`를 적어 `make layout-check`가 두 바인딩 package의 module 경로 `github.com/polyspec/crud-ui/packages/<component>/go`를 거부했습니다.

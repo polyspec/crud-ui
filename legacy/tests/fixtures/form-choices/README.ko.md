@@ -1,6 +1,6 @@
 # 폼 선택지 고정 데이터
 <!-- doc-id: tests-fixtures-form-choices-readme -->
-<!-- source-sha256: 4d1fbebf496d73916c799c57c90bde2bb5fc133ddc891f7463279d03e38b3a50 -->
+<!-- source-sha256: 6a992adb19f09f780a481b816650a4fca3976daf02b97fc991cddf710eca1fb4 -->
 
 [English](README.md).
 

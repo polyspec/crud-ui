@@ -1,6 +1,6 @@
 # 뷰 함수 고정 데이터
 <!-- doc-id: tests-fixtures-view-functions-readme -->
-<!-- source-sha256: a4472b0aa5556232b53792ff8cd36cd458baf2fdeb55f143a2cc843f2b95c14f -->
+<!-- source-sha256: cdbc5b080fd5ff0ec951bbaced03faa33c3521829c4fb2360bbb7d6a7703b414 -->
 
 [English](README.md).
 

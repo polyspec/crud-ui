@@ -11,7 +11,7 @@ React·Vue·Svelte 레이아웃 일치 검사는 `cases.json`을 공유합니다
 
 이 사례는 내부 `renderFields`의 평가와 렌더링 경로를 검사합니다. 외형, 조건,
 합성, 번역 콘텐츠, 언어 입력, 반복과 위젯 출력을 포함하며, `multiple: only` 컬렉션(행 컨트롤 없이
-데이터 키로 렌더링하는 행, 헤더와 빈 본문만 있고 `add-row` 컨트롤이 없는 비어 있거나 데이터가 없는
+데이터 키로 렌더링하는 행, 헤더와 빈 본문만 있고 행 추가 컨트롤이 없는 비어 있거나 데이터가 없는
 컬렉션), 값을 유지하는 숨긴 그룹, select·choice·multichoice·search·dummy 필드의 선택 목록과 잘못된 선택
 목록의 바인딩 실패, select·multichoice 필드가 반복 그룹의 행에서 가져오는 옵션과 그룹 소스의 컴파일 실패, 행보다 먼저 나열되는 그룹 소스의 리터럴 선택지와 그것을 반복하는 행의 바인딩 실패, option이 없는 select나 search 필드의 placeholder option, 보여 주지 않는 값의 이름 있는 오류와 `design.editor`, `options.fields`의 컴파일 실패를 포함한 구조 조건 편집기, `crudui-form` 블록의 첫 자식인 번역한 루트 설명도 검사합니다. 반복 사례
 데이터는 [폼 런타임](../../../docs/spec/form-runtime.ko.md)에 정의된 키 기반

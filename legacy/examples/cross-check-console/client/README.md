@@ -1,4 +1,7 @@
 # Cross-Check Console — client
+<!-- doc-id: legacy-examples-cross-check-console-client-readme -->
+
+[한국어](README.ko.md).
 
 Single-page, no-build console that drives the cross-check gateway. Plain ES
 modules; the only runtime dependency is `js-yaml`, loaded via importmap from a
