@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: 39eac0091f58ae66ad3a84f0d88945e43bae60f9116ff2586ccee1de282431da -->
+<!-- source-sha256: d6f58cbed726e612d734124c734b8e26db5e6de3f19631be35475879c70362ec -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -78,6 +78,13 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
 - Own: 완료된 기능은 그 기능을 완료하는 commit에서 `CHANGELOG.md`와 `CHANGELOG.ko.md`에 기록하며, 항목은 section
   `## Unreleased`의 맨 위에 `### <date> — <title> (<task ID>)` 형식으로 둡니다. 커밋하지 않은 변경은 기능 하나 안에 둡니다.
   Enforced by: none, `make records-check`는 손으로 실행하며 어떤 hook이나 CI job도 닿지 않습니다.
+- Own: 추적 파일은 이 저장소의 것이든 다른 저장소의 것이든 Git commit을 이름하지 않습니다. 도구가 commit을 요구하는 곳만
+  예외입니다: GitHub action은 그 `uses:` 줄에서 commit으로 고정하고, lock은 그 package manager가 정한 것을 적습니다.
+  end-to-end 실행이 확인한 commit 같은 실행의 증거는 무시되는 `var/` 아래 그 기록에 있습니다. changelog 항목, checklist
+  행이나 문서는 무엇을, 어느 명령으로, 어느 입력에서 검증했는지 적고, 변경은 그 기능이나 release 버전으로 이름합니다.
+  이유: commit 이름은 그것을 찾아보지 않는 독자에게 아무것도 말하지 않고, 다시 쓰이거나 얕은 history에서는 남지 않으며,
+  독자에게 필요한 사실은 문장 자체에 있어야 합니다.
+  Enforced by: `make records-check`, 그 `tests/docs/tracked-commits.test.mts`가 추적 파일의 commit 이름을 실패시킵니다
 - Own: 모든 경로는 `config/owner-checks.json`에 owner가 있으며, 각 검사가 읽는 경로도 그 파일에 적습니다. 새 경로는 같은
   변경에서 그 파일에 owner를 추가합니다.
   Enforced by: `make owner-validate`

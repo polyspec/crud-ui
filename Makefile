@@ -854,7 +854,7 @@ format-check:
 # pushed commit. Both commands run even when the first fails.
 records-check: ## Check the document pairs, links, changelog, writing and checklist rules with Node.js alone
 	@status=0; \
-	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node -- --test-concurrency=1 scripts/documentation-links.test.mts tests/docs/changelog.test.mts tests/docs/repository-writing.test.mts tests/docs/example-readmes.test.mts tests/docs/fixture-readmes.test.mts || status=1; \
+	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node -- --test-concurrency=1 scripts/documentation-links.test.mts tests/docs/changelog.test.mts tests/docs/repository-writing.test.mts tests/docs/tracked-commits.test.mts tests/docs/example-readmes.test.mts tests/docs/fixture-readmes.test.mts || status=1; \
 	exit $$status
 
 # The release steps above run the release utilities of @polyspec/kit, in the order of .github/workflows/release.yml

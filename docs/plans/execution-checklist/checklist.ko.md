@@ -1,6 +1,6 @@
 # Execution checklist
 <!-- doc-id: docs-plans-execution-checklist -->
-<!-- source-sha256: 846249b371ebbeda10829b745dae712a956616ea27df774dc9fbb6c2c95aacf8 -->
+<!-- source-sha256: 55a07ec2badb3df0f848eb284d66254d92e74d2b7a388ca87b21fd0474fbc9b7 -->
 
 ## [Wave 1](plan.ko.md#wave-1) — 좁은 viewport를 위한 stylesheet와 stylesheet의 Tailwind 버전
 
@@ -360,3 +360,4 @@
 | C19.10 | WASM 바인딩 crate의 도구를 HR-81처럼 고정한다. packages/<component>/ts/wasm의 wasm-bindgen crate 판인 wasm-bindgen CLI 0.2.130을 mise.toml에, 그 release asset의 digest를 mise.lock에 두고, target wasm32-unknown-unknown을 rust-toolchain.toml에 둔다. | `mise.toml`, `mise.lock`, `rust-toolchain.toml` | `make install-tools`, then `wasm-bindgen --version` of `var/tools/mise/installs` is `wasm-bindgen 0.2.130` | [o] |
 | C19.11 | generator 계약의 text 기본값에 대한 코어 상수를 `default_core`에 적는다(binding U-2, GN-6i). 대상은 `compile_options.basepath`, `list_options.basepath`, `list_options.language`이며, binding generate는 이것이 없으면 거부한다. 경계 field는 `Option<String>`이고, 생략된 option은 그 상수다. | `packages/generator/rust/src/boundary.rs`, `packages/generator/rust/interface.json`, `packages/generator/rust/tests/contract_cases.rs` | `cargo test --locked -p polyspec-crud-ui-generator --all-features`; generator 계약의 binding generate가 `default_core` 거부를 보고하지 않는다 | [o] |
 | C19.12 | binding 49a4e97을 받고, 난수 원천의 실패(CURT-095)를 binding G-5의 fault 주입 지점 `crud_ui_generator.random_source`로 쓴다. 코어에는 macro `binding_core::fault::point!`, generator crate에는 `random-failure-test` 대신 feature `fault-test`, generator 계약의 `faults`에는 그 지점, 계약 case에는 `inject` 대신 그 지점을 켜는 `faults`를 둔다. | `packages/generator/rust/{Cargo.toml,src/instance.rs,src/lib.rs,src/tests.rs,tests/contract_cases.rs,interface.json}`, `contracts/generator-cases.json`, `contracts/README*.md`, `Makefile`, `Cargo.lock`, scaffold한 바인딩 crate | `cargo test --locked -p polyspec-crud-ui-generator --all-features`; 두 계약의 `binding check`가 C19.4의 CK-22 발견 말고는 보고하지 않는다 | [o] |
+| C19.13 | GitHub action의 commit 고정과 lock 말고는 어떤 추적 파일도 Git commit을 이름하지 않는다. 규칙은 `AGENTS.md`에 있고 `tests/docs/tracked-commits.test.mts`가 추적 파일의 commit 이름을 실패시키며, 기록은 변경을 그 기능이나 release 버전으로 이름한다 | `AGENTS.md`(.ko), `tests/docs/tracked-commits.test.mts`, `Makefile`, `CHANGELOG.md`(.ko), `docs/plans/` 아래 checklist와 plan, `docs/features.md`(.ko), `docs/rebuild/documentation-web.md`(.ko) | `make records-check` | [~] |

@@ -82,6 +82,14 @@ ships as an example; this file states only the rules of crudui.
 - Own: Each completed feature is recorded in `CHANGELOG.md` and `CHANGELOG.ko.md` in the commit that completes it, as an entry
   `### <date> — <title> (<task ID>)` at the top of the section `## Unreleased`. Uncommitted changes stay within one feature.
   Enforced by: none, `make records-check` is run by hand and no hook or CI job reaches it.
+- Own: No tracked file names a Git commit, of this repository or of another, except where a tool requires the commit:
+  a GitHub action is pinned by its commit on its `uses:` line, and a lock records what its package manager resolved. The
+  evidence of a run, such as the commit that an end-to-end run checked, is in its record under the ignored `var/`; a
+  changelog entry, a checklist row or a document states what was verified, by which command, on which inputs, and
+  names a change by its feature or its release version. Why: a commit name says nothing to a reader who does not look
+  it up, it does not survive a history that is rewritten or shallow, and a fact that a reader needs belongs in the
+  sentence itself.
+  Enforced by: `make records-check`, whose `tests/docs/tracked-commits.test.mts` fails a commit name in a tracked file
 - Own: Every path has an owner in `config/owner-checks.json`, with the paths that each check reads. A new path gets its owner in
   that file in the same change.
   Enforced by: `make owner-validate`
