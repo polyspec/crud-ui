@@ -347,6 +347,16 @@ test('every Go module and Rust crate requires the OrderedJSON version of the roo
   assert.deepEqual(stale, [], `the root package.json pins OrderedJSON ${pinned}`);
 });
 
+// The generator crate reads `binding_core::fault`, which a polyspec-binding-core before the fault injection points does not
+// have, so a workspace that builds the crate against another commit than the root workspace may not compile it.
+test('every Cargo.lock that builds the generator crate pins the polyspec-binding-core of the root lock', () => {
+  const pin = (file: string): string | undefined => /name = "polyspec-binding-core"\nversion = "[^"]+"\nsource = "([^"]+)"/.exec(readFileSync(path.join(root, file), 'utf8'))?.[1];
+  const rootPin = pin('Cargo.lock') ?? assert.fail('the root Cargo.lock pins no polyspec-binding-core');
+  const locks = trackedComposerFiles('Cargo.lock').filter((file) => file !== 'Cargo.lock' && readFileSync(path.join(root, file), 'utf8').includes('name = "polyspec-crud-ui-generator"'));
+  assert.notDeepEqual(locks, []);
+  assert.deepEqual(locks.filter((file) => pin(file) !== rootPin), [], `the root Cargo.lock pins ${rootPin}`);
+});
+
 test('npm installs only registry packages, linked directories and the kit and OrderedJSON release assets, and fetches no other URL or Git source', () => {
   // A package comes from the npm registry, from a workspace or from a checkout that a make target installed; npm fetches
   // no URL or Git source other than the release assets of @polyspec/kit and @polyspec/ordered-json that the root
