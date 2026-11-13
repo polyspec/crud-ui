@@ -1,6 +1,6 @@
 # 런타임 패키지
 <!-- doc-id: docs-spec-runtime-packages -->
-<!-- source-sha256: e3263e1362032f16536047dd5f5d27f9271fb2e5c92981916f9ae3bfc573ea5d -->
+<!-- source-sha256: 6288d4858e6a154d7d36c486f569360dc1d112fc30cf8c03e4b1df60cc3003cd -->
 
 [English](runtime-packages.md).
 구현과 검증 결과는 [기능 상태](../features.ko.md)에 기록합니다.
@@ -116,6 +116,18 @@ Composer가 PHP 클래스를 자동 로드합니다. 예제는 두 설정에서 
   파일의 키를, `load(key)`는 그 문서를 polyspec-json `Value`로 줍니다. 각 문서는 로더가 돌려줄 때 그 키의 `files` 파일로서
   검사합니다(CUIT-023, CUSC-092). 로더와 함께 준 `files`는 `INVALID_FORM_INPUT`와 `Files and a loader are both given`으로
   실패합니다. 로더의 실패는 연산을 끝내고 호출자에게 그대로 전달되며, 연산은 그 뒤로 로더에서 아무것도 읽지 않습니다.
+- **CURP-032** 파일 로더는 key에 파일이 없다는 사실을 `load`를 validator의 합성 load 실패 오류(`compose_load_error`)와
+  kind `ref_file_not_found`로 실패시켜 알립니다. 파일이 없다는 사실을 아는 것은 로더뿐입니다. 그러면 연산은 `files`에 없는
+  파일과 같게 실패합니다: `REF_FILE_NOT_FOUND`, 메시지 `$ref file not found: <key>`, 그 key의 trace. 연산은 로더가 준
+  오류의 메시지와 trace를 읽지 않습니다. validator의 인터페이스 계약은 그 class를 `file_loader.load`의
+  `errors.recognize`에 적고, 접미사 `_with_loader`가 붙은 각 연산은 raises에 `REF_FILE_NOT_FOUND`를 둡니다. Rust에서
+  로더는 code가 `RefFileNotFound`인 `ValidateError::Load`를 `Failure::Kind`로 돌려줍니다. 그 class의 다른 kind 오류, 다른
+  class의 오류, `normalize`의 실패는 로더의 실패입니다(CURP-031).
+- **CURP-033** generator 연산의 실패는 구조체 `FormError`입니다. code, 메시지, form 경로, 합성 trace를 가지며, 모든 code가
+  이 member를 가지므로 code마다 variant를 두면 같은 member를 반복하게 됩니다. generator 인터페이스 계약의 kind는 구조체가
+  아니라 code(`FormErrorCode`)의 variant이고, `FormError::code`가 실패의 code를 줍니다. 계약은 이 함수를 오류에서 code로
+  가는 투영으로 적습니다. 구현되지 않음: 계약은 투영, `FormErrorCode::Compose` 안 합성 code의 중첩 경로, `run_action`의
+  form의 가변 빌림을 적지 않습니다. binding의 계약 schema에 그 member가 없기 때문입니다.
 
 ## 구현 패키지
 

@@ -126,6 +126,22 @@ structure or validation rules.
   under its key (CUIT-023, CUSC-092). `files` given with a loader fail with `INVALID_FORM_INPUT` and
   `Files and a loader are both given`. A failure of the loader ends the operation and reaches the caller unchanged; the
   operation reads nothing from the loader after it.
+- **CURP-032** A file loader reports that no file exists at a key by failing `load` with the error of a composition
+  load failure of the validator (`compose_load_error`) and the kind `ref_file_not_found`; only the loader knows that
+  the file does not exist. The operation then fails as it does for a file that `files` does not hold:
+  `REF_FILE_NOT_FOUND` with the message `$ref file not found: <key>` and the trace of that key. It reads neither the
+  message nor the trace of the error that the loader gave. The interface contract of the validator names the class in
+  `errors.recognize` of `file_loader.load`, and each operation with the suffix `_with_loader` names
+  `REF_FILE_NOT_FOUND` among the kinds that it raises. In Rust the loader returns `Failure::Kind` with a
+  `ValidateError::Load` whose code is `RefFileNotFound`. An error of that class with another kind, an error of another
+  class and a failure of `normalize` are failures of the loader (CURP-031).
+- **CURP-033** The failure of a generator operation is the structure `FormError`: its code, its message, its form path
+  and its composition trace, which every code has, so that a variant per code would repeat them. The kinds of the
+  interface contract of the generator are variants of the code (`FormErrorCode`), not of the structure, and
+  `FormError::code` gives the code of a failure; it is the function that the contract names as the projection from the
+  error to its code. Not implemented: the contracts do not name the projection, the nested path of a composition code
+  inside `FormErrorCode::Compose` or the mutable borrow of the form of `run_action`, because the contract schema of
+  binding has no member for them.
 
 ## Implementation packages
 
