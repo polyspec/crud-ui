@@ -9,6 +9,8 @@ packages/**/package-lock.json
 # Composer dependencies
 examples/**/vendor/
 /vendor/
+# The Composer install of the PHP extension package of each component (its composer.json, which binding scaffold writes)
+packages/*/php-ext/vendor/
 legacy/packages/generator/php/.phpunit.cache/
 legacy/packages/generator/php/.phpunit.result.cache
 

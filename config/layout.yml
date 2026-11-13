@@ -67,6 +67,25 @@ rules:
       - "!packages/form-binding"
       - "!packages/cli"
 
+  # S10 exception of the transition to the Rust core: the stub of the legacy PHP extension stays at its former path
+  # under legacy/ (legacy/packages/php-ext/src/polyspec_crudui.stub.php) until C19.2 removes the legacy extension; the
+  # binding packages packages/<component>/php-ext hold no tracked stub.
+  - id: php-ext-stub-place
+    paths: ["**/*.stub.php", "!packages/php-ext/src/*.stub.php", "!legacy/packages/php-ext/src/*.stub.php"]
+
+  # The manifests of the binding crates are files that binding scaffold writes with lints of their own, which deny unsafe
+  # code outside the FFI sites and an allow attribute without its reason; bindings-check compares them with what binding
+  # writes (CK-19), so they do not take the lints of the workspace.
+  - id: lint-cargo-lints
+    paths:
+      - "**/Cargo.toml"
+      - "!tests/kit/fixture/**"
+      - "!packages/*/ts/Cargo.toml"
+      - "!packages/*/ts/wasm/Cargo.toml"
+      - "!packages/*/python/Cargo.toml"
+      - "!packages/*/php-ext/Cargo.toml"
+      - "!packages/*/go/internal/ffi/Cargo.toml"
+
   - extends_template: component-ports
     id: layout-validator-ports
     vars: { component: validator }
