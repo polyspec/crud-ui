@@ -7,11 +7,12 @@ extends:
 rules:
   - extends_template: no-repository-prefix
     id: layout-no-repository-prefix
-    vars: { repo: crudui }
+    vars: { repo: crud-ui }
 
+  # S5: the module path of a go.mod under packages/ carries the name of the repository, crud-ui.
   - extends_template: go-module-path
     id: layout-go-module-path
-    vars: { repo: crudui }
+    vars: { repo: crud-ui }
 
   # S5: the root files of crudui beyond the list of kit (K145): .npmrc sets strict-allow-scripts for the npm of the root
   # (C14.3), and pyproject.toml with uv.lock is the uv workspace of the Python packages, which make crudui-install-python syncs
