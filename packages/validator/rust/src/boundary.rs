@@ -172,7 +172,7 @@ fn option_texts(
     Ok((files, basepath))
 }
 
-/// [`crate::validate`] at the boundary.
+/// [`crate::validate()`] at the boundary.
 pub fn validate(
     spec: &JsonValue,
     data: &JsonValue,

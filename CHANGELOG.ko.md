@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 52f31ad552049abdedc67192f4e293708d247dfd6b9c397a5f7d2040d37970b3 -->
+<!-- source-sha256: c42e052a9733e92f9d05acd91d924709e8d630bdde74cb60c912dae0e39ceef6 -->
 
 ## Unreleased
 
+- C19.5: 문서 검사가 package를 실제 자리에서 읽습니다. `scripts/package-dist.mts`는 `legacy/packages/`의 package를 lock `dist-legacy-<package 폴더>` 아래에서 build하고 pack하며, `packages/`와 `legacy/packages/` 밖의 폴더를 거부합니다. `scripts/php-doc-coverage.php`는 `legacy/packages/{validator,generator}/php/src`를 읽습니다. `scripts/gen-api-docs.mts`는 루트 workspace에서 crate `polyspec-crud-ui-validator`와 `polyspec-crud-ui-generator`를 문서화하고 루트의 `target/doc`를 읽습니다. `boundary::validate`의 문서 링크는 함수 `crate::validate()`를 가리키며, rustdoc은 module과 겹치는 이전 링크를 거부했습니다. `.gitignore`는 API report `legacy/packages/**/var/`를 포함합니다. `make docs-check`는 이 자리마다 실패했고 이제 통과합니다.
 - C19.5: `legacy/` 아래 문서가 이동 뒤의 경로로 `legacy/`의 파일을 링크합니다. `legacy/tests/fixtures`의 fixture 문서는 `legacy/legacy/packages/...`를 가리켰고, 그 문서와 `legacy/packages/generator/{go,php}`의 문서는 루트의 `tests/native-generators`와 `examples/cross-check-console`을 가리켰습니다. `make docs-check`는 파일이 없는 링크 116건을 보고했고 이제 보고하지 않습니다.
 - CURT-095: 시스템 난수 원천의 실패는 Rust `create_row_key`, `add_row`, `copy_row`, 행을 추가하거나 복사하는 동작에서 더 이상 `INVALID_FORM_INPUT`이 아니라 `RANDOM_UNAVAILABLE`(kind `random_unavailable`, category io)입니다. generator의 시험 feature `random-failure-test`는 그 kind의 단위 시험과 계약 case를 위해 한 thread의 난수 원천을 실패시키며, 어떤 릴리스 빌드에도 없고 `make test-rust`는 이 feature로 시험을 돌립니다(CURT-095).
 - C19.1: generator의 form-render, list-render, detail-render, form-outline, form-complete, text-validity family의 Rust 시험이 적합성 근거를 기록합니다. 이전에는 `legacy/` 아래 네이티브 생성기 검사기가 Rust 근거를 기록했습니다. list-render와 detail-render는 각 case의 모델도 만듭니다. `legacy/tests/native-generators/cases.mts`의 폼 시나리오는 legacy 런타임만 증명하며, manifest 검사는 `legacy/packages`의 코드를 package 코드로 봅니다(C19.1).

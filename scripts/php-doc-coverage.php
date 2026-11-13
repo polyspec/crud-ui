@@ -12,9 +12,9 @@ use Polyspec\Crudui\Docs\DocCoverage;
 require __DIR__ . '/../vendor/autoload.php';
 
 $failed = false;
-foreach (['validator/php', 'generator/php'] as $package) {
+foreach (['legacy/packages/validator/php', 'legacy/packages/generator/php'] as $package) {
     try {
-        $directory = realpath(__DIR__ . '/../packages/' . $package . '/src');
+        $directory = realpath(__DIR__ . '/../' . $package . '/src');
         if ($directory === false) {
             throw new RuntimeException('Source directory is missing: ' . $package);
         }

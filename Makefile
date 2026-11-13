@@ -703,7 +703,7 @@ docs-check-libs: php-tables ## 라이브러리 packages/* doc-coverage
 docs-clean: ## 생성물 전부 제거
 	rm -rf docs/api docs/public/api
 	rm -rf docs/.web
-	rm -rf packages/validator/rust/target/doc
+	rm -rf target/doc
 	rm -rf var/phpdocumentor/cache
 	@echo "[make] docs-clean: removed generated docs/api, dist, rustdoc, phpdoc cache"
 

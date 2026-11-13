@@ -14,6 +14,7 @@ legacy/packages/generator/php/.phpunit.result.cache
 
 # The temporary API reports of API Extractor in each package (make lint-ts)
 packages/**/var/
+legacy/packages/**/var/
 
 # Build outputs; a package build writes dist.next and replaces dist with it (scripts/package-dist.mts)
 dist/

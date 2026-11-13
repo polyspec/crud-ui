@@ -39,12 +39,28 @@ function acquireReported(lockFile: string, { command }: { command: string }): { 
   };
 }
 
-/** The folder of a package directory of this checkout, relative to packages/ ('validator/ts', 'html'). */
+/**
+ * The folders that hold the package directories of this checkout, each with the prefix of its lock names: packages/,
+ * and legacy/packages/ with the language implementations that the generated bindings replace (AGENTS.md).
+ */
+const packageRoots = [
+  { root: 'packages', prefix: '' },
+  { root: path.join('legacy', 'packages'), prefix: 'legacy' },
+];
+
+/**
+ * The folder of a package directory of this checkout: relative to packages/ ('react'), and below 'legacy' for a package
+ * of legacy/packages/ ('legacy/validator/ts'), so that it and the package of the same path under packages/ hold two locks.
+ */
 function packageFolder(directory: string): string {
   assert.ok(path.isAbsolute(directory), `Package directory must be absolute: ${directory}`);
-  const folder = path.relative(path.join(repositoryRoot, 'packages'), directory);
-  assert.ok(folder !== '' && !folder.startsWith('..') && !path.isAbsolute(folder),
-    `${directory} is not a package directory of ${repositoryRoot}`);
+  const folders = packageRoots.flatMap(({ root, prefix }) => {
+    const folder = path.relative(path.join(repositoryRoot, root), directory);
+    return folder !== '' && !folder.startsWith('..') && !path.isAbsolute(folder) ? [path.join(prefix, folder)] : [];
+  });
+  const [folder] = folders;
+  assert.ok(folder !== undefined,
+    `${directory} is not a package directory of ${repositoryRoot}: expected a folder under ${packageRoots.map(({ root }) => root).join(' or ')}`);
   assert.ok(fs.lstatSync(directory).isDirectory(), `${directory} is not a directory`);
   return folder;
 }

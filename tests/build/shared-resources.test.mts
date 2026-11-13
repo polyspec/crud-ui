@@ -49,18 +49,19 @@ test('every package build runs under the lock of its dist directory', () => {
 /**
  * A checkout of its own in a directory of this run under var/tmp, the ignored directory of this checkout: the dist script
  * and one package whose build writes `dist/index.js`, so the test reads no build output of this checkout. The script
- * imports @polyspec/kit, which Node.js resolves from the node_modules of this checkout above the directory.
+ * imports @polyspec/kit, which Node.js resolves from the node_modules of this checkout above the directory. `place` is
+ * the folder that holds the package: packages/, legacy/packages/, or a folder that holds no package.
  */
-function fixtureCheckout() {
+function fixtureCheckout(place = 'packages') {
   fs.mkdirSync(path.join(root, 'var/tmp'), { recursive: true });
   const checkout = fs.mkdtempSync(path.join(root, 'var/tmp/crudui-dist-lock-'));
   fs.mkdirSync(path.join(checkout, 'scripts'), { recursive: true });
   fs.copyFileSync(path.join(root, 'scripts/package-dist.mts'), path.join(checkout, 'scripts/package-dist.mts'));
-  const packageDirectory = path.join(checkout, 'packages', 'fixture');
+  const packageDirectory = path.join(checkout, place, 'fixture');
   fs.mkdirSync(packageDirectory, { recursive: true });
   fs.writeFileSync(path.join(packageDirectory, 'package.json'), `${JSON.stringify({
     name: '@polyspec/crudui-dist-lock-fixture', version: '0.0.0', private: true, type: 'module', files: ['dist'],
-    scripts: { build: "node ../../scripts/package-dist.mts build 'node build.mjs'" },
+    scripts: { build: `node ${'../'.repeat(place.split('/').length + 1)}scripts/package-dist.mts build 'node build.mjs'` },
   }, null, 2)}\n`);
   // The build writes into the directory that CRUDUI_DIST names, as every package build does (scripts/package-dist.mts);
   // BUILD_VALUE sets the output, BUILD_FAIL fails the build after it wrote, and BUILD_SEEN records the dist it saw.
@@ -74,7 +75,8 @@ function fixtureCheckout() {
     "if (process.env.BUILD_FAIL) process.exit(3);",
     '',
   ].join('\n'));
-  return { checkout, packageDirectory, lockFile: path.join(checkout, 'var/locks', 'dist-fixture.lock') };
+  const lockName = place === 'packages' ? 'dist-fixture.lock' : 'dist-legacy-fixture.lock';
+  return { checkout, packageDirectory, lockFile: path.join(checkout, 'var/locks', lockName) };
 }
 
 test('a package build replaces dist with its complete output, and a failed build leaves dist', () => {
@@ -132,5 +134,35 @@ test('a build and a pack of a package refuse while another run holds its dist', 
     assert.equal(fs.existsSync(lockFile), false);
   } finally {
     fs.rmSync(checkout, { recursive: true, force: true });
+  }
+});
+
+test('a package of legacy/packages builds under a lock of its own, and a folder outside both package folders is refused', () => {
+  const build = (directory: string) => spawnSync('npm', ['run', 'build'], { cwd: directory, encoding: 'utf8' });
+  const legacy = fixtureCheckout('legacy/packages');
+  try {
+    const built = build(legacy.packageDirectory);
+    assert.equal(built.status, 0, built.stderr);
+    assert.match(built.stderr, new RegExp(`lock: acquired ${legacy.lockFile} `));
+    assert.deepEqual(fs.readdirSync(path.join(legacy.packageDirectory, 'dist')), ['index.js']);
+    const lock = acquireHolderLock(legacy.lockFile, { command: 'npm run build' });
+    try {
+      const refused = build(legacy.packageDirectory);
+      assert.notEqual(refused.status, 0, refused.stdout);
+      assert.match(refused.stderr, new RegExp(`${legacy.lockFile} is held by process ${process.pid} `));
+    } finally {
+      lock.release();
+    }
+  } finally {
+    fs.rmSync(legacy.checkout, { recursive: true, force: true });
+  }
+  const outside = fixtureCheckout('examples/tools');
+  try {
+    const refused = build(outside.packageDirectory);
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.match(refused.stderr, /is not a package directory of .*: expected a folder under packages or legacy\/packages/);
+    assert.equal(fs.existsSync(path.join(outside.packageDirectory, 'dist')), false);
+  } finally {
+    fs.rmSync(outside.checkout, { recursive: true, force: true });
   }
 });

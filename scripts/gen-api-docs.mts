@@ -97,20 +97,23 @@ async function genGo(): Promise<void> {
   writeFileSync(output, '# Go API\n\n' + sections.join('\n'));
 }
 
+/**
+ * The Rust API of the two core crates. They are members of the Cargo workspace of the root, so cargo runs at the root
+ * and writes the documentation into target/doc of the root.
+ */
 async function genRust(): Promise<void> {
-  const pkgDir = join(ROOT, 'packages/generator/rust');
-  const generated = join(pkgDir, 'target/doc');
+  const generated = join(ROOT, 'target/doc');
   const output = join(STATIC_API_DIR, 'rust');
   cleanDirectory(output);
   await run(process.execPath, [
     RUST_COMMAND, 'doc', '--locked', '--no-deps',
-    '-p', 'polyspec-crudui-validator', '-p', 'polyspec-crudui-generator',
-  ], pkgDir);
-  requireOutput(join(generated, 'polyspec_crudui_validator/index.html'));
-  requireOutput(join(generated, 'polyspec_crudui_generator/index.html'));
+    '-p', 'polyspec-crud-ui-validator', '-p', 'polyspec-crud-ui-generator',
+  ], ROOT);
+  requireOutput(join(generated, 'polyspec_crud_ui_validator/index.html'));
+  requireOutput(join(generated, 'polyspec_crud_ui_generator/index.html'));
   cpSync(generated, output, { recursive: true });
   writeFileSync(join(API_DIR, 'rust.md'),
-    '# Rust API\n\n- [Validator](/api/rust/polyspec_crudui_validator/index.html)\n- [Generator](/api/rust/polyspec_crudui_generator/index.html)\n');
+    '# Rust API\n\n- [Validator](/api/rust/polyspec_crud_ui_validator/index.html)\n- [Generator](/api/rust/polyspec_crud_ui_generator/index.html)\n');
 }
 
 /**
