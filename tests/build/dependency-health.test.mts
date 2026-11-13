@@ -347,14 +347,23 @@ test('every Go module and Rust crate requires the OrderedJSON version of the roo
   assert.deepEqual(stale, [], `the root package.json pins OrderedJSON ${pinned}`);
 });
 
-// The generator crate reads `binding_core::fault`, which a polyspec-binding-core before the fault injection points does not
-// have, so a workspace that builds the crate against another commit than the root workspace may not compile it.
-test('every Cargo.lock that builds the generator crate pins the polyspec-binding-core of the root lock', () => {
-  const pin = (file: string): string | undefined => /name = "polyspec-binding-core"\nversion = "[^"]+"\nsource = "([^"]+)"/.exec(readFileSync(path.join(root, file), 'utf8'))?.[1];
-  const rootPin = pin('Cargo.lock') ?? assert.fail('the root Cargo.lock pins no polyspec-binding-core');
-  const locks = trackedComposerFiles('Cargo.lock').filter((file) => file !== 'Cargo.lock' && readFileSync(path.join(root, file), 'utf8').includes('name = "polyspec-crud-ui-generator"'));
+// A workspace outside the root workspace builds the crates of packages/ from their source. With a polyspec library of
+// another commit than the root lock pins, it builds them against a source that the root workspace does not test: the
+// generator crate reads `binding_core::fault`, which a polyspec-binding-core before the fault injection points lacks.
+test('every Cargo.lock pins the polyspec libraries of the root lock', () => {
+  /** The Git source of each package `polyspec-*` that the lock `file` takes from Git, by the name of the package. */
+  const pins = (file: string): Map<string, string> => new Map(
+    [...readFileSync(path.join(root, file), 'utf8').matchAll(/name = "(polyspec-[^"]+)"\nversion = "[^"]+"\nsource = "(git\+[^"]+)"/g)]
+      .map((match) => [captured(match, 1), captured(match, 2)]),
+  );
+  const rootPins = pins('Cargo.lock');
+  assert.ok(rootPins.has('polyspec-binding-core'), 'the root Cargo.lock pins no polyspec-binding-core');
+  const locks = trackedComposerFiles('Cargo.lock').filter((file) => file !== 'Cargo.lock' && pins(file).size > 0);
   assert.notDeepEqual(locks, []);
-  assert.deepEqual(locks.filter((file) => pin(file) !== rootPin), [], `the root Cargo.lock pins ${rootPin}`);
+  const other = locks.flatMap((file) => [...pins(file)]
+    .filter(([name, source]) => rootPins.get(name) !== source)
+    .map(([name, source]) => `${file}: ${name} is ${source}, and the root Cargo.lock holds ${rootPins.get(name) ?? 'no such package'}`));
+  assert.deepEqual(other, []);
 });
 
 test('npm installs only registry packages, linked directories and the kit and OrderedJSON release assets, and fetches no other URL or Git source', () => {
