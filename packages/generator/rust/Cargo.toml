@@ -17,7 +17,7 @@ fault-test = ["polyspec-binding-core/fault-test"]
 [dependencies]
 # The kind interface that the generated bindings read from the core errors (binding design E-1, I-2 (3)). The git
 # source is the binding repository; Cargo.lock pins its commit, the same source as the generated binding crates.
-polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", branch = "v1/rust-core" }
+polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", tag = "v0.0.2" }
 # The owner of the value type json_value of the interface contract (F-1 (a), C-10): Cargo resolves the package whose
 # interface.json the contract check reads (binding design I-1, T-3). The JSON reading and writing of the crate move to it
 # in the C-1 change of C-10.
