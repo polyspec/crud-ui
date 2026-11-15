@@ -4,7 +4,7 @@
 [한국어](README.ko.md).
 
 `cases.json` holds the shared list layout cases of the Rust core in the case form of binding's generated tests (G-5): the
-group `cases` lists the cases of `build_list and render_list`, and each case gives `id`, `name`, `note`, `requirements`, the arguments
+group `cases` lists the cases of `build_list and render_list`, and each case gives `id`, `name`, `note`, the arguments
 `spec` and `rows` and the record `options` with every field (`files`, `basepath`, `language`, `data`, `page`,
 `total`), and either `expected_html` or `raises` with its `kind`, `status`, `category` and optional `message`. `spec`,
 every row, every file and `data` are values of `json_value`, written as `{ "kind", "value" }` as in the

@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: cd91fa0541ab84e9007134af536134694955b7730a98b7bc25af6ef81e9a9874 -->
+<!-- source-sha256: 8526ffeaf63fa1eaddd9fe3d058d7c209d5a1489880f98307cc25c7221db9014 -->
 
 ## Unreleased
 
+- 목록 layout case는 `requirements`를 갖지 않는다(C19.25). 입력: `tests/fixtures/list-render/cases.json`. 이전 동작: 165개 case 각각이 어떤 test나 check도 읽지 않는 requirement id를 적었고, binding의 case key 검사가 그런 key를 보고한다. 기대: case, `generate.mts`, README 짝에 `requirements`가 없고, `cargo test --test list_render`가 165 통과를 준다.
 - 고정 release는 binding 0.0.10과 json 0.0.30이다(C19.24). 입력: `cargo metadata --locked`와 `make bindings-check`. 이전 동작: `Cargo.lock`이 json의 branch `v1/rust-core`를 거친 `polyspec-binding-core` 0.0.2를 0.0.8 옆에 가져 `cargo metadata --locked`가 실패했다. 기대: 모든 crate 줄이 binding tag v0.0.10과 json tag v0.0.30을 적고, 두 lock이 `polyspec-binding-core` 하나를 가지며, Makefile이 `make release-recipes`가 쓰고 Git이 무시하는 `packages/validator/release.mk`와 `packages/generator/release.mk`를 include하여 `binding check`가 CK-94 finding을 보고하지 않는다.
 - 생성된 binding의 계약 case는 계속 우회 상태다(C19.23). 입력: binding 0.0.10으로 `make bindings`. 동작: validator는 생성된다. generator는 다섯 target 모두에서 `no case value of the type json_value`로 거부되는데, 외부 callback unit `file_loader`의 member `load`의 반환 type `json_value`가 validator 계약의 `types`로 풀리지 않기 때문이다. `make bindings-check`는 `packages/generator/go`에 대해 경로 `../../validator/rust`가 core `packages/validator/rust`가 아니라고 보고한다(GN-15f). 기대: 두 계약이 생성되고 check가 finding을 보고하지 않는다.
 - 고정 kit은 0.0.114다(C19.21). 그 `make rules-check`는 `make bindings-check`와 `tests/build/ci-local.test.mts`가 건너뛸 수 없는 지점에서 실행되지 않는다고 보고했다. recipe `crudui-test-runtimes`가 test 파일을 적고 `npm run test:runtimes`가 그것을 실행한다. 새 CI job `bindings`는 `make ci-bindings`를 실행하며, 이것은 `BINDING`의 기본값인 `package.json`의 `@polyspec/binding` 0.0.8로 `bindings-check`와 `test-bindings`를 실행한다. `make rules-check`가 통과하고 `tests/build/ci-local.test.mts`는 16 passed다.
