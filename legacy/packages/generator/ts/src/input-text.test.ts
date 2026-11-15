@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { bindButtons, buildList, compileForm } from './index';
-import { failure } from '../../../../tests/fixtures/text-validity/input-text.mts';
+import { failure } from '../../../../../tests/fixtures/text-validity/input-text.mts';
 
 /**
  * Input text of the form buttons and of the loader documents (docs/spec/input-text.md), the unit tests of the operations

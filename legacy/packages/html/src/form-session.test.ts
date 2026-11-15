@@ -17,11 +17,11 @@ import {
 } from '@polyspec/crudui-generator-core';
 import { renderForm, renderOutline } from './index';
 // @ts-expect-error Shared browser lifecycle across all renderers.
-import { spec, data, exerciseSessionDom } from '../../../tests/fixtures/form-session/scenario.mts';
+import { spec, data, exerciseSessionDom } from '../../../../tests/fixtures/form-session/scenario.mts';
 // @ts-expect-error Shared initialization comparison across all renderers.
-import { compareInitialization, compareServerTakeover } from '../../../tests/fixtures/form-session/initialization.mts';
+import { compareInitialization, compareServerTakeover } from '../../../../tests/fixtures/form-session/initialization.mts';
 // @ts-expect-error Shared control assertions across all renderers.
-import { controlSpec, exerciseControls } from '../../../tests/fixtures/form-session/controls.mts';
+import { controlSpec, exerciseControls } from '../../../../tests/fixtures/form-session/controls.mts';
 import { provesConformance } from '../../../../tests/conformance/evidence.mts';
 
 const SESSION_FEATURES = ['connectForm', 'connectOutline', 'runAction', 'viewState', 'formHistory'];
@@ -29,7 +29,7 @@ const SESSION_FEATURES = ['connectForm', 'connectOutline', 'runAction', 'viewSta
 /** Run one shared form session case and record javascript-dom evidence for the features it proves. */
 function proves(fixture: string, name: string, features: string[], run: () => unknown) {
   return provesConformance(
-    { features, fixture: `legacy/tests/fixtures/form-session/${fixture}`, runtime: 'javascript-dom', case: name },
+    { features, fixture: `tests/fixtures/form-session/${fixture}`, runtime: 'javascript-dom', case: name },
     run
   );
 }
@@ -102,7 +102,7 @@ test('connects labels and preserves multiple choice values through editing and s
 });
 
 // @ts-expect-error Shared data-only collection and visibility assertions across all renderers.
-import { onlySpec, exerciseOnlyRows, visibilitySpec, visibilityData, exerciseHiddenValues } from '../../../tests/fixtures/form-session/data-rows.mts';
+import { onlySpec, exerciseOnlyRows, visibilitySpec, visibilityData, exerciseHiddenValues } from '../../../../tests/fixtures/form-session/data-rows.mts';
 
 test('keeps a data-only collection to the rows of its data', async () => {
   const session = createForm(compileForm(onlySpec));
@@ -117,7 +117,7 @@ test('keeps a data-only collection to the rows of its data', async () => {
 });
 
 // @ts-expect-error Shared group source assertions across all renderers.
-import { sourceSpec, sourceData, exerciseGroupSource } from '../../../tests/fixtures/form-session/group-source.mts';
+import { sourceSpec, sourceData, exerciseGroupSource } from '../../../../tests/fixtures/form-session/group-source.mts';
 
 test('lists the choices of a group source from the rows of each change', async () => {
   const session = createForm(compileForm(sourceSpec), sourceData);
@@ -144,7 +144,7 @@ test('keeps the values of a group hidden by design.show', async () => {
 });
 
 // @ts-expect-error Shared typing assertions across all renderers.
-import { typingSpec, exerciseTyping, installWidgetHost } from '../../../tests/fixtures/form-session/typing.mts';
+import { typingSpec, exerciseTyping, installWidgetHost } from '../../../../tests/fixtures/form-session/typing.mts';
 
 test('keeps the typed control node, its order and its caret', async () => {
   installWidgetHost(document);

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, expect, test } from 'vitest';
-import { expectOutcome, operations, readCases, textCase, type TextCase } from '../../../../../tests/fixtures/text-validity/cases.mts';
+import { expectOutcome, operations, readCases, textCase, type TextCase } from '../../../../../../tests/fixtures/text-validity/cases.mts';
 import { isRecord } from '../record';
 
 /** A value graph of legacy/tests/fixtures/text-validity/value-graphs.json, built with shared containers. */

@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: 8b1a20320a90271a78e44c2976a9d25e6e89d7a9adf3d31195f7d33ed516f683 -->
+<!-- source-sha256: 30fa890fcbf6eb1841f87a9c08162724a89042755eff45c91725c8889306b264 -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -32,7 +32,11 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거합니다(계획 V-6 (5)). 구현끼리 비교하는 도구
   `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`, `legacy/examples/cross-check-console`은 legacy 구현의 도구이며 `legacy/tests/fixtures`를
   읽고 legacy와 함께 제거합니다. legacy TypeScript 코어로 실행하는 package(react, vue, svelte, form-binding)의 suite도
-  `legacy/tests/fixtures`를 읽습니다. `scripts/check-conformance.mts`는 legacy 런타임의 근거를 `legacy/` 아래 사본과, Rust 코어의
+  `legacy/tests/fixtures`를 읽습니다. 공유 test module `tests/fixtures/form-session/*.mts`,
+  `tests/fixtures/view-session/rerender.mts`, `tests/fixtures/form-state/units.mts`,
+  `tests/fixtures/text-validity/{cases,input-text}.mts`는 `legacy/` 아래 사본이 없습니다. 모든 suite가 `tests/fixtures`에서
+  가져옵니다. React, Vue, Svelte의 suite는 legacy 코드가 제거된 뒤에도 이것을 쓰고, 한 module의 사본 둘은 서로 달라지기
+  때문입니다. `scripts/check-conformance.mts`는 legacy 런타임의 근거를 `legacy/` 아래 사본과, Rust 코어의
   근거를 `tests/fixtures`와 대조합니다.
   Enforced by: `make layout-check`
 - Own: 루트의 Cargo workspace 하나가 코어 crate `packages/validator/rust`, `packages/generator/rust`와 `binding scaffold`가

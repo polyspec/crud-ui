@@ -9,7 +9,7 @@ import { describe, expect, test } from 'vitest';
 import { validate } from '@polyspec/crudui-validator';
 import { MemoryLoader } from '../compose/index';
 import { compareCodePoints, isScalarText, valueFailure } from './index';
-import { expectOutcome } from '../../../../../tests/fixtures/text-validity/cases.mts';
+import { expectOutcome } from '../../../../../../tests/fixtures/text-validity/cases.mts';
 
 describe('input text helpers', () => {
   test('unpaired surrogates are invalid and pairs are valid', () => {
