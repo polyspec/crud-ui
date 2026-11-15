@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- The tests of `make crudui-test-runtimes` pass on the moved layout, in a linked worktree and with `MAKE=gmake` (C19.28). Input: `make crudui-test-runtimes` and `gmake MAKE=gmake crudui-test-runtimes` in a linked worktree. Behaviour before: `make-tool-path` and `php-test-scope` expected the paths before the move to `legacy/`, `php-test-scope` ran the PHP of another checkout (`ETIMEDOUT`), `make-tool-path` failed with `spawnSync gmake ENOENT`, and `test-commands` reported 24 test files of `tests/build` as run by no command. Expected: the three files pass with both makes.
 - Git ignores `conformance-evidence/` and `legacy/var/` (C19.27). Input: a local run of the CI jobs. Behaviour before: both stayed as untracked paths. Expected: `git status` shows neither.
 - `make docs-api` runs the phpDocumentor of its own checkout (C19.26). Input: `make docs-check` in a linked worktree. Behaviour before: `scripts/gen-api-docs.mts` ran the phar of the checkout that the `.git` file of the worktree names, which `make install` of the worktree does not install. Expected: it runs `var/tools/phpdocumentor/phpDocumentor.phar` of the checkout that runs it.
 - The list layout cases hold no `requirements` (C19.25). Input: `tests/fixtures/list-render/cases.json`. Behaviour before: each of the 165 cases gave requirement ids that no test or check read, and the case key check of binding reports such a key. Expected: the cases, `generate.mts` and the README pair have no `requirements`; `cargo test --test list_render` gives 165 passed.

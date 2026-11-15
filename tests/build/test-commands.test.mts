@@ -11,6 +11,8 @@ import { fileURLToPath } from 'node:url';
 
 import { parse } from 'yaml';
 
+import { makeDryRun } from './make-dry-run.mts';
+
 import { checked, parseJson, manifestSchema, type JTDSchemaType, type Manifest } from '../json.mts';
 import {
   isTestCommand, makeHooks, makeTargets, matchesArgument, nodeScripts, nodeTestArguments, projectCommands, runsTests,
@@ -98,6 +100,10 @@ test('every node:test file runs in a project command', () => {
   assert.equal(matchesArgument('tests/docs/a.test.mts', 'tests/docs/*.test.mts'), true);
   assert.equal(matchesArgument('tests/docs/x/a.test.mts', 'tests/docs/*.test.mts'), false);
   const arguments_ = tracked.flatMap(file => projectCommands(file, read(file)).flatMap(({ command }: ProjectCommand) => nodeTestArguments(command)));
+  // make crudui-test-runtimes names its test files in the variable CRUDUI_RUNTIME_TESTS, which its dry run expands (C19.21).
+  const runtimes = makeDryRun(ROOT, 'crudui-test-runtimes');
+  assert.equal(runtimes.status, 0, runtimes.stderr);
+  arguments_.push(...runtimes.stdout.split('\n').flatMap(line => nodeTestArguments(line)));
   // Vitest runs every test file of a package that declares a Vitest test script.
   const vitest = tracked.filter(file => file.endsWith('package.json') && /vitest/.test(manifestOf(file).scripts?.['test'] ?? '')).map(path.dirname);
   const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '*.test.mts', '*.test.mjs', '*.test.cjs', '*.test.js', '*.browser.mjs'], { cwd: ROOT, encoding: 'utf8' })

@@ -8,7 +8,17 @@ import test from 'node:test';
 import { runRustCommand, type CommandRunner } from '../../scripts/run-rust-command.mts';
 
 const repository = path.resolve(import.meta.dirname, '../..');
-const make = process.env.MAKE || '/usr/bin/make';
+// The make of the run by its absolute path: a test runs it with PATH of its stub commands, where a make named by a bare
+// name, such as MAKE=gmake from Homebrew, is not found.
+const make = absoluteCommand(process.env.MAKE || '/usr/bin/make');
+
+function absoluteCommand(command: string): string {
+  if (path.isAbsolute(command)) return command;
+  const found = spawnSync('/bin/sh', ['-c', 'command -v "$1"', 'sh', command], { encoding: 'utf8' });
+  const resolved = found.stdout.trim();
+  if (found.status !== 0 || !path.isAbsolute(resolved)) throw new Error(`MAKE=${command} is not found on PATH: ${found.stderr}`);
+  return resolved;
+}
 
 async function writeExecutable(filename: string): Promise<void> {
   await writeFile(filename, [
@@ -67,7 +77,7 @@ test('crudui-test-native runs the generator and PHP API parts after the PHP engi
   const commands = await readFile(commandLog, 'utf8');
   assert.match(commands, /^node\tlegacy\/tests\/native-generators\/run\.mts --target javascript,html,go,python /m,
     `the generator part did not run:\n${commands}`);
-  assert.match(commands, /^node\ttests\/native-generators\/run\.mts --extension \S+ --target php,php-native /m,
+  assert.match(commands, /^node\tlegacy\/tests\/native-generators\/run\.mts --extension \S+ --target php,php-native /m,
     `the PHP API part did not run:\n${commands}`);
 });
 

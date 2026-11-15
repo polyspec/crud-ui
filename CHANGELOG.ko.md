@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 33e7df116325bbdc14c48189e12097bba63458792c501137cfeb474b090df54a -->
+<!-- source-sha256: 54c30cea28a1fbe21a7346c1ae1c06608888f7815239839bdc58c4d2d18de4eb -->
 
 ## Unreleased
 
+- `make crudui-test-runtimes`의 시험이 옮겨진 layout에서, linked worktree에서, `MAKE=gmake`로 통과한다(C19.28). 입력: linked worktree에서 `make crudui-test-runtimes`와 `gmake MAKE=gmake crudui-test-runtimes`. 이전 동작: `make-tool-path`와 `php-test-scope`가 `legacy/`로 옮기기 전 경로를 기대했고, `php-test-scope`는 다른 checkout의 PHP를 실행했으며(`ETIMEDOUT`), `make-tool-path`는 `spawnSync gmake ENOENT`로 실패했고, `test-commands`는 `tests/build`의 test 파일 24개를 어떤 명령도 실행하지 않는다고 보고했다. 기대: 세 파일이 두 make로 통과한다.
 - Git은 `conformance-evidence/`와 `legacy/var/`를 무시한다(C19.27). 입력: CI job의 local 실행. 이전 동작: 둘 다 untracked 경로로 남았다. 기대: `git status`가 둘 다 보이지 않는다.
 - `make docs-api`는 자기 checkout의 phpDocumentor를 실행한다(C19.26). 입력: linked worktree에서 `make docs-check`. 이전 동작: `scripts/gen-api-docs.mts`는 worktree의 `.git` 파일이 가리키는 checkout의 phar를 실행했고, worktree의 `make install`은 그것을 설치하지 않는다. 기대: 실행하는 checkout의 `var/tools/phpdocumentor/phpDocumentor.phar`를 실행한다.
 - 목록 layout case는 `requirements`를 갖지 않는다(C19.25). 입력: `tests/fixtures/list-render/cases.json`. 이전 동작: 165개 case 각각이 어떤 test나 check도 읽지 않는 requirement id를 적었고, binding의 case key 검사가 그런 key를 보고한다. 기대: case, `generate.mts`, README 짝에 `requirements`가 없고, `cargo test --test list_render`가 165 통과를 준다.

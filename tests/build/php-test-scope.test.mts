@@ -9,9 +9,8 @@ import { makeDryRun } from './make-dry-run.mts';
 import { readJson } from '../json.mts';
 
 const root = path.resolve(import.meta.dirname, '../..');
-const common = spawnSync('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd: root, encoding: 'utf8' });
-assert.equal(common.status, 0, common.stderr);
-const php = path.resolve(common.stdout.trim(), '../var/tools/bin/php');
+// The PHP that make install-tools installs into var/tools of this checkout, also in a linked worktree.
+const php = path.join(root, 'var/tools/bin/php');
 
 function listing(component: string, args: string[]): Set<string> {
   const directory = mkdtempSync(path.join(os.tmpdir(), 'crudui-php-scope-'));
@@ -53,12 +52,12 @@ test('PHP source entry points select public and source-internal suites', { timeo
   for (const target of ['crudui-test-php-api', 'crudui-test-validators']) {
     const result = makeDryRun(root, target);
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /phpunit --cwd packages\/(?:generator|validator)\/php -- --testsuite public,php-source-internal/);
+    assert.match(result.stdout, /phpunit --cwd legacy\/packages\/(?:generator|validator)\/php -- --testsuite public,php-source-internal/);
   }
   const source = makeDryRun(root, 'crudui-test-php-source');
   assert.equal(source.status, 0, source.stderr);
   for (const component of ['generator', 'validator']) {
-    assert.ok(source.stdout.includes(`phpunit --cwd packages/${component}/php -- --testsuite public,php-source-internal`));
+    assert.ok(source.stdout.includes(`phpunit --cwd legacy/packages/${component}/php -- --testsuite public,php-source-internal`));
   }
   assert.doesNotMatch(source.stdout, /runtime-targets|crudui-test-php-source-internals/);
   const filtered = makeDryRun(root, 'crudui-test-php-source',{ variables: ['CASES=ExamplePattern'] });
