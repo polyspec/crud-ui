@@ -26,8 +26,6 @@ jobs:
   docs-web:
     name: documentation web
     runs-on: ubuntu-24.04
-    env:
-      DOCS_BASE_PATH: /crudui/
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -42,23 +40,19 @@ jobs:
         with:
           php-version-file: .php-version
           tools: none
-      - name: Install the selected pinned documentation tools
-        run: make install-tools TOOLS="node go rust php composer"
-      - name: Install PHP dependencies
-        run: make crudui-install-composer
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: packages/validator/rust
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Install PHP API documentation generator
-        run: make crudui-install-phpdocumentor
-      - name: Download the crates of every Cargo.lock
-        run: make crudui-install-crates
-      - name: Build the documentation web and write its report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="docs-web"
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-docs-web-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
+      - name: Install, then run the checks and write their report
+        run: make ci-docs-web
       - name: Upload the report of the build
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

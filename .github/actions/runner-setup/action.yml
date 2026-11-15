@@ -1,0 +1,23 @@
+# The setup of the machine of a CI job of crudui (C19.20): the parts of the system that a recipe of the Makefile never installs,
+# because a recipe runs no sudo and changes no setting of the machine that runs it. A job uses it after the bootstrap of kit and
+# before its one run step; a local machine is set up once with the same make targets.
+name: runner setup
+description: Installs the browsers of BROWSERS with their system parts (the sandbox helper of Chrome, the system libraries of WebKit) and the nginx of the runner image.
+inputs:
+  browsers:
+    description: The browsers and options of make crudui-install-browsers, for example chrome --chrome-sandbox; empty installs none.
+    default: ''
+  nginx:
+    description: Install the nginx of the runner image (make crudui-install-nginx).
+    default: 'false'
+runs:
+  using: composite
+  steps:
+    - if: ${{ inputs.browsers != '' }}
+      shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+      run: make crudui-install-browsers
+    - if: ${{ inputs.nginx == 'true' }}
+      shell: bash
+      run: make crudui-install-nginx

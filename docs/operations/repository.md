@@ -82,10 +82,11 @@ Composer archive or a platform-specific binary to the published assets.
    `make release-tag` creates `vX.Y.Z` and the tag `<directory>/vX.Y.Z` of every Go module on that run's commit, as annotated
    tags, and refuses a tag elsewhere or a lightweight one. No tag push starts a run (K911); a Go module tag has no run of its
    own and creates no archive.
-4. `.github/workflows/release.yml` runs on that dispatch with the token permission `contents: write`. The workflow is the
-   copy of kit. It installs the kit package through native npm before make. After the setup steps (`make install-tools
-   TOOLS=npm`, `make install-packages`, `make release-tools`, which installs the tools that `config/release.json` needs, and
-   `make release-tools-path`) its steps run through make in this order; the steps take the tag from the input `version`:
+4. `.github/workflows/release.yml` runs on that dispatch with the token permission `contents: write`. Its job `tag` runs
+   `make ci-release-tag` and its job `publish` runs `make ci-release-publish` on the checkout of the tag, each after the
+   bootstrap of kit, which installs the kit package through native npm before make. After `make release-zip`, `make
+   release-prepare` and `make release-tools`, which installs the tools that `config/release.json` needs and whose
+   `var/tools/bin` the recipe puts first on PATH, the recipes run these targets in this order; the steps take the tag from the input `version`:
    - `make release-tag` requires a successful run `run` of `ci.yml` on `main` whose commit is on `origin/main`, and creates
      or passes the tags of the commit (see step 3);
    - `make release-versions` requires the version of the tag in every manifest that `config/release.json` lists, the

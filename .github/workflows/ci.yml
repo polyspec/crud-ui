@@ -39,8 +39,6 @@ jobs:
       fail-fast: false
       matrix:
         shard: ['1', '2', '3', '4']
-    env:
-      CRUDUI_TEST_SHARD: '${{ matrix.shard }}/4'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -56,17 +54,8 @@ jobs:
         with:
           php-version-file: .php-version
           tools: none
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer python uv"
-      - name: Install PHP dependencies
-        run: make crudui-install-composer
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Download the crates of every Cargo.lock
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-runtimes"
+      - name: Install, then run the checks and write their report
+        run: make ci-runtime-tests SHARD=${{ matrix.shard }}
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -91,21 +80,8 @@ jobs:
         with:
           php-version-file: .php-version
           tools: phpize, php-config
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer python uv ruff vulture phpcs phpstan golangciLint deadcode"
-      - name: Install the native PHP parser for autoload lint
-        run: make kit-install-symbols EXTRACTORS="php"
-      # make lint runs PHPStan with the autoloader of the Composer packages; make crudui-install-composer runs the Composer of
-      # mise.toml, which make install-tools installs.
-      - name: Install PHP dependencies
-        run: make crudui-install-composer
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Download the crates of every Cargo.lock
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="build crudui-lint typecheck hooks-check"
+      - name: Install, then run the checks and write their report
+        run: make ci-build-lint
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -116,8 +92,6 @@ jobs:
   validator-js:
     name: validator · JavaScript
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -127,11 +101,8 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-validator-js"
+      - name: Install, then run the checks and write their report
+        run: make ci-validator-js
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -150,8 +121,6 @@ jobs:
   validator-php:
     name: validator · PHP
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -166,13 +135,8 @@ jobs:
         with:
           php-version-file: .php-version
           tools: none
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node php composer"
-      - name: Install PHP dependencies
-        run: make crudui-install-composer
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-validator-php crudui-test-php-source"
+      - name: Install, then run the checks and write their report
+        run: make ci-validator-php
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -191,8 +155,6 @@ jobs:
   validator-go:
     name: validator · Go
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -202,13 +164,8 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go"
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-validator-go crudui-test-generator-go"
+      - name: Install, then run the checks and write their report
+        run: make ci-validator-go
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -227,8 +184,6 @@ jobs:
   validator-rust:
     name: validator · Rust
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -238,17 +193,19 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node rust"
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: packages/validator/rust
-      - name: Download the crates of every Cargo.lock
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-validator-rust crudui-test-generator-rust"
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-validator-rust-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
+      - name: Install, then run the checks and write their report
+        run: make ci-validator-rust
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -267,8 +224,6 @@ jobs:
   python:
     name: validator · Python
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -278,15 +233,8 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node python uv"
-      # The suites and programs import the Python packages installed in var/python (S3).
-      - name: Install the Python packages of the uv workspace into var/python
-        run: make crudui-install-python
-      # The Python is the one of mise.toml, which make install-tools installed at the digest of mise.lock.
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-validator-python crudui-test-generator-python"
+      - name: Install, then run the checks and write their report
+        run: make ci-python
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -305,8 +253,6 @@ jobs:
   cross-check-console:
     name: cross-check console gateway
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -321,24 +267,19 @@ jobs:
         with:
           php-version-file: .php-version
           tools: phpize, php-config
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer python uv"
-      - name: Install PHP dependencies
-        run: make crudui-install-composer
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: legacy/examples/cross-check-console/validators/rust
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      # The suites and programs import the Python packages installed in var/python (S3).
-      - name: Install the Python packages of the uv workspace into var/python
-        run: make crudui-install-python
-      - name: Download the crates of every Cargo.lock
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="build-php-ext crudui-test-cross-check manifest-test crudui-test-bench"
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            legacy/examples/cross-check-console/validators/rust/target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-cross-check-console-${{ hashFiles('rust-toolchain.toml', 'legacy/examples/cross-check-console/validators/rust/Cargo.lock') }}
+      - name: Install, then run the checks and write their report
+        run: make ci-cross-check-console
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -366,11 +307,8 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="require-build crudui-test-cli"
+      - name: Install, then run the checks and write their report
+        run: make ci-cli
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -381,11 +319,6 @@ jobs:
   form-runtime:
     name: Form instances and data injection
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -395,15 +328,12 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      - name: Install the browsers that Puppeteer and Playwright pin
-        run: make crudui-install-browsers BROWSERS="chrome firefox webkit --with-deps --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-forms"
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome, the system libraries of WebKit.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome firefox webkit --with-deps --chrome-sandbox
+      - name: Install, then run the checks and write their report
+        run: make ci-form-runtime
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -422,10 +352,6 @@ jobs:
   form-comparison:
     name: Form comparison runner regressions
     runs-on: ubuntu-24.04
-    env:
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -440,17 +366,12 @@ jobs:
         with:
           php-version-file: .php-version
           tools: none
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node php composer"
-      - name: Install workspace and PHP dependencies
-        run: make crudui-install-composer
-      - name: Install the browsers that Puppeteer pins
-        run: make crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-form-comparison"
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome --chrome-sandbox
+      - name: Install, then run the checks and write their report
+        run: make ci-form-comparison
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -461,10 +382,6 @@ jobs:
   form-comparison-pipeline:
     name: Record stores and the canonical flow
     runs-on: ubuntu-24.04
-    env:
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -479,31 +396,24 @@ jobs:
         with:
           php-version-file: .php-version
           tools: phpize, php-config
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer"
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: examples/form-comparison/servers/rust
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Install workspace and PHP dependencies
-        run: make crudui-install-composer
-      - name: Install nginx
-        # The PHP record servers run on PHP-FPM behind nginx (examples/form-comparison/servers/php);
-        # setup-php provides php-fpm on the PATH.
-        run: |
-          sudo apt-get install -y --no-install-recommends nginx
-          php-fpm -v && nginx -v
-      - name: Install the browsers that Puppeteer pins
-        run: make crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Install the OrderedJSON checkout
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-form-comparison-pipeline"
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            examples/form-comparison/servers/rust/target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-form-comparison-pipeline-${{ hashFiles('rust-toolchain.toml', 'examples/form-comparison/servers/rust/Cargo.lock') }}
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome and nginx.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome --chrome-sandbox
+          nginx: 'true'
+      - name: Install, then run the checks and write their report
+        run: make ci-form-comparison-pipeline
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -520,11 +430,6 @@ jobs:
       fail-fast: false
       matrix:
         server: [php, php-ext, go, rust]
-    env:
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
-      FORM_SERVERS: ${{ matrix.server }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -539,31 +444,24 @@ jobs:
         with:
           php-version-file: .php-version
           tools: phpize, php-config
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer"
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: examples/form-comparison/servers/rust
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Install workspace and PHP dependencies
-        run: make crudui-install-composer
-      - name: Install nginx
-        # The PHP record servers run on PHP-FPM behind nginx (examples/form-comparison/servers/php);
-        # setup-php provides php-fpm on the PATH.
-        run: |
-          sudo apt-get install -y --no-install-recommends nginx
-          php-fpm -v && nginx -v
-      - name: Install the browsers that Puppeteer pins
-        run: make crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Install the OrderedJSON checkout
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-form-comparison-browser"
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            examples/form-comparison/servers/rust/target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-form-comparison-browser-${{ hashFiles('rust-toolchain.toml', 'examples/form-comparison/servers/rust/Cargo.lock') }}
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome and nginx.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome --chrome-sandbox
+          nginx: 'true'
+      - name: Install, then run the checks and write their report
+        run: make ci-form-comparison-browser FORM_SERVERS=${{ matrix.server }}
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -585,10 +483,6 @@ jobs:
     name: Form comparison checks against a local stack
     needs: form-comparison-browser
     runs-on: ubuntu-24.04
-    env:
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -603,37 +497,30 @@ jobs:
         with:
           php-version-file: .php-version
           tools: phpize, php-config
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer"
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: examples/form-comparison/servers/rust
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      - name: Install workspace and PHP dependencies
-        run: make crudui-install-composer
-      - name: Install nginx
-        # The PHP record servers run on PHP-FPM behind nginx (examples/form-comparison/servers/php);
-        # setup-php provides php-fpm on the PATH.
-        run: |
-          sudo apt-get install -y --no-install-recommends nginx
-          php-fpm -v && nginx -v
-      - name: Install the browsers that Puppeteer pins
-        run: make crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Install the OrderedJSON checkout
-        run: make crudui-install-crates
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            examples/form-comparison/servers/rust/target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-form-comparison-checks-${{ hashFiles('rust-toolchain.toml', 'examples/form-comparison/servers/rust/Cargo.lock') }}
       - name: Download the browser reports of the four servers
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: form-comparison-browser-*
           path: var/form-comparison/browser
           merge-multiple: true
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-form-comparison-summary"
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome and nginx.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome --chrome-sandbox
+          nginx: 'true'
+      - name: Install, then run the checks and write their report
+        run: make ci-form-comparison-checks
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -644,10 +531,6 @@ jobs:
   package-browser:
     name: Packages, public builds and browser inspector
     runs-on: ubuntu-24.04
-    env:
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -657,15 +540,12 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      - name: Install the browsers that Puppeteer pins
-        run: make crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-packages crudui-test-build crudui-test-build-repeat crudui-test-inspector"
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome --chrome-sandbox
+      - name: Install, then run the checks and write their report
+        run: make ci-package-browser
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -679,8 +559,6 @@ jobs:
   php-engine:
     name: native PHP engine and sanitizers
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -690,11 +568,8 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-php-engine"
+      - name: Install, then run the checks and write their report
+        run: make ci-php-engine
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -713,10 +588,6 @@ jobs:
   native-generators:
     name: Generator unit tests · JavaScript
     runs-on: ubuntu-24.04
-    env:
-      # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts).
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.tools/puppeteer
-      CHROME_DEVEL_SANDBOX: /usr/local/sbin/chrome-devel-sandbox
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -726,15 +597,12 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      - name: Install the browsers that Puppeteer pins
-        run: make crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
-      - name: Verify sandboxed Chrome
-        run: make check-ci-browser
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-generator-js"
+      # The machine setup of the job, which no recipe makes (C19.20): the sandbox helper of Chrome.
+      - uses: ./.github/actions/runner-setup
+        with:
+          browsers: chrome --chrome-sandbox
+      - name: Install, then run the checks and write their report
+        run: make ci-native-generators
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -746,8 +614,6 @@ jobs:
   php-api:
     name: Generator unit tests and PHP API
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -762,13 +628,8 @@ jobs:
         with:
           php-version-file: .php-version
           tools: phpize, php-config
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node php composer"
-      - name: Install dependencies
-        run: make crudui-install-composer
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-php-api"
+      - name: Install, then run the checks and write their report
+        run: make ci-php-api
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -787,8 +648,6 @@ jobs:
   cross-language-equivalence:
     name: Cross-language generator equivalence
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: ${{ github.workspace }}/conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -812,26 +671,20 @@ jobs:
             ~/go/pkg/mod
             ~/.cache/go-build
           key: go-${{ runner.os }}-${{ hashFiles('legacy/packages/generator/go/go.mod', 'legacy/tests/native-generators/programs/go/go.mod', 'benchmarks/validators/go/go.mod') }}
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node go rust php composer python uv"
-      - name: Cargo cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspaces of the job, keyed on their locks and the
+      # toolchain. The key reads no tool, so the cache is restored before the recipe of the job installs Rust.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          workspaces: |
-            packages/generator/rust
-            benchmarks/validators/rust
-      - name: Download the modules that the Go workspace requires
-        run: make crudui-install-go-modules
-      # The suites and programs import the Python packages installed in var/python (S3).
-      - name: Install the Python packages of the uv workspace into var/python
-        run: make crudui-install-python
-      - name: Install dependencies
-        run: make crudui-install-composer
-      - name: Download the crates of every Cargo.lock
-        run: make crudui-install-crates
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="crudui-test-cross-language-equivalence"
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            benchmarks/validators/rust/target
+            target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-cross-language-equivalence-${{ hashFiles('rust-toolchain.toml', 'benchmarks/validators/rust/Cargo.lock', 'Cargo.lock') }}
+      - name: Install, then run the checks and write their report
+        run: make ci-cross-language-equivalence
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -868,8 +721,6 @@ jobs:
     needs: [validator-js, validator-php, validator-go, validator-rust, python, cross-check-console, form-runtime, php-engine, php-api, cross-language-equivalence]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
-    env:
-      CRUDUI_CONFORMANCE_EVIDENCE: conformance-evidence
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache the npm packages of package-lock.json
@@ -879,18 +730,13 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
-      # Each artifact goes into conformance-evidence/<artifact name>, so no evidence file of one job replaces a file of
-      # another with the same name; scripts/check-conformance.mts reads the directory with its subdirectories.
       - name: Collect the evidence of every suite
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: conformance-evidence-*
           path: conformance-evidence
-      - name: Run the checks and write their report
-        if: ${{ !cancelled() }}
-        run: make ci-targets TARGETS="check-conformance"
+      - name: Install, then run the checks and write their report
+        run: make ci-conformance
       - name: Upload the report of the checks
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -911,7 +757,5 @@ jobs:
           key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
       - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
         uses: ./.github/actions/kit-bootstrap
-      - name: Install the selected pinned tools
-        run: make install-tools TOOLS="node"
       - name: Fail unless every other job succeeded
         run: make ci-passed RESULTS='${{ toJSON(needs) }}' FAIL_SKIPPED=1

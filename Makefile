@@ -339,14 +339,16 @@ CI_BROWSER_JOBS := ci-form-runtime ci-form-comparison ci-form-comparison-pipelin
 $(CI_EVIDENCE_JOBS): export CRUDUI_CONFORMANCE_EVIDENCE := $(CURDIR)/conformance-evidence
 ci-conformance: export CRUDUI_CONFORMANCE_EVIDENCE := conformance-evidence
 # The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts), and the set-user-ID sandbox
-# helper of that Chrome.
+# helper of that Chrome. The helper and the system libraries of WebKit change the machine, so no recipe of a job installs them:
+# the action runner-setup installs them on a runner of GitHub before the run step (BROWSERS="chrome --chrome-sandbox", and
+# "webkit --with-deps"), and the recipe installs the browsers into the checkout.
 $(CI_BROWSER_JOBS): export PUPPETEER_CACHE_DIR := $(CURDIR)/.tools/puppeteer
 $(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-sandbox
 # The runtime tests run in CI_SHARDS shards; SHARD names the shard of a job, and no SHARD runs every test.
 CI_SHARDS := 4
 ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
 ci-docs-web: export DOCS_BASE_PATH := /crudui/
-.PHONY: ci-shared ci-runtime ci-context-targets crudui-install-nginx ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+.PHONY: ci-shared ci-runtime ci-context-targets crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
 
 ci-shared: ## The job shared of ci-pipeline.yml: the tools of the plan, the shared setup, then the static gates in the shared context
 	tools="$$($(CI_PLAN) tools shared)" && { test -z "$$tools" || $(CI_MAKE) install-tools TOOLS="$$tools"; }
@@ -367,9 +369,12 @@ ci-context-targets: ## Run TARGETS through make ci-targets inside the context of
 	exit $$status
 
 # The PHP record servers run on PHP-FPM behind nginx (examples/form-comparison/servers/php); setup-php provides php-fpm on the
-# PATH of a runner, and apt installs the nginx of the runner image.
-crudui-install-nginx: ## Install the nginx of the runner image with apt and show the versions of php-fpm and nginx; ONLINE
+# PATH of a runner, and apt installs the nginx of the runner image. The install changes the machine, so no recipe of a job runs
+# it: the action runner-setup runs it on a runner of GitHub before the run step, and a job checks with crudui-nginx-check.
+crudui-install-nginx: ## Install the nginx of the runner image with apt (sudo; the action runner-setup); ONLINE
 	sudo $(ONLINE) apt-get install -y --no-install-recommends nginx
+
+crudui-nginx-check: ## Show the versions of php-fpm and nginx, and fail when either is not on PATH
 	php-fpm -v && nginx -v
 
 ci-runtime-tests: ## The job runtime-tests of ci.yml for SHARD of CI_SHARDS
@@ -426,14 +431,14 @@ ci-cli: ## The job cli of ci.yml
 
 ci-form-runtime: ## The job form-runtime of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node"
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome firefox webkit --with-deps --chrome-sandbox"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome firefox webkit"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-forms"
 
 ci-form-comparison: ## The job form-comparison of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node php composer"
 	$(CI_MAKE) crudui-install-composer
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison"
 
@@ -441,8 +446,8 @@ ci-form-comparison-pipeline: ## The job form-comparison-pipeline of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
 	$(CI_MAKE) crudui-install-go-modules
 	$(CI_MAKE) crudui-install-composer
-	$(CI_MAKE) crudui-install-nginx
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) crudui-nginx-check
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison-pipeline"
@@ -451,8 +456,8 @@ ci-form-comparison-browser: ## The job form-comparison-browser of ci.yml for the
 	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
 	$(CI_MAKE) crudui-install-go-modules
 	$(CI_MAKE) crudui-install-composer
-	$(CI_MAKE) crudui-install-nginx
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) crudui-nginx-check
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison-browser"
@@ -462,15 +467,15 @@ ci-form-comparison-checks: ## The job form-comparison-checks of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
 	$(CI_MAKE) crudui-install-go-modules
 	$(CI_MAKE) crudui-install-composer
-	$(CI_MAKE) crudui-install-nginx
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) crudui-nginx-check
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison-summary"
 
 ci-package-browser: ## The job package-browser of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node"
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-packages crudui-test-build crudui-test-build-repeat crudui-test-inspector"
 
@@ -480,7 +485,7 @@ ci-php-engine: ## The job php-engine of ci.yml
 
 ci-native-generators: ## The job native-generators of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node"
-	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-generator-js"
 
@@ -565,20 +570,42 @@ uv-install: ## Install the Python sources of DIR with one uv sync --locked and c
 	UV_SYNC="--locked $(SYNC)" $(ONLINE) $(NODE) $(KIT)/uv-install.$(KIT_EXT) $(DIR)
 
 # The release steps (config/release.json), which .github/workflows/release.yml runs in this order: release-tag, release-prepare,
-# release-tools, release-tools-path, release-assets, release-publish, release-undraft.
-.PHONY: release-prepare release-tools release-tools-path release-tag release-candidate release-assets release-candidate-assets release-publish release-undraft release-coverage
+# release-tools, release-assets, release-publish, release-undraft.
+.PHONY: release-prepare release-tools release-tag release-zip release-tag-output release-candidate release-assets release-candidate-assets release-publish release-undraft release-coverage
+# The jobs of release.yml (C19.20). ci-release-tag is the job tag: release-tag tags the commit of the CI run RUN, the input run
+# of a dispatch or the run of the workflow_run event of GITHUB_EVENT_PATH, with AUTO for that event (K987), and writes TAG and
+# VERSION into GITHUB_ENV; release-tag-output reads them from there and gives them to the job publish. ci-release-publish is the
+# job publish, on the checkout of the tag: the archive tool, the tools of the release with var/tools/bin and the shims first on
+# PATH, the assets, the draft release and its publication. TAG is the tag of HEAD.
+CI_EVENT_RUN = $(NODE) -p 'JSON.parse(require("fs").readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")).workflow_run?.id ?? ""'
+ci-release-tag: ## The job tag of release.yml: tag the commit of the CI run RUN, or of the workflow_run event, and give the tag to the job publish
+	run='$(RUN)'; test -n "$$run" || run="$$($(CI_EVENT_RUN))"; RUN="$$run" $(CI_MAKE) release-tag $(if $(filter workflow_run,$(GITHUB_EVENT_NAME)),AUTO=1)
+	set -a; . "$$GITHUB_ENV"; set +a; $(CI_MAKE) release-tag-output
+
+release-tag-output: ## Write TAG and VERSION of the environment into GITHUB_OUTPUT for the later jobs of release.yml
+	@test -n "$$GITHUB_OUTPUT" || { echo 'release-tag-output: GITHUB_OUTPUT is not set; run it in the release workflow' >&2; exit 2; }
+	printf 'tag=%s\nversion=%s\n' "$$TAG" "$$VERSION" >> "$$GITHUB_OUTPUT"
+
+ci-release-publish: export TAG = $(shell git describe --tags --exact-match HEAD 2>/dev/null)
+ci-release-publish: export VERSION = $(patsubst v%,%,$(TAG))
+ci-release-publish: export PATH := $(TOOLS_DIR)/mise/shims:$(TOOLS_DIR)/bin:$(PATH)
+ci-release-publish: ## The job publish of release.yml: the tools, the assets, the draft release of the tag of HEAD and its publication
+	@test -n "$$TAG" || { echo 'ci-release-publish: HEAD carries no tag; the job checks out the tag of the job tag' >&2; exit 2; }
+	$(CI_MAKE) release-zip
+	$(CI_MAKE) release-prepare
+	$(CI_MAKE) release-tools
+	$(CI_MAKE) release-assets
+	$(CI_MAKE) release-publish
+	$(CI_MAKE) release-undraft
+
+release-zip: ## Fail unless zip, which Composer needs for the release archives, is on PATH
+	@command -v zip >/dev/null || { echo 'release-zip: Info-ZIP is required for Composer release archives; install the zip package on the Ubuntu runner' >&2; exit 1; }
+
 release-prepare:: ## Prepare what the release needs before release-tools; none
 	@:
 
 release-tools: ## Install the tools that config/release.json needs for the release; ONLINE
 	$(ONLINE) $(NODE) $(KIT)/release-tools.$(KIT_EXT)
-
-release-tools-path: ## Append var/tools/bin and the shims of mise to GITHUB_PATH and the environment of mise to GITHUB_ENV
-	@test -n "$$GITHUB_PATH" || { echo 'release-tools-path: GITHUB_PATH is not set; run it in the release workflow between steps'; exit 1; }
-	@test -n "$$GITHUB_ENV" || { echo 'release-tools-path: GITHUB_ENV is not set; run it in the release workflow between steps'; exit 1; }
-	@echo "$(TOOLS_DIR)/mise/shims" >> "$$GITHUB_PATH"
-	@echo "$(TOOLS_DIR)/bin" >> "$$GITHUB_PATH"
-	@for name in $(MISE_ENVIRONMENT); do echo "$$name=$$(printenv $$name)"; done >> "$$GITHUB_ENV"
 
 release-tag: ## Tag the commit of the successful CI run RUN with vX.Y.Z of its change log and the Go module tags; AUTO for the workflow_run start
 	@test -n "$$RUN" || { echo "release-tag: RUN is required, for example make release-tag RUN=123"; exit 1; }

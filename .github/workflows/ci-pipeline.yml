@@ -1,9 +1,11 @@
 # The gate pipeline of crudui, from the pipeline that @polyspec/kit ships as an example. .github/workflows/ci.yml holds the
 # triggers and the concurrency and calls it as a job (`uses: ./.github/workflows/ci-pipeline.yml`), so one push runs one
-# workflow: shared first, then the runtime jobs in parallel, then required. Each job installs only its own locked
-# prerequisites, declared in config/ci.json, and runs the gate of its group (make kit-gates-static,
-# kit-gates-runtime-<runtime> of the Makefile) with the targets that config/ci.json declares for that group through make
-# ci-targets, inside its context window.
+# workflow: the plan first, then shared and the runtime jobs in parallel, then required. The plan job writes the plan of
+# config/ci.json into its outputs (make kit-ci-plan), and the matrix of the runtime jobs fans out from them. Each other job has
+# one run step, make ci-<job>, whose recipe in the Makefile holds the content of the job, so a local run makes the same call
+# (make ci-shared, make ci-runtime RUNTIME=php): it installs only the locked prerequisites of its group, declared in
+# config/ci.json, and runs the gate of its group (make kit-gates-static, kit-gates-runtime-<runtime> of the Makefile) with the
+# targets that config/ci.json declares for that group through make ci-targets, inside its context window.
 name: ci-pipeline
 
 on:
@@ -19,39 +21,37 @@ env:
   GOTOOLCHAIN: local
 
 jobs:
-  # The shared job writes the plan of config/ci.json that the other jobs read.
-  shared:
+  # The plan job writes the plan of config/ci.json that the other jobs read.
+  plan:
     runs-on: ubuntu-24.04
     outputs:
       runtimes: ${{ steps.plan.outputs.runtimes }}
       has_runtimes: ${{ steps.plan.outputs.has_runtimes }}
+      common_tools: ${{ steps.plan.outputs.common_tools }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # The bootstrap of kit (K992): the Node.js of mise.toml, the locked kit package, the npm of var/tools and the packages.
+      - uses: ./.github/actions/kit-bootstrap
+      - id: plan
+        run: make kit-ci-plan
+
+  shared:
+    needs: plan
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       # The bootstrap of kit (K992): the Node.js of mise.toml, the locked kit package, the npm of var/tools and the packages.
       - uses: ./.github/actions/kit-bootstrap
-      - id: plan
-        run: make kit-ci-plan
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
-        if: ${{ contains(steps.plan.outputs.common_tools, 'php') }}
+        if: ${{ contains(needs.plan.outputs.common_tools, 'php') }}
         with:
           php-version-file: .php-version
           tools: none
           coverage: none
-      - name: install common gate tools
-        if: ${{ steps.plan.outputs.common_tools != '[]' }}
-        run: make install-tools TOOLS="${{ join(fromJSON(steps.plan.outputs.common_tools), ' ') }}"
-      - name: install shared prerequisites
-        run: make kit-ci-setup GROUP=shared
-      - id: context_prepare
-        name: prepare shared CI context
-        run: make kit-ci-context-prepare GROUP=shared
       - name: shared gates
-        run: make ci-targets TARGETS="kit-gates-static ${{ join(fromJSON(steps.plan.outputs.shared_targets), ' ') }}"
-      - name: cleanup shared CI context
-        if: ${{ always() && steps.context_prepare.outcome != 'skipped' }}
-        run: make kit-ci-context-cleanup GROUP=shared
+        run: make ci-shared
       # actions/upload-artifact v7.0.1: the report of make ci-targets, var/report/ci-targets.
       - name: report
         if: ${{ !cancelled() }}
@@ -62,14 +62,14 @@ jobs:
           if-no-files-found: ignore
 
   runtime:
-    needs: shared
-    if: ${{ needs.shared.outputs.has_runtimes == 'true' }}
+    needs: plan
+    if: ${{ needs.plan.outputs.has_runtimes == 'true' }}
     strategy:
       fail-fast: false
       # The runtimes of crudui; the plan of config/ci.json adds the tools and targets of each.
       matrix:
         runtime: [go, php, php-ext, python, rust, ts]
-        include: ${{ fromJSON(needs.shared.outputs.runtimes) }}
+        include: ${{ fromJSON(needs.plan.outputs.runtimes) }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -81,19 +81,8 @@ jobs:
           coverage: none
       # The bootstrap of kit (K992): the Node.js of mise.toml, the locked kit package, the npm of var/tools and the packages.
       - uses: ./.github/actions/kit-bootstrap
-      - name: install runtime tools
-        if: ${{ join(matrix.installTools, ' ') != '' }}
-        run: make install-tools TOOLS="${{ join(matrix.installTools, ' ') }}"
-      - name: install runtime prerequisites
-        run: make kit-ci-setup GROUP=runtime RUNTIME=${{ matrix.runtime }}
-      - id: context_prepare
-        name: prepare runtime CI context
-        run: make kit-ci-context-prepare GROUP=runtime RUNTIME=${{ matrix.runtime }}
       - name: runtime gate
-        run: make ci-targets TARGETS="kit-gates-runtime-${{ matrix.runtime }} ${{ join(matrix.targets, ' ') }}"
-      - name: cleanup runtime CI context
-        if: ${{ always() && steps.context_prepare.outcome != 'skipped' }}
-        run: make kit-ci-context-cleanup GROUP=runtime RUNTIME=${{ matrix.runtime }}
+        run: make ci-runtime RUNTIME=${{ matrix.runtime }}
       # actions/upload-artifact v7.0.1: the report of make ci-targets, var/report/ci-targets.
       - name: report
         if: ${{ !cancelled() }}
@@ -103,33 +92,16 @@ jobs:
           path: var/report/ci-targets/
           if-no-files-found: ignore
 
-  # The closing common part: it fails when a job that the plan selected does not succeed. The plan selects shared, and runtime
-  # when the repository has one. A job the plan did not select is skipped and
-  # is not a result; a selected job that is skipped fails the pipeline.
+  # The closing common part: it fails when a job that the plan selected does not succeed. The plan selects plan and shared,
+  # and runtime when the repository has one; a job that the plan did not select is skipped, which make ci-passed without
+  # FAIL_SKIPPED does not count as a failure, and a selected runtime job is skipped only when plan failed.
   required:
     if: ${{ always() }}
-    needs: [shared, runtime]
+    needs: [plan, shared, runtime]
     runs-on: ubuntu-24.04
-    env:
-      SHARED_RESULT: ${{ needs.shared.result }}
-      RUNTIME_RESULT: ${{ needs.runtime.result }}
-      SHARED_SELECTED: 'true'
-      RUNTIME_SELECTED: ${{ needs.shared.outputs.has_runtimes == 'true' }}
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # The bootstrap of kit (K992), whose utility ci-passed the target runs.
+      - uses: ./.github/actions/kit-bootstrap
       - name: require every job that the plan selected
-        run: |
-          failed=0
-          judge() {
-            if [ "$3" != true ]; then
-              echo "$1: not selected by the plan, not judged"
-              return 0
-            fi
-            echo "$1: $2"
-            if [ "$2" != success ]; then
-              echo "$1 ended with $2, and the plan selected it; expected success" >&2
-              failed=1
-            fi
-          }
-          judge shared "$SHARED_RESULT" "$SHARED_SELECTED"
-          judge runtime "$RUNTIME_RESULT" "$RUNTIME_SELECTED"
-          exit "$failed"
+        run: make ci-passed RESULTS='${{ toJSON(needs) }}'

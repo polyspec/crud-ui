@@ -127,8 +127,12 @@ test('each make job runs the kit bootstrap action before make (K992)', async () 
   assert.ok(jobs > 0, 'the kit bootstrap selection checks at least one make job');
 });
 
-// The workflows that CI runs: every workflow but release.yml, the copy of kit, which follows the rules of kit (C19.20).
-const CI_WORKFLOWS = ['ci-pipeline.yml', 'ci.yml', 'pages.yml'];
+// Every workflow of the repository (C19.20). The recipe of a job is ci-<job>; a job of release.yml names its workflow before its
+// job, ci-release-<job>, because its job names are also names of jobs of the other workflows.
+const CI_WORKFLOWS = ['ci-pipeline.yml', 'ci.yml', 'pages.yml', 'release.yml'];
+const RECIPE_PREFIX: Record<string, string> = { 'release.yml': 'release-' };
+// The token of the run, which the release recipes give gh; it is the one variable a run step may set.
+const TOKEN_ENV = { GH_TOKEN: '${{ github.token }}' };
 // The plan job writes the outputs from which the matrix of the runtime jobs fans out; the judgement jobs read the results of
 // the other jobs, which exist only in CI.
 const PLAN_JOB = 'plan';
@@ -146,7 +150,7 @@ const JOB_ARGUMENT = String.raw`[A-Z][A-Z0-9_]*=(?:[A-Za-z0-9_.,/-]+|"[A-Za-z0-9
  * and a job sets no environment of its own, which its recipe sets; every other step is a uses step, and only a uses step has a
  * condition. A job that calls a workflow, or whose every step is a uses step, runs no recipe.
  */
-export function jobContentFindings(workflow: Workflow): string[] {
+export function jobContentFindings(workflow: Workflow, prefix = ''): string[] {
   const findings: string[] = [];
   for (const [id, job] of Object.entries(workflow.jobs)) {
     if (job.uses !== undefined) continue;
@@ -160,10 +164,11 @@ export function jobContentFindings(workflow: Workflow): string[] {
         continue;
       }
       const run = step.run.trim();
-      const expected = id === PLAN_JOB ? run === PLAN_RUN : JUDGE_JOBS.has(id) ? JUDGE_RUN.test(run) : new RegExp(`^make ci-${id}(?: ${JOB_ARGUMENT})*$`).test(run);
-      if (!expected) findings.push(`${id}: the run step is not ${id === PLAN_JOB ? PLAN_RUN : JUDGE_JOBS.has(id) ? 'make ci-passed with RESULTS of its needs' : `make ci-${id} with arguments NAME=value`}: ${run}`);
+      const expected = id === PLAN_JOB ? run === PLAN_RUN : JUDGE_JOBS.has(id) ? JUDGE_RUN.test(run) : new RegExp(`^make ci-${prefix}${id}(?: ${JOB_ARGUMENT})*$`).test(run);
+      if (!expected) findings.push(`${id}: the run step is not ${id === PLAN_JOB ? PLAN_RUN : JUDGE_JOBS.has(id) ? 'make ci-passed with RESULTS of its needs' : `make ci-${prefix}${id} with arguments NAME=value`}: ${run}`);
       if (step.if !== undefined) findings.push(`${id}: the run step has a condition`);
-      if (step.env !== undefined) findings.push(`${id}: the run step sets an environment`);
+      if (/\bsudo\b/.test(run)) findings.push(`${id}: the run step runs sudo`);
+      if (step.env !== undefined && JSON.stringify(step.env) !== JSON.stringify(TOKEN_ENV)) findings.push(`${id}: the run step sets an environment`);
     }
   }
   return findings;
@@ -175,7 +180,8 @@ test('a job of a workflow that CI runs has one run step, make ci-<job>, and its 
     plan: { steps: [checkout, { run: 'make kit-ci-plan' }] },
     shared: { steps: [checkout, { uses: 'shivammathur/setup-php@x', if: "${{ contains(needs.plan.outputs.common_tools, 'php') }}" }, { run: 'make ci-shared' }, { uses: 'actions/upload-artifact@x', if: '${{ !cancelled() }}' }] },
     runtime: { steps: [checkout, { run: 'make ci-runtime RUNTIME=${{ matrix.runtime }}' }] },
-    browser: { steps: [checkout, { run: 'make ci-browser FORM_SERVERS=${{ matrix.server }} BROWSERS="chrome --chrome-sandbox"' }] },
+    browser: { steps: [checkout, { run: 'make ci-browser FORM_SERVERS=${{ matrix.server }} BROWSERS="chrome firefox"' }] },
+    token: { steps: [checkout, { run: 'make ci-token RUN=${{ inputs.run }}', env: { GH_TOKEN: '${{ github.token }}' } }] },
     deploy: { steps: [{ uses: 'actions/deploy-pages@x' }] },
     kit: { uses: './.github/workflows/ci-pipeline.yml' },
     required: { steps: [checkout, { run: "make ci-passed RESULTS='${{ toJSON(needs) }}'" }] },
@@ -188,6 +194,7 @@ test('a job of a workflow that CI runs has one run step, make ci-<job>, and its 
     expression: { steps: [{ run: 'make ci-expression TARGETS="kit-gates-runtime-${{ matrix.runtime }}"' }] },
     joined: { steps: [{ run: "make ci-joined TOOLS=${{ join(matrix.installTools, ' ') }}" }] },
     environment: { env: { CRUDUI_TEST_SHARD: '${{ matrix.shard }}/4' }, steps: [{ run: 'make ci-environment', env: { A: '1' } }] },
+    root: { steps: [{ run: 'make ci-root BAY="sudo -n bay"' }] },
     named: { steps: [{ with: { name: 'x' } }, { run: 'make ci-named' }] },
     plan: { steps: [{ run: 'make ci-plan' }] },
     required: { steps: [{ run: 'make ci-passed FAIL_SKIPPED=1' }] },
@@ -201,17 +208,38 @@ test('a job of a workflow that CI runs has one run step, make ci-<job>, and its 
     "joined: the run step is not make ci-joined with arguments NAME=value: make ci-joined TOOLS=${{ join(matrix.installTools, ' ') }}",
     'environment: sets the environment CRUDUI_TEST_SHARD, which its recipe sets',
     'environment: the run step sets an environment',
+    'root: the run step runs sudo',
     'named: a step is neither a run step nor a uses step',
     'plan: the run step is not make kit-ci-plan: make ci-plan',
     'required: the run step is not make ci-passed with RESULTS of its needs: make ci-passed FAIL_SKIPPED=1',
   ]);
+  assert.deepEqual(jobContentFindings({ jobs: { tag: { steps: [checkout, { run: 'make ci-tag' }] }, publish: { steps: [{ run: 'make ci-release-publish' }] } } }, 'release-'), [
+    'tag: the run step is not make ci-release-tag with arguments NAME=value: make ci-tag',
+  ]);
+});
+
+// No recipe of a job runs sudo or changes a setting of the machine (C19.20): the action runner-setup sets the machine up before
+// the run step. The dry run of each recipe, with every call of make that it prints, holds no sudo.
+test('no recipe of a job runs sudo (C19.20)', async () => {
+  let recipes = 0;
+  for (const file of CI_WORKFLOWS) {
+    for (const job of Object.values((await workflowFile(file)).jobs)) {
+      const run = runOf(job);
+      if (run === undefined || !run.startsWith('make ci-') || run.startsWith('make ci-passed')) continue;
+      const [, target, ...variables] = run.split(/ (?=[A-Z][A-Z0-9_]*=|[a-z])/);
+      const dry = makeDryRun(ROOT, String(target), { env: { ...process.env, GITHUB_ENV: '/dev/null', TAG: 'v0.0.1' }, variables: variables.map(variable => variable.replace(/^([A-Z][A-Z0-9_]*)="(.*)"$/, '$1=$2').replace(/=\$\{\{ inputs\.[\w-]+ \}\}$/, '=1')) });
+      assert.doesNotMatch(dry.stdout, /\bsudo\b/, `${file} ${run} runs sudo:\n${dry.stdout}`);
+      recipes += 1;
+    }
+  }
+  assert.ok(recipes > 20, `the check read ${String(recipes)} recipes`);
 });
 
 test('every job of the workflows that CI runs holds its content in a recipe of the Makefile (C19.20)', async () => {
   const workflows = (await readdir(new URL('../../.github/workflows/', import.meta.url))).filter(file => /\.ya?ml$/.test(file)).sort();
-  assert.deepEqual(workflows.filter(file => file !== 'release.yml'), [...CI_WORKFLOWS].sort(), 'a workflow other than release.yml is not a workflow that CI runs');
+  assert.deepEqual(workflows, [...CI_WORKFLOWS].sort(), 'a workflow is not in CI_WORKFLOWS');
   const findings: string[] = [];
-  for (const file of CI_WORKFLOWS) findings.push(...jobContentFindings(await workflowFile(file)).map(finding => `${file} ${finding}`));
+  for (const file of CI_WORKFLOWS) findings.push(...jobContentFindings(await workflowFile(file), RECIPE_PREFIX[file]).map(finding => `${file} ${finding}`));
   assert.deepEqual(findings, []);
 });
 
@@ -419,8 +447,7 @@ test('a workflow step starts every tool through a make target', async () => {
     { name: 'nginx', run: 'sudo apt-get install -y nginx\nphp-fpm -v && nginx -v' },
   ] } } }), ['a: install: node scripts/kit/install-tools.mjs', 'a: test: FOO=1 xvfb-run npm test']);
   const violations: string[] = [];
-  // release.yml is the copy of kit, which follows the rules of kit.
-  for (const file of ['ci.yml', 'pages.yml']) {
+  for (const file of CI_WORKFLOWS) {
     violations.push(...stepsOutsideMake(await workflowFile(file)).map(line => `${file} ${line}`));
   }
   assert.deepEqual(violations, []);

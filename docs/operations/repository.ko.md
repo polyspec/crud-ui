@@ -75,10 +75,11 @@ platform별 binary를 추가하지 않습니다.
 
    `make release-tag`가 그 run의 commit에 `vX.Y.Z`와 모든 Go module의 tag `<directory>/vX.Y.Z`를 annotated tag로 만들며,
    다른 곳의 tag나 lightweight tag는 거부합니다. tag push는 실행을 시작하지 않습니다(K911). Go module tag는 자신의 실행이 없고 archive를 만들지 않습니다.
-4. `.github/workflows/release.yml`은 그 dispatch에서 token 권한 `contents: write`로 실행됩니다. 이 workflow는 kit의 copy입니다.
-   Make 전에 native npm으로 kit package를 설치합니다. 준비 step(`make install-tools TOOLS=npm`, `make install-packages`,
-   `config/release.json`이 필요로 하는 도구를 설치하는 `make release-tools`, `make release-tools-path`) 뒤의 step은 이 순서로 make를
-   통해 실행되며, tag는 입력 `version`에서 받습니다.
+4. `.github/workflows/release.yml`은 그 dispatch에서 token 권한 `contents: write`로 실행됩니다. job `tag`는
+   `make ci-release-tag`를, job `publish`는 tag의 checkout에서 `make ci-release-publish`를 실행하며, 각각 make 전에 native npm으로
+   kit package를 설치하는 kit의 bootstrap 뒤에 실행합니다. `make release-zip`, `make release-prepare`, 그리고 `config/release.json`이
+   필요로 하는 도구를 설치하고 recipe가 그 `var/tools/bin`을 PATH 앞에 두는 `make release-tools` 뒤에, recipe는 이 target을 이
+   순서로 실행하며, tag는 입력 `version`에서 받습니다.
    - `make release-tag`는 `main`의 성공한 `ci.yml` run `run`의 commit이 `origin/main`에 있는지 확인하고, 그 commit의 tag를 만들거나 이미 있으면 통과합니다(3단계 참조);
    - `make release-versions`는 `config/release.json`이 적은 모든 manifest의 version이 tag와 같은지, 모든 Go module의 module
      path, `CHANGELOG.md`와 `CHANGELOG.ko.md`의 section `## X.Y.Z`가 있는지 확인하고, 파일과 두 version을 적어 실패합니다.
