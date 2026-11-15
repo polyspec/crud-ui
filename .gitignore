@@ -138,3 +138,6 @@ go.work.sum
 # The release recipes of the binding packages of each component, which make release-recipes writes (binding GN-19h)
 /packages/*/release.mk
 /packages/*/go/internal/ffi/lib/
+# The conformance records of a CI job and the outputs that the legacy suites write under legacy/var
+/conformance-evidence/
+/legacy/var/

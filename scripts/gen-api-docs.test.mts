@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { copyFileSync, readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
@@ -93,4 +93,38 @@ test('successful API generation preserves the enclosing test result', t => {
   assert.equal(result.status, 0, result.stderr);
   assert.equal(readFileSync(resultFile, 'utf8'), seeded);
   assert.equal(readFileSync(join(root, 'docs/api/go.md'), 'utf8').includes('func Example()'), true);
+});
+
+test('php runs the phpDocumentor of its own checkout, also in a linked worktree', () => {
+  // The phar is installed by scripts/install-phpdocumentor.mts into var/tools of the checkout that runs it, so a linked
+  // worktree, whose .git file names the gitdir of another checkout, reads its own var/tools and never the other one.
+  mkdirSync(join(repository, 'var/tmp'), { recursive: true });
+  const root = mkdtempSync(join(repository, 'var/tmp/crudui-api-docs-'));
+  const main = mkdtempSync(join(repository, 'var/tmp/crudui-api-docs-main-'));
+  try {
+    for (const path of ['scripts', 'bin', 'var/tools/phpdocumentor', 'node_modules/.bin',
+      ...['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding'].map(pkg => `packages/${pkg}`)]) {
+      mkdirSync(join(root, path), { recursive: true });
+    }
+    for (const file of ['gen-api-docs.mts', 'run-rust-command.mts', 'operation-progress.mts']) {
+      copyFileSync(new URL('./' + file, import.meta.url), join(root, 'scripts', file));
+    }
+    for (const pkg of ['../legacy/packages/validator/ts', '../legacy/packages/generator/ts', '../legacy/packages/html', 'react', 'vue', 'svelte', 'form-binding']) {
+      copyFileSync(join(repository, 'packages', pkg, 'package.json'), join(root, 'packages', pkg, 'package.json'));
+    }
+    mkdirSync(join(main, '.git/worktrees/lane'), { recursive: true });
+    writeFileSync(join(root, '.git'), `gitdir: ${join(main, '.git/worktrees/lane')}\n`);
+    const phar = join(root, 'var/tools/phpdocumentor/phpDocumentor.phar');
+    writeFileSync(phar, '');
+    const record = join(root, 'phar-argument');
+    writeFileSync(join(root, 'bin/php'), `#!${process.execPath}\nrequire('node:fs').writeFileSync(${JSON.stringify(record)}, process.argv[2]);\n`, { mode: 0o755 });
+    const result = spawnSync(process.execPath, [join(root, 'scripts/gen-api-docs.mts'), 'php'], {
+      encoding: 'utf8', env: { ...process.env, HOME: root, PATH: join(root, 'bin'), PHP: 'php', KIT_TEST_RESULT: join(root, 'outer-result.json') },
+    });
+    assert.ok(existsSync(record), `php did not run; status ${String(result.status)}, stderr:\n${result.stderr}`);
+    assert.equal(readFileSync(record, 'utf8'), phar);
+  } finally {
+    rmSync(root, { recursive: true });
+    rmSync(main, { recursive: true });
+  }
 });
