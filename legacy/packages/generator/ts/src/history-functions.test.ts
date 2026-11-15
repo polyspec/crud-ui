@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { expect, it } from 'vitest';
 import { provesConformance } from '../../../../../tests/conformance/evidence.mts';
-import { functionCase, observeFunction, readCases } from '../../../../tests/fixtures/form-state/harness.mts';
+import { functionCase, observeFunction, readCases } from '../../../../../tests/fixtures/form-state/harness.mts';
 import * as core from './index';
 
 const ROOT = path.resolve(__dirname, '../../../../..');
