@@ -7,6 +7,7 @@ build-backend = "maturin"
 name = "polyspec-crud-ui-generator"
 version = "0.0.20"
 requires-python = ">=3.14"
+license = "MIT"
 dependencies = ["polyspec-crud-ui-validator", "polyspec-json"]
 
 [tool.maturin]

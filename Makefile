@@ -219,12 +219,13 @@ BINDING_CRATES := $(foreach component,$(BINDING_COMPONENTS),polyspec-crud-ui-$(c
 lint-rust: ## Lint the Rust: cargo clippy in each Cargo workspace with the [workspace.lints] of its Cargo.toml and clippy.toml
 	$(NODE) $(KIT)/lint-rust.$(KIT_EXT) --locked $(foreach crate,$(BINDING_CRATES),--exclude $(crate))
 
-# binding is not yet a package that package-lock.json pins; until it is, BINDING names the cli (packages/ts/src/cli.ts) of
-# a binding checkout, and the targets refuse to run without it. bindings writes the generated folders of
+# BINDING is the cli of the npm package @polyspec/binding of package.json, the asset of the GitHub Release of the tag that
+# every dependency line on polyspec-binding-core names, so that the tool and the crate are one release (binding CK-20);
+# BINDING=<cli of a binding checkout> runs another one. bindings writes the generated folders of
 # packages/<component>/ts, packages/<component>/python and packages/<component>/php-ext, which Git ignores; bindings-check
 # runs the contract check of each component, which also compares the package skeletons with what binding scaffold writes.
 .PHONY: bindings bindings-check lint-bindings test-bindings
-BINDING ?=
+BINDING ?= $(CURDIR)/node_modules/@polyspec/binding/dist/cli.js
 bindings: ## Write the generated folders of the binding packages with BINDING=<cli of binding>
 	@test -n "$(BINDING)" || { echo "bindings: set BINDING to the cli of binding"; exit 1; }
 	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) generate --contract $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
@@ -338,7 +339,7 @@ $(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-
 CI_SHARDS := 4
 ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
 ci-docs-web: export DOCS_BASE_PATH := /crudui/
-.PHONY: ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+.PHONY: ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
 
 ci-shared: ## The job shared of ci-pipeline.yml: kit's job shared, its tools, its setup, then the static gates in the shared context
 	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --job shared
@@ -389,6 +390,13 @@ ci-validator-rust: ## The job validator-rust of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node rust"
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-rust crudui-test-generator-rust"
+
+# The contract check of each component and the tests of its binding crates, which make bindings writes with the binding of
+# package.json; the cases of interface.json are the generated tests of each crate (binding GN-13, CK-22).
+ci-bindings: ## The job bindings of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node rust"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="bindings-check test-bindings"
 
 # The suites and programs import the Python packages installed in var/python (S3), with the Python of mise.toml.
 ci-python: ## The job python of ci.yml
@@ -784,8 +792,36 @@ endif
 crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-form-comparison-checks: ordered-json-ext
 
 # The checking commands of the CI workflow, one target each (CI_TARGETS).
+# The tests of crudui-test-runtimes; CRUDUI_TEST_SHARD, i/n, selects the native Node shard of them (C18.9).
+CRUDUI_RUNTIME_TESTS = \
+	tests/build/runtime-version-policy.test.mts \
+	tests/build/make-tool-path.test.mts \
+	tests/build/rust-node-entry-points.test.mts \
+	tests/build/conformance-evidence.test.mts \
+	tests/build/unicode-properties.test.mts \
+	tests/build/package-names.test.mts \
+	tests/build/php-extensions.test.mts \
+	tests/build/php-test-scope.test.mts \
+	tests/build/ci-local.test.mts \
+	tests/build/test-commands.test.mts \
+	tests/build/validator-test-clocks.test.mts \
+	tests/build/contract-manifest.test.mts \
+	tests/build/rust-release-profile.test.mts \
+	tests/build/shared-resources.test.mts \
+	tests/build/make-dry-run.test.mts \
+	tests/build/tool-path.test.mts \
+	tests/build/atomic-publish.test.mts \
+	tests/build/failure-messages.test.mts \
+	tests/build/owner-check.test.mjs \
+	tests/build/install-browsers.test.mts \
+	tests/build/tracked-files.test.mts \
+	tests/build/release-fixtures.test.mts \
+	tests/build/offline-checks.test.mts \
+	tests/build/install-lock.test.mts \
+	tests/build/rust-generators.test.mts \
+	tests/build/ordered-json-pie.test.mts
 crudui-test-runtimes: ## Exact runtime versions and test standards
-	$(NPM) run test:runtimes
+	$(NODE) scripts/run-tests.mts node -- --test-concurrency=1 $(if $(CRUDUI_TEST_SHARD),--test-shard=$(CRUDUI_TEST_SHARD)) $(CRUDUI_RUNTIME_TESTS)
 # The TypeScript tables are untracked build output of contracts/ (P34): the build script of legacy/packages/validator/ts writes
 # src/unicode/properties.ts, and the build script of legacy/packages/generator/ts writes src/interface-messages.ts and
 # src/form-template-validator.mjs, ajv's standalone validation code of contracts/schema/form-template.schema.json (C14.38),
@@ -1079,6 +1115,8 @@ CI_TARGETS = \
 	crudui-test-generator-go \
 	crudui-test-validator-rust \
 	crudui-test-generator-rust \
+	bindings-check \
+	test-bindings \
 	crudui-test-validator-python \
 	crudui-test-generator-python \
 	build-php-ext \

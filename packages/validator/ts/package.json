@@ -3,6 +3,7 @@
   "version": "0.0.20",
   "description": "The crud-ui-validator library of polyspec for Node and the browser",
   "license": "MIT",
+  "type": "module",
   "main": "./generated/index.cjs",
   "types": "./generated/index.d.ts",
   "exports": {
@@ -29,9 +30,15 @@
     "wasm/generated/*.d.ts",
     "wasm/generated/*.wasm"
   ],
-  "optionalDependencies": {
-    "@polyspec/crud-ui-validator-linux-x64-gnu": "0.0.20",
-    "@polyspec/crud-ui-validator-linux-arm64-gnu": "0.0.20",
-    "@polyspec/crud-ui-validator-darwin-arm64": "0.0.20"
+  "napi": {
+    "binaryName": "crud-ui-validator",
+    "targets": [
+      "x86_64-unknown-linux-gnu",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-apple-darwin"
+    ]
+  },
+  "dependencies": {
+    "@polyspec/json": "*"
   }
 }

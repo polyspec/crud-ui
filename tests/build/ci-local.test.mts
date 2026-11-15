@@ -298,23 +298,18 @@ export function makeCommands(makefile: string): string[] {
   return block[1].trim().split('\n').map((line) => `make ${line.trim().replace(/ \\$/, '')}`);
 }
 
-test('the runtime script passes native Node sharding only when requested (C18.9)', async (t) => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'crudui-runtime-shard-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
-  await writeFile(path.join(directory, 'node'), `#!${process.execPath}\nprocess.stdout.write(JSON.stringify(process.argv.slice(2)));\n`, { mode: 0o755 });
-  const manifest = parseJson<{ scripts: Record<string, string> }>(await read('package.json'), { properties: { scripts: { values: { type: 'string' } } }, additionalProperties: true }, 'package.json');
-  const command = manifest.scripts['test:runtimes'];
-  assert.ok(command);
-  const environment: NodeJS.ProcessEnv = { ...process.env, PATH: `${directory}${path.delimiter}${process.env.PATH ?? ''}` };
-  delete environment.CRUDUI_TEST_SHARD;
+test('the runtime recipe passes native Node sharding only when requested (C18.9)', () => {
   const args = (shard?: string): string[] => {
-    const result = spawnSync('/bin/sh', ['-c', command], { cwd: ROOT, env: { ...environment, ...(shard === undefined ? {} : { CRUDUI_TEST_SHARD: shard }) }, encoding: 'utf8' });
+    const result = makeDryRun(ROOT, 'crudui-test-runtimes', { variables: shard === undefined ? [] : [`CRUDUI_TEST_SHARD=${shard}`] });
     assert.equal(result.status, 0, result.stderr);
-    return strings(JSON.parse(result.stdout), 'runtime command arguments');
+    const line = result.stdout.split('\n').find(entry => entry.includes('scripts/run-tests.mts'));
+    assert.ok(line, `make -n crudui-test-runtimes prints the test command:\n${result.stdout}`);
+    return line.trim().split(/\s+/);
   };
   const plain = args();
   assert.equal(plain.some(argument => argument.startsWith('--test-shard=')), false);
   const files = plain.filter(argument => argument.startsWith('tests/'));
+  assert.ok(files.includes('tests/build/ci-local.test.mts'));
   assert.ok(files.length > 4);
   for (const shard of ['1/4', '2/4', '3/4', '4/4']) {
     const selected = args(shard);

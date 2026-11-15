@@ -4,6 +4,7 @@ name = "polyspec-crud-ui-validator-node"
 version = "0.0.20"
 edition = "2021"
 rust-version = "1.99.0"
+license = "MIT"
 publish = false
 build = "build.rs"
 
@@ -14,13 +15,14 @@ crate-type = ["cdylib"]
 
 [features]
 panic-test = []
+thrown-count-test = []
 
 [build-dependencies]
 napi-build = "=2.6.0"
 
 [dependencies]
 polyspec-crud-ui-validator = { path = "../rust" }
-polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", tag = "v0.0.2", features = ["construct", "lock"] }
+polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", tag = "v0.0.8", features = ["construct", "lock"] }
 polyspec-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
 napi = { version = "=3.16.2", default-features = false, features = ["napi8"] }
 napi-derive = "=3.7.1"

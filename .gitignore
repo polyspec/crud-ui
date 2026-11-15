@@ -129,3 +129,10 @@ go.work.sum
 # The generated folders of the binding packages, which make bindings writes (binding design L-2)
 /packages/*/*/generated/
 /packages/*/*/*/generated/
+# The Go files that make bindings writes into the Go module of each component: zz_generated_*.go, the packages errors and
+# internal/binding, and the generated folder and the C library folder lib of the C ABI crate internal/ffi
+/packages/*/go/**/zz_generated_*.go
+/packages/*/go/errors/
+/packages/*/go/internal/binding/
+/packages/*/go/internal/ffi/generated/
+/packages/*/go/internal/ffi/lib/

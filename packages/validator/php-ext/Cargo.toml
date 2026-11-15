@@ -4,6 +4,7 @@ name = "polyspec-crud-ui-validator-php-ext"
 version = "0.0.20"
 edition = "2021"
 rust-version = "1.99.0"
+license = "MIT"
 publish = false
 build = "build.rs"
 
@@ -16,10 +17,11 @@ doctest = false
 
 [features]
 panic-test = []
+thrown-count-test = []
 
 [dependencies]
 polyspec-crud-ui-validator = { path = "../rust" }
-polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", tag = "v0.0.2", features = ["construct", "lock"] }
+polyspec-binding-core = { git = "https://github.com/polyspec/binding.git", tag = "v0.0.8", features = ["construct", "lock"] }
 polyspec-json = { git = "https://github.com/polyspec/json.git", branch = "v1/rust-core" }
 ext-php-rs = "=0.16.4"
 

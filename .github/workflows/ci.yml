@@ -221,6 +221,38 @@ jobs:
           path: conformance-evidence/
           if-no-files-found: error
 
+  bindings:
+    name: bindings · contract check and binding crates
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Cache the npm packages of package-lock.json
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json') }}
+      - name: Bootstrap kit, npm and the packages of package-lock.json (K992)
+        uses: ./.github/actions/kit-bootstrap
+      # actions/cache v6.1.0: the crates of Cargo and the builds of the workspace, keyed on their lock and the toolchain.
+      - name: Cache the crates and the builds of Cargo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-bindings-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
+      - name: Install, then run the checks and write their report
+        run: make ci-bindings
+      - name: Upload the report of the checks
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: report-bindings
+          path: var/report/ci-targets
+          if-no-files-found: error
+
   python:
     name: validator · Python
     runs-on: ubuntu-24.04
@@ -746,7 +778,7 @@ jobs:
           if-no-files-found: error
   ci-passed:
     if: ${{ always() }}
-    needs: [kit, runtime-tests, build-lint, validator-js, validator-php, validator-go, validator-rust, python, cross-check-console, cli, form-runtime, form-comparison, form-comparison-pipeline, form-comparison-browser, form-comparison-checks, package-browser, php-engine, native-generators, php-api, cross-language-equivalence, conformance]
+    needs: [kit, runtime-tests, build-lint, validator-js, validator-php, validator-go, validator-rust, bindings, python, cross-check-console, cli, form-runtime, form-comparison, form-comparison-pipeline, form-comparison-browser, form-comparison-checks, package-browser, php-engine, native-generators, php-api, cross-language-equivalence, conformance]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

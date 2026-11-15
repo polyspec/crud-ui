@@ -3,6 +3,7 @@
   "version": "0.0.20",
   "description": "The crud-ui-generator library of polyspec for Node and the browser",
   "license": "MIT",
+  "type": "module",
   "main": "./generated/index.cjs",
   "types": "./generated/index.d.ts",
   "exports": {
@@ -29,9 +30,16 @@
     "wasm/generated/*.d.ts",
     "wasm/generated/*.wasm"
   ],
-  "optionalDependencies": {
-    "@polyspec/crud-ui-generator-linux-x64-gnu": "0.0.20",
-    "@polyspec/crud-ui-generator-linux-arm64-gnu": "0.0.20",
-    "@polyspec/crud-ui-generator-darwin-arm64": "0.0.20"
+  "napi": {
+    "binaryName": "crud-ui-generator",
+    "targets": [
+      "x86_64-unknown-linux-gnu",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-apple-darwin"
+    ]
+  },
+  "dependencies": {
+    "@polyspec/crud-ui-validator": "*",
+    "@polyspec/json": "*"
   }
 }
