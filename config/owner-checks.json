@@ -604,8 +604,7 @@
     },
     {
       "paths": [
-        ".github/workflows/**",
-        "scripts/ci-plan.mts"
+        ".github/workflows/**"
       ],
       "tests": [
         "tests/build/ci-local.test.mts",

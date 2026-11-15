@@ -43,8 +43,10 @@ test('no tracked file names a Git commit, except the pin of an action and a lock
     let bytes: Buffer;
     try {
       bytes = readFileSync(path.join(repository, file));
-    } catch {
-      continue;
+    } catch (error) {
+      // A file deleted in the working tree, or a tracked link to a folder, has no bytes to read.
+      if (error instanceof Error && 'code' in error && (error.code === 'ENOENT' || error.code === 'EISDIR')) continue;
+      throw error;
     }
     if (bytes.includes(0)) continue;
     read += 1;

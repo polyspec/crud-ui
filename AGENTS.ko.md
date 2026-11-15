@@ -57,7 +57,7 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   `if`는 `uses` step만 가진다. recipe가 환경, 순서, 조건을 가진다: 먼저 설치(실패하면 멈춘다), 다음에 `make ci-targets`로 모든
   target을 끝까지 실행하는 검사, 마지막으로 실패 뒤에도 실행하는 context 정리. 그 상태는 검사의 상태이고, 검사가 통과했으면
   정리의 상태다. plan job은 `make kit-ci-plan`을 실행하고 matrix는 그 output에서 펼쳐진다. 펼침은 job의 내용이 아니기
-  때문이다. pipeline의 recipe는 같은 plan의 도구와 target을 읽는다(`scripts/ci-plan.mts`). 판정 job(`required`, `ci-passed`)은
+  때문이다. pipeline의 recipe는 kit의 job(`ci-setup --job`)을 실행하고, 그 job이 `config/ci.json`에서 도구와 target을 읽는다. 판정 job(`required`, `ci-passed`)은
   다른 job의 결과를 읽고 CI에만 있으며, 유일한 다른 expression으로 `make ci-passed RESULTS='${{ toJSON(needs) }}'`를 실행한다.
   local 실행은 `make ci-<job> NAME=value`이다. 예: `make ci-runtime RUNTIME=php`.
   Enforced by: `tests/build/ci-local.test.mts`, 모든 workflow의 모든 job을 읽고 dry run이 sudo를 실행하는 job의 recipe를 실패로

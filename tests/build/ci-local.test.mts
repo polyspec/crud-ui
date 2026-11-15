@@ -252,10 +252,16 @@ const preparation = [
   /^make kit-install-(?:php-arginfo|symbols)(?: EXTRACTORS="[^"]+")?$/,
 ];
 
+/** The first value of a matrix key, as the run step reads it: a string or a number, or '' for none. */
+function matrixFirst(values: unknown): string {
+  const first: unknown = Array.isArray(values) ? values[0] : undefined;
+  return typeof first === 'string' || typeof first === 'number' ? String(first) : '';
+}
+
 /** The run step of a job, `make ci-<job> NAME=value...`, with the first value of each matrix key that it names. */
 function runOf(job: Job): string | undefined {
   const run = (job.steps ?? []).find(step => typeof step.run === 'string')?.run?.trim();
-  return run?.replace(/\$\{\{ matrix\.([\w-]+) \}\}/g, (_, key: string) => String((field(job.strategy?.matrix, key) as unknown[] | undefined)?.[0] ?? ''));
+  return run?.replace(/\$\{\{ matrix\.([\w-]+) \}\}/g, (_, key: string) => matrixFirst(field(job.strategy?.matrix, key)));
 }
 
 /** The make calls of the recipe that the run step `run` starts, read from its dry run: each `make <target> ...` of CI_MAKE. */

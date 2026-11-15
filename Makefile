@@ -297,7 +297,7 @@ kit-gates-runtime-php-ext: ## Run the PHP extension gates, each past the failure
 	$(MAKE) --no-print-directory test-php-ext || status=1; \
 	exit $$status
 
-.PHONY: ci-targets ci-passed kit-ci-plan kit-ci-setup kit-ci-context-prepare kit-ci-context-cleanup
+.PHONY: ci-targets ci-passed kit-ci-plan
 CI_REPORT ?= var/report/ci-targets
 ci-targets: ## Run TARGETS past failures and write CI_REPORT (logs, record.json, summary.md)
 	$(NODE) $(KIT)/ci-targets.$(KIT_EXT) -k $(CI_REPORT) $(TARGETS)
@@ -307,15 +307,6 @@ ci-passed: ## Fail unless every job of RESULTS, the JSON of toJSON(needs), has t
 
 kit-ci-plan: ## Write the runtime, tool and target plan of config/ci.json to GITHUB_OUTPUT for .github/workflows/ci-pipeline.yml
 	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --plan
-
-kit-ci-setup: ## Run the setup targets of config/ci.json for GROUP=shared|runtime and RUNTIME=<runtime>
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --setup $(GROUP) $(RUNTIME)
-
-kit-ci-context-prepare: ## Run the context preparation target of config/ci.json for GROUP and RUNTIME, when it declares one
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-prepare $(GROUP) $(RUNTIME)
-
-kit-ci-context-cleanup: ## Run the context cleanup target of config/ci.json for GROUP and RUNTIME, when it declares one
-	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-cleanup $(GROUP) $(RUNTIME)
 
 # ---- The jobs of the CI workflows ------------------------------------------------------------------------------------
 # Each job of ci.yml, ci-pipeline.yml and pages.yml runs one recipe, make ci-<job>, with arguments NAME=value alone, and a local
@@ -327,13 +318,12 @@ kit-ci-context-cleanup: ## Run the context cleanup target of config/ci.json for 
 # through make ci-targets, every target to its end, then the cleanup of the context, also after a failed check; its status is
 # that of the checks, or that of the cleanup when the checks passed. The environment of a job is set here, for the recipe of
 # the job: the evidence of conformance, the cache of Puppeteer and the sandbox of Chrome, the shard of the runtime tests and the
-# base path of the documentation web. The jobs of the pipeline read their tools and their targets from the plan that kit
-# computes from config/ci.json (scripts/ci-plan.mts): the plan job writes the same plan into the outputs of GitHub (make
-# kit-ci-plan), and the matrix of the runtime jobs fans out from them. The lines start make through CI_MAKE, which names make
+# base path of the documentation web. The jobs of the pipeline are the jobs of kit (ci-setup --job), which read their tools,
+# their setup, their context and their targets from config/ci.json: the plan job writes the fan-out into the outputs of GitHub
+# (make kit-ci-plan), and the matrix of the runtime jobs fans out from it. The lines start make through CI_MAKE, which names make
 # without the variable MAKE, so a dry run prints the calls of a recipe and runs none of them. CI_TARGETS is the list of the
 # targets that the recipes of the jobs of ci.yml give make ci-targets, in the order of the jobs.
 CI_MAKE := $(MAKE) --no-print-directory
-CI_PLAN = $(NODE) scripts/ci-plan.mts $(KIT)/ci-setup.$(KIT_EXT)
 CI_EVIDENCE_JOBS := ci-runtime-tests ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-form-runtime ci-php-engine ci-php-api ci-cross-language-equivalence
 CI_BROWSER_JOBS := ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-native-generators
 $(CI_EVIDENCE_JOBS): export CRUDUI_CONFORMANCE_EVIDENCE := $(CURDIR)/conformance-evidence
@@ -348,25 +338,14 @@ $(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-
 CI_SHARDS := 4
 ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
 ci-docs-web: export DOCS_BASE_PATH := /crudui/
-.PHONY: ci-shared ci-runtime ci-context-targets crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+.PHONY: ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
 
-ci-shared: ## The job shared of ci-pipeline.yml: the tools of the plan, the shared setup, then the static gates in the shared context
-	tools="$$($(CI_PLAN) tools shared)" && { test -z "$$tools" || $(CI_MAKE) install-tools TOOLS="$$tools"; }
-	$(CI_MAKE) kit-ci-setup GROUP=shared
-	targets="$$($(CI_PLAN) targets shared)" && $(CI_MAKE) ci-context-targets GROUP=shared TARGETS="kit-gates-static $$targets"
+ci-shared: ## The job shared of ci-pipeline.yml: kit's job shared, its tools, its setup, then the static gates in the shared context
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --job shared
 
-ci-runtime: ## The job runtime of ci-pipeline.yml for RUNTIME: its tools, its setup, then its gates in its context
+ci-runtime: ## The job runtime of ci-pipeline.yml for RUNTIME: kit's job runtime, its tools, its setup, then its gates in its context
 	@test -n "$(RUNTIME)" || { echo 'ci-runtime: RUNTIME is required, for example make ci-runtime RUNTIME=php' >&2; exit 2; }
-	tools="$$($(CI_PLAN) tools runtime $(RUNTIME))" && { test -z "$$tools" || $(CI_MAKE) install-tools TOOLS="$$tools"; }
-	$(CI_MAKE) kit-ci-setup GROUP=runtime RUNTIME=$(RUNTIME)
-	targets="$$($(CI_PLAN) targets runtime $(RUNTIME))" && $(CI_MAKE) ci-context-targets GROUP=runtime RUNTIME=$(RUNTIME) TARGETS="kit-gates-runtime-$(RUNTIME) $$targets"
-
-# The cleanup runs after the prepare has run, also when the prepare or a target failed.
-ci-context-targets: ## Run TARGETS through make ci-targets inside the context of GROUP and RUNTIME that config/ci.json declares
-	status=0; \
-	if $(CI_MAKE) kit-ci-context-prepare; then $(CI_MAKE) ci-targets || status=$$?; else status=$$?; fi; \
-	$(CI_MAKE) kit-ci-context-cleanup || { cleanup=$$?; test "$$status" -ne 0 || status=$$cleanup; }; \
-	exit $$status
+	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --job runtime $(RUNTIME)
 
 # The PHP record servers run on PHP-FPM behind nginx (examples/form-comparison/servers/php); setup-php provides php-fpm on the
 # PATH of a runner, and apt installs the nginx of the runner image. The install changes the machine, so no recipe of a job runs

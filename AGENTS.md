@@ -61,7 +61,7 @@ ships as an example; this file states only the rules of crudui.
   stop it at a failure, then the checks through `make ci-targets`, every target to its end, then the cleanup of the context,
   also after a failure; its status is that of the checks, or that of the cleanup when the checks passed. The plan job runs
   `make kit-ci-plan`, from whose outputs the matrix fans out, because the fan-out is no content of a job, and the recipes of
-  the pipeline read the tools and the targets of the same plan (`scripts/ci-plan.mts`). A judgement job (`required`,
+  the pipeline run the jobs of kit (`ci-setup --job`), which read their tools and targets from `config/ci.json`. A judgement job (`required`,
   `ci-passed`) reads the results of the other jobs, exists only in CI and runs `make ci-passed RESULTS='${{ toJSON(needs) }}'`,
   the one other expression. A local run is `make ci-<job> NAME=value`, for example `make ci-runtime RUNTIME=php`.
   Enforced by: `tests/build/ci-local.test.mts`, which reads every job of every workflow and fails a recipe of a job whose dry
