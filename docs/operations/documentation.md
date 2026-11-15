@@ -84,8 +84,8 @@ sets the marker of every Korean file to the sha256 of its English file. The chec
 ## GitHub Pages
 
 The documentation URL is `https://polyspec.github.io/crudui/`. The repository's
-Pages publishing source is **GitHub Actions**. [CI](../../.github/workflows/ci.yml)
-runs `make docs-check` with `DOCS_BASE_PATH=/crudui/`, uploads `docs/.web/dist`,
+Pages publishing source is **GitHub Actions**. [Pages](../../.github/workflows/pages.yml)
+runs `make ci-docs-web`, whose recipe builds the web with `DOCS_BASE_PATH=/crudui/`, uploads `docs/.web/dist`,
 and deploys it to the `github-pages` environment. A `main` push or manual CI run
 on `main` publishes the web.
 

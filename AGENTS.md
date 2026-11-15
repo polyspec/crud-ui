@@ -46,6 +46,22 @@ ships as an example; this file states only the rules of crudui.
 
 ## Tools and dependencies
 
+- Own: A job of a workflow that CI runs (`ci.yml`, `ci-pipeline.yml`, `pages.yml`) holds its content in a recipe of the
+  `Makefile`, because a job whose content is YAML (several `run` steps, conditions of steps, expressions in commands, the
+  environment of a job) runs only on a runner of GitHub, and a local run must be the same call as CI. So a job that runs a
+  command has exactly one `run` step, `make ci-<job>` with arguments `NAME=value` alone; a value of the matrix is passed as
+  `NAME=${{ matrix.<key> }}`, and no other expression is in a run line. Every other step is a `uses` step that provisions the
+  runner or carries a result (the checkout, the caches, setup-php, the bootstrap action, the artifacts, the Pages actions), and
+  only a `uses` step has an `if`. The recipe holds the environment, the order and the conditions: the installs first, which
+  stop it at a failure, then the checks through `make ci-targets`, every target to its end, then the cleanup of the context,
+  also after a failure; its status is that of the checks, or that of the cleanup when the checks passed. The plan job runs
+  `make kit-ci-plan`, from whose outputs the matrix fans out, because the fan-out is no content of a job, and the recipes of
+  the pipeline read the tools and the targets of the same plan (`scripts/ci-plan.mts`). A judgement job (`required`,
+  `ci-passed`) reads the results of the other jobs, exists only in CI and runs `make ci-passed RESULTS='${{ toJSON(needs) }}'`,
+  the one other expression. A local run is `make ci-<job> NAME=value`, for example `make ci-runtime RUNTIME=php`. The release
+  workflow is the copy of kit and follows the rules of kit.
+  Enforced by: `tests/build/ci-local.test.mts`
+
 - Own: PHP 8.4 and later are allowed. A verification record states the PHP version that actually ran.
   Enforced by: none, the supported PHP range is the repository rule.
 

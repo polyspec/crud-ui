@@ -206,7 +206,7 @@ Node.js 런타임을 선언한 action은 허용하지 않습니다.
 브라우저 검사는 잠긴 `puppeteer`가 고정한 build의 Chrome과 Firefox, 잠긴 `playwright`가 고정한
 build의 WebKit을 실행합니다. `node scripts/install-browsers.mts <chrome|firefox|webkit>...`가
 그것들을 설치하며, machine의 브라우저나 릴리스 채널의 브라우저는 사용하지 않습니다. Linux CI
-브라우저 작업은 Puppeteer의 cache를 checkout의 `.tools/puppeteer`(`PUPPETEER_CACHE_DIR`)에 두고, 그
+브라우저 작업의 recipe(Makefile의 `CI_BROWSER_JOBS`)는 Puppeteer의 cache를 checkout의 `.tools/puppeteer`(`PUPPETEER_CACHE_DIR`)에 두고, 그
 Chrome의 set-user-ID sandbox helper를 `CHROME_DEVEL_SANDBOX`가 지정하는
 `/usr/local/sbin/chrome-devel-sandbox`에 설치합니다. 테스트 실행 전에 사전 검사는 브라우저와 모든
 상위 경로 구성요소가 심볼릭 링크를 해석하지 않는 정규 파일시스템 항목인지 확인합니다. 사전 검사는

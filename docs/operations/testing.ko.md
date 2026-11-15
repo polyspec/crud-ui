@@ -38,13 +38,17 @@ workflow의 모든 step은 make 대상을 실행합니다. 설치(`rust-toolchai
 `tests/build/ci-local.test.mts`는 make 없이 node, npm, npx, cargo, go, php, composer, rustup, python3, sh를 시작하는 step에서
 실패합니다.
 
-Makefile의 `CI_TARGETS`는 workflow의 대상을 그 순서대로 나열합니다. `tests/build/ci-local.test.mts`는 이 목록이
-`.github/workflows/ci.yml`과 다르면 실패합니다.
+`.github/workflows/ci.yml`, `ci-pipeline.yml`, `pages.yml`의 각 job은 run step을 하나 가지며, 그것은 `NAME=value` 인자만 가진
+`make ci-<job>`이고, Makefile의 그 대상의 recipe가 job의 내용을 가집니다: job의 환경, 실패하면 job을 멈추는 설치, 그다음
+모든 대상을 끝까지 실행하는 호출 하나 `make ci-targets TARGETS="..."`로 실행하는 검사. local 실행은 job과 같은 호출입니다.
+예: `make ci-validator-go`, `make ci-runtime-tests SHARD=2`, `make ci-form-comparison-browser FORM_SERVERS=go`. 내용이 YAML인
+job은 GitHub runner에서만 실행되기 때문입니다. job의 다른 step은 runner를 준비하거나 결과를 옮기며, 그 step만 `if`를
+가집니다. `tests/build/ci-local.test.mts`는 다른 run step, run step의 조건, job의 환경을 가진 job에서 실패합니다.
+Makefile의 `CI_TARGETS`는 그 recipe가 `make ci-targets`에 주는 대상을 job의 순서대로 나열합니다. `tests/build/ci-local.test.mts`는
+이 목록이 `.github/workflows/ci.yml`의 job의 recipe의 dry run과 다르면 실패합니다.
 
-실패는 이후 검사를 멈추지 않으므로 한 번의 실행이 모든 실패를 보고합니다. 각 CI job은 검사를 한 step,
-`make ci-targets TARGETS="..."`로 실행하고 이것은 모든 대상을 끝까지 실행하며, 그 step은 `if: ${{ !cancelled() }}`를
-가지므로 실패한 준비 단계가 그 job의 검사를 건너뛰게 하지 않습니다. `tests/build/ci-local.test.mts`는 그것이 없는
-검사 단계마다 작업과 단계를 적고 실패합니다. make는 처음 실패한
+실패는 이후 검사를 멈추지 않으므로 한 번의 실행이 모든 실패를 보고합니다. `make ci-targets`가 job의 모든 대상을 끝까지
+실행합니다. make는 처음 실패한
 prerequisite에서 멈추므로 Makefile 대상은 테스트를 실행하는 대상을 prerequisite로 두지 않습니다.
 `make crudui-test-native`와 `make docs-check`처럼 여러 테스트 대상을 실행하는 대상은 각각을
 `$(MAKE) <target> || status=1`로 실행하고 모은 상태로 끝납니다. make는 처음 실패한 recipe 줄에서도 멈추므로,
@@ -281,7 +285,7 @@ Puppeteer가 고정한 Chromium·Firefox build와 Playwright가 고정한 WebKit
 첫 실패 줄과 log를 밝히며(`node_modules/@polyspec/kit/dist/target-report.mjs`), 같은 글이 GitHub Actions의 job summary로 갑니다. 실행은 lock
 `var/report/ci-targets.lock`을 잡으므로 두 실행이 한 보고서를 쓰지 않고, 대상이 실패하면 status 1로 끝납니다. 각 job은
 `var/report/ci-targets`를 artifact `report-<job>`으로 `if: ${{ !cancelled() }}`와
-`if-no-files-found: error`로 올립니다. `tests/build/ci-local.test.mts`는 `make ci-targets` 밖에서 검사를 실행하거나
+`if-no-files-found: error`로 올립니다. `tests/build/ci-local.test.mts`는 recipe가 `make ci-targets` 밖에서 검사를 실행하거나
 보고서를 올리지 않는 job에서 실패하고, polyspec/kit의 `tests/kit/ci.test.mts`는 실패하는 probe 대상과 통과하는 probe
 대상을 실행해 두 log, summary의 실패 줄, job summary를 확인합니다.
 

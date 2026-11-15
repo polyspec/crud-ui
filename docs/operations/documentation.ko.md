@@ -77,8 +77,8 @@ twin을 검토하고 `make documents-stamp`를 실행하며, 이것이 모든 �
 ## GitHub Pages
 
 문서 URL은 `https://polyspec.github.io/crudui/`입니다. 저장소 Pages의 게시 소스는
-**GitHub Actions**입니다. [CI](../../.github/workflows/ci.yml)는
-`DOCS_BASE_PATH=/crudui/`로 `make docs-check`를 실행하고 `docs/.web/dist`를
+**GitHub Actions**입니다. [Pages](../../.github/workflows/pages.yml)는
+recipe가 `DOCS_BASE_PATH=/crudui/`로 웹을 build하는 `make ci-docs-web`을 실행하고 `docs/.web/dist`를
 업로드한 뒤 `github-pages` 환경에 배포합니다. `main` 푸시 또는 `main`의 CI
 수동 실행은 웹을 게시합니다.
 

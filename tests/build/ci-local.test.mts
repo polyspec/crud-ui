@@ -27,10 +27,10 @@ const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 /** The inputs of a workflow step (`with:`) that these tests read. */
 interface StepInputs { path?: string; name?: string; key?: string; cache?: string; pattern?: string; 'if-no-files-found'?: string }
 /** A step of a GitHub Actions job. */
-interface Step { name?: string; run?: string; uses?: string; if?: string; with?: StepInputs }
+interface Step { name?: string; run?: string; uses?: string; if?: string; with?: StepInputs; env?: Record<string, string> }
 /** A job of a GitHub Actions workflow; needs is a job id or a list of them. */
 interface Job {
-  name?: string; if?: string; needs?: unknown; 'runs-on'?: string; steps?: Step[]; strategy?: { matrix?: { php?: string[]; shard?: string[] }; 'fail-fast'?: boolean };
+  name?: string; if?: string; needs?: unknown; uses?: string; 'runs-on'?: string; steps?: Step[]; strategy?: { matrix?: { php?: string[]; shard?: string[] }; 'fail-fast'?: boolean };
   env?: Record<string, string>;
   environment?: { name?: string };
 }
@@ -39,7 +39,7 @@ interface Workflow { on?: unknown; concurrency?: unknown; jobs: Record<string, J
 
 const stepSchema: JTDSchemaType<Step> = {
   optionalProperties: {
-    name: { type: 'string' }, run: { type: 'string' }, uses: { type: 'string' }, if: { type: 'string' },
+    name: { type: 'string' }, run: { type: 'string' }, uses: { type: 'string' }, if: { type: 'string' }, env: { values: { type: 'string' } },
     with: {
       optionalProperties: {
         path: { type: 'string' }, name: { type: 'string' }, key: { type: 'string' }, cache: { type: 'string' }, pattern: { type: 'string' },
@@ -55,7 +55,7 @@ const workflowSchema: JTDSchemaType<Workflow> = {
     jobs: {
       values: {
         optionalProperties: {
-          name: { type: 'string' }, if: { type: 'string' }, needs: {}, 'runs-on': { type: 'string' }, steps: { elements: stepSchema },
+          name: { type: 'string' }, if: { type: 'string' }, needs: {}, uses: { type: 'string' }, 'runs-on': { type: 'string' }, steps: { elements: stepSchema },
           strategy: { optionalProperties: { matrix: { optionalProperties: { php: { elements: { type: 'string' } }, shard: { elements: { type: 'string' } } }, additionalProperties: true }, 'fail-fast': { type: 'boolean' } }, additionalProperties: true },
           env: { values: { type: 'string' } },
           environment: { optionalProperties: { name: { type: 'string' } }, additionalProperties: true },
@@ -127,32 +127,129 @@ test('each make job runs the kit bootstrap action before make (K992)', async () 
   assert.ok(jobs > 0, 'the kit bootstrap selection checks at least one make job');
 });
 
-// Steps that prepare a runner rather than check the repository.
+// The workflows that CI runs: every workflow but release.yml, the copy of kit, which follows the rules of kit (C19.20).
+const CI_WORKFLOWS = ['ci-pipeline.yml', 'ci.yml', 'pages.yml'];
+// The plan job writes the outputs from which the matrix of the runtime jobs fans out; the judgement jobs read the results of
+// the other jobs, which exist only in CI.
+const PLAN_JOB = 'plan';
+const PLAN_RUN = 'make kit-ci-plan';
+const JUDGE_JOBS = new Set(['required', 'ci-passed']);
+const JUDGE_RUN = /^make ci-passed RESULTS='\$\{\{ toJSON\(needs\) \}\}'(?: FAIL_SKIPPED=1)?$/;
+// An argument of the run step of a job: NAME=value, NAME="words", or NAME=${{ matrix.<key> }} or NAME=${{ inputs.<key> }}, a
+// parameter that the fan-out or the caller of the workflow gives the job.
+const JOB_ARGUMENT = String.raw`[A-Z][A-Z0-9_]*=(?:[A-Za-z0-9_.,/-]+|"[A-Za-z0-9_.,/ -]+"|\$\{\{ (?:matrix|inputs)\.[A-Za-z0-9_-]+ \}\})`;
+
+/**
+ * The findings of the jobs of a workflow that CI runs, as `job: finding`: a job holds its content in a recipe of the Makefile, so
+ * a job that runs steps has exactly one run step, `make ci-<job>` with arguments of JOB_ARGUMENT alone, the plan job `make
+ * kit-ci-plan` and a judgement job `make ci-passed` with RESULTS of its needs; a run step has no condition and no environment,
+ * and a job sets no environment of its own, which its recipe sets; every other step is a uses step, and only a uses step has a
+ * condition. A job that calls a workflow, or whose every step is a uses step, runs no recipe.
+ */
+export function jobContentFindings(workflow: Workflow): string[] {
+  const findings: string[] = [];
+  for (const [id, job] of Object.entries(workflow.jobs)) {
+    if (job.uses !== undefined) continue;
+    const steps = job.steps ?? [];
+    const runs = steps.filter(step => step.run !== undefined);
+    if (runs.length !== 1 && !(runs.length === 0 && steps.length > 0)) findings.push(`${id}: has ${String(runs.length)} run steps, not one`);
+    if (job.env !== undefined) findings.push(`${id}: sets the environment ${Object.keys(job.env).join(', ')}, which its recipe sets`);
+    for (const step of steps) {
+      if (step.run === undefined) {
+        if (step.uses === undefined) findings.push(`${id}: a step is neither a run step nor a uses step`);
+        continue;
+      }
+      const run = step.run.trim();
+      const expected = id === PLAN_JOB ? run === PLAN_RUN : JUDGE_JOBS.has(id) ? JUDGE_RUN.test(run) : new RegExp(`^make ci-${id}(?: ${JOB_ARGUMENT})*$`).test(run);
+      if (!expected) findings.push(`${id}: the run step is not ${id === PLAN_JOB ? PLAN_RUN : JUDGE_JOBS.has(id) ? 'make ci-passed with RESULTS of its needs' : `make ci-${id} with arguments NAME=value`}: ${run}`);
+      if (step.if !== undefined) findings.push(`${id}: the run step has a condition`);
+      if (step.env !== undefined) findings.push(`${id}: the run step sets an environment`);
+    }
+  }
+  return findings;
+}
+
+test('a job of a workflow that CI runs has one run step, make ci-<job>, and its other steps are uses steps (C19.20)', () => {
+  const checkout = { uses: 'actions/checkout@x' };
+  assert.deepEqual(jobContentFindings({ jobs: {
+    plan: { steps: [checkout, { run: 'make kit-ci-plan' }] },
+    shared: { steps: [checkout, { uses: 'shivammathur/setup-php@x', if: "${{ contains(needs.plan.outputs.common_tools, 'php') }}" }, { run: 'make ci-shared' }, { uses: 'actions/upload-artifact@x', if: '${{ !cancelled() }}' }] },
+    runtime: { steps: [checkout, { run: 'make ci-runtime RUNTIME=${{ matrix.runtime }}' }] },
+    browser: { steps: [checkout, { run: 'make ci-browser FORM_SERVERS=${{ matrix.server }} BROWSERS="chrome --chrome-sandbox"' }] },
+    deploy: { steps: [{ uses: 'actions/deploy-pages@x' }] },
+    kit: { uses: './.github/workflows/ci-pipeline.yml' },
+    required: { steps: [checkout, { run: "make ci-passed RESULTS='${{ toJSON(needs) }}'" }] },
+    'ci-passed': { steps: [checkout, { run: "make ci-passed RESULTS='${{ toJSON(needs) }}' FAIL_SKIPPED=1" }] },
+  } }), []);
+  assert.deepEqual(jobContentFindings({ jobs: {
+    two: { steps: [{ run: 'make install-tools TOOLS="node"' }, { run: 'make ci-two', if: '${{ !cancelled() }}' }] },
+    none: { steps: [] },
+    shell: { steps: [{ run: 'sudo apt-get install -y nginx\nphp-fpm -v' }] },
+    expression: { steps: [{ run: 'make ci-expression TARGETS="kit-gates-runtime-${{ matrix.runtime }}"' }] },
+    joined: { steps: [{ run: "make ci-joined TOOLS=${{ join(matrix.installTools, ' ') }}" }] },
+    environment: { env: { CRUDUI_TEST_SHARD: '${{ matrix.shard }}/4' }, steps: [{ run: 'make ci-environment', env: { A: '1' } }] },
+    named: { steps: [{ with: { name: 'x' } }, { run: 'make ci-named' }] },
+    plan: { steps: [{ run: 'make ci-plan' }] },
+    required: { steps: [{ run: 'make ci-passed FAIL_SKIPPED=1' }] },
+  } }), [
+    'two: has 2 run steps, not one',
+    'two: the run step is not make ci-two with arguments NAME=value: make install-tools TOOLS="node"',
+    'two: the run step has a condition',
+    'none: has 0 run steps, not one',
+    'shell: the run step is not make ci-shell with arguments NAME=value: sudo apt-get install -y nginx\nphp-fpm -v',
+    'expression: the run step is not make ci-expression with arguments NAME=value: make ci-expression TARGETS="kit-gates-runtime-${{ matrix.runtime }}"',
+    "joined: the run step is not make ci-joined with arguments NAME=value: make ci-joined TOOLS=${{ join(matrix.installTools, ' ') }}",
+    'environment: sets the environment CRUDUI_TEST_SHARD, which its recipe sets',
+    'environment: the run step sets an environment',
+    'named: a step is neither a run step nor a uses step',
+    'plan: the run step is not make kit-ci-plan: make ci-plan',
+    'required: the run step is not make ci-passed with RESULTS of its needs: make ci-passed FAIL_SKIPPED=1',
+  ]);
+});
+
+test('every job of the workflows that CI runs holds its content in a recipe of the Makefile (C19.20)', async () => {
+  const workflows = (await readdir(new URL('../../.github/workflows/', import.meta.url))).filter(file => /\.ya?ml$/.test(file)).sort();
+  assert.deepEqual(workflows.filter(file => file !== 'release.yml'), [...CI_WORKFLOWS].sort(), 'a workflow other than release.yml is not a workflow that CI runs');
+  const findings: string[] = [];
+  for (const file of CI_WORKFLOWS) findings.push(...jobContentFindings(await workflowFile(file)).map(finding => `${file} ${finding}`));
+  assert.deepEqual(findings, []);
+});
+
+// The calls of a recipe that prepare a runner rather than check the repository.
 const preparation = [
   /^make(?: (?:crudui-)?install-[\w-]+)+(?: [A-Z]+="[^"]*")?$/,
   /^make check-ci-browser$/,
   /^make kit-install-(?:php-arginfo|symbols)(?: EXTRACTORS="[^"]+")?$/,
-  /^sudo apt-get install -y --no-install-recommends nginx$/,
-  /^php-fpm -v$/,
-  /^nginx -v$/,
 ];
 
-/** The checking commands of the workflow, in job and step order. */
-export function workflowCommands(workflow: Workflow): string[] {
+/** The run step of a job, `make ci-<job> NAME=value...`, with the first value of each matrix key that it names. */
+function runOf(job: Job): string | undefined {
+  const run = (job.steps ?? []).find(step => typeof step.run === 'string')?.run?.trim();
+  return run?.replace(/\$\{\{ matrix\.([\w-]+) \}\}/g, (_, key: string) => String((field(job.strategy?.matrix, key) as unknown[] | undefined)?.[0] ?? ''));
+}
+
+/** The make calls of the recipe that the run step `run` starts, read from its dry run: each `make <target> ...` of CI_MAKE. */
+export function recipeCalls(run: string): string[] {
+  const [, target, ...variables] = run.split(/ (?=[A-Z][A-Z0-9_]*=|[a-z])/);
+  assert.ok(target !== undefined && run.startsWith('make '), `the run step ${run} is no make target`);
+  const dry = makeDryRun(ROOT, target, { variables: variables.map(variable => variable.replace(/^([A-Z][A-Z0-9_]*)="(.*)"$/, '$1=$2')) });
+  assert.equal(dry.status, 0, `${run}: ${dry.stderr}`);
+  return [...dry.stdout.matchAll(/\bmake --no-print-directory (.*?)(?:;|$| \|\| | && )/gm)].map(match => `make ${match[1] ?? ''}`.trim());
+}
+
+/** The checking commands of the workflow, in job order: the targets of make ci-targets and every other call of each recipe that prepares nothing. */
+export function workflowCommands(workflow: Workflow, calls: (run: string) => string[] = recipeCalls): string[] {
   const commands: string[] = [];
   for (const [id, job] of Object.entries(workflow.jobs)) {
-    // The completion job reads the results of the other jobs and checks no part of the tree.
-    if (id === 'ci-passed') continue;
-    for (const step of job.steps ?? []) {
-      if (typeof step.run !== 'string') continue;
-      for (const line of step.run.split('\n').map((text) => text.trim()).filter(Boolean)) {
-        for (const command of line.split(' && ')) {
-          // make ci-targets runs each target of TARGETS as make -k <target> (ci-targets of @polyspec/kit).
-          const targets = /^make ci-targets TARGETS="([^"]+)"$/.exec(command);
-          if (targets?.[1] !== undefined) commands.push(...targets[1].split(' ').map((target) => `make ${target}`));
-          else if (!preparation.some((pattern) => pattern.test(command))) commands.push(command);
-        }
-      }
+    // The judgement job reads the results of the other jobs and checks no part of the tree.
+    if (JUDGE_JOBS.has(id)) continue;
+    const run = runOf(job);
+    if (run === undefined) continue;
+    for (const command of calls(run)) {
+      // make ci-targets runs each target of TARGETS as make -k <target> (ci-targets of @polyspec/kit).
+      const targets = /^make ci-targets TARGETS="([^"]+)"$/.exec(command);
+      if (targets?.[1] !== undefined) commands.push(...targets[1].split(' ').map((target) => `make ${target}`));
+      else if (!preparation.some((pattern) => pattern.test(command))) commands.push(command);
     }
   }
   return commands;
@@ -295,21 +392,6 @@ test('a CI install takes OrderedJSON only from its installed packages: no clone 
   assert.doesNotMatch(readFileSync(path.join(ROOT, 'config/layout.yml'), 'utf8'), /\.\.\/ordered-json/);
 });
 
-/** The steps that run a checking command without `if: ${{ !cancelled() }}`, as `job: step`. */
-export function stepsStoppedByFailure(workflow: Workflow): string[] {
-  const violations: string[] = [];
-  for (const [id, job] of Object.entries(workflow.jobs)) {
-    for (const step of job.steps ?? []) {
-      if (typeof step.run !== 'string') continue;
-      if (workflowCommands({ jobs: { [id]: { steps: [step] } } }).length === 0) continue;
-      if (String(step.if ?? '').replace(/\s+/g, ' ').trim() !== '${{ !cancelled() }}') {
-        violations.push(`${job.name ?? id}: ${step.name ?? step.run}`);
-      }
-    }
-  }
-  return violations;
-}
-
 // The programs that a workflow step starts only through a make target, whose recipes start them with the offline
 // settings, $(NPM) and the toolchains of the checkout (docs/operations/testing.md).
 const THROUGH_MAKE = new Set(['node', 'npm', 'npx', 'cargo', 'go', 'php', 'composer', 'rustup', 'python3', 'sh']);
@@ -345,38 +427,47 @@ test('a workflow step starts every tool through a make target', async () => {
 });
 
 /**
- * The jobs of a workflow that run a check outside make ci-targets, or run checks without uploading their report under
- * `if: ${{ !cancelled() }}` with `if-no-files-found: error`, as `job: problem`.
+ * The jobs of a workflow whose recipe runs a check outside make ci-targets, or that run checks without uploading their report
+ * under `if: ${{ !cancelled() }}` with `if-no-files-found: error`, as `job: problem`. `calls` gives the make calls of the
+ * recipe of a run step.
  */
-export function jobsWithoutReport(workflow: Workflow): string[] {
+export function jobsWithoutReport(workflow: Workflow, calls: (run: string) => string[] = recipeCalls): string[] {
   const violations: string[] = [];
   for (const [id, job] of Object.entries(workflow.jobs)) {
+    if (JUDGE_JOBS.has(id) || id === PLAN_JOB) continue;
     const steps = job.steps ?? [];
-    const runners = steps.filter((step) => /^make ci-targets TARGETS="[^"]+"$/.test(String(step.run ?? '').trim()));
-    for (const step of steps) {
-      if (typeof step.run !== 'string' || runners.includes(step)) continue;
-      if (workflowCommands({ jobs: { [id]: { steps: [step] } } }).length) violations.push(`${id}: ${step.name ?? step.run} runs a check outside make ci-targets`);
+    const step = steps.find(entry => typeof entry.run === 'string');
+    const run = runOf(job);
+    if (step === undefined || run === undefined) continue;
+    const recipe = calls(run);
+    for (const command of recipe) {
+      if (/^make ci-(?:targets|context-targets) /.test(command) || preparation.some((pattern) => pattern.test(command))) continue;
+      violations.push(`${id}: ${command} runs a check outside make ci-targets`);
     }
-    const last = runners.at(-1);
-    if (last === undefined) continue;
-    const index = steps.indexOf(last);
-    const upload = steps.slice(index + 1).find((step) => String(step.uses ?? '').startsWith('actions/upload-artifact@') && step.with?.path === 'var/report/ci-targets');
+    if (!recipe.some(command => /^make ci-(?:targets|context-targets) /.test(command))) continue;
+    const upload = steps.slice(steps.indexOf(step) + 1).find((entry) => String(entry.uses ?? '').startsWith('actions/upload-artifact@') && /^var\/report\/ci-targets\/?$/.test(entry.with?.path ?? ''));
     if (!upload) violations.push(`${id}: uploads no report of var/report/ci-targets after its checks`);
     else {
       if (String(upload.if ?? '').replace(/\s+/g, ' ').trim() !== '${{ !cancelled() }}') violations.push(`${id}: the report upload does not run after a failure`);
-      if (upload.with?.['if-no-files-found'] !== 'error') violations.push(`${id}: the report upload does not fail without a report`);
+      if (upload.with?.['if-no-files-found'] !== 'error' ) violations.push(`${id}: the report upload does not fail without a report`);
     }
   }
   return violations;
 }
 
 test('every job runs its checks through make ci-targets and uploads their report', async () => {
+  const recipes: Record<string, string[]> = {
+    'make ci-a': ['make install-tools TOOLS="node"', 'make lint'],
+    'make ci-b': ['make ci-targets TARGETS="lint"'],
+    'make ci-c': ['make ci-targets TARGETS="lint"'],
+    'make ci-d': ['make install-tools TOOLS="node"', 'make ci-targets TARGETS="lint"'],
+  };
   assert.deepEqual(jobsWithoutReport({ jobs: {
-    a: { steps: [{ run: 'make install-tools' }, { run: 'make lint', if: '${{ !cancelled() }}' }] },
-    b: { steps: [{ run: 'make ci-targets TARGETS="lint"', if: '${{ !cancelled() }}' }] },
-    c: { steps: [{ run: 'make ci-targets TARGETS="lint"' }, { uses: 'actions/upload-artifact@x', if: 'always()', with: { path: 'var/report/ci-targets' } }] },
-    d: { steps: [{ run: 'make ci-targets TARGETS="lint"' }, { uses: 'actions/upload-artifact@x', if: '${{ !cancelled() }}', with: { path: 'var/report/ci-targets', 'if-no-files-found': 'error' } }] },
-  } }), [
+    a: { steps: [{ run: 'make ci-a' }] },
+    b: { steps: [{ run: 'make ci-b' }] },
+    c: { steps: [{ run: 'make ci-c' }, { uses: 'actions/upload-artifact@x', if: 'always()', with: { path: 'var/report/ci-targets' } }] },
+    d: { steps: [{ run: 'make ci-d' }, { uses: 'actions/upload-artifact@x', if: '${{ !cancelled() }}', with: { path: 'var/report/ci-targets', 'if-no-files-found': 'error' } }] },
+  } }, run => recipes[run] ?? []), [
     'a: make lint runs a check outside make ci-targets',
     'b: uploads no report of var/report/ci-targets after its checks',
     'c: the report upload does not run after a failure',
@@ -394,36 +485,18 @@ test('every job runs its checks through make ci-targets and uploads their report
   assert.deepEqual(violations, []);
 });
 
-test('every checking step of the CI workflow runs after an earlier failure', async () => {
-  const violations = stepsStoppedByFailure(await workflowFile('ci.yml'));
-  assert.deepEqual(violations, []);
-});
-
-test('a checking step that a failure skips is reported by job and step', () => {
-  const violations = stepsStoppedByFailure({
-    jobs: {
-      a: {
-        name: 'build',
-        steps: [
-          { uses: 'actions/checkout@v6' },
-          { name: 'Install', run: 'make install-packages' },
-          { name: 'Test', run: 'make test-x' },
-          { name: 'Lint', run: 'make lint', if: '${{ !cancelled() }}' },
-          { run: 'make typecheck', if: 'success()' },
-        ],
-      },
-    },
-  });
-  assert.deepEqual(violations, ['build: Test', 'build: make typecheck']);
-});
-
 test('a workflow command missing from CI_TARGETS is reported', () => {
+  const recipes: Record<string, string[]> = {
+    'make ci-a': ['make install-packages crudui-install-composer', 'make lint'],
+    'make ci-b SHARD=1': ['make install-tools TOOLS="node"', 'make ci-targets TARGETS="test-x test-y"'],
+  };
   const workflow = workflowCommands({
     jobs: {
-      a: { steps: [{ run: 'make install-packages crudui-install-composer' }, { run: 'make lint' }] },
-      b: { steps: [{ run: 'make test-x && make test-y' }] },
+      a: { steps: [{ run: 'make ci-a' }] },
+      b: { strategy: { matrix: { shard: ['1', '2'] } }, steps: [{ run: 'make ci-b SHARD=${{ matrix.shard }}' }] },
+      'ci-passed': { steps: [{ run: "make ci-passed RESULTS='${{ toJSON(needs) }}' FAIL_SKIPPED=1" }] },
     },
-  });
+  }, run => recipes[run] ?? []);
   assert.deepEqual(workflow, ['make lint', 'make test-x', 'make test-y']);
   const local = makeCommands('CI_TARGETS = \\\n\tlint \\\n\ttest-x\n');
   assert.notDeepEqual(local, workflow);
@@ -478,18 +551,23 @@ console.log(JSON.stringify({ venv: process.env.UV_PROJECT_ENVIRONMENT }));
 
 
 test('every application workflow declares a bounded tool installation scope', async () => {
+  let recipes = 0;
   for (const file of ['ci.yml', 'pages.yml']) {
     const workflow = await workflowFile(file);
     for (const [id, job] of Object.entries(workflow.jobs)) {
-      for (const step of job.steps ?? []) {
-        const run = step.run ?? '';
-        assert.doesNotMatch(run, /(?:^|\n)\s*make install-tools\s*(?:\n|$)/, `${file} ${id}`);
-        assert.doesNotMatch(run, /(?:^|\n)\s*make install\s*(?:\n|$)/, `${file} ${id}`);
+      const run = runOf(job);
+      if (run === undefined || JUDGE_JOBS.has(id)) continue;
+      recipes += 1;
+      for (const command of recipeCalls(run)) {
+        assert.doesNotMatch(command, /^make install-tools$/, `${file} ${id}`);
+        assert.doesNotMatch(command, /^make install$/, `${file} ${id}`);
       }
     }
   }
-  const pages = jobOf(await workflowFile('pages.yml'), 'docs-web');
-  assert.ok((pages.steps ?? []).some(step => step.run === 'make install-tools TOOLS="node go rust php composer"'));
+  assert.ok(recipes > 10, 'the scope check reads the recipes of the jobs');
+  const pages = runOf(jobOf(await workflowFile('pages.yml'), 'docs-web'));
+  assert.equal(pages, 'make ci-docs-web');
+  assert.ok(recipeCalls(pages).includes('make install-tools TOOLS="node go rust php composer"'));
 });
 
 

@@ -227,8 +227,8 @@ replaces that runtime during execution.
 The browser checks run Chrome and Firefox at the builds that the locked
 `puppeteer` pins and WebKit at the build that the locked `playwright` pins;
 `node scripts/install-browsers.mts <chrome|firefox|webkit>...` installs them, and
-no browser of the machine or of a release channel is used. Linux CI browser jobs
-keep the cache of Puppeteer in `.tools/puppeteer` of the checkout
+no browser of the machine or of a release channel is used. The recipes of the Linux CI browser jobs
+(`CI_BROWSER_JOBS` of the Makefile) keep the cache of Puppeteer in `.tools/puppeteer` of the checkout
 (`PUPPETEER_CACHE_DIR`) and install the set-user-ID sandbox helper of that
 Chrome at `/usr/local/sbin/chrome-devel-sandbox`, which `CHROME_DEVEL_SANDBOX`
 names. Before tests start, a preflight requires the browser and every parent path

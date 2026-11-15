@@ -109,8 +109,10 @@ test('every TypeScript package declares a typecheck that CI runs', () => {
   const packages = execFileSync('git', ['ls-files', 'packages/*/tsconfig.json'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean).map(path.dirname);
   const missing = packages.filter(directory => !manifestOf(`${directory}/package.json`).scripts?.['typecheck']);
   assert.deepEqual(missing, []);
+  // The job build-lint of ci.yml runs make ci-build-lint, whose recipe gives typecheck to make ci-targets (C19.20).
   const ci = tracked.filter(file => file.startsWith('.github/workflows/')).flatMap(file => projectCommands(file, read(file)).map((item: ProjectCommand) => item.command));
-  assert.ok(ci.some(command => /^make ci-targets TARGETS="(?:[\w-]+ )*typecheck(?: [\w-]+)*"$/.test(command)), 'CI does not run make typecheck');
+  assert.ok(ci.includes('make ci-build-lint'), 'CI does not run make ci-build-lint');
+  assert.ok((targetsOf(read('Makefile'))['ci-build-lint']?.commands ?? []).some(command => /^\$\(CI_MAKE\) ci-targets TARGETS="(?:[\w-]+ )*typecheck(?: [\w-]+)*"$/.test(command)), 'the recipe of the CI job build-lint does not run make typecheck');
   assert.deepEqual(targetsOf(read('Makefile')).typecheck?.commands, ['$(NPM) run typecheck', 'node_modules/.bin/tsc -p tsconfig.json', 'node_modules/.bin/tsc -p examples/form-comparison/src/tsconfig.json']);
 });
 

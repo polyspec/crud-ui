@@ -42,13 +42,18 @@ recipes start every tool with the offline settings, `$(NPM)` and the toolchains 
 `tests/build/ci-local.test.mts` fails for a step that starts node, npm, npx, cargo, go, php,
 composer, rustup, python3 or sh without make.
 
-`CI_TARGETS` of the Makefile lists the targets of the workflow in its order; `tests/build/ci-local.test.mts` fails
-when the list differs from `.github/workflows/ci.yml`.
+Each job of `.github/workflows/ci.yml`, `ci-pipeline.yml` and `pages.yml` has one run step, `make ci-<job>` with
+arguments `NAME=value` alone, and the recipe of that target in the Makefile holds the content of the job: its environment,
+its installs, which stop the job at a failure, and then its checks in one call, `make ci-targets TARGETS="..."`, which runs
+every target to its end. A local run makes the same call as the job, for example `make ci-validator-go`,
+`make ci-runtime-tests SHARD=2` or `make ci-form-comparison-browser FORM_SERVERS=go`, because a job whose content is YAML
+runs only on a runner of GitHub. The other steps of a job provision the runner or carry a result, and only they have an `if`.
+`tests/build/ci-local.test.mts` fails for a job with another run step, a condition on a run step or an environment of a job.
+`CI_TARGETS` of the Makefile lists the targets that those recipes give `make ci-targets`, in the order of the jobs;
+`tests/build/ci-local.test.mts` fails when the list differs from the dry runs of the recipes of the jobs of `.github/workflows/ci.yml`.
 
-A failure never stops the later checks, so one run reports every failure. Each CI job runs its
-checks in one step, `make ci-targets TARGETS="..."`, which runs every target to its end, and that
-step has `if: ${{ !cancelled() }}`, so a failed preparation does not skip the checks of its job;
-`tests/build/ci-local.test.mts` fails with the job and the step of each checking step without it. A Makefile target never takes a target that runs tests as a prerequisite, because
+A failure never stops the later checks, so one run reports every failure: `make ci-targets` runs every target of a job to its
+end. A Makefile target never takes a target that runs tests as a prerequisite, because
 make stops at the first prerequisite that fails; a target that runs several test targets, such as
 `make crudui-test-native` and `make docs-check`, runs each with `$(MAKE) <target> || status=1` and exits
 with the collected status. Make also stops at the first recipe line that fails, so the recipe line
@@ -312,8 +317,8 @@ failure lines and its log (`node_modules/@polyspec/kit/dist/target-report.mjs`),
 GitHub Actions. The run holds the lock `var/report/ci-targets.lock`, so two runs never write one
 report, and ends with status 1 when a target failed. Each job uploads `var/report/ci-targets` as the
 artifact `report-<job>` under `if: ${{ !cancelled() }}` with
-`if-no-files-found: error`. `tests/build/ci-local.test.mts` fails for a job that runs a check outside
-`make ci-targets` or uploads no report, and `tests/kit/ci.test.mts` of polyspec/kit runs a failing and a
+`if-no-files-found: error`. `tests/build/ci-local.test.mts` fails for a job whose recipe runs a check outside
+`make ci-targets` or that uploads no report, and `tests/kit/ci.test.mts` of polyspec/kit runs a failing and a
 passing probe target and finds both logs, the failure line in the summary and the job summary.
 
 ## Shared resources

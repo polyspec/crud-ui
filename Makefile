@@ -317,6 +317,199 @@ kit-ci-context-prepare: ## Run the context preparation target of config/ci.json 
 kit-ci-context-cleanup: ## Run the context cleanup target of config/ci.json for GROUP and RUNTIME, when it declares one
 	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --context-cleanup $(GROUP) $(RUNTIME)
 
+# ---- The jobs of the CI workflows ------------------------------------------------------------------------------------
+# Each job of ci.yml, ci-pipeline.yml and pages.yml runs one recipe, make ci-<job>, with arguments NAME=value alone, and a local
+# run makes the same call (for example make ci-runtime RUNTIME=php, make ci-form-comparison-browser FORM_SERVERS=go). The
+# workflow keeps only the steps that provision the runner or carry a result (the checkout, the caches, setup-php, the bootstrap
+# action, the downloads and uploads of artifacts, the Pages actions), because a job whose content is YAML, with steps,
+# conditions of steps and expressions in its commands, runs nowhere but on a runner of GitHub. A recipe holds the order and the
+# conditions of its job: the installs and the prerequisites first, each line stopping the recipe at its failure, then the checks
+# through make ci-targets, every target to its end, then the cleanup of the context, also after a failed check; its status is
+# that of the checks, or that of the cleanup when the checks passed. The environment of a job is set here, for the recipe of
+# the job: the evidence of conformance, the cache of Puppeteer and the sandbox of Chrome, the shard of the runtime tests and the
+# base path of the documentation web. The jobs of the pipeline read their tools and their targets from the plan that kit
+# computes from config/ci.json (scripts/ci-plan.mts): the plan job writes the same plan into the outputs of GitHub (make
+# kit-ci-plan), and the matrix of the runtime jobs fans out from them. The lines start make through CI_MAKE, which names make
+# without the variable MAKE, so a dry run prints the calls of a recipe and runs none of them. CI_TARGETS is the list of the
+# targets that the recipes of the jobs of ci.yml give make ci-targets, in the order of the jobs.
+CI_MAKE := $(MAKE) --no-print-directory
+CI_PLAN = $(NODE) scripts/ci-plan.mts $(KIT)/ci-setup.$(KIT_EXT)
+CI_EVIDENCE_JOBS := ci-runtime-tests ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-form-runtime ci-php-engine ci-php-api ci-cross-language-equivalence
+CI_BROWSER_JOBS := ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-native-generators
+$(CI_EVIDENCE_JOBS): export CRUDUI_CONFORMANCE_EVIDENCE := $(CURDIR)/conformance-evidence
+ci-conformance: export CRUDUI_CONFORMANCE_EVIDENCE := conformance-evidence
+# The Chrome and Firefox builds that puppeteer pins, in the checkout (scripts/install-browsers.mts), and the set-user-ID sandbox
+# helper of that Chrome.
+$(CI_BROWSER_JOBS): export PUPPETEER_CACHE_DIR := $(CURDIR)/.tools/puppeteer
+$(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-sandbox
+# The runtime tests run in CI_SHARDS shards; SHARD names the shard of a job, and no SHARD runs every test.
+CI_SHARDS := 4
+ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
+ci-docs-web: export DOCS_BASE_PATH := /crudui/
+.PHONY: ci-shared ci-runtime ci-context-targets crudui-install-nginx ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+
+ci-shared: ## The job shared of ci-pipeline.yml: the tools of the plan, the shared setup, then the static gates in the shared context
+	tools="$$($(CI_PLAN) tools shared)" && { test -z "$$tools" || $(CI_MAKE) install-tools TOOLS="$$tools"; }
+	$(CI_MAKE) kit-ci-setup GROUP=shared
+	targets="$$($(CI_PLAN) targets shared)" && $(CI_MAKE) ci-context-targets GROUP=shared TARGETS="kit-gates-static $$targets"
+
+ci-runtime: ## The job runtime of ci-pipeline.yml for RUNTIME: its tools, its setup, then its gates in its context
+	@test -n "$(RUNTIME)" || { echo 'ci-runtime: RUNTIME is required, for example make ci-runtime RUNTIME=php' >&2; exit 2; }
+	tools="$$($(CI_PLAN) tools runtime $(RUNTIME))" && { test -z "$$tools" || $(CI_MAKE) install-tools TOOLS="$$tools"; }
+	$(CI_MAKE) kit-ci-setup GROUP=runtime RUNTIME=$(RUNTIME)
+	targets="$$($(CI_PLAN) targets runtime $(RUNTIME))" && $(CI_MAKE) ci-context-targets GROUP=runtime RUNTIME=$(RUNTIME) TARGETS="kit-gates-runtime-$(RUNTIME) $$targets"
+
+# The cleanup runs after the prepare has run, also when the prepare or a target failed.
+ci-context-targets: ## Run TARGETS through make ci-targets inside the context of GROUP and RUNTIME that config/ci.json declares
+	status=0; \
+	if $(CI_MAKE) kit-ci-context-prepare; then $(CI_MAKE) ci-targets || status=$$?; else status=$$?; fi; \
+	$(CI_MAKE) kit-ci-context-cleanup || { cleanup=$$?; test "$$status" -ne 0 || status=$$cleanup; }; \
+	exit $$status
+
+# The PHP record servers run on PHP-FPM behind nginx (examples/form-comparison/servers/php); setup-php provides php-fpm on the
+# PATH of a runner, and apt installs the nginx of the runner image.
+crudui-install-nginx: ## Install the nginx of the runner image with apt and show the versions of php-fpm and nginx; ONLINE
+	sudo $(ONLINE) apt-get install -y --no-install-recommends nginx
+	php-fpm -v && nginx -v
+
+ci-runtime-tests: ## The job runtime-tests of ci.yml for SHARD of CI_SHARDS
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer python uv"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-runtimes"
+
+ci-build-lint: ## The job build-lint of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer python uv ruff vulture phpcs phpstan golangciLint deadcode"
+	$(CI_MAKE) kit-install-symbols EXTRACTORS="php"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="build crudui-lint typecheck hooks-check"
+
+ci-validator-js: ## The job validator-js of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-js"
+
+ci-validator-php: ## The job validator-php of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node php composer"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-php crudui-test-php-source"
+
+ci-validator-go: ## The job validator-go of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node go"
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-go crudui-test-generator-go"
+
+ci-validator-rust: ## The job validator-rust of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node rust"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-rust crudui-test-generator-rust"
+
+# The suites and programs import the Python packages installed in var/python (S3), with the Python of mise.toml.
+ci-python: ## The job python of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node python uv"
+	$(CI_MAKE) crudui-install-python
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-python crudui-test-generator-python"
+
+ci-cross-check-console: ## The job cross-check-console of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer python uv"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-python
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="build-php-ext crudui-test-cross-check manifest-test crudui-test-bench"
+
+ci-cli: ## The job cli of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) ci-targets TARGETS="require-build crudui-test-cli"
+
+ci-form-runtime: ## The job form-runtime of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome firefox webkit --with-deps --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-forms"
+
+ci-form-comparison: ## The job form-comparison of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node php composer"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison"
+
+ci-form-comparison-pipeline: ## The job form-comparison-pipeline of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-nginx
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison-pipeline"
+
+ci-form-comparison-browser: ## The job form-comparison-browser of ci.yml for the servers of FORM_SERVERS
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-nginx
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison-browser"
+
+# The job downloads the browser reports of the four servers into var/form-comparison/browser before this recipe runs.
+ci-form-comparison-checks: ## The job form-comparison-checks of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-nginx
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison-summary"
+
+ci-package-browser: ## The job package-browser of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-packages crudui-test-build crudui-test-build-repeat crudui-test-inspector"
+
+ci-php-engine: ## The job php-engine of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-php-engine"
+
+ci-native-generators: ## The job native-generators of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome --chrome-sandbox"
+	$(CI_MAKE) check-ci-browser
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-generator-js"
+
+ci-php-api: ## The job php-api of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node php composer"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-php-api"
+
+ci-cross-language-equivalence: ## The job cross-language-equivalence of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer python uv"
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-python
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="crudui-test-cross-language-equivalence"
+
+# The job downloads the evidence of every suite into conformance-evidence/<artifact name> before this recipe runs.
+ci-conformance: ## The job conformance of ci.yml
+	$(CI_MAKE) install-tools TOOLS="node"
+	$(CI_MAKE) ci-targets TARGETS="check-conformance"
+
+ci-docs-web: ## The job docs-web of pages.yml: the documentation web at the base path /crudui/
+	$(CI_MAKE) install-tools TOOLS="node go rust php composer"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) crudui-install-phpdocumentor
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) ci-targets TARGETS="docs-web"
+
 .PHONY: item-new item-edit item-state commit documents-stamp text-absent land worktree-setup link link-check unlink python-venv uv-install
 # The texts of a row reach the plan utility unexpanded: each text that is set is passed as its raw value in single quotes.
 raw_text = $(foreach v,$(1),$(if $(filter undefined,$(origin $(v))),,$(v)='$(subst ','\'',$(value $(v)))'))
@@ -865,8 +1058,8 @@ release-assets release-candidate-assets: crudui-prepare-release-build build
 .PHONY: crudui-prepare-release-build
 crudui-prepare-release-build: crudui-install-crates crudui-install-go-modules
 
-# Every target the CI workflow runs after installing tools and dependencies, in workflow order
-# (tests/build/ci-local.test.mts keeps this list equal to .github/workflows/ci.yml).
+# Every target that the recipes of the jobs of .github/workflows/ci.yml give make ci-targets after they installed the tools and
+# the dependencies, in the order of the jobs (tests/build/ci-local.test.mts keeps this list equal to those recipes).
 CI_TARGETS = \
 	crudui-test-runtimes \
 	build \
