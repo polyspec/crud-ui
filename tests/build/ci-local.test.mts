@@ -204,6 +204,7 @@ test('a job of a workflow that CI runs has one run step, make ci-<job>, and its 
     'two: the run step has a condition',
     'none: has 0 run steps, not one',
     'shell: the run step is not make ci-shell with arguments NAME=value: sudo apt-get install -y nginx\nphp-fpm -v',
+    'shell: the run step runs sudo',
     'expression: the run step is not make ci-expression with arguments NAME=value: make ci-expression TARGETS="kit-gates-runtime-${{ matrix.runtime }}"',
     "joined: the run step is not make ci-joined with arguments NAME=value: make ci-joined TOOLS=${{ join(matrix.installTools, ' ') }}",
     'environment: sets the environment CRUDUI_TEST_SHARD, which its recipe sets',
@@ -247,6 +248,7 @@ test('every job of the workflows that CI runs holds its content in a recipe of t
 const preparation = [
   /^make(?: (?:crudui-)?install-[\w-]+)+(?: [A-Z]+="[^"]*")?$/,
   /^make check-ci-browser$/,
+  /^make crudui-nginx-check$/,
   /^make kit-install-(?:php-arginfo|symbols)(?: EXTRACTORS="[^"]+")?$/,
 ];
 

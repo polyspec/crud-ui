@@ -1,6 +1,6 @@
 # 문서 관리
 <!-- doc-id: docs-operations-documentation -->
-<!-- source-sha256: 335bf50fd13a699a4ab4a71ad3cb6d2d0cda75a7bd03062792fffc8511b3b8f5 -->
+<!-- source-sha256: 7e034ac0a2beff03c39456628fb5032a82850d32433c50773165fceded0b6349 -->
 
 [English](documentation.md).
 

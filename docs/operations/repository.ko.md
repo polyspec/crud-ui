@@ -1,6 +1,6 @@
 # 저장소
 <!-- doc-id: docs-operations-repository -->
-<!-- source-sha256: 3b4f30d1a330977efc79fe5d428d5fd41a8fea7959cd862f52d88d04a97ce3e9 -->
+<!-- source-sha256: fa3aca6b90e812f4624c646dffb841251cfe25642f81e6adcec20af9b98b30f2 -->
 
 [English](repository.md).
 
