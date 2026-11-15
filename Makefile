@@ -237,6 +237,20 @@ lint-bindings: bindings ## Lint the binding crates after make bindings
 test-bindings: bindings ## Run the tests of the binding crates after make bindings
 	cargo test --locked $(foreach crate,$(BINDING_CRATES),-p $(crate))
 
+# The release recipes of the binding packages of each component (release-go-static-<component>, release-wheel-<component>,
+# release-php-ext-<component>, release-npm-platform-<component>, release-npm-<component>, release-go-module-<component>,
+# release-binding-check-<component>, release-platform-assets-<component> and install-wasm-bindgen) are the file
+# packages/<component>/release.mk that binding release-recipes writes for the contract of the component. Git ignores it,
+# and make release-recipes writes it again before a release runs one of its recipes, because no recipe of these targets is
+# written by hand (binding CK-94, GN-19h). The file reads BINDING_RUN, NODE, NPM and UV, which this Makefile defines; a
+# checkout that has not written the file reads none of its targets.
+BINDING_RUN := $(NODE) $(BINDING)
+.PHONY: release-recipes
+release-recipes: ## Write packages/<component>/release.mk, the release recipes of the binding packages, with binding release-recipes
+	@status=0; for component in $(BINDING_COMPONENTS); do $(BINDING_RUN) release-recipes --contract $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
+-include packages/validator/release.mk
+-include packages/generator/release.mk
+
 lint-go: ## Lint the Go: golangci-lint with .golangci.yml, and deadcode -test, in each Go module; offline once the modules are downloaded
 	$(NODE) $(KIT)/lint-go.$(KIT_EXT)
 

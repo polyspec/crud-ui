@@ -135,4 +135,6 @@ go.work.sum
 /packages/*/go/errors/
 /packages/*/go/internal/binding/
 /packages/*/go/internal/ffi/generated/
+# The release recipes of the binding packages of each component, which make release-recipes writes (binding GN-19h)
+/packages/*/release.mk
 /packages/*/go/internal/ffi/lib/

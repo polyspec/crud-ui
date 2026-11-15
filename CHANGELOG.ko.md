@@ -1,9 +1,11 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 97c2714eabaebd10cb61fd647e0bf95a7f1b352bfe8079badd2c2f8b618ff601 -->
+<!-- source-sha256: cd91fa0541ab84e9007134af536134694955b7730a98b7bc25af6ef81e9a9874 -->
 
 ## Unreleased
 
+- 고정 release는 binding 0.0.10과 json 0.0.30이다(C19.24). 입력: `cargo metadata --locked`와 `make bindings-check`. 이전 동작: `Cargo.lock`이 json의 branch `v1/rust-core`를 거친 `polyspec-binding-core` 0.0.2를 0.0.8 옆에 가져 `cargo metadata --locked`가 실패했다. 기대: 모든 crate 줄이 binding tag v0.0.10과 json tag v0.0.30을 적고, 두 lock이 `polyspec-binding-core` 하나를 가지며, Makefile이 `make release-recipes`가 쓰고 Git이 무시하는 `packages/validator/release.mk`와 `packages/generator/release.mk`를 include하여 `binding check`가 CK-94 finding을 보고하지 않는다.
+- 생성된 binding의 계약 case는 계속 우회 상태다(C19.23). 입력: binding 0.0.10으로 `make bindings`. 동작: validator는 생성된다. generator는 다섯 target 모두에서 `no case value of the type json_value`로 거부되는데, 외부 callback unit `file_loader`의 member `load`의 반환 type `json_value`가 validator 계약의 `types`로 풀리지 않기 때문이다. `make bindings-check`는 `packages/generator/go`에 대해 경로 `../../validator/rust`가 core `packages/validator/rust`가 아니라고 보고한다(GN-15f). 기대: 두 계약이 생성되고 check가 finding을 보고하지 않는다.
 - 고정 kit은 0.0.114다(C19.21). 그 `make rules-check`는 `make bindings-check`와 `tests/build/ci-local.test.mts`가 건너뛸 수 없는 지점에서 실행되지 않는다고 보고했다. recipe `crudui-test-runtimes`가 test 파일을 적고 `npm run test:runtimes`가 그것을 실행한다. 새 CI job `bindings`는 `make ci-bindings`를 실행하며, 이것은 `BINDING`의 기본값인 `package.json`의 `@polyspec/binding` 0.0.8로 `bindings-check`와 `test-bindings`를 실행한다. `make rules-check`가 통과하고 `tests/build/ci-local.test.mts`는 16 passed다.
 - `tests/fixtures/{form-session,view-session,form-state,text-validity}`의 공유 test module은 `legacy/tests/fixtures` 아래 사본이 없다(C19.22). 입력: `make lint-ts`. 이전 동작: 모든 suite가 C16.1의 이동이 쓴 사본을 가져와서 knip이 root module을 쓰이지 않는다고 보고했다(사본을 지운 뒤에는 `harness.mts` 사본의 export와 Makefile이 경로로 실행하는 `@polyspec/binding`도). 기대: 모든 suite가 `contracts/features.json`이 등록한 root module을 가져오고 사본은 제거된다. make bindings가 `packages/*/go`에 쓰는 Go 파일도 무시한다.
 - 생성된 binding 다섯의 계약 case는 우회 상태다(C19.23): 지금 고정한 binding 0.0.8은 generator 계약을, 0.0.7은 두 계약 모두를, binding의 branch `v1/rust-core`는 generator 계약을 생성하지 않고, fixture family 15개는 아직 case 형식이 아니다.
