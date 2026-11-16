@@ -32,6 +32,12 @@ ryu-js = "1"
 num-bigint = "0.5"
 num-traits = "0.2"
 
+# The random bytes of a new instance id come from getrandom (instance.rs). On wasm32-unknown-unknown getrandom 0.4.3
+# takes them from crypto.getRandomValues of the host by its feature wasm_js alone, without which it does not compile, so
+# a crate that builds this one for wasm32, as the generated WASM package does, sets no cfg.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.4", features = ["wasm_js"] }
+
 [dev-dependencies]
 libtest-mimic = "0.8"
 # The tests of the crate arm its fault injection points without flags (binding CK-65, GN-5).

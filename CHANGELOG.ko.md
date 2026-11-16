@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 33d41b0466928f3cbe011a464af83810279c806d30c94bf3bb6d1e96852102b5 -->
+<!-- source-sha256: ce2a478764d10281dd1a34a00b315a51021af720c39dc1f0196ec603a4d2f92e -->
 
 ## Unreleased
 
+- generator core가 wasm32-unknown-unknown으로 compile된다(C19.43). 입력: `packages/generator/rust/Cargo.toml`. 이전 동작: getrandom 0.4.3이 그 target에서 build를 멈추어 generator의 생성 WASM package가 compile되지 않았다. 현재: wasm32 target에서 getrandom의 feature `wasm_js`를 켜고, 새 instance id는 host의 crypto.getRandomValues에서 난수 byte를 얻는다.
 - 모든 목록 셀과 상세 값의 class를 CUDF-092로 정한다(C19.42). 입력: `docs/spec/display-formats.md`. 이전 동작: CUDF-083은 text, date, number, choice-label의 셀 class만 적었고, CUDF-084~CUDF-088은 셀 안의 마크업만 적었다. 현재: CUDF-092가 모든 format의 `td`와 `dd` class와 그 뒤의 `design.class` class를 정한다.
 - `hidden` 필드의 마크업을 CUMK-075로 정한다(C19.41). 입력: `docs/spec/form-markup.md`. 이전 동작: `hidden` 필드는 header가 없다는 언급만 있었고, 공유 case 하나가 그것을 고정했다. 현재: CUMK-075가 노드, widget 감싸개 없는 `hidden` 입력, 그 class와 속성과 값을 정하고, case `hidden-with-data`와 `hidden-empty`가 data 값과 빈 값을 고정한다.
 - 세 loader 연산의 loader case `loads_a_file`이 fixture의 호출을 적는다(C19.44). 입력: `contracts/validator-cases.json`. 이전 동작: loader의 호출을 적는 loader case가 없어서, 생성 package의 K-2 시험이 placeholder form data를 넘기고 loader가 돌기 전에 실패했다. 현재: `loads_a_file`이 `file_loader.normalize`와 `file_loader.load`를 인자와 함께 적고, 그 시험이 그 인자를 쓴다.
