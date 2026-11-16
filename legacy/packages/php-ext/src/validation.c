@@ -1142,7 +1142,7 @@ ps_result ps_validate_detail(const ps_value *spec, const ps_value *options)
 /* The levels and the nodes of a form root that declares no dataLimits (CUVR-083), and their maximums. */
 #define DATA_DEPTH_DEFAULT 64
 #define DATA_VALUES_DEFAULT 100000
-#define DATA_DEPTH_MAXIMUM 512
+#define DATA_DEPTH_MAXIMUM 256
 #define DATA_VALUES_MAXIMUM 1000000
 
 /*
@@ -1163,7 +1163,7 @@ static ps_value *read_data_limits(const ps_value *spec, int64_t *depth, int64_t 
     if (valid) return NULL;
     ps_value *trace = ps_array_value();
     ps_value *error = trace ? ps_error("compose", "INVALID_RULE_PARAMETER",
-        "Invalid dataLimits parameter: expected depth from 1 to 512 and values from 1 to 1000000", "", trace) : NULL;
+        "Invalid dataLimits parameter: expected depth from 1 to 256 and values from 1 to 1000000", "", trace) : NULL;
     ps_value_free(trace);
     return error ? error : ps_error("internal", "INTERNAL_ERROR", "Validation failed", "", NULL);
 }

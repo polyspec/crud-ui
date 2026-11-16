@@ -1,6 +1,6 @@
 # 개발
 <!-- doc-id: agents -->
-<!-- source-sha256: 30fa890fcbf6eb1841f87a9c08162724a89042755eff45c91725c8889306b264 -->
+<!-- source-sha256: 1b672cfc67e4ccb9600b91bebbdce967afc7a728a9607c7e4c6c67db2d579d5a -->
 
 crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 사본인 [PRINCIPLES.md](PRINCIPLES.ko.md)이며,
 이 file은 crudui의 규칙만 적습니다.
@@ -27,7 +27,9 @@ crudui의 작업 원칙은 `@polyspec/kit`이 예시로 담은 원칙의 crudui 
   Enforced by: none, push와 tag의 순서는 어떤 검사도 읽지 않는 절차입니다.
 - Own: `legacy/`는 생성 바인딩이 대체하는 언어 구현을 예전 경로 그대로 담고(`legacy/packages/validator/{ts,php,python,go}`,
   `legacy/packages/generator/{ts,php,python,go}`, `legacy/packages/php-ext`, `legacy/packages/html`), 그 suite가 읽는
-  `tests/fixtures`의 사본 `legacy/tests/fixtures`를 담습니다. 사본은 고정이며 공유 fixture에 맞춰 올리지 않습니다. 이들은
+  `tests/fixtures`의 사본 `legacy/tests/fixtures`를 담습니다. 차이 시험의 기준으로 남는 동안 이들과 사본은 현재 명세를 따릅니다.
+  `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 사본의 case도 함께 바꿉니다. 이전 규칙을 지닌 기준과 비교하면 차이 시험이
+  그 규칙과 비교하게 되기 때문입니다. 이들은
   배포 대상이 아니고(`config/release.json`) 자기 시험과 Rust 코어와의 차등 시험에만 쓰입니다. 각각은 그 바인딩 package가
   공유 suite와 package 시험을 통과할 때 따로 한 변경으로 제거합니다(계획 V-6 (5)). 구현끼리 비교하는 도구
   `legacy/tests/native-generators`, `legacy/tests/rust-generator-fixtures`, `legacy/examples/cross-check-console`은 legacy 구현의 도구이며 `legacy/tests/fixtures`를

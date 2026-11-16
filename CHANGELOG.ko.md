@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b5e52eb0146734daf569ee2c965fc2eb58261bd23a26d78d7821bc07bd4fbfec -->
+<!-- source-sha256: c9836882a75fcf9cbb06883ede97236e7bb6601e8018be48c7369e15594b9443 -->
 
 ## Unreleased
 
+- legacy 구현과 그 fixture 사본이 nesting 한도 256을 따른다(C19.49). 입력: legacy validator와 `make crudui-test-cross-check`. 이전 동작: 사본이 고정이라 legacy validator가 D-16 뒤에도 한도 512를 유지했고, Rust core가 다른 dataLimits case 열 개를 목록이 면제했다. 현재: `AGENTS.md`가 명세의 변경이 legacy 쪽도 함께 바꾸게 하고, legacy validator가 256을 받으며, cross-check가 모든 case를 같게 비교한다.
 - validator case가 더는 100001 node의 case를 갖지 않는다(C19.52). 입력: `tests/fixtures/validate/cases.json`. 이전 동작: `data_limits_default_values_over`가 3.0 MB의 data로 기본 values 한도를 시험했고, 생성된 Go 시험의 compile이 수십 분 걸렸다. 현재: 작은 한도의 case가 한도를 시험하고, core 단위 시험이 기본값 100000을 고정한다.
 - `.gitignore`가 `make link`가 연결하는 모든 Go module의 작업공간 파일을 무시한다(C19.51). 입력: `.gitignore`. 이전 동작: 두 항목이 `legacy/` 아래로 옮기기 전의 module 경로를 이름했고 생성 module에는 항목이 없어서, `make link`가 그 `go.work`를 쓰지 않았다. 현재: 그 각각을 무시하고, `make link`가 Go provider를 연결한다.
 - detail case `list-options-ignored`가 `total`에 그 타입의 값을 준다(C19.46). 입력: `tests/fixtures/detail-render/cases.json`. 이전 동작: case가 계약의 `uint` 밖인 -1을 `total`에 주어 generator의 생성 Go 시험이 compile되지 않았다. 현재: `total`은 7이고, case는 여전히 detail이 list 옵션을 무시함을 보인다.

@@ -28,7 +28,7 @@ final class Text
     public const LIMIT_MESSAGE = 'Recursive or excessively nested value';
 
     /** Levels of arrays and objects a value may nest, the value itself included. */
-    public const NESTING_LIMIT = 512;
+    public const NESTING_LIMIT = 256;
 
     /** Nodes a value may hold: every array, object, string, number, boolean and null, itself included. */
     public const NODE_LIMIT = 1000000;

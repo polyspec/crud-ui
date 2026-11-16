@@ -76,7 +76,7 @@ final class TextInternalsTest extends TestCase
             '{} {}',
             '"\ud800',
             '{"\u0000a":"\ud800"}',
-            \str_repeat('[', 512) . '"\ud800"' . \str_repeat(']', 512)
+            \str_repeat('[', 256) . '"\ud800"' . \str_repeat(']', 256)
         ];
         foreach ($rejected as $json) {
             try {
@@ -86,6 +86,6 @@ final class TextInternalsTest extends TestCase
                 self::addToAssertionCount(1);
             }
         }
-        self::assertIsArray(JsonText::decode(\str_repeat('[', 511) . '"\ud800"' . \str_repeat(']', 511)));
+        self::assertIsArray(JsonText::decode(\str_repeat('[', 255) . '"\ud800"' . \str_repeat(']', 255)));
     }
 }

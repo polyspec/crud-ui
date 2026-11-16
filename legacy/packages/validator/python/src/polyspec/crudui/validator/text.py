@@ -40,7 +40,7 @@ __all__ = [
 INVALID_TEXT_MESSAGE = "Text must be Unicode scalar values"
 VALUE_LIMIT_MESSAGE = "Recursive or excessively nested value"
 
-NESTING_LIMIT = 512
+NESTING_LIMIT = 256
 NODE_LIMIT = 1_000_000
 
 

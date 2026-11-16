@@ -50,7 +50,7 @@ Value: TypeAlias = Union[JsonValue, _Missing]
 
 _T = TypeVar("_T")
 
-NESTING_LIMIT = 512
+NESTING_LIMIT = 256
 NODE_LIMIT = 1_000_000
 
 

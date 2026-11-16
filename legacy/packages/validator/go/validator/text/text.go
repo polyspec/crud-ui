@@ -24,7 +24,7 @@ const LimitMessage = "Recursive or excessively nested value"
 
 // NestingLimit is the number of levels of arrays and objects a value may nest,
 // the value itself included.
-const NestingLimit = 512
+const NestingLimit = 256
 
 // NodeLimit is the number of nodes a value may hold: every array, object,
 // string, number, boolean and null, the value itself included.

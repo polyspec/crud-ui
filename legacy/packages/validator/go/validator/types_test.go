@@ -337,9 +337,9 @@ func TestDesignLayout(t *testing.T) {
 func TestFormDataLimitsRoundTrip(t *testing.T) {
 	for _, input := range []string{
 		`{"type":"group","dataLimits":{}}`,
-		`{"type":"group","dataLimits":{"depth":512}}`,
+		`{"type":"group","dataLimits":{"depth":256}}`,
 		`{"type":"group","dataLimits":{"values":1000000}}`,
-		`{"type":"group","dataLimits":{"depth":512,"values":1000000}}`,
+		`{"type":"group","dataLimits":{"depth":256,"values":1000000}}`,
 	} {
 		roundTrip(t, input)
 	}

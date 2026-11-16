@@ -22,7 +22,7 @@ void crudui_throw(ps_value *error);
 
 /* Value limits (docs/spec/input-text.md): levels of arrays and objects, the value itself included,
    and nodes, which are every array, object, string, number, boolean and null of a value. */
-#define CRUDUI_NESTING_LIMIT 512
+#define CRUDUI_NESTING_LIMIT 256
 #define CRUDUI_NODE_LIMIT 1000000
 
 /* Input text checks and value limits (docs/spec/input-text.md); each returns false after throwing

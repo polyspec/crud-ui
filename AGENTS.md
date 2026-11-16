@@ -28,7 +28,9 @@ ships as an example; this file states only the rules of crudui.
 - Own: `legacy/` holds the language implementations that the generated bindings replace, under their former paths
   (`legacy/packages/validator/{ts,php,python,go}`, `legacy/packages/generator/{ts,php,python,go}`,
   `legacy/packages/php-ext`, `legacy/packages/html`), and `legacy/tests/fixtures`, the copy of `tests/fixtures` that
-  their suites read; the copy is fixed and is never brought up to the shared fixtures. They are no release target
+  their suites read. While they remain the base of the differential tests, they and the copy follow the current
+  specification: a change that alters a rule of `docs/spec` changes the legacy implementations and the cases of the copy
+  with it, since a base that keeps a former rule makes the differential tests compare against it. They are no release target
   (`config/release.json`) and serve their own tests and the differential tests against the Rust core. Each is removed
   by a change of its own when its binding package passes the shared suite and the package tests (plan V-6 (5)). The
   tools that compare the implementations with each other, `legacy/tests/native-generators`,

@@ -280,7 +280,7 @@ final class FieldSpecTest extends TestCase
     /** The PHP model preserves optional data limit members during serialization. */
     public function testFormDataLimitsRoundTrip(): void
     {
-        foreach (['{}', '{"depth":512}', '{"values":1000000}', '{"depth":512,"values":1000000}'] as $limits) {
+        foreach (['{}', '{"depth":256}', '{"values":1000000}', '{"depth":256,"values":1000000}'] as $limits) {
             $input = '{"type":"group","dataLimits":' . $limits . '}';
             self::assertTrue(FieldSpec::roundTrips($input));
             self::assertSame([], FieldSpec::validate(FieldSpec::parse($input)));

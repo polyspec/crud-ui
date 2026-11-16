@@ -16,7 +16,7 @@ use stdClass;
  */
 final class JsonText
 {
-    private const DEPTH = 512;
+    private const DEPTH = 256;
 
     private string $text;
 

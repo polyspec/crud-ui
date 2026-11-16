@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[5]
 
 FIXTURES = ROOT / "legacy" / "tests" / "fixtures"
 
-# The deepest fixture value nests 512 levels of containers and the traversal
+# The deepest fixture value nests 256 levels of containers and the traversal
 # follows it; the default interpreter limit does not.
 sys.setrecursionlimit(max(sys.getrecursionlimit(), 20000))
 

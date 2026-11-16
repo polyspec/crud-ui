@@ -52,7 +52,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 const VALUE_LIMIT_MESSAGE = 'Recursive or excessively nested value';
 
 /** Levels of arrays and objects a value may nest, the value itself included. */
-export const NESTING_LIMIT = 512;
+export const NESTING_LIMIT = 256;
 
 /** Nodes a value may hold: every array, object, string, number, boolean and null, itself included. */
 export const NODE_LIMIT = 1_000_000;
