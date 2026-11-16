@@ -12,6 +12,21 @@ pub mod evidence;
 )]
 pub use evidence::conformance::*;
 
+/// Whether a case raises a kind of the binding boundary (binding GN-12a): the binding refuses its value before the core
+/// runs, so the case tests that refusal and no core suite runs it (tests/fixtures/list-render/README.md).
+#[allow(
+    dead_code,
+    reason = "each test crate of the package uses the readers that its fixtures need"
+)]
+pub fn boundary_refusal(case: &Value) -> bool {
+    matches!(
+        case.get("raises")
+            .and_then(|raises| raises.get("kind"))
+            .and_then(Value::as_str),
+        Some("invalid_number" | "invalid_argument_type")
+    )
+}
+
 /// The cases of the groups `groups` of a fixture family in the case form of binding (G-5), in group order.
 #[allow(
     dead_code,

@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b764715c3eb7f3f69b696eab7884696b877bba569e7c20ae6226484893d5b945 -->
+<!-- source-sha256: f16e53e1c38c43870a419da832e9f56fb912936e1906b3610c03f6490f3b175b -->
 
 ## Unreleased
 
+- `uint` 밖의 `page`나 `total`을 주는 목록 사례가 binding의 거부를 기대한다(C19.50). 입력: 그런 option의 `build_list`, `render_list`. 이전 동작: 사례가 코어의 `invalid_form_input`을 기대했다. 현재: binding GN-12a대로 숫자가 아닌 값은 `invalid_argument_type`, 타입 밖의 숫자는 `invalid_number`이며, 코어 suite는 그 kind로 이 사례를 건너뛴다.
 - crudui가 json 0.0.32를 pin한다(C19.57). 입력: `npm ci`, `cargo build`, `go build`, `pip download`, PIE. 이전 동작: PIE가 PHP 확장을 받을 수 없는 json 0.0.31. 현재: 모든 manifest와 lock이 json 0.0.32다.
 - `make duplication-check`가 clone을 찾지 않는다(C19.56). 입력: `make kit-gates-static`. 이전 동작: clone 열 개가 gate를 실패시켰다. 현재: binding의 파일을 생성 파일로 선언하고, loader 연산, 표 publish, 목록과 상세의 options를 공유하며, `config/duplication.json`이 나머지가 같게 남는 이유를 적는다.
 - `make layout-check`가 legacy PHP 확장의 stub에 대한 kit 규칙을 통과한다(C19.55). 입력: `make layout-check`. 이전 동작: S10이 `legacy/packages/php-ext/src` 아래의 stub을 거부했다. 현재: layout이 그 경로를 전환의 S6 예외로 이름한다.

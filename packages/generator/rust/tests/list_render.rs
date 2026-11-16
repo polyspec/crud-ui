@@ -100,6 +100,13 @@ fn check_case(case: &Value) {
 fn main() {
     let cases = support::case_groups("list-render", &["cases", "row_shapes"]);
     assert_eq!(cases.len(), 165, "list-render holds 165 cases");
+    let (refused, cases): (Vec<Value>, Vec<Value>) =
+        cases.into_iter().partition(support::boundary_refusal);
+    assert_eq!(
+        refused.len(),
+        6,
+        "list-render holds 6 refusals of the binding boundary"
+    );
     let trials = cases.into_iter().map(|case| {
         let name = case["name"].as_str().unwrap().to_string();
         Trial::test(

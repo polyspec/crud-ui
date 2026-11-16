@@ -1,13 +1,15 @@
 # 목록 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-list-render-readme -->
-<!-- source-sha256: ea532e9fe00e7c5756b1198be82b46858bdebcdbabf33a0e58fbf37d7e6d7c3a -->
+<!-- source-sha256: f8e5c765d83cfeba81d318e536e4afb15a11cbee245acc24e5b767a9fdc1be92 -->
 
 [English](README.md).
 
 `cases.json`은 binding 생성 시험의 case 형식(G-5)으로 Rust 코어의 공유 목록 레이아웃 사례를 담습니다. group `cases`가
 `build_list`와 `render_list`의 사례를 나열하고, 각 사례는 `id`, `name`, `note`, 인수 `spec`, `rows`, 모든 필드(`files`,
 `basepath`, `language`, `data`, `page`, `total`)를 적은 레코드 `options`, 그리고 `expected_html` 또는 `kind`, `status`,
-`category`, 선택적인 `message`를 가진 `raises`를 제공합니다. `spec`, 각 행, 모든 파일과 `data`는 `json_value` 값이며
+`category`, 선택적인 `message`를 가진 `raises`를 제공합니다. `raises`가 binding 경계의 kind인 `invalid_number`나
+`invalid_argument_type`(binding GN-12a)만 이름하는 사례는 타입 밖의 `page`나 `total`을 코어가 실행되기 전에 거부하는 것을
+시험하므로, 코어 suite는 그 kind로 이를 건너뜁니다. `spec`, 각 행, 모든 파일과 `data`는 `json_value` 값이며
 [검증 고정 데이터](../validate/README.ko.md)처럼 `{ "kind", "value" }`로 씁니다. React, Vue, Svelte와 legacy 렌더러의 suite는
 `legacy/tests/fixtures` 아래 사본을 읽습니다.
 group `row_shapes`는 `rows`가 목록이 아니어서 `rows`의 타입으로 줄 수 없는 사례를 담으며, 계약은 이 group을 가리키지 않습니다.

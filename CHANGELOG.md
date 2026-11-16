@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- A list case that gives a `page` or a `total` outside `uint` expects the refusal of the binding (C19.50). Input: `build_list`, `render_list` with such an option. Behaviour before: the cases expected the `invalid_form_input` of the core. Now: `invalid_argument_type` for a value that is no number and `invalid_number` for a number outside the type, as binding GN-12a gives; the core suite skips those cases by that kind.
 - crudui pins json 0.0.32 (C19.57). Input: `npm ci`, `cargo build`, `go build`, `pip download`, PIE. Behaviour before: json 0.0.31, whose PHP extension PIE could not download. Now: json 0.0.32 in every manifest and lock.
 - `make duplication-check` finds no clone (C19.56). Input: `make kit-gates-static`. Behaviour before: ten clones failed the gate. Now: the files of binding are declared generated, the loader operations, the table publication and the options of a list and a detail are shared, and `config/duplication.json` states why the rest stays alike.
 - `make layout-check` passes the stub rule of kit for the legacy PHP extension (C19.55). Input: `make layout-check`. Behaviour before: S10 refused the stub under `legacy/packages/php-ext/src`. Now: the layout names that path as the S6 exception of the transition.

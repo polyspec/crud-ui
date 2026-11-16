@@ -734,8 +734,16 @@ fn native_fixture_records() {
     let lists: Vec<Value> = ["cases", "row_shapes"]
         .iter()
         .flat_map(|group| list_file[*group].as_array().cloned().unwrap_or_default())
-        .map(|case| decoded_list_case(&case))
         .collect();
+    // A case whose raises is a kind of the binding boundary (binding GN-12a) tests a refusal before the core runs, so
+    // the core records no result for it (tests/fixtures/list-render/README.md); its record keeps its place.
+    let boundary = |case: &Value| {
+        matches!(
+            case["raises"]["kind"].as_str(),
+            Some("invalid_number" | "invalid_argument_type")
+        )
+    };
+    assert_eq!(lists.iter().filter(|case| boundary(case)).count(), 6);
     let form_records = forms
         .iter()
         .map(|case| {
@@ -761,6 +769,10 @@ fn native_fixture_records() {
         })
         .collect::<Vec<_>>();
     let list_records=lists.iter().map(|case| {
+        if boundary(case) {
+            return json!({"name":case["name"],"boundary":case["raises"]["kind"]});
+        }
+        let case=&decoded_list_case(case);
         let options=ListOptions {
             files:case["options"]["files"].as_object().cloned().unwrap_or_default(),
             basepath:case["options"]["basepath"].as_str().unwrap_or("").into(),
