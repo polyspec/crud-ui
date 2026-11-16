@@ -49,6 +49,7 @@ rules:
 
   # S10 under the S6 exception of the transition: the legacy PHP extension is a phpize extension under its former path
   # legacy/packages/php-ext, whose build reads its stub from src/ as the rule of kit requires of packages/php-ext/src/.
+  # The change that removes legacy/packages/php-ext (C19.2) removes this override with it.
   - id: php-ext-stub-place
     paths: ["**/*.stub.php", "!packages/php-ext/src/*.stub.php", "!packages/php-ext/generated/*.stub.php", "!packages/*/php/native/generated/*.stub.php", "!legacy/packages/php-ext/src/*.stub.php"]
 
