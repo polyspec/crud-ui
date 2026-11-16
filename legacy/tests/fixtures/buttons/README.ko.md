@@ -1,6 +1,6 @@
 # 폼 버튼 fixture
 <!-- doc-id: tests-fixtures-buttons-readme -->
-<!-- source-sha256: c721abd55203ce8a28c3dfb8649ad11d12e06ff307e226a868d1249ff9fe9ace -->
+<!-- source-sha256: b87c8e5aa99e8bad3bd8f9a6196c38d70783ef4d9cfb673cb606fa182471846f -->
 
 [English](README.md).
 
@@ -21,4 +21,4 @@
 모든 runner는 두 결과를 기대값과 비교합니다. 버튼은 순서가 있는 JSON으로, 마크업은 문자열로, 오류는 코드와 메시지로
 비교합니다.
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/buttons`의 생성기는 [`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 case의 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`은 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다. 공유 fixture `tests/fixtures/buttons`의 생성기는 [`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts)입니다.

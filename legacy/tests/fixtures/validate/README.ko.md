@@ -1,6 +1,6 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: 582d760e2add1573f4beb7404d36e8849268c1163878bd32b6094a477fd3e041 -->
+<!-- source-sha256: 8991f920e8b2b50812b0fdfe8e4a08fd59c3713012d5df4baafbfa461760e732 -->
 
 [English](README.md).
 
@@ -56,4 +56,4 @@ PHP 검증기와 네이티브 검증기를 실행하는 [PHP 확장 API 검사](
 
 ## 재생성
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/validate`의 생성기는 [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 case의 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`은 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다. 공유 fixture `tests/fixtures/validate`의 생성기는 [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts)입니다.

@@ -69,4 +69,4 @@ which compares the four language results.
 
 ## Regeneration
 
-This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/validate` is [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts).
+This directory is the copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is edited directly, and a change of a rule of `docs/spec` changes its cases with the legacy implementations while they remain the base of the differential tests. The generator of the shared fixture `tests/fixtures/validate` is [`tests/fixtures/validate/generate.mts`](../../../../tests/fixtures/validate/generate.mts).

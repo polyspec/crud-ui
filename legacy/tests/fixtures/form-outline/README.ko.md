@@ -1,6 +1,6 @@
 # 구조 지도와 데이터 보기 고정 데이터
 <!-- doc-id: tests-fixtures-form-outline-readme -->
-<!-- source-sha256: c9e3e185ab68709ca778d0d2d1b35f93d113194d64138574cfcf0c3ed68bfff0 -->
+<!-- source-sha256: 892b5a5a3d027cd6e2fd85cca401c727a52e29690854905192028e8e1adc7ec4 -->
 
 [English](README.md).
 
@@ -35,4 +35,4 @@ node에 적용한 결과와 `expected_outline_rows`를 비교합니다.
 
 ## 재생성
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/form-outline`의 생성기는 [`tests/fixtures/form-outline/generate.mts`](../../../../tests/fixtures/form-outline/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 case의 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`은 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다. 공유 fixture `tests/fixtures/form-outline`의 생성기는 [`tests/fixtures/form-outline/generate.mts`](../../../../tests/fixtures/form-outline/generate.mts)입니다.

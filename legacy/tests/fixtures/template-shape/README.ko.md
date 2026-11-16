@@ -1,7 +1,7 @@
 # 폼 템플릿 형태
 
 <!-- doc-id: tests-fixtures-template-shape-readme -->
-<!-- source-sha256: 07e4bba6cf0c576f0ea58b33d45e3f29dc59d88dd6cf9172c9a19cc08db39eb9 -->
+<!-- source-sha256: 6b93f2d858e0a7931969966c6ab3e93f7c9652fb2c26076a36636d84bed0adbf -->
 
 [English](README.md).
 
@@ -22,4 +22,4 @@
 
 ## case 바꾸기
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/template-shape`의 생성기는 [`tests/fixtures/template-shape/generate.mts`](../../../../tests/fixtures/template-shape/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 case의 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`은 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다. 공유 fixture `tests/fixtures/template-shape`의 생성기는 [`tests/fixtures/template-shape/generate.mts`](../../../../tests/fixtures/template-shape/generate.mts)입니다.

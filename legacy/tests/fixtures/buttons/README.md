@@ -20,4 +20,4 @@ TypeScript reference writes every expectation ([`tests/fixtures/buttons/generate
 Every runner compares the two results with the expectation of the case: the buttons as ordered JSON, the markup as a
 string, and the error by its code and message.
 
-This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/buttons` is [`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts).
+This directory is the copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is edited directly, and a change of a rule of `docs/spec` changes its cases with the legacy implementations while they remain the base of the differential tests. The generator of the shared fixture `tests/fixtures/buttons` is [`tests/fixtures/buttons/generate.mts`](../../../../tests/fixtures/buttons/generate.mts).

@@ -1,6 +1,6 @@
 # 폼 상태 고정 데이터 (공유 module)
 <!-- doc-id: tests-fixtures-form-state-readme -->
-<!-- source-sha256: 4ce96cfe86abab6842459995fb44852429509e89ca9392455d4355a9e6577265 -->
+<!-- source-sha256: 6a9843e6560522398c1e63b3d51deb96de47ccc4d598656cb3fc29e1ec1c2223 -->
 
 [English](README.md).
 
@@ -32,4 +32,4 @@ TypeScript test [form-state.test.ts](../../../packages/generator/ts/src/form-sta
 
 ## 재생성
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/form-state`의 생성기는 [`tests/fixtures/form-state/generate.mts`](../../../../tests/fixtures/form-state/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 case의 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`은 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다. 공유 fixture `tests/fixtures/form-state`의 생성기는 [`tests/fixtures/form-state/generate.mts`](../../../../tests/fixtures/form-state/generate.mts)입니다.

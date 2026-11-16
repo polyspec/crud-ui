@@ -1,6 +1,6 @@
 # 완전한 폼 고정 데이터
 <!-- doc-id: tests-fixtures-form-complete-readme -->
-<!-- source-sha256: 6c7f5dcc4c8c5dbca544899e6ad141d66c473a486393c3667cbf48d60f1f8ac3 -->
+<!-- source-sha256: 0f490bd1248c430d570a223a8937564aeef2a1d123d0435eecefad25eccdaef7 -->
 
 [English](README.md).
 
@@ -26,4 +26,4 @@ Svelte
 ([`form-complete.conformance.test.mjs`](../../../../packages/svelte/tests/form-complete.conformance.test.mjs))는
 자체 직렬화를 쓰므로 공유 정규화 뒤에 비교합니다.
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/form-complete`의 생성기는 [`tests/fixtures/form-complete/generate.mts`](../../../../tests/fixtures/form-complete/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 case의 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`은 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다. 공유 fixture `tests/fixtures/form-complete`의 생성기는 [`tests/fixtures/form-complete/generate.mts`](../../../../tests/fixtures/form-complete/generate.mts)입니다.

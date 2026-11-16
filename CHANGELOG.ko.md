@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: ce0b73c41018fe984dff7d0bdf1700f29ea7771b9dc095a9d66ba183320d5534 -->
+<!-- source-sha256: 959c87abf3ca922916562eaf6aa25429e7c356991a7a658aea4adbb5b560a126 -->
 
 ## Unreleased
 
+- legacy fixture 사본의 README가 각 사본을 직접 고치고 명세를 따른다고 적는다(C19.53). 입력: `legacy/tests/fixtures/*/README.md`. 이전 동작: 그중 여섯이 사본이 고정이라고 적었다. 현재: 모든 사본이 `AGENTS.md`의 규칙을 적는다.
 - 공유 render fixture를 직접 고친다(C19.47). 입력: `tests/fixtures/{form,list,detail}-render/cases.json`. 이전 동작: README가 legacy React 생성기로 legacy 사본만 쓰는 스크립트를 이름했고, form render case가 아무것도 읽지 않는 `requirements`를 가졌다. 현재: 스크립트가 없어지고 각 파일이 자기 원본이며, form render case는 `requirements` 없이 case form의 규칙을 따른다.
 - legacy 구현과 그 fixture 사본이 nesting 한도 256을 따른다(C19.49). 입력: legacy validator와 `make crudui-test-cross-check`. 이전 동작: 사본이 고정이라 legacy validator가 D-16 뒤에도 한도 512를 유지했고, Rust core가 다른 dataLimits case 열 개를 목록이 면제했다. 현재: `AGENTS.md`가 명세의 변경이 legacy 쪽도 함께 바꾸게 하고, legacy validator가 256을 받으며, cross-check가 모든 case를 같게 비교한다.
 - validator case가 더는 100001 node의 case를 갖지 않는다(C19.52). 입력: `tests/fixtures/validate/cases.json`. 이전 동작: `data_limits_default_values_over`가 3.0 MB의 data로 기본 values 한도를 시험했고, 생성된 Go 시험의 compile이 수십 분 걸렸다. 현재: 작은 한도의 case가 한도를 시험하고, core 단위 시험이 기본값 100000을 고정한다.

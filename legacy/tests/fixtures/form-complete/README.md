@@ -26,4 +26,4 @@ and Svelte
 ([`form-complete.conformance.test.mjs`](../../../../packages/svelte/tests/form-complete.conformance.test.mjs))
 compare after the shared normalization, because they write their own serialization.
 
-This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/form-complete` is [`tests/fixtures/form-complete/generate.mts`](../../../../tests/fixtures/form-complete/generate.mts).
+This directory is the copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is edited directly, and a change of a rule of `docs/spec` changes its cases with the legacy implementations while they remain the base of the differential tests. The generator of the shared fixture `tests/fixtures/form-complete` is [`tests/fixtures/form-complete/generate.mts`](../../../../tests/fixtures/form-complete/generate.mts).
