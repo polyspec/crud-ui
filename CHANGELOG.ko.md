@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 961992f8a6b714ef1c7e1e1811fa169bd66496fe30581b72094ec90ec64fe98e -->
+<!-- source-sha256: 3b3151fcc74b0756e3a8d1d60e53fd41cd2a9d38142313a3aad02e17a66081fb -->
 
 ## Unreleased
 
+- `make layout-check`가 legacy PHP 확장의 stub에 대한 kit 규칙을 통과한다(C19.55). 입력: `make layout-check`. 이전 동작: S10이 `legacy/packages/php-ext/src` 아래의 stub을 거부했다. 현재: layout이 그 경로를 전환의 S6 예외로 이름한다.
 - crudui가 `@polyspec/kit` 0.0.116을 pin한다(C19.54). 입력: `npm ci`. 이전 동작: kit 0.0.114가 설치되었다. 현재: kit 0.0.116이 설치된다.
 - legacy fixture 사본의 README가 각 사본을 직접 고치고 명세를 따른다고 적는다(C19.53). 입력: `legacy/tests/fixtures/*/README.md`. 이전 동작: 그중 여섯이 사본이 고정이라고 적었다. 현재: 모든 사본이 `AGENTS.md`의 규칙을 적는다.
 - 공유 render fixture를 직접 고친다(C19.47). 입력: `tests/fixtures/{form,list,detail}-render/cases.json`. 이전 동작: README가 legacy React 생성기로 legacy 사본만 쓰는 스크립트를 이름했고, form render case가 아무것도 읽지 않는 `requirements`를 가졌다. 현재: 스크립트가 없어지고 각 파일이 자기 원본이며, form render case는 `requirements` 없이 case form의 규칙을 따른다.

@@ -47,6 +47,11 @@ rules:
   - id: layout-root-folders
     paths: ["*", "!packages", "!contracts", "!docs", "!scripts", "!tests", "!examples", "!benchmarks", "!config", "!.github", "!.githooks", "!.kit", "!.mise", "!.claude", "!legacy"]
 
+  # S10 under the S6 exception of the transition: the legacy PHP extension is a phpize extension under its former path
+  # legacy/packages/php-ext, whose build reads its stub from src/ as the rule of kit requires of packages/php-ext/src/.
+  - id: php-ext-stub-place
+    paths: ["**/*.stub.php", "!packages/php-ext/src/*.stub.php", "!packages/php-ext/generated/*.stub.php", "!packages/*/php/native/generated/*.stub.php", "!legacy/packages/php-ext/src/*.stub.php"]
+
   # S5: the components of crudui: the validator and the generator, each a component with its Rust core and the binding
   # package of each runtime, the renderers of the frameworks (react, vue, svelte), the browser validation (form-binding)
   # and the command line (cli).

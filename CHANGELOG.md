@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- `make layout-check` passes the stub rule of kit for the legacy PHP extension (C19.55). Input: `make layout-check`. Behaviour before: S10 refused the stub under `legacy/packages/php-ext/src`. Now: the layout names that path as the S6 exception of the transition.
 - crudui pins `@polyspec/kit` 0.0.116 (C19.54). Input: `npm ci`. Behaviour before: kit 0.0.114 was installed. Now: kit 0.0.116 is installed.
 - The READMEs of the legacy fixture copies state that each copy is edited directly and follows the specification (C19.53). Input: `legacy/tests/fixtures/*/README.md`. Behaviour before: six of them still stated that the copy was fixed. Now: every copy states the rule of `AGENTS.md`.
 - The shared render fixtures are edited directly (C19.47). Input: `tests/fixtures/{form,list,detail}-render/cases.json`. Behaviour before: their READMEs named scripts that wrote only the legacy copies from the legacy React generator, and the form render cases held `requirements`, which nothing read. Now: the scripts are gone, each file is its own source, and the form render cases follow the rule of the case form without `requirements`.
