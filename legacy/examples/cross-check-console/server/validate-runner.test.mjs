@@ -23,6 +23,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compareIdempotency, validateAll } from './validate-runner.mjs';
+import { CORE_DIVERGENCES } from './core-divergences.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../../..');
@@ -202,7 +203,7 @@ describe('compareIdempotency — TAMPER (fake-divergent injection)', () => {
 // ---------------------------------------------------------------------------
 const allCases = JSON.parse(fs.readFileSync(VALIDATE_FIXTURE, 'utf8'));
 describe('validateAll — real 5-language fan-out (every fixture case)', () => {
-  for (const c of allCases) {
+  for (const c of allCases.filter((item) => !Object.hasOwn(CORE_DIVERGENCES, item.name))) {
     test(`${c.name} — five engines agree → idempotent:true`, async () => {
       const out = await validateAll({ spec: c.spec, data: c.data, files: c.files ?? {}, basepath: c.basepath ?? '' });
       expect(out.results.map((r) => r.lang)).toEqual(['js', 'php', 'go', 'rust', 'python']);
@@ -216,6 +217,27 @@ describe('validateAll — real 5-language fan-out (every fixture case)', () => {
       } else {
         expect(out.results[0].valid).toBe(c.expected.valid);
       }
+    }, 60000);
+  }
+});
+
+// The cases of CORE_DIVERGENCES: the four legacy engines give the failure of the fixture and the Rust core gives the
+// failure of the list; any other result fails.
+describe('validateAll — the listed divergences of the Rust core from the legacy engines', () => {
+  const cases = allCases.filter((item) => Object.hasOwn(CORE_DIVERGENCES, item.name));
+  test('every listed case is a case of the fixture with an expected failure', () => {
+    expect(cases.map((c) => c.name).sort()).toEqual(Object.keys(CORE_DIVERGENCES).sort());
+    expect(cases.filter((c) => !c.expectFailure).map((c) => c.name)).toEqual([]);
+  });
+  for (const c of cases) {
+    test(`${c.name} — the legacy engines give the fixture, the core gives the listed failure`, async () => {
+      const divergence = CORE_DIVERGENCES[c.name];
+      const out = await validateAll({ spec: c.spec, data: c.data, files: c.files ?? {}, basepath: c.basepath ?? '' });
+      expect(out.results.map((r) => r.lang)).toEqual(['js', 'php', 'go', 'rust', 'python']);
+      expect(out.results.filter((r) => !r.ok).map((r) => `${r.lang}:${r.error}`)).toEqual([]);
+      const failures = Object.fromEntries(out.results.map((r) => [r.lang, r.failure && { code: r.failure.code, message: r.failure.message, at: r.failure.at }]));
+      const fixture = { code: c.expectFailure.code, message: c.expectFailure.message, at: c.expectFailure.at };
+      expect(failures).toEqual({ js: fixture, php: fixture, go: fixture, python: fixture, [divergence.lang]: divergence.failure });
     }, 60000);
   }
 });

@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: bbe99552682914b2c5a14047f8634ab7c44df51b67c52aee8bc80afe3a546f7d -->
+<!-- source-sha256: cd32ed67d71cfe681ec4091a4b038f3f6559ce969ce7d3d796d8f382d80e9858 -->
 
 ## Unreleased
 
+- cross-check console이 Rust core와 legacy validator가 다른 dataLimits case를 이름 붙은 목록으로 가진다(C19.39). 입력: `make crudui-test-cross-check`. 이전 동작: dataLimits case 열 개가 실패했다. legacy validator는 고정 fixture를 따라 depth 512까지 받고, core는 CUSC-087을 따라 depth 256까지 받기 때문이다. 현재: `core-divergences.mjs`가 열 case를 core의 실패와 두 근거와 함께 나열하고, 시험은 legacy validator에서 fixture를, core에서 그 실패를 요구하며, 그 밖의 차이는 실패다.
 - cross-check suite의 run마다 Vite 의존성 cache가 따로 있다(C19.38). 입력: `make crudui-test-cross-check`. 이전 동작: suite가 checkout이 공유하는 `node_modules/.vite`를 써서, SSR 의존성을 최적화할 때 시험 167개가 ENOTEMPTY로 실패했다. 현재: `vitest.config.mjs`가 `cacheDir`를 임시 디렉터리 아래의 run 디렉터리로 두고 끝날 때 지운다.
 - cross-check console의 Go validator process가 `npm run build:go`가 쓰는 program을 돌린다(C19.37). 입력: `legacy/examples/cross-check-console/server/package.json`의 build:go script. 이전 동작: script가 `legacy/var/build/cross-check-console/go-validate`에 썼고, `var/build/cross-check-console/go-validate`를 돌리는 Go process가 ENOENT로 실패했다. 현재: script가 process가 돌리는 경로에 program을 쓰고, `build-paths.test.mjs`가 그 경로를 요구한다.
 - `crudui describe`가 expression grammar §1의 규칙을 읽는다(C19.36). 입력: `docs/spec/expressions.md` §1. 이전 동작: §1의 모든 줄이 token requirement여야 해서, 규칙 CUXP-024 때문에 `crudui describe`와 `crudui explain`이 실패했다. 현재: token을 이름하지 않는 requirement와 그 들여 쓴 줄은 규칙이고 token을 주지 않는다. 다른 형식의 token requirement와 다른 모양의 줄은 여전히 실패한다.

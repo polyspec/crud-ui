@@ -19,6 +19,7 @@ import * as path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT } from './engine.mjs';
 import { PHP_PROGRAM, VALIDATORS, validatorProcesses } from './validate-runner.mjs';
+import { CORE_DIVERGENCES } from './core-divergences.mjs';
 
 const read = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), 'utf8'));
 
@@ -50,7 +51,7 @@ function expectResponses(input, expected) {
       continue;
     }
     const actual = { exit: run.status, output };
-    const wanted = typeof expected === 'function' ? expected(actual) : expected;
+    const wanted = typeof expected === 'function' ? expected(actual, name) : expected;
     try {
       expect(actual).toStrictEqual(wanted);
     } catch (error) {
@@ -92,7 +93,10 @@ describe('validator processes — form validation cases', () => {
       const expected = c.expectFailure
         ? { exit: 2, output: { error: c.expectFailure.message, code: c.expectFailure.code, at: c.expectFailure.at } }
         : { exit: 0, output: c.expected };
-      expectResponses(JSON.stringify(request), expected);
+      // A case of CORE_DIVERGENCES: the process of the list gives the failure of the list, every other process the fixture.
+      const divergence = Object.hasOwn(CORE_DIVERGENCES, c.name) ? CORE_DIVERGENCES[c.name] : undefined;
+      const core = divergence && { exit: 2, output: { error: divergence.failure.message, code: divergence.failure.code, at: divergence.failure.at } };
+      expectResponses(JSON.stringify(request), divergence ? (_actual, name) => (name === divergence.lang ? core : expected) : expected);
     }, 60000);
   }
 });
