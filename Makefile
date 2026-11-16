@@ -259,11 +259,12 @@ BINDING_PLATFORM := $(shell $(NODE) -p 'process.platform + "-" + process.arch + 
 # The packages of json, which owns the value classes of the contracts, that the generated packages require (binding GN-15f,
 # GN-6x): the wheels that crudui-install-bindings downloads by their sha256, the npm packages of json that npm ci installs
 # from the release assets that package.json names, and the PHP extension of json, which PHP loads before the extension of
-# a component. The download of the PHP extension of json waits for kit#50, so BINDING_PHP_EXTENSIONS names the extension
-# that a json checkout built. The validator packages that the generator packages require are the builds of this checkout.
+# a component, which crudui-install-bindings downloads with PIE. The validator packages that the generator packages require
+# are the builds of this checkout.
 BINDING_PYTHON_FIND_LINKS ?= $(BINDING_VAR)/deps/python
 BINDING_NODE_DEPS ?= $(CURDIR)/node_modules/@polyspec/json $(CURDIR)/node_modules/@polyspec/json-$(BINDING_PLATFORM)
-BINDING_PHP_EXTENSIONS ?=
+BINDING_PIE = $(BINDING_VAR)/deps/php
+BINDING_PHP_EXTENSIONS ?= $(wildcard $(BINDING_PIE)/*/vendor/polyspec/json/polyspec_json.so)
 # The test features of a binding crate: every feature of its manifest (binding GN-5), joined by commas.
 binding_features = $(shell sed -n '/^\[features\]/,/^\[/s/^\([a-z][a-z0-9-]*\) = .*/\1/p' $(1) | paste -sd, -)
 # The build tags of the test features of a Go crate, polyspec_<feature> with _ for - (binding GN-5).
@@ -273,9 +274,16 @@ binding_tap_count = $(NODE) -e 'const m = /^\# tests (\d+)$$/m.exec(require("fs"
 # The count of the tests of the go test -json report $(2) of the target $(1); a report of no test fails.
 binding_go_count = $(NODE) -e 'const e = require("fs").readFileSync(process.argv[1], "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)); const pass = e.filter((x) => x.Test && x.Action === "pass").length; const fail = e.filter((x) => x.Test && x.Action === "fail").length; console.log(`$(1): $${pass} passed, $${fail} failed`); if (pass + fail === 0) { console.error("$(1): ran no test case in $(2)"); process.exit(1); }' $(2)
 
-# The wheels of json of packages/validator/python/requirements-bindings.txt, which pip downloads and checks by their sha256.
-crudui-install-bindings:
+# The wheels of json of packages/validator/python/requirements-bindings.txt, which pip downloads and checks by their sha256,
+# and the PHP extension of json that packages/validator/php-ext/composer.json requires (ext-polyspec_json, polyspec/json at
+# its version): PIE resolves it in the Composer repository of that json release and downloads the prebuilt archive for the
+# PHP of PATH into BINDING_PIE. `pie download` installs nothing into the PHP; the tests load the library with -d extension.
+BINDING_JSON_PHP = $(shell $(NODE) -p 'require("./packages/validator/php-ext/composer.json").require["polyspec/json"]')
+crudui-install-bindings: install-pie
 	$(ONLINE) $(PYTHON) -m pip download -q --require-hashes --no-deps -r packages/validator/python/requirements-bindings.txt -d $(BINDING_VAR)/deps/python
+	rm -rf $(BINDING_PIE)
+	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) repository:add composer https://github.com/polyspec/json/releases/download/v$(BINDING_JSON_PHP)/packages.json --no-interaction
+	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) download polyspec/json:$(BINDING_JSON_PHP) --no-interaction
 
 define binding_package_rules
 # The wheel that maturin builds through uv with the test features, installed without an index into a virtual environment
