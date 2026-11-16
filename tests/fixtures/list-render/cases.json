@@ -8620,10 +8620,7 @@
         "total": null
       },
       "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "List page must be a positive integer"
+        "kind": "invalid_argument_type"
       }
     },
     {
@@ -8665,7 +8662,7 @@
         "language": "ko",
         "data": null,
         "page": 0,
-        "total": -1,
+        "total": null,
         "layout": "grid"
       },
       "raises": {
@@ -8717,10 +8714,7 @@
         "total": null
       },
       "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "List page must be a positive integer"
+        "kind": "invalid_number"
       }
     },
     {
@@ -8765,10 +8759,7 @@
         "total": null
       },
       "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "List page must be a positive integer"
+        "kind": "invalid_number"
       }
     },
     {
@@ -8814,10 +8805,7 @@
         "layout": "grid"
       },
       "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "List total must be a nonnegative integer"
+        "kind": "invalid_number"
       }
     },
     {
@@ -8862,10 +8850,7 @@
         "total": 2.5
       },
       "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "List total must be a nonnegative integer"
+        "kind": "invalid_number"
       }
     },
     {
@@ -8910,10 +8895,7 @@
         "total": true
       },
       "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "List total must be a nonnegative integer"
+        "kind": "invalid_argument_type"
       }
     },
     {
