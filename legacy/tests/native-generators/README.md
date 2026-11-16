@@ -10,7 +10,7 @@ processes, malformed responses and failed comparisons make the command fail.
 The report records unavailable targets separately and continues available
 checks to collect their actual results.
 
-The suite is a tool of the legacy implementations and reads the fixed copy `legacy/tests/fixtures`. It has no Rust
+The suite is a tool of the legacy implementations and reads the copy `legacy/tests/fixtures`. It has no Rust
 target: the Rust core follows rules that changed after that copy was fixed, so its results on the copy are not the
 results that the copy records, and a comparison there says nothing about either side. The Rust core is checked by its
 own tests against `tests/fixtures`.

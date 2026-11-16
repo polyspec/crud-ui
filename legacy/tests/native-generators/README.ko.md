@@ -1,6 +1,6 @@
 # 네이티브 생성기 적합성 검사
 <!-- doc-id: tests-native-generators-readme -->
-<!-- source-sha256: b2d80b4119627a0ca731396fc10863acbdfe3b8b6f71d746d7f13aed9da5da9c -->
+<!-- source-sha256: b406a6e0951e9b23348b8d7caa788d53552218883e1ef56306dec3dfe6783c46 -->
 
 [English](README.md).
 
@@ -10,7 +10,7 @@ PHP 네이티브 확장을 실행합니다. 네이티브 모듈의
 있으면 명령이 실패합니다. 보고서는 사용할 수 없는 대상을 별도로 기록하고,
 실행 가능한 대상의 검사를 계속하여 실제 결과를 수집합니다.
 
-검사기는 legacy 구현의 도구이며 고정 사본 `legacy/tests/fixtures`를 읽습니다. Rust 대상은 없습니다. Rust 코어는 그 사본을
+검사기는 legacy 구현의 도구이며 사본 `legacy/tests/fixtures`를 읽습니다. Rust 대상은 없습니다. Rust 코어는 그 사본을
 고정한 뒤 바뀐 규칙을 따르므로 사본 위에서 낸 결과는 사본이 기록한 결과가 아니고, 거기서 비교해도 어느 쪽에 대해서도 알 수
 있는 것이 없습니다. Rust 코어는 자기 시험이 `tests/fixtures`로 검사합니다.
 
