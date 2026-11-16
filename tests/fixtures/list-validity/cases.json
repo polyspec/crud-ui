@@ -3,14 +3,6 @@
     {
       "id": "ok_minimal_columns",
       "name": "ok-minimal-columns",
-      "requirements": [
-        "CUDF-027",
-        "CUDF-043",
-        "CUDF-044",
-        "CUDF-046",
-        "CUDF-047",
-        "CUSC-001"
-      ],
       "note": "the smallest valid list-spec — required columns map with one text column.",
       "expect": "ok",
       "spec": {
@@ -67,25 +59,6 @@
     {
       "id": "ok_catalog_formats",
       "name": "ok-catalog-formats",
-      "requirements": [
-        "CUDF-048",
-        "CUDF-049",
-        "CUDF-050",
-        "CUDF-051",
-        "CUDF-052",
-        "CUDF-053",
-        "CUDF-054",
-        "CUDF-055",
-        "CUSC-027",
-        "CUSC-028",
-        "CUSC-029",
-        "CUSC-030",
-        "CUSC-031",
-        "CUSC-032",
-        "CUSC-033",
-        "CUSC-034",
-        "CUSC-035"
-      ],
       "note": "every §9.2 cell format passes (date/number/badge/link/choice-label/bool/image/html).",
       "expect": "ok",
       "spec": {
@@ -542,10 +515,6 @@
     {
       "id": "ok_shorthand_and_boolean_format",
       "name": "ok-shorthand-and-boolean-format",
-      "requirements": [
-        "CUDF-043",
-        "CUDF-048"
-      ],
       "note": "CellFormat polymorphism — a bare type string and a boolean both validate.",
       "expect": "ok",
       "spec": {
@@ -631,26 +600,6 @@
     {
       "id": "ok_sortable_sort_pagination_actions_empty_design",
       "name": "ok-sortable-sort-pagination-actions-empty-design",
-      "requirements": [
-        "CUDF-040",
-        "CUDF-044",
-        "CUDF-047",
-        "CUDF-056",
-        "CUDF-058",
-        "CUDF-059",
-        "CUDF-060",
-        "CUDF-061",
-        "CUDF-062",
-        "CUDF-064",
-        "CUDF-066",
-        "CUDF-068",
-        "CUDF-069",
-        "CUDF-077",
-        "CUDF-079",
-        "CUDF-080",
-        "CUDF-081",
-        "CUDF-082"
-      ],
       "note": "The sort, pagination, actions, empty and design read-structure slots validate together.",
       "expect": "ok",
       "spec": {
@@ -891,9 +840,6 @@
     {
       "id": "ok_compose_ref_patch_columns",
       "name": "ok-compose-ref-patch-columns",
-      "requirements": [
-        "CUSC-007"
-      ],
       "note": "$ref/$patch compose entry on the columns map (the SAME engine as form-spec). files resolve the base for the four-language engine; ajv ignores files and reads only spec.",
       "expect": "ok",
       "options": {
@@ -1019,11 +965,6 @@
     {
       "id": "ok_search_form_ref",
       "name": "ok-search-form-ref",
-      "requirements": [
-        "CUDF-040",
-        "CUDF-057",
-        "CUSC-007"
-      ],
       "note": "search is input → a form-spec reference ($ref base + $patch overlay). files resolve the base form for the engine; ajv ignores files and reads only spec.",
       "expect": "ok",
       "options": {
@@ -1288,9 +1229,6 @@
     {
       "id": "red_unknown_column_key",
       "name": "red-unknown-column-key",
-      "requirements": [
-        "CUDF-044"
-      ],
       "note": "A column with an unregistered key is rejected by additionalProperties:false. The four-language engine also rejects show_if as a forbidden meta-key load failure.",
       "expect": "fail",
       "reason": "additionalProperties",
@@ -1784,11 +1722,6 @@
     {
       "id": "ok_description",
       "name": "ok-description",
-      "requirements": [
-        "CUDF-040",
-        "CUDF-078",
-        "CUSC-002"
-      ],
       "note": "a list description is content: a string or a language map.",
       "expect": "ok",
       "spec": {
@@ -1888,10 +1821,6 @@
       "id": "specification_not_an_object",
       "name": "specification-not-an-object",
       "note": "a specification that is no object fails before the composition (CUDF-091, CUDF-024).",
-      "requirements": [
-        "CUDF-091",
-        "CUDF-024"
-      ],
       "spec": {
         "kind": "list",
         "value": []

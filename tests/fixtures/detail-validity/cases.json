@@ -3,20 +3,6 @@
     {
       "id": "ok_basic_detail",
       "name": "ok-basic-detail",
-      "requirements": [
-        "CUDF-032",
-        "CUDF-034",
-        "CUDF-041",
-        "CUDF-043",
-        "CUDF-045",
-        "CUDF-046",
-        "CUDF-047",
-        "CUDF-048",
-        "CUDF-049",
-        "CUDF-051",
-        "CUDF-052",
-        "CUSC-001"
-      ],
       "note": "the smallest valid detail specification with text and badge fields.",
       "expect": "ok",
       "spec": {
@@ -152,9 +138,6 @@
     {
       "id": "ok_compose_ref_patch_fields",
       "name": "ok-compose-ref-patch-fields",
-      "requirements": [
-        "CUSC-007"
-      ],
       "note": "$ref and $patch on the fields map use the same composition engine as form properties; files resolve the base for the engine.",
       "expect": "ok",
       "options": {
@@ -365,9 +348,6 @@
     {
       "id": "red_show_if_on_field",
       "name": "red-show-if-on-field",
-      "requirements": [
-        "CUDF-045"
-      ],
       "note": "show_if on a field is a forbidden meta key.",
       "expect": "fail",
       "reason": "additionalProperties",
@@ -479,9 +459,6 @@
     {
       "id": "patched_field_forbidden_key",
       "name": "patched-field-forbidden-key",
-      "requirements": [
-        "CUSC-007"
-      ],
       "note": "a forbidden key introduced by $patch is rejected by the meta-schema inside the patch and by the four-language engine after composition.",
       "expect": "fail",
       "reason": "propertyNames",
@@ -577,9 +554,6 @@
     {
       "id": "red_forbidden_root_key",
       "name": "red-forbidden-root-key",
-      "requirements": [
-        "CUDF-041"
-      ],
       "note": "a forbidden meta key at the detail root is a load failure.",
       "expect": "fail",
       "reason": "additionalProperties",
@@ -628,10 +602,6 @@
     {
       "id": "red_unresolved_fields_ref",
       "name": "red-unresolved-fields-ref",
-      "requirements": [
-        "CUSC-007",
-        "CUSC-036"
-      ],
       "note": "an unresolved $ref on the fields map is a load failure.",
       "expect": "ok",
       "raises": {
@@ -664,14 +634,6 @@
     {
       "id": "ok_detail_actions",
       "name": "ok-detail-actions",
-      "requirements": [
-        "CUDF-041",
-        "CUDF-062",
-        "CUDF-064",
-        "CUDF-066",
-        "CUDF-068",
-        "CUDF-069"
-      ],
       "note": "a detail declares actions as a list does: a script string or an action object.",
       "expect": "ok",
       "spec": {
@@ -895,10 +857,6 @@
       "id": "specification_not_an_object",
       "name": "specification-not-an-object",
       "note": "a specification that is no object fails before the composition (CUDF-091, CUDF-032).",
-      "requirements": [
-        "CUDF-091",
-        "CUDF-032"
-      ],
       "spec": {
         "kind": "list",
         "value": []

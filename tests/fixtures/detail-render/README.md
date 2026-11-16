@@ -4,7 +4,7 @@
 [한국어](README.ko.md).
 
 `cases.json` holds the shared read-only detail cases of the Rust core in the case form of binding's generated tests (G-5): the
-group `cases` lists the cases of `build_detail and render_detail`, and each case gives `id`, `name`, `note`, `requirements`, the arguments
+group `cases` lists the cases of `build_detail and render_detail`, and each case gives `id`, `name`, `note`, the arguments
 `spec` and `record` and the record `options` with every field (`files`, `basepath`, `language`, `data`, `page`,
 `total`), and either `expected_html` or `raises` with its `kind`, `status`, `category` and optional `message`. `spec`,
 every record, every file and `data` are values of `json_value`, written as `{ "kind", "value" }` as in the

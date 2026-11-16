@@ -1,11 +1,11 @@
 # 목록 유효성 고정 데이터
 <!-- doc-id: tests-fixtures-list-validity-readme -->
-<!-- source-sha256: 26a9bcc788346cccda2195b69241cc16fd9941d7a678fed5f62b34ca726d7cc6 -->
+<!-- source-sha256: e55cbd032adefb0daa37ddf1d1e4889193fe9d22b53d93a8065945cbd0e7dcab -->
 
 [English](README.md).
 
 `cases.json`은 binding 생성 시험의 case 형식(G-5)으로 사례를 담습니다. group `cases`가 사례를 나열하고, 각 사례는
-`{ id, name, note, spec, options?, expect, reason?, raises?, requirements? }`입니다. `spec`과 모든 파일은 `json_value` 값이며
+`{ id, name, note, spec, options?, expect, reason?, raises? }`입니다. `spec`과 모든 파일은 `json_value` 값이며
 [검증 고정 데이터](../validate/README.ko.md)처럼 `{ "kind", "value" }`로 씁니다. 다른 구조 유효성 고정 데이터인
 [폼](../spec-validity/README.ko.md)은 평범한 `spec`, `files`, `engine`을 가진 자기 형식을 유지합니다.
 

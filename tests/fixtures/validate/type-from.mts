@@ -38,7 +38,3 @@ export const TYPE_FROM_CASES: Array<WrittenCase | FailingCase> = [
     expectFailure: { code: 'INVALID_RULE_PARAMETER', message: 'Invalid typeFrom parameter: expected a field reference string', at: 'value' },
   },
 ];
-
-export const TYPE_FROM_REQUIREMENTS: Record<string, string[]> = Object.fromEntries(
-  TYPE_FROM_CASES.map(c => [c.name, [c.name === 'type-from-parameter-not-string' ? 'CUVR-078' : 'CUVR-077']]),
-);

@@ -47,8 +47,3 @@ export const MULTIPLE_SHAPE_CASES: Array<WrittenCase | FailingCase> = [
   { name: 'multiple-shape-before-rules', note: 'The multiple of a field is checked before its rules, so an unknown rule beside it is not reported.',
     spec: nested('many', { nope: true }), data: {}, expectFailure: failure('meta.tags') },
 ];
-
-/** The requirements each case tests. */
-export const MULTIPLE_SHAPE_REQUIREMENTS: Record<string, string[]> = Object.fromEntries(
-  MULTIPLE_SHAPE_CASES.map((c) => [c.name, c.name === 'multiple-shape-accepted' ? ['CUSC-041'] : ['CUSC-041', 'CUSC-081']]),
-);

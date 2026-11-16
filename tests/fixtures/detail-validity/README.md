@@ -4,7 +4,7 @@
 [한국어](README.ko.md).
 
 `cases.json` holds its cases in the case form of binding's generated tests (G-5): the group `cases` lists them, and
-each case is `{ id, name, note, spec, options?, expect, reason?, raises?, requirements? }`. `spec` and every file are
+each case is `{ id, name, note, spec, options?, expect, reason?, raises? }`. `spec` and every file are
 values of `json_value`, written as `{ "kind", "value" }` as in the [validation fixtures](../validate/README.md). The
 other structure validity family, [form](../spec-validity/README.md), keeps its own form with a plain `spec`, `files` and
 `engine`.

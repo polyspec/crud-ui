@@ -63,10 +63,3 @@ export const DATA_LIMITS_CASES: Array<WrittenCase | FailingCase> = [
 
 /** Cases whose data the fixture file writes on one line: their nodes would take a line each. */
 export const DATA_LIMITS_COMPACT = ['data-limits-default-values-over'];
-
-export const DATA_LIMITS_REQUIREMENTS: Record<string, string[]> = Object.fromEntries(
-  DATA_LIMITS_CASES.map(c => [
-    c.name,
-    ['CUSC-087', c.name.startsWith('data-limits-bad-') ? 'CUVR-084' : c.name.startsWith('data-limits-default-') ? 'CUVR-083' : 'CUVR-082'],
-  ]),
-);

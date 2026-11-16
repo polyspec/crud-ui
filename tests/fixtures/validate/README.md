@@ -4,7 +4,7 @@
 [한국어](README.ko.md).
 
 `cases.json` holds the shared form validation cases of the Rust core in the case form of binding's generated tests
-(G-5): the group `cases` lists the cases, and each case gives `id`, `name`, `note`, `requirements`, the arguments `spec`
+(G-5): the group `cases` lists the cases, and each case gives `id`, `name`, `note`, the arguments `spec`
 and `data` of `validate`, optional `options` with `files`, and either `expected` or `raises`. `spec`, `data` and every
 file are values of `json_value`, written as `{ "kind", "value" }` (`null`, `bool`, `number` with its literal as text,
 `text`, `list` and `map` with its `[name, value]` pairs in order). `expected` is the complete `{ valid, errors, hidden }`
@@ -49,9 +49,7 @@ Each test runs the validator and compares the complete result or failure record.
 array is compared in order. Go, Rust and PHP compare numbers by value, so `5` and `5.0` are equal.
 The [PHP extension runner](../../../legacy/packages/php-ext/tests/ValidateReport.php) compares JSON text, so
 member order is compared there as well. A failure case compares `code`, `message` and `at`
-exactly, and every case must declare exactly one of `expected` and `raises`. A case that tests a requirement of
-[empty collections](../../../docs/spec/empty-collections.md) or of [validation rules](../../../docs/spec/validation-rules.md)
-lists its ids in `requirements`.
+exactly, and every case must declare exactly one of `expected` and `raises`.
 
 The cross-check console's validator processes receive each case on standard input. A result case
 exits `0` with the result on standard output; a failure case exits `2` with `{ error, code, at }`.

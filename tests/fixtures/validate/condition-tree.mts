@@ -212,24 +212,3 @@ export const CONDITION_TREE_CASES: Array<WrittenCase | FailureCase> = [
   parameter('condition-tree-parameter-upper',
     'The parameter is compared exactly: Judge is a parameter error (CUVR-068).', 'Judge'),
 ];
-
-/** The requirements each case tests. */
-export const CONDITION_TREE_REQUIREMENTS: Record<string, string[]> = {
-  'condition-tree-groups': ['CUSC-072', 'CUVR-066', 'CUVR-067'],
-  'condition-tree-group-shapes': ['CUSC-072', 'CUVR-067'],
-  'condition-tree-comparisons': ['CUSC-073', 'CUVR-067'],
-  'condition-tree-comparison-shapes': ['CUSC-073', 'CUVR-067'],
-  'condition-tree-judge-permitted': ['CUSC-074', 'CUVR-066', 'CUVR-067'],
-  'condition-tree-judge-refused': ['CUSC-074', 'CUVR-066', 'CUVR-067'],
-  'condition-tree-values': ['CUVR-020', 'CUVR-067'],
-  'condition-tree-required': ['CUVR-001', 'CUVR-067'],
-  'condition-tree-depth': ['CUSC-075', 'CUVR-067'],
-  'condition-tree-message': ['CUSC-003', 'CUVR-067'],
-  'condition-tree-disabled': ['CUVR-066'],
-  'condition-tree-repeated': ['CUVR-067'],
-  'condition-tree-parameter-text': ['CUVR-068'],
-  'condition-tree-parameter-path': ['CUVR-068'],
-  'condition-tree-parameter-object': ['CUVR-068'],
-  'condition-tree-parameter-number': ['CUVR-068'],
-  'condition-tree-parameter-upper': ['CUVR-068'],
-};

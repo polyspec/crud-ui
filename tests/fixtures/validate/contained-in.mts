@@ -35,14 +35,3 @@ export const CONTAINED_IN_CASES: Array<WrittenCase | FailingCase> = [
     expectFailure: { code: 'INVALID_RULE_PARAMETER', message: 'Invalid containedIn parameter: expected a field reference string', at: 'value' },
   },
 ];
-
-export const CONTAINED_IN_REQUIREMENTS: Record<string, string[]> = {
-  'contained-in-substring': ['CUVR-075'],
-  'contained-in-whole': ['CUVR-075'],
-  'contained-in-missing': ['CUVR-075'],
-  'contained-in-case': ['CUVR-075'],
-  'contained-in-number-value': ['CUVR-075'],
-  'contained-in-number-reference': ['CUVR-075'],
-  'contained-in-empty': ['CUVR-075'],
-  'contained-in-parameter-not-string': ['CUVR-076'],
-};

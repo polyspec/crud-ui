@@ -1,11 +1,11 @@
 # 검증 고정 데이터
 <!-- doc-id: tests-fixtures-validate-readme -->
-<!-- source-sha256: 731d60c0fc1fb4c34c732f895b7ddb2eca753de68c15c8db1d83ad6bced39dfb -->
+<!-- source-sha256: 8bc8f26212b956e60aa234c6b2ffb2a60d419852f39516d7e98f3f4012e37816 -->
 
 [English](README.md).
 
 `cases.json`은 binding 생성 시험의 case 형식(G-5)으로 Rust 코어의 공유 폼 검증 사례를 담습니다. group `cases`가 사례를
-나열하고, 각 사례는 `id`, `name`, `note`, `requirements`, `validate`의 인수 `spec`, `data`, `files`를 담은 선택적인
+나열하고, 각 사례는 `id`, `name`, `note`, `validate`의 인수 `spec`, `data`, `files`를 담은 선택적인
 `options`, 그리고 `expected` 또는 `raises`를 제공합니다. `spec`, `data`와 모든 파일은 `json_value` 값이며
 `{ "kind", "value" }`로 씁니다(`null`, `bool`, 리터럴을 텍스트로 담은 `number`, `text`, `list`, `[이름, 값]` 쌍을 순서대로 담은
 `map`). `expected`는 `{ valid, errors, hidden }` 전체 결과이며 모든 오류는 `path`, `field`, `rule`, `message`, `value`를
@@ -41,7 +41,7 @@ id, id가 없는 form, 매개변수 오류를 확인합니다.
 Go·Rust·PHP는 숫자를 값으로 비교하므로 `5`와 `5.0`은 같습니다.
 [PHP 확장 실행기](../../../legacy/packages/php-ext/tests/ValidateReport.php)는 JSON 문자열을 비교하므로 멤버 순서도
 비교합니다. 실패 사례는 `code`, `message`, `at`을 정확히 비교하며, 모든 사례는 `expected`와
-`raises` 중 정확히 하나를 선언해야 합니다. [빈 collection](../../../docs/spec/empty-collections.ko.md) 또는 [검증 규칙](../../../docs/spec/validation-rules.ko.md)의 requirement를 시험하는 case는 `requirements`에 id를 나열합니다.
+`raises` 중 정확히 하나를 선언해야 합니다.
 
 교차 검증 콘솔의 검증기 프로세스는 각 사례를 표준 입력으로 받습니다. 결과 사례는 종료 코드 `0`과 함께
 결과를 표준 출력에 쓰고, 실패 사례는 종료 코드 `2`와 함께 `{ error, code, at }`을 씁니다.

@@ -39,7 +39,3 @@ export const BOUNDS_FROM_CASES: Array<WrittenCase | FailingCase> = [
     expectFailure: { code: 'INVALID_RULE_PARAMETER', message: 'Invalid maxFrom parameter: expected a field reference string', at: 'value' },
   },
 ];
-
-export const BOUNDS_FROM_REQUIREMENTS: Record<string, string[]> = Object.fromEntries(
-  BOUNDS_FROM_CASES.map(c => [c.name, [c.name === 'bounds-from-parameter-not-string' ? 'CUVR-081' : 'CUVR-079']]),
-);

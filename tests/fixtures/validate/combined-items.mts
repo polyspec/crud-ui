@@ -83,16 +83,3 @@ export const COMBINED_ITEMS_CASES: Array<WrittenCase | FailingCase> = [
   choicesFailure('combined-items-choices-boolean', 'A literal value is a string or a finite number.', [{ value: true, label: 'Yes' }]),
   choicesFailure('combined-items-choices-duplicate', 'Two literal values with the same canonical text are refused.', [{ value: 1, label: 'One' }, { value: '1', label: 'Uno' }]),
 ];
-
-/** The requirements each case tests. */
-export const COMBINED_ITEMS_REQUIREMENTS: Record<string, string[]> = {
-  'combined-items-one-set': ['CUSC-089', 'CUVR-085'],
-  'combined-items-without-rows': ['CUSC-089', 'CUVR-085'],
-  'combined-items-row-repeats-choice': ['CUSC-089', 'CUVR-085'],
-  'combined-items-row-repeats-number-choice': ['CUSC-089', 'CUVR-085'],
-  'combined-items-choices-not-list': ['CUSC-089', 'CUVR-086'],
-  'combined-items-choices-extra-member': ['CUSC-089', 'CUVR-086'],
-  'combined-items-choices-missing-label': ['CUSC-089', 'CUVR-086'],
-  'combined-items-choices-boolean': ['CUSC-089', 'CUVR-086'],
-  'combined-items-choices-duplicate': ['CUSC-089', 'CUVR-086'],
-};

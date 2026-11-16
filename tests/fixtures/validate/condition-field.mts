@@ -35,7 +35,3 @@ export const CONDITION_FIELD_CASES: WrittenCase[] = [
     ] },
   },
 ];
-
-export const CONDITION_FIELD_REQUIREMENTS: Record<string, string[]> = {
-  'condition-field-values': ['CUSC-070', 'CUVR-001', 'CUVR-061'],
-};

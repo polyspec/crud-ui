@@ -271,9 +271,3 @@ export const KEYED_MAP_CASES: Array<WrittenCase | FailingCase> = [
     expectFailure: badReference('notes'),
   },
 ];
-
-/** The requirements each case tests. */
-export const KEYED_MAP_REQUIREMENTS: Record<string, string[]> = Object.fromEntries(KEYED_MAP_CASES.map(c => [
-  c.name,
-  c.name.startsWith('keyed-map-reference-') ? ['CUSC-077', 'CUVR-070'] : ['CUSC-076', 'CUSC-077', 'CUVR-069'],
-]));

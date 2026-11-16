@@ -160,28 +160,3 @@ export const GROUP_SOURCE_CASES: Array<WrittenCase | FailingCase> = [
     expected: result(),
   },
 ];
-
-/** The requirements each case tests. */
-export const GROUP_SOURCE_REQUIREMENTS: Record<string, string[]> = {
-  'group-source-select-members': ['CUSC-061', 'CUSC-062', 'CUSC-063', 'CUVR-060'],
-  'group-source-repeated-value': ['CUSC-063', 'CUSC-090', 'CUVR-087'],
-  'group-source-repeated-number': ['CUSC-090', 'CUVR-087'],
-  'group-source-repeated-value-hidden-field': ['CUVR-087'],
-  'group-source-multichoice-members': ['CUSC-061', 'CUSC-063', 'CUVR-060'],
-  'group-source-without-rows': ['CUSC-063', 'CUVR-060'],
-  'group-source-before-declared-rules': ['CUVR-060'],
-  'group-source-hidden-group': ['CUVR-060'],
-  'group-source-unknown-member': ['CUSC-064', 'CUVR-061'],
-  'group-source-text-field': ['CUSC-065', 'CUVR-061'],
-  'group-source-lang-field': ['CUSC-065', 'CUVR-061'],
-  'group-source-from-without-rows': ['CUSC-061', 'CUSC-066', 'CUVR-061'],
-  'group-source-from-not-text': ['CUSC-066', 'CUVR-061'],
-  'group-source-from-not-repeated': ['CUSC-061', 'CUSC-066', 'CUVR-061'],
-  'group-source-from-inside-rows': ['CUSC-061', 'CUSC-066', 'CUVR-061'],
-  'group-source-from-missing-field': ['CUSC-061', 'CUSC-066', 'CUVR-061'],
-  'group-source-from-repeated-field': ['CUSC-061', 'CUSC-066', 'CUVR-061'],
-  'group-source-label-missing': ['CUSC-062', 'CUSC-067', 'CUVR-061'],
-  'group-source-label-group': ['CUSC-062', 'CUSC-067', 'CUVR-061'],
-  'group-source-from-boolean-field': ['CUSC-061', 'CUSC-068', 'CUVR-061'],
-  'group-source-label-boolean-field': ['CUSC-062', 'CUSC-068', 'CUVR-061'],
-};

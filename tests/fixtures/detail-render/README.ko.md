@@ -1,11 +1,11 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: 935c98c761ac5a6192643ea6ed4bd16a53b5a9971d650d708744dec57becad3a -->
+<!-- source-sha256: c8e4f66b75605c2fd03135969360d506b6ca4632eaa07b95dd618ebd8104418e -->
 
 [English](README.md).
 
 `cases.json`은 binding 생성 시험의 case 형식(G-5)으로 Rust 코어의 공유 읽기 전용 상세 사례를 담습니다. group `cases`가
-`build_detail`와 `render_detail`의 사례를 나열하고, 각 사례는 `id`, `name`, `note`, `requirements`, 인수 `spec`, `record`,
+`build_detail`와 `render_detail`의 사례를 나열하고, 각 사례는 `id`, `name`, `note`, 인수 `spec`, `record`,
 모든 필드(`files`, `basepath`, `language`, `data`, `page`, `total`)를 적은 레코드 `options`, 그리고 `expected_html` 또는
 `kind`, `status`, `category`, 선택적인 `message`를 가진 `raises`를 제공합니다. `spec`, 레코드, 모든 파일과 `data`는
 `json_value` 값이며 [검증 고정 데이터](../validate/README.ko.md)처럼 `{ "kind", "value" }`로 씁니다. React, Vue, Svelte와

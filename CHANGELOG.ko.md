@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 7d06f30550ab3c137d9ee285675a33014137f91e57ea2ac8656d32f117c4652a -->
+<!-- source-sha256: 8a4187be30db8828ff54d1502d4783b1d16c197a041db1b63a2b1a7b78639478 -->
 
 ## Unreleased
 
+- `validate`, `list-validity`, `detail-validity`, `detail-render`의 case는 `requirements`를 갖지 않는다(C19.30). 입력: `tests/fixtures/*/cases.json` 네 파일. 이전 동작: 502, 9, 8, 68개 case가 어떤 test, check, 생성기도 읽지 않는 requirement id를 적었고(`scripts/check-schema.mts`는 그 모양만 검사했다), binding의 case key 검사가 그런 key를 보고한다. 기대: case, `validate`와 `detail-render`의 생성기, README 짝에 `requirements`가 없고, `make docs-schema`가 그것을 적은 case를 실패시킨다.
 - 고정 binding은 0.0.12다(C19.29). 입력: crate manifest 열두 개, `package.json`, `make bindings-check`. 이전 동작: 모든 줄이 binding v0.0.10을 적었다. 지금: 모든 줄이 v0.0.12를 적고 skeleton은 `binding scaffold` 0.0.12가 쓰는 것이다. json v0.0.30이 binding v0.0.10을 적으므로 네 lock은 `polyspec-binding-core` 0.0.12와 0.0.10을 함께 가지며, json release가 binding v0.0.12를 적을 때까지 `binding check`는 CK-20을 보고한다.
 - `make crudui-test-runtimes`의 시험이 옮겨진 layout에서, linked worktree에서, `MAKE=gmake`로 통과한다(C19.28). 입력: linked worktree에서 `make crudui-test-runtimes`와 `gmake MAKE=gmake crudui-test-runtimes`. 이전 동작: `make-tool-path`와 `php-test-scope`가 `legacy/`로 옮기기 전 경로를 기대했고, `php-test-scope`는 다른 checkout의 PHP를 실행했으며(`ETIMEDOUT`), `make-tool-path`는 `spawnSync gmake ENOENT`로 실패했고, `test-commands`는 `tests/build`의 test 파일 24개를 어떤 명령도 실행하지 않는다고 보고했다. 기대: 세 파일이 두 make로 통과한다.
 - Git은 `conformance-evidence/`와 `legacy/var/`를 무시한다(C19.27). 입력: CI job의 local 실행. 이전 동작: 둘 다 untracked 경로로 남았다. 기대: `git status`가 둘 다 보이지 않는다.

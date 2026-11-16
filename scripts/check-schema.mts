@@ -294,7 +294,7 @@ for (const [field, expected, keyword] of [
 // The structure-validity families share one case shape:
 // { name, note, spec, files?, expect: "ok"|"fail", reason?, engine: "pass"|{ code, at }, requirements? }.
 // `expect` and `reason` are the meta-schema result for the family entry point; `requirements` names the spec ids that the
-// case tests (S6).
+// case tests (S6). Only spec-validity, which is no case file of a binding contract, keeps it.
 const caseKeys = new Set(['name', 'note', 'spec', 'files', 'expect', 'reason', 'engine', 'requirements']);
 function validityCase(family: string, test: unknown): ValidityCase {
   assert.ok(OBJECT(test), `${family}: every case is an object`);
@@ -387,6 +387,14 @@ function checkSpec(label: string, spec: unknown, validate: ValidateFunction): vo
 // err-after-compose-ref-base-leak records that result).
 const isCompositionEntry = (spec: unknown): boolean =>
   spec !== null && typeof spec === 'object' && '$ref' in spec && typeof spec.$ref === 'string' && !('type' in spec);
+
+// A case of the binding case form holds no key that no test reads: binding check reports such a key (CK-96), and no test,
+// check or generator reads requirement ids, so no case gives `requirements`.
+for (const family of ['validate', 'list-validity', 'detail-validity', 'list-render', 'detail-render']) {
+  for (const test of readCases(`../tests/fixtures/${family}/cases.json`)) {
+    assert.ok(!('requirements' in test), `${family}:${test.name}: a case gives requirements, which no test reads`);
+  }
+}
 
 // Fixture families. `expectError` and `expectFailure` mark the input and
 // composition failures the rule excludes.
