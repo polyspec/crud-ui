@@ -336,16 +336,17 @@ test-binding-php-$(1): bindings
 	$(BINDING_PHP) -l packages/$(1)/php-ext/generated/polyspec_crud_ui_$(1).stub.php
 	$(BINDING_PHP) $$(foreach extension,$$(BINDING_PHP_EXTENSIONS),-d extension=$$(extension)) -d extension=$(CURDIR)/target/debug/libpolyspec_crud_ui_$(1).$(BINDING_DYLIB) $(BINDING_PHPUNIT) --fail-on-empty-test-suite --fail-on-skipped packages/$(1)/php-ext/generated/tests
 
-# The static library with the test features, which Go links through CGO_LDFLAGS, then gofmt, go vet and the generated tests
-# on go test with the build tags of those features through the go.work of the checkout, whose go.work.sum holds the sums of
-# the modules of json; the JSON report of go test gives
-# the count of the tests.
+# The generated tests of the Go package on go test with the build tags of the test features, after gofmt and go vet, through
+# the go.work of the checkout, whose go.work.sum holds the sums of the modules of json. binding go-link builds the static
+# library of the host with those features and gives the CGO_LDFLAGS that links it with the native libraries that rustc
+# prints for it, such as CoreFoundation of iana-time-zone on macOS (binding GN-14, GN-1d); a -L alone leaves them out. The
+# JSON report of go test gives the count of the tests.
 test-binding-go-$(1): bindings
-	$(CARGO) build --locked -p polyspec-crud-ui-$(1)-go --features $$(call binding_features,packages/$(1)/go/internal/ffi/Cargo.toml)
 	test -z "$$$$(cd packages/$(1)/go && $(BINDING_GOFMT) -l .)"
-	cd packages/$(1)/go && CGO_LDFLAGS=-L$(CURDIR)/target/debug GOFLAGS=-tags=$$(call binding_go_tags,packages/$(1)/go/internal/ffi/Cargo.toml) $$(GO) vet ./...
 	mkdir -p $(BINDING_VAR)/$(1)/go
-	status=0; cd packages/$(1)/go && CGO_LDFLAGS=-L$(CURDIR)/target/debug GOFLAGS=-tags=$$(call binding_go_tags,packages/$(1)/go/internal/ffi/Cargo.toml) $$(GO) test -count=1 -json ./... > $(BINDING_VAR)/$(1)/go/test.json || status=1; \
+	ldflags="$$$$($(NODE) $(BINDING) go-link --cargo "$(CARGO)" --manifest $(CURDIR)/packages/$(1)/go/internal/ffi/Cargo.toml --target-dir $(CURDIR)/target --features $$(call binding_features,packages/$(1)/go/internal/ffi/Cargo.toml))" || exit 1; \
+	cd packages/$(1)/go && export CGO_LDFLAGS="$$$$ldflags" GOFLAGS=-tags=$$(call binding_go_tags,packages/$(1)/go/internal/ffi/Cargo.toml) && $$(GO) vet ./... || exit 1; \
+	status=0; $$(GO) test -count=1 -json ./... > $(BINDING_VAR)/$(1)/go/test.json || status=1; \
 	$$(call binding_go_count,test-binding-go-$(1),$(BINDING_VAR)/$(1)/go/test.json) || status=1; exit $$$$status
 endef
 $(foreach component,$(BINDING_COMPONENTS),$(eval $(call binding_package_rules,$(component))))

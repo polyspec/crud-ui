@@ -1,10 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 62c0beec9000e58bf73f349423550509170db4473c07bf1a7cc039665a234786 -->
+<!-- source-sha256: 6635c7b848be25edf45284f20dbb0fcd9f8bbe6e7cd3fb9fb745dee428ff4588 -->
 
 ## Unreleased
 
-- Go binding 패키지가 json의 native 라이브러리를 링크한다(C19.60). 입력: `make test-binding-go-validator`. 이전 동작: 링크가 `ld: library 'polyspec_json_go' not found`로 실패했다. 현재: 계획됨. `make crudui-install-bindings`가 json release에서 라이브러리를 제공한다.
+- Go binding 패키지가 `binding go-link`로 링크한다(C19.60). 입력: `make test-binding-go-generator`. 이전 동작: 시험 binary가 CoreFoundation의 `Undefined symbols`로 링크되지 않았다. 현재: rustc가 출력하는 native 라이브러리가 링크되고 생성된 Go 시험이 실행된다.
 - binding 0.0.17, json 0.0.34, kit 0.0.117의 pin을 한 행으로 계획한다(C19.59). 입력: 계획. 이전 동작: 없음. 현재: 행이 pin 전의 각 검사의 Red를 적는다.
 - Makefile recipe의 cargo가 `.links`를 따른다(C19.58). 입력: `make build-rust`, `make lint-bindings`, binding 빌드. 이전 동작: cargo가 주어진 대로 실행되어 연결된 checkout이 빌드되지 않았다. 현재: kit의 `link.mjs cargo`가 연결된 crate를 patch하고, `.links`가 없으면 cargo를 주어진 대로 실행한다.
 - `datetime` 입력이 `step="any"`를 쓴다(C19.48). 입력: `2026-06-14T10:30:45`처럼 초를 가진 값의 `datetime`이나 `datetime-local` 필드. 이전 동작: 입력이 60초의 기본 step을 가져, 브라우저가 step 불일치로 폼 제출을 거부했다. 현재: `step="any"`로 코어가 쓰는 모든 값을 브라우저가 제출한다. CUMK-075와 CUDF-092는 바뀌지 않고 성립한다.
