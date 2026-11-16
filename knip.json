@@ -69,6 +69,8 @@
   "ignoreDependencies": [
     // make bindings, bindings-check and test-bindings run the cli of the package by its path (BINDING of the Makefile); no import names the package
     "@polyspec/binding",
+    // make test-binding-node-<component> and test-binding-wasm-<component> pack the installed package and its platform package (BINDING_NODE_DEPS of the Makefile) beside the generated packages, which require it; no import names the package
+    "@polyspec/json",
     // make lint-ts runs oxlint of node_modules/.bin through lint-ts of @polyspec/kit; no import or script names the package
     "oxlint",
     // the type-aware backend of oxlint, which oxlint starts for options.typeAware of .oxlintrc.json; no import names the package

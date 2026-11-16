@@ -237,6 +237,107 @@ lint-bindings: bindings ## Lint the binding crates after make bindings
 test-bindings: bindings ## Run the tests of the binding crates after make bindings
 	cargo test --locked $(foreach crate,$(BINDING_CRATES),-p $(crate))
 
+# The generated tests of the binding packages (binding G-5, GN-13): the tests that make bindings writes for each target of a
+# component, which hold the cases of interface.json, run on the standard runner of their language against a build with the
+# test features of their crate (binding GN-5), each in its own target test-binding-<target>-<component>: unittest against
+# the installed wheel, node --test against the installed npm package and through its subpath ./wasm, PHPUnit with the
+# extension loaded and go test with the static library. A run that runs no test fails: unittest exits 5 for no test,
+# PHPUnit runs with --fail-on-empty-test-suite, and the node and go runs count the tests of their TAP and JSON reports.
+BINDING_TARGETS := python node wasm php go
+BINDING_TEST_TARGETS := $(foreach target,$(BINDING_TARGETS),$(foreach component,$(BINDING_COMPONENTS),test-binding-$(target)-$(component)))
+.PHONY: test-binding-packages crudui-install-bindings $(BINDING_TEST_TARGETS) $(foreach component,$(BINDING_COMPONENTS),binding-node-package-$(component))
+test-binding-packages: $(BINDING_TEST_TARGETS)
+BINDING_VAR := $(CURDIR)/var/bindings
+BINDING_DYLIB := $(if $(filter Darwin,$(shell uname -s)),dylib,so)
+BINDING_WASM_BINDGEN := $(TOOLS_DIR)/mise/shims/wasm-bindgen
+BINDING_GOFMT := $(TOOLS_DIR)/mise/shims/gofmt
+# The PHP of PATH, whose php-config the build script of ext-php-rs reads.
+BINDING_PHP ?= php
+# PHPUnit of the root composer.lock, which make install installs, runs the generated tests of the PHP extensions.
+BINDING_PHPUNIT := $(CURDIR)/vendor/bin/phpunit
+BINDING_PLATFORM := $(shell $(NODE) -p 'process.platform + "-" + process.arch + (process.platform === "linux" ? "-gnu" : "")' 2>/dev/null)
+# The packages of json, which owns the value classes of the contracts, that the generated packages require (binding GN-15f,
+# GN-6x): the wheels that crudui-install-bindings downloads by their sha256, the npm packages of json that npm ci installs
+# from the release assets that package.json names, and the PHP extension of json, which PHP loads before the extension of
+# a component. The download of the PHP extension of json waits for kit#50, so BINDING_PHP_EXTENSIONS names the extension
+# that a json checkout built. The validator packages that the generator packages require are the builds of this checkout.
+BINDING_PYTHON_FIND_LINKS ?= $(BINDING_VAR)/deps/python
+BINDING_NODE_DEPS ?= $(CURDIR)/node_modules/@polyspec/json $(CURDIR)/node_modules/@polyspec/json-$(BINDING_PLATFORM)
+BINDING_PHP_EXTENSIONS ?=
+# The test features of a binding crate: every feature of its manifest (binding GN-5), joined by commas.
+binding_features = $(shell sed -n '/^\[features\]/,/^\[/s/^\([a-z][a-z0-9-]*\) = .*/\1/p' $(1) | paste -sd, -)
+# The build tags of the test features of a Go crate, polyspec_<feature> with _ for - (binding GN-5).
+binding_go_tags = $(subst -,_,$(shell echo '$(call binding_features,$(1))' | sed 's/\([^,]*\)/polyspec_\1/g'))
+# The count of the tests of the TAP report $(2) of the target $(1); a report of no test fails.
+binding_tap_count = $(NODE) -e 'const m = /^\# tests (\d+)$$/m.exec(require("fs").readFileSync(process.argv[1], "utf8")); const n = m ? Number(m[1]) : 0; console.log(`$(1): $${n} tests`); if (n === 0) { console.error("$(1): ran no test case in $(2)"); process.exit(1); }' $(2)
+# The count of the tests of the go test -json report $(2) of the target $(1); a report of no test fails.
+binding_go_count = $(NODE) -e 'const e = require("fs").readFileSync(process.argv[1], "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)); const pass = e.filter((x) => x.Test && x.Action === "pass").length; const fail = e.filter((x) => x.Test && x.Action === "fail").length; console.log(`$(1): $${pass} passed, $${fail} failed`); if (pass + fail === 0) { console.error("$(1): ran no test case in $(2)"); process.exit(1); }' $(2)
+
+# The wheels of json of packages/validator/python/requirements-bindings.txt, which pip downloads and checks by their sha256.
+crudui-install-bindings:
+	$(ONLINE) $(PYTHON) -m pip download -q --require-hashes --no-deps -r packages/validator/python/requirements-bindings.txt -d $(BINDING_VAR)/deps/python
+
+define binding_package_rules
+# The wheel that maturin builds through uv with the test features, installed without an index into a virtual environment
+# with the wheels of json and, for the generator, the wheel of the validator, and the generated tests on unittest.
+test-binding-python-$(1): bindings $(if $(filter generator,$(1)),test-binding-python-validator)
+	$$(PYTHON) -m venv --clear $(BINDING_VAR)/$(1)/python/venv
+	MATURIN_PEP517_ARGS='--locked --features $$(call binding_features,packages/$(1)/python/Cargo.toml)' $$(UV) build --wheel --python $(BINDING_VAR)/$(1)/python/venv/bin/python --clear --out-dir $(BINDING_VAR)/$(1)/python/wheels packages/$(1)/python
+	$(BINDING_VAR)/$(1)/python/venv/bin/python -m pip install -q --no-index --find-links $(BINDING_PYTHON_FIND_LINKS) $(if $(filter generator,$(1)),--find-links $(BINDING_VAR)/validator/python/wheels) --force-reinstall $(BINDING_VAR)/$(1)/python/wheels/*.whl
+	cd $(BINDING_VAR)/$(1)/python && venv/bin/python -m unittest discover -s $(CURDIR)/packages/$(1)/python/generated/tests -t $(CURDIR)/packages/$(1)/python/generated/tests
+
+# The npm package with the addon of this platform and the WASM module, packed and installed offline into
+# var/bindings/<component>/node as a release packs them (binding GN-3c, GN-18, P-5), beside the packages of json and, for the
+# generator, the packages of the validator.
+binding-node-package-$(1): bindings $(if $(filter generator,$(1)),binding-node-package-validator)
+	test "$$$$($(BINDING_WASM_BINDGEN) --version)" = "wasm-bindgen $$(shell sed -n 's/^wasm-bindgen = "=\(.*\)"$$$$/\1/p' packages/$(1)/ts/wasm/Cargo.toml)"
+	cargo build --locked -p polyspec-crud-ui-$(1)-wasm --target wasm32-unknown-unknown --features $$(call binding_features,packages/$(1)/ts/wasm/Cargo.toml)
+	$(BINDING_WASM_BINDGEN) --target web --out-dir packages/$(1)/ts/wasm/generated --out-name crud_ui_$(1)_wasm target/wasm32-unknown-unknown/debug/polyspec_crud_ui_$(1)_wasm.wasm
+	cargo build --locked -p polyspec-crud-ui-$(1)-node --features $$(call binding_features,packages/$(1)/ts/Cargo.toml)
+	rm -rf $(BINDING_VAR)/$(1)/node $(BINDING_VAR)/$(1)/node-platform
+	mkdir -p $(BINDING_VAR)/$(1)/node $(BINDING_VAR)/$(1)/node-platform
+	cp target/debug/libpolyspec_crud_ui_$(1)_node.$(BINDING_DYLIB) $(BINDING_VAR)/$(1)/node-platform/crud-ui-$(1).$(BINDING_PLATFORM).node
+	$(NODE) -e 'const p = require("./packages/$(1)/ts/package.json"); require("fs").writeFileSync("$(BINDING_VAR)/$(1)/node-platform/package.json", JSON.stringify({ name: p.name + "-$(BINDING_PLATFORM)", version: p.version, os: [process.platform], cpu: [process.arch], main: "crud-ui-$(1).$(BINDING_PLATFORM).node", files: ["crud-ui-$(1).$(BINDING_PLATFORM).node"] }, null, 2) + "\n")'
+	cd $(BINDING_VAR)/$(1)/node-platform && $(NPM) pack --pack-destination $(BINDING_VAR)/$(1)/node
+	cd packages/$(1)/ts && $(NPM) pack --pack-destination $(BINDING_VAR)/$(1)/node
+	cd $(BINDING_VAR)/$(1)/node && $(NPM) pack $(BINDING_NODE_DEPS)
+	$(if $(filter generator,$(1)),cp $(BINDING_VAR)/validator/node/polyspec-crud-ui-validator-*.tgz $(BINDING_VAR)/$(1)/node/)
+	echo '{ "private": true }' > $(BINDING_VAR)/$(1)/node/package.json
+	cd $(BINDING_VAR)/$(1)/node && $(NPM) install --offline --no-audit --no-fund --omit=optional ./*.tgz
+
+# The generated tests of the Node binding on node --test against the installed package, and those of the WASM binding through
+# its subpath ./wasm; --expose-gc serves the generated tests that collect instances (binding GN-18a).
+test-binding-node-$(1): binding-node-package-$(1)
+	cp packages/$(1)/ts/generated/tests/generated.test.mjs $(BINDING_VAR)/$(1)/node/generated.test.mjs
+	cd $(BINDING_VAR)/$(1)/node && $(NODE) --test --test-reporter=tap --test-reporter-destination=node.tap --test-reporter=spec --test-reporter-destination=stdout generated.test.mjs
+	$$(call binding_tap_count,test-binding-node-$(1),$(BINDING_VAR)/$(1)/node/node.tap)
+test-binding-wasm-$(1): binding-node-package-$(1)
+	cp packages/$(1)/ts/wasm/generated/tests/generated.test.mjs $(BINDING_VAR)/$(1)/node/generated.wasm.test.mjs
+	cd $(BINDING_VAR)/$(1)/node && $(NODE) --expose-gc --test --test-reporter=tap --test-reporter-destination=wasm.tap --test-reporter=spec --test-reporter-destination=stdout generated.wasm.test.mjs
+	$$(call binding_tap_count,test-binding-wasm-$(1),$(BINDING_VAR)/$(1)/node/wasm.tap)
+
+# The extension built with the test features against the PHP of BINDING_PHP, its stub linted, and the generated tests on
+# PHPUnit with the extensions of BINDING_PHP_EXTENSIONS and the extension loaded; a run without a test or with a skipped
+# test fails.
+test-binding-php-$(1): bindings
+	cargo build --locked -p polyspec-crud-ui-$(1)-php-ext --features $$(call binding_features,packages/$(1)/php-ext/Cargo.toml)
+	$(BINDING_PHP) -l packages/$(1)/php-ext/generated/polyspec_crud_ui_$(1).stub.php
+	$(BINDING_PHP) $$(foreach extension,$$(BINDING_PHP_EXTENSIONS),-d extension=$$(extension)) -d extension=$(CURDIR)/target/debug/libpolyspec_crud_ui_$(1).$(BINDING_DYLIB) $(BINDING_PHPUNIT) --fail-on-empty-test-suite --fail-on-skipped packages/$(1)/php-ext/generated/tests
+
+# The static library with the test features, which Go links through CGO_LDFLAGS, then gofmt, go vet and the generated tests
+# on go test with the build tags of those features through the go.work of the checkout, whose go.work.sum holds the sums of
+# the modules of json; the JSON report of go test gives
+# the count of the tests.
+test-binding-go-$(1): bindings
+	cargo build --locked -p polyspec-crud-ui-$(1)-go --features $$(call binding_features,packages/$(1)/go/internal/ffi/Cargo.toml)
+	test -z "$$$$(cd packages/$(1)/go && $(BINDING_GOFMT) -l .)"
+	cd packages/$(1)/go && CGO_LDFLAGS=-L$(CURDIR)/target/debug GOFLAGS=-tags=$$(call binding_go_tags,packages/$(1)/go/internal/ffi/Cargo.toml) $$(GO) vet ./...
+	mkdir -p $(BINDING_VAR)/$(1)/go
+	status=0; cd packages/$(1)/go && CGO_LDFLAGS=-L$(CURDIR)/target/debug GOFLAGS=-tags=$$(call binding_go_tags,packages/$(1)/go/internal/ffi/Cargo.toml) $$(GO) test -count=1 -json ./... > $(BINDING_VAR)/$(1)/go/test.json || status=1; \
+	$$(call binding_go_count,test-binding-go-$(1),$(BINDING_VAR)/$(1)/go/test.json) || status=1; exit $$$$status
+endef
+$(foreach component,$(BINDING_COMPONENTS),$(eval $(call binding_package_rules,$(component))))
+
 # The release recipes of the binding packages of each component (release-go-static-<component>, release-wheel-<component>,
 # release-php-ext-<component>, release-npm-platform-<component>, release-npm-<component>, release-go-module-<component>,
 # release-binding-check-<component>, release-platform-assets-<component> and install-wasm-bindgen) are the file
@@ -405,12 +506,16 @@ ci-validator-rust: ## The job validator-rust of ci.yml
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-rust crudui-test-generator-rust"
 
-# The contract check of each component and the tests of its binding crates, which make bindings writes with the binding of
-# package.json; the cases of interface.json are the generated tests of each crate (binding GN-13, CK-22).
+# The contract check of each component, the tests of its binding crates, which make bindings writes with the binding of
+# package.json, and the generated tests of its binding packages on the runner of each language; the cases of interface.json
+# are the generated tests (binding GN-13, CK-22). The tools are those of the five runners, PHPUnit of composer.lock and
+# the wheels of json that crudui-install-bindings downloads.
 ci-bindings: ## The job bindings of ci.yml
-	$(CI_MAKE) install-tools TOOLS="node rust"
+	$(CI_MAKE) install-tools TOOLS="node rust python uv go github:wasm-bindgen/wasm-bindgen http:composer"
 	$(CI_MAKE) crudui-install-crates
-	$(CI_MAKE) ci-targets TARGETS="bindings-check test-bindings"
+	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-bindings
+	$(CI_MAKE) ci-targets TARGETS="bindings-check test-bindings test-binding-packages"
 
 # The suites and programs import the Python packages installed in var/python (S3), with the Python of mise.toml.
 ci-python: ## The job python of ci.yml
@@ -1131,6 +1236,7 @@ CI_TARGETS = \
 	crudui-test-generator-rust \
 	bindings-check \
 	test-bindings \
+	test-binding-packages \
 	crudui-test-validator-python \
 	crudui-test-generator-python \
 	build-php-ext \

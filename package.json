@@ -118,6 +118,7 @@
     "@polyspec/crudui-generator-core": "0.0.20",
     "@polyspec/crudui-generator-html": "0.0.20",
     "@polyspec/crudui-validator": "0.0.20",
+    "@polyspec/json": "https://github.com/polyspec/json/releases/download/v0.0.31/polyspec-json-0.0.31.tgz",
     "@polyspec/kit": "https://github.com/polyspec/kit/releases/download/v0.0.114/polyspec-kit-0.0.114.tgz",
     "@polyspec/ordered-json": "https://github.com/polyspec/ordered-json/releases/download/v0.0.25/polyspec-ordered-json-0.0.25.tgz",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
@@ -146,6 +147,11 @@
     "vitest": "^5.0.4",
     "vue": "3.5.44",
     "yaml": "^2.9.1"
+  },
+  "optionalDependencies": {
+    "@polyspec/json-darwin-arm64": "https://github.com/polyspec/json/releases/download/v0.0.31/polyspec-json-darwin-arm64-0.0.31.tgz",
+    "@polyspec/json-linux-arm64-gnu": "https://github.com/polyspec/json/releases/download/v0.0.31/polyspec-json-linux-arm64-gnu-0.0.31.tgz",
+    "@polyspec/json-linux-x64-gnu": "https://github.com/polyspec/json/releases/download/v0.0.31/polyspec-json-linux-x64-gnu-0.0.31.tgz"
   },
   "allowScripts": {
     "fsevents@2.3.3": true,
