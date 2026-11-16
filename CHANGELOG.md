@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- Each generated Go module tracks its `go.sum` (C19.45). Input: `packages/validator/go`, `packages/generator/go`. Behaviour before: the modules resolved `github.com/polyspec/json/packages/go` only through the `go.work` of the repository, so a module built alone failed with `missing go.sum entry`. Now: each module tracks a `go.sum` that pins it.
 - The generator core compiles for wasm32-unknown-unknown (C19.43). Input: `packages/generator/rust/Cargo.toml`. Behaviour before: getrandom 0.4.3 stopped the build on that target, so the generated WASM package of the generator did not compile. Now: the feature `wasm_js` of getrandom is enabled for wasm32 targets, and a new instance id takes its random bytes from crypto.getRandomValues of the host.
 - The class of every list cell and detail value is stated as CUDF-092 (C19.42). Input: `docs/spec/display-formats.md`. Behaviour before: CUDF-083 stated the cell class of text, date, number and choice-label only, and CUDF-084 to CUDF-088 stated only the markup inside the cell. Now: CUDF-092 states the `td` and `dd` class of every format and the classes of `design.class` after it.
 - The markup of a `hidden` field is stated as CUMK-075 (C19.41). Input: `docs/spec/form-markup.md`. Behaviour before: only the remark that a `hidden` field has no header stated it, and one shared case fixed it. Now: CUMK-075 states the node, the `hidden` input without a widget wrapper, its class and attributes and its value, and the cases `hidden-with-data` and `hidden-empty` fix a data value and an empty value.
