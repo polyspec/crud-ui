@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- `.gitignore` ignores the workspace file of every Go module that `make link` links (C19.51). Input: `.gitignore`. Behaviour before: two entries named the paths of the modules before they moved under `legacy/`, and the generated modules had none, so `make link` refused to write their `go.work`. Now: each of them is ignored, and `make link` links the Go providers.
 - The detail case `list-options-ignored` gives `total` a value of its type (C19.46). Input: `tests/fixtures/detail-render/cases.json`. Behaviour before: the case gave `total` -1, outside the `uint` of the contract, so the generated Go test of the generator did not compile. Now: `total` is 7, and the case still shows that a detail ignores the list options.
 - Each generated Go module tracks its `go.sum` (C19.45). Input: `packages/validator/go`, `packages/generator/go`. Behaviour before: the modules resolved `github.com/polyspec/json/packages/go` only through the `go.work` of the repository, so a module built alone failed with `missing go.sum entry`. Now: each module tracks a `go.sum` that pins it.
 - The generator core compiles for wasm32-unknown-unknown (C19.43). Input: `packages/generator/rust/Cargo.toml`. Behaviour before: getrandom 0.4.3 stopped the build on that target, so the generated WASM package of the generator did not compile. Now: the feature `wasm_js` of getrandom is enabled for wasm32 targets, and a new instance id takes its random bytes from crypto.getRandomValues of the host.

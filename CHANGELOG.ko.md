@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 5ed22041d992e38ecf1542c8ff422016467f6e48bb31cf1a161f40e25e51668f -->
+<!-- source-sha256: 47d2d1147d7e70749634b688ec7769bbac98e5076e41f62c858a1fdb9e6d5d92 -->
 
 ## Unreleased
 
+- `.gitignore`가 `make link`가 연결하는 모든 Go module의 작업공간 파일을 무시한다(C19.51). 입력: `.gitignore`. 이전 동작: 두 항목이 `legacy/` 아래로 옮기기 전의 module 경로를 이름했고 생성 module에는 항목이 없어서, `make link`가 그 `go.work`를 쓰지 않았다. 현재: 그 각각을 무시하고, `make link`가 Go provider를 연결한다.
 - detail case `list-options-ignored`가 `total`에 그 타입의 값을 준다(C19.46). 입력: `tests/fixtures/detail-render/cases.json`. 이전 동작: case가 계약의 `uint` 밖인 -1을 `total`에 주어 generator의 생성 Go 시험이 compile되지 않았다. 현재: `total`은 7이고, case는 여전히 detail이 list 옵션을 무시함을 보인다.
 - 각 생성 Go module이 `go.sum`을 추적한다(C19.45). 입력: `packages/validator/go`, `packages/generator/go`. 이전 동작: module은 저장소의 `go.work`로만 `github.com/polyspec/json/packages/go`를 풀었으므로, 혼자 빌드한 module은 `missing go.sum entry`로 실패했다. 현재: 각 module이 그것을 고정하는 `go.sum`을 추적한다.
 - generator core가 wasm32-unknown-unknown으로 compile된다(C19.43). 입력: `packages/generator/rust/Cargo.toml`. 이전 동작: getrandom 0.4.3이 그 target에서 build를 멈추어 generator의 생성 WASM package가 compile되지 않았다. 현재: wasm32 target에서 getrandom의 feature `wasm_js`를 켜고, 새 instance id는 host의 crypto.getRandomValues에서 난수 byte를 얻는다.
