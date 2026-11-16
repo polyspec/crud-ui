@@ -317,16 +317,32 @@ function sliceSection(md: string, fromHeader: RegExp, toHeader = /^## /m): strin
 
 // A token requirement of §1: - **CUXP-<n>** `TOKEN` — Pattern: <pattern>; Example: <example>.
 const TOKEN_ITEM = /^- \*\*CUXP-\d+\*\* `(?<token>[^`]+)` — Pattern: (?<pattern>.+); Example: .+$/;
+// A requirement of §1 whose text starts with a backticked name is a token requirement; any other requirement is a rule
+// of the lexer, such as CUXP-024, and its indented lines continue it.
+const TOKEN_START = /^- \*\*CUXP-\d+\*\* `/;
+const RULE_ITEM = /^- \*\*CUXP-\d+\*\* [^`]/;
+const CONTINUATION = /^ {2}\S/;
 const LIST_ITEM = /^\s*\d+\.\s+/;
 
 function collectGrammar(): DescribeResult['grammar'] {
   const md = readFileSync(GRAMMAR_PATH, 'utf-8');
 
-  // §1 tokens: every non-empty line of the section is a token requirement; a line of another shape fails instead of
-  // being dropped, and a section without a token fails instead of reading as no tokens.
+  // §1 tokens: every non-empty line of the section is a token requirement, a rule requirement or a continuation of a
+  // rule; a line of another shape, and a token requirement of another form, fails instead of being dropped, and a
+  // section without a token fails instead of reading as no tokens.
   const tokenSection = sliceSection(md, /^## 1\. /m);
   const tokens: Array<{ token: string; pattern: string }> = [];
+  let inRule = false;
   for (const line of tokenSection.split('\n').filter((text) => text.trim() !== '')) {
+    if (RULE_ITEM.test(line)) {
+      inRule = true;
+      continue;
+    }
+    if (inRule && CONTINUATION.test(line)) continue;
+    inRule = false;
+    if (!TOKEN_START.test(line)) {
+      throw new Error(`docs/spec/expressions.md §1: the line ${line} is neither a requirement - **CUXP-<n>** nor a continuation of a rule`);
+    }
     const match = TOKEN_ITEM.exec(line);
     const token = match?.groups?.['token'];
     const pattern = match?.groups?.['pattern'];
