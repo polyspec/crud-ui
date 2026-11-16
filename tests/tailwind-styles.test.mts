@@ -13,13 +13,20 @@ import { readJson, type JTDSchemaType } from './json.mts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const styles = `${root}legacy/packages/generator/ts/styles`;
-const corpora = ['form-render', 'form-complete', 'list-render', 'detail-render'];
+// form-render and form-complete hold an array of cases; list-render and detail-render hold the case form of binding (G-5),
+// an object whose groups are arrays of cases.
+const corpora = ['form-render', 'form-complete'];
+const groupCorpora = ['list-render', 'detail-render'];
 /** A case of a shared render fixture with the HTML it expects; a case that expects an error renders no HTML. */
 interface RenderCase { name: string; expected_html?: string }
 const renderCases: JTDSchemaType<RenderCase[]> = {
   elements: { properties: { name: { type: 'string' } }, optionalProperties: { expected_html: { type: 'string' } }, additionalProperties: true },
 };
-const cases = corpora.flatMap(corpus => readJson(`${root}tests/fixtures/${corpus}/cases.json`, renderCases)
+const groupCases: JTDSchemaType<Record<string, RenderCase[]>> = { values: renderCases };
+const cases = [
+  ...corpora.map(corpus => [corpus, readJson(`${root}tests/fixtures/${corpus}/cases.json`, renderCases)] as const),
+  ...groupCorpora.map(corpus => [corpus, Object.values(readJson(`${root}tests/fixtures/${corpus}/cases.json`, groupCases)).flat()] as const),
+].flatMap(([corpus, items]) => items
   .flatMap(item => item.expected_html === undefined ? [] : [{ name: `${corpus}: ${item.name}`, html: item.expected_html }]));
 const widths = [360, 1280];
 

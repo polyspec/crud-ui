@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: c0f53de311a26199e74db7391c3bf916046cd369918f86da74081d1e6e1b70b0 -->
+<!-- source-sha256: 2795524d28ea886efd5e1d10d5260936ddf767cf75bf3c32e674917493242d15 -->
 
 ## Unreleased
 
+- viewport와 Tailwind 검사가 list와 detail render case를 case 형태로 읽는다(C19.35). 입력: `tests/viewport.test.mts`와 `tests/tailwind-styles.test.mts`. 이전 동작: 둘 다 `tests/fixtures/list-render/cases.json`과 `tests/fixtures/detail-render/cases.json`을 배열로 읽어 시험을 하나도 돌리기 전에 실패했다. 현재: 두 파일의 모든 group을 읽어 3307개 시험을 돌린다.
 - binding 패키지의 생성 시험이 각 언어의 표준 runner로 돈다(C19.34). 입력: `make test-binding-packages`와 bindings job. 이전 동작: validator와 generator의 생성 Python, Node, WASM, PHP, Go 시험을 돌리는 target이 없었다. 현재: `test-binding-<target>-<component>`가 json을 release asset에서 받아 시험 feature로 빌드한 것에 대해 각 시험을 돌리고, 시험이 없는 실행은 실패하며, bindings job이 그것을 부른다. validator는 Python 659개, Node 660개, WASM 659개, PHP 654개 가운데 각각 15, 13, 13, 268개가 실패하고, Go와 generator는 binding에 원인이 있어 빌드되지 않는다.
 - 고정 json은 0.0.31이고, 각 lock은 `polyspec-binding-core`를 하나만 담는다(C19.33). 입력: `packages/{validator,generator}` manifest의 json 줄, Cargo lock 네 개, `binding check`. 이전 동작: 모든 json 줄이 binding v0.0.10을 이름하는 0.0.30을 이름해서, lock이 binding 0.0.13 옆에 0.0.10을 담았고 binding check가 CK-20을 보고했다. 현재: 모든 json 줄이 0.0.31을 이름하고, lock은 `polyspec-binding-core` 0.0.13만 담으며, binding check가 아무것도 보고하지 않는다.
 - 생성기의 boundary는 binding이 계약 member에 주는 형태를 갖고, outline 연산은 입력의 실패를 이름한다(C19.32). 입력: binding 0.0.13으로 `make bindings`와 생성기의 생성 binding crate 빌드. 이전 동작: default가 있는 필드와 파라미터가 binding이 `Option`을 넘기는 자리에서 core의 값이었고, json과 record 인자 네 개가 binding이 참조를 넘기는 자리에서 값이었으며, `build_outline`, `collapsible_rows`, `set_all_expanded_view`가 계약이 실패를 이름하지 않는데 result를 돌려주어 crate가 컴파일되지 않았다. 현재: 그 필드와 파라미터는 없으면 default인 `Option`이고, 인자는 참조이며, 세 outline 연산은 입력 텍스트 규칙을 어기는 node에 `invalid_form_input`을 낸다.
