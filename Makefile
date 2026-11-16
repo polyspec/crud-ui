@@ -188,8 +188,12 @@ build-go: ## Build each Go package with go build; offline
 build-php: ## A PHP library has no build step; offline
 build-python: python-tables ## Build each Python package with uv build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/python legacy/packages/validator/python -- $(UV) build
+# The cargo of the Rust recipes, run in the directory of the recipe: kit's link runs each cargo command with the [patch]
+# of the crates of .links and a copy of the lock under var/link/cargo, and runs it as given with no .links (kit
+# docs/operations/local-links.md, K1266). The cargo fetch of make install fetches the tracked locks as they are.
+CARGO = $(NODE) $(abspath $(KIT))/link.$(KIT_EXT) cargo .
 build-rust: ## Build each Rust package with cargo build; offline
-	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/rust packages/validator/rust -- cargo build --locked
+	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots packages/generator/rust packages/validator/rust -- $(CARGO) build --locked
 build-ts: require-build ## Build each TypeScript package with tsc after the build of the packages, which writes their tables; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/ts legacy/packages/validator/ts -- node_modules/.bin/tsc -p tsconfig.build.json
 
@@ -233,9 +237,9 @@ bindings-check: ## Check the interface contract of each component with BINDING=<
 	@test -n "$(BINDING)" || { echo "bindings-check: set BINDING to the cli of binding"; exit 1; }
 	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) check $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
 lint-bindings: bindings ## Lint the binding crates after make bindings
-	cargo clippy --locked $(foreach crate,$(BINDING_CRATES),-p $(crate)) --all-targets -- -D warnings
+	$(CARGO) clippy --locked $(foreach crate,$(BINDING_CRATES),-p $(crate)) --all-targets -- -D warnings
 test-bindings: bindings ## Run the tests of the binding crates after make bindings
-	cargo test --locked $(foreach crate,$(BINDING_CRATES),-p $(crate))
+	$(CARGO) test --locked $(foreach crate,$(BINDING_CRATES),-p $(crate))
 
 # The generated tests of the binding packages (binding G-5, GN-13): the tests that make bindings writes for each target of a
 # component, which hold the cases of interface.json, run on the standard runner of their language against a build with the
@@ -299,9 +303,9 @@ test-binding-python-$(1): bindings $(if $(filter generator,$(1)),test-binding-py
 # generator, the packages of the validator.
 binding-node-package-$(1): bindings $(if $(filter generator,$(1)),binding-node-package-validator)
 	test "$$$$($(BINDING_WASM_BINDGEN) --version)" = "wasm-bindgen $$(shell sed -n 's/^wasm-bindgen = "=\(.*\)"$$$$/\1/p' packages/$(1)/ts/wasm/Cargo.toml)"
-	cargo build --locked -p polyspec-crud-ui-$(1)-wasm --target wasm32-unknown-unknown --features $$(call binding_features,packages/$(1)/ts/wasm/Cargo.toml)
+	$(CARGO) build --locked -p polyspec-crud-ui-$(1)-wasm --target wasm32-unknown-unknown --features $$(call binding_features,packages/$(1)/ts/wasm/Cargo.toml)
 	$(BINDING_WASM_BINDGEN) --target web --out-dir packages/$(1)/ts/wasm/generated --out-name crud_ui_$(1)_wasm target/wasm32-unknown-unknown/debug/polyspec_crud_ui_$(1)_wasm.wasm
-	cargo build --locked -p polyspec-crud-ui-$(1)-node --features $$(call binding_features,packages/$(1)/ts/Cargo.toml)
+	$(CARGO) build --locked -p polyspec-crud-ui-$(1)-node --features $$(call binding_features,packages/$(1)/ts/Cargo.toml)
 	rm -rf $(BINDING_VAR)/$(1)/node $(BINDING_VAR)/$(1)/node-platform
 	mkdir -p $(BINDING_VAR)/$(1)/node $(BINDING_VAR)/$(1)/node-platform
 	cp target/debug/libpolyspec_crud_ui_$(1)_node.$(BINDING_DYLIB) $(BINDING_VAR)/$(1)/node-platform/crud-ui-$(1).$(BINDING_PLATFORM).node
@@ -328,7 +332,7 @@ test-binding-wasm-$(1): binding-node-package-$(1)
 # PHPUnit with the extensions of BINDING_PHP_EXTENSIONS and the extension loaded; a run without a test or with a skipped
 # test fails.
 test-binding-php-$(1): bindings
-	cargo build --locked -p polyspec-crud-ui-$(1)-php-ext --features $$(call binding_features,packages/$(1)/php-ext/Cargo.toml)
+	$(CARGO) build --locked -p polyspec-crud-ui-$(1)-php-ext --features $$(call binding_features,packages/$(1)/php-ext/Cargo.toml)
 	$(BINDING_PHP) -l packages/$(1)/php-ext/generated/polyspec_crud_ui_$(1).stub.php
 	$(BINDING_PHP) $$(foreach extension,$$(BINDING_PHP_EXTENSIONS),-d extension=$$(extension)) -d extension=$(CURDIR)/target/debug/libpolyspec_crud_ui_$(1).$(BINDING_DYLIB) $(BINDING_PHPUNIT) --fail-on-empty-test-suite --fail-on-skipped packages/$(1)/php-ext/generated/tests
 
@@ -337,7 +341,7 @@ test-binding-php-$(1): bindings
 # the modules of json; the JSON report of go test gives
 # the count of the tests.
 test-binding-go-$(1): bindings
-	cargo build --locked -p polyspec-crud-ui-$(1)-go --features $$(call binding_features,packages/$(1)/go/internal/ffi/Cargo.toml)
+	$(CARGO) build --locked -p polyspec-crud-ui-$(1)-go --features $$(call binding_features,packages/$(1)/go/internal/ffi/Cargo.toml)
 	test -z "$$$$(cd packages/$(1)/go && $(BINDING_GOFMT) -l .)"
 	cd packages/$(1)/go && CGO_LDFLAGS=-L$(CURDIR)/target/debug GOFLAGS=-tags=$$(call binding_go_tags,packages/$(1)/go/internal/ffi/Cargo.toml) $$(GO) vet ./...
 	mkdir -p $(BINDING_VAR)/$(1)/go
