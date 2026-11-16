@@ -8,6 +8,7 @@ output is untracked (P34).
 """
 
 import json
+import os
 import unicodedata
 from pathlib import Path
 
@@ -76,7 +77,10 @@ LIST = {{
 }}
 '''
     TARGET.parent.mkdir(parents=True, exist_ok=True)
-    TARGET.write_text(body, encoding="utf-8")
+    # The table is written to <table>.<pid> and renamed into place, so a run that reads it finds the previous table or the new one.
+    staging = TARGET.with_name(f"{TARGET.name}.{os.getpid()}")
+    staging.write_text(body, encoding="utf-8")
+    os.replace(staging, TARGET)
     print(f"wrote {TARGET.relative_to(ROOT)}")
 
 

@@ -37,7 +37,11 @@ function crudui_emit_source(string $source, string $file, array $arguments): voi
     if (in_array('--stdout', $arguments, true)) {
         echo $source;
     } else {
-        file_put_contents($file, $source);
+        // The source is written to <file>.<pid> and renamed into place, so a run that reads it finds the previous
+        // source or the new one.
+        $staging = $file . '.' . getmypid();
+        file_put_contents($staging, $source);
+        rename($staging, $file);
     }
 }
 

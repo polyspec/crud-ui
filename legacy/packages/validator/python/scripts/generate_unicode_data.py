@@ -11,6 +11,7 @@ points. test_unicode_data fails when the written data differs from the contract.
 """
 
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[5]
@@ -63,7 +64,10 @@ SCRIPTS = {{
 }}
 '''
     TARGET.parent.mkdir(parents=True, exist_ok=True)
-    TARGET.write_text(body, encoding="utf-8")
+    # The table is written to <table>.<pid> and renamed into place, so a run that reads it finds the previous table or the new one.
+    staging = TARGET.with_name(f"{TARGET.name}.{os.getpid()}")
+    staging.write_text(body, encoding="utf-8")
+    os.replace(staging, TARGET)
     print(f"wrote {TARGET.relative_to(ROOT)}")
 
 

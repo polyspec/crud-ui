@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: cd32ed67d71cfe681ec4091a4b038f3f6559ce969ce7d3d796d8f382d80e9858 -->
+<!-- source-sha256: d4b2343049551a2af24cc191ae8f2406a94c3f9567cd7ded940b965ff7d92bd3 -->
 
 ## Unreleased
 
+- 표 생성기가 표를 원자적으로 게시한다(C17.106-6). 입력: make php-tables, python-tables, php-ext-tables와 TypeScript 패키지의 prebuild script. 이전 동작: 생성기 여덟 개가 추적하지 않는 표를 그 자리에 써서, 다른 run이 쓰는 동안 표를 읽는 run은 덜 쓰인 표를 읽을 수 있었다. 현재: 각 생성기가 `<table>.<pid>`에 쓴 뒤 표 자리로 rename한다. 표는 전과 byte 단위로 같고, `tests/build/atomic-publish.test.mts`가 각 생성기에 그 형태를 요구한다.
 - cross-check console이 Rust core와 legacy validator가 다른 dataLimits case를 이름 붙은 목록으로 가진다(C19.39). 입력: `make crudui-test-cross-check`. 이전 동작: dataLimits case 열 개가 실패했다. legacy validator는 고정 fixture를 따라 depth 512까지 받고, core는 CUSC-087을 따라 depth 256까지 받기 때문이다. 현재: `core-divergences.mjs`가 열 case를 core의 실패와 두 근거와 함께 나열하고, 시험은 legacy validator에서 fixture를, core에서 그 실패를 요구하며, 그 밖의 차이는 실패다.
 - cross-check suite의 run마다 Vite 의존성 cache가 따로 있다(C19.38). 입력: `make crudui-test-cross-check`. 이전 동작: suite가 checkout이 공유하는 `node_modules/.vite`를 써서, SSR 의존성을 최적화할 때 시험 167개가 ENOTEMPTY로 실패했다. 현재: `vitest.config.mjs`가 `cacheDir`를 임시 디렉터리 아래의 run 디렉터리로 두고 끝날 때 지운다.
 - cross-check console의 Go validator process가 `npm run build:go`가 쓰는 program을 돌린다(C19.37). 입력: `legacy/examples/cross-check-console/server/package.json`의 build:go script. 이전 동작: script가 `legacy/var/build/cross-check-console/go-validate`에 썼고, `var/build/cross-check-console/go-validate`를 돌리는 Go process가 ENOENT로 실패했다. 현재: script가 process가 돌리는 경로에 program을 쓰고, `build-paths.test.mjs`가 그 경로를 요구한다.

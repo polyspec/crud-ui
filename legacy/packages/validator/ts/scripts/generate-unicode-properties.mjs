@@ -11,7 +11,7 @@
  * differs from the contract.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -59,4 +59,6 @@ export const SCRIPTS: Readonly<Record<string, readonly number[]>> = {
 ${table(contract.scripts)}
 };
 `;
-writeFileSync(target, text);
+// The table is written to <table>.<pid> and renamed into place, so a run that reads it finds the previous table or the new one.
+writeFileSync(`${target}.${process.pid}`, text);
+renameSync(`${target}.${process.pid}`, target);

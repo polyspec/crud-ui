@@ -2,7 +2,7 @@
 // Writes legacy/packages/php-ext/src/interface_messages.c from contracts/interface-messages.json.
 // Run from the repository root: node legacy/packages/php-ext/tools/generate-interface-messages.mjs
 // make php-ext-tables runs it before every target that reads the sources of the extension; the output is untracked (P34).
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -118,5 +118,7 @@ export function interfaceMessagesSource(contract, fields) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const contract = JSON.parse(await readFile(contractPath, 'utf8'));
-  await writeFile(outputPath, interfaceMessagesSource(contract, await structFields()));
+  // The table is written to <table>.<pid> and renamed into place, so a run that reads it finds the previous table or the new one.
+  await writeFile(`${outputPath}.${process.pid}`, interfaceMessagesSource(contract, await structFields()));
+  await rename(`${outputPath}.${process.pid}`, outputPath);
 }
