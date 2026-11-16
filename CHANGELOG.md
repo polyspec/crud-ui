@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- crudui pins `@polyspec/kit` 0.0.116 (C19.54). Input: `npm ci`. Behaviour before: kit 0.0.114 was installed. Now: kit 0.0.116 is installed.
 - The READMEs of the legacy fixture copies state that each copy is edited directly and follows the specification (C19.53). Input: `legacy/tests/fixtures/*/README.md`. Behaviour before: six of them still stated that the copy was fixed. Now: every copy states the rule of `AGENTS.md`.
 - The shared render fixtures are edited directly (C19.47). Input: `tests/fixtures/{form,list,detail}-render/cases.json`. Behaviour before: their READMEs named scripts that wrote only the legacy copies from the legacy React generator, and the form render cases held `requirements`, which nothing read. Now: the scripts are gone, each file is its own source, and the form render cases follow the rule of the case form without `requirements`.
 - The legacy implementations and their copy of the fixtures follow the nesting limit of 256 (C19.49). Input: the legacy validators and `make crudui-test-cross-check`. Behaviour before: the copy was fixed, so the legacy validators kept the limit of 512 after D-16, and a list excused the ten dataLimits cases in which the Rust core differed. Now: `AGENTS.md` has a change of the specification change the legacy side with it, the legacy validators take 256, and the cross-check compares every case alike.
