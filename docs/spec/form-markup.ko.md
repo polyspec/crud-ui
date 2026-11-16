@@ -1,6 +1,6 @@
 # 폼 마크업
 <!-- doc-id: docs-spec-form-markup -->
-<!-- source-sha256: b6f68e80ef8b5a003e6a815ef158c7640bc752d174cb4ef1e9d0a816693c189b -->
+<!-- source-sha256: 9cb19c1db250ea910a3de1e7a3a5f604335fd1a572f0393af4f20c1b6556902d -->
 
 [English](form-markup.md). 이 문서는 평가된 폼 노드의 렌더링 방식을 정의합니다.
 React, Vue, Svelte, HTML 렌더러와 네이티브 렌더러는 같은 마크업을 생성합니다.
@@ -216,6 +216,22 @@ select 필드의 선택 목록은 그룹을 가질 수 있습니다([스키마](
   value="auto">Automatic</option><optgroup label="Europe"><option value="eu-west">West</option><option
   value="eu-north" selected="">North</option></optgroup><optgroup label="Asia"><option
   value="ap-east">East</option></optgroup></select></div>
+```
+
+## 숨은 필드
+
+- **CUMK-075** `hidden` 필드는 header 없는 field 노드(`data-field-path`가 있는 `crudui-node crudui-node--field`)를
+  렌더링하고, type이 `hidden`인 `input`을 `crudui-widget` 감싸개 없이 노드 본문에 바로 씁니다. 입력에는
+  `crudui-input` 없이 class `valid-target`과 그 뒤의 `design.class` class, 그리고 `id`, `name`, `value`와 필드의
+  data 속성(`data-default`, `data-name`, `data-rule-name`)이 있습니다. `placeholder`, `style`, `behavior`의 속성은
+  없습니다. 값은 필드의 data 값이고, data에 값이 없으면 `default`의 text입니다. `data-default`는 `default`의
+  text입니다. 둘 다 없으면 둘 다 비어 있습니다. `hidden` 필드는 폼의 필드입니다. render option `hidden`(CURT-014)의
+  숨은 입력은 필드 밖에 씁니다.
+
+```html
+<div class="crudui-node crudui-node--field" data-field-path="tok"><div class="crudui-node__body"><input
+  class="valid-target" data-default="d" data-name="tok" data-rule-name="tok" id="crudui:tok" name="tok"
+  type="hidden" value="r7"></div></div>
 ```
 
 ## 날짜와 시간 필드

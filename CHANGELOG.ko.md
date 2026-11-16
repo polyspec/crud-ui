@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 1a05b878d907e84b959cc8ff70b566899707c447574933efeb180d47d94ea61c -->
+<!-- source-sha256: 286b10edf7fc10dc21bce8e7ae2175bc39cd3f70cb8b271c916bb744bb3f2e3e -->
 
 ## Unreleased
 
+- `hidden` 필드의 마크업을 CUMK-075로 정한다(C19.41). 입력: `docs/spec/form-markup.md`. 이전 동작: `hidden` 필드는 header가 없다는 언급만 있었고, 공유 case 하나가 그것을 고정했다. 현재: CUMK-075가 노드, widget 감싸개 없는 `hidden` 입력, 그 class와 속성과 값을 정하고, case `hidden-with-data`와 `hidden-empty`가 data 값과 빈 값을 고정한다.
 - 세 loader 연산의 loader case `loads_a_file`이 fixture의 호출을 적는다(C19.44). 입력: `contracts/validator-cases.json`. 이전 동작: loader의 호출을 적는 loader case가 없어서, 생성 package의 K-2 시험이 placeholder form data를 넘기고 loader가 돌기 전에 실패했다. 현재: `loads_a_file`이 `file_loader.normalize`와 `file_loader.load`를 인자와 함께 적고, 그 시험이 그 인자를 쓴다.
 - `datetime` 필드의 마크업을 CUMK-074로 정한다(C19.40). 입력: `docs/spec/form-markup.md`. 이전 동작: `datetime` 필드의 요소, 속성, 값 형태를 밝힌 문서가 없었고 공유 render case만 그것을 고정했다. 현재: CUMK-074가 widget 감싸개 없는 `datetime-local` 입력, 빈 값, 날짜 값의 UTC 형태를 정하고, `datetime` case 넷이 그것을 이름한다.
 - 표 생성기가 표를 원자적으로 게시한다(C17.106-6). 입력: make php-tables, python-tables, php-ext-tables와 TypeScript 패키지의 prebuild script. 이전 동작: 생성기 여덟 개가 추적하지 않는 표를 그 자리에 써서, 다른 run이 쓰는 동안 표를 읽는 run은 덜 쓰인 표를 읽을 수 있었다. 현재: 각 생성기가 `<table>.<pid>`에 쓴 뒤 표 자리로 rename한다. 표는 전과 byte 단위로 같고, `tests/build/atomic-publish.test.mts`가 각 생성기에 그 형태를 요구한다.

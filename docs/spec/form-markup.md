@@ -233,6 +233,23 @@ outside groups. With the data `region: eu-north`, the example of the schema writ
   value="ap-east">East</option></optgroup></select></div>
 ```
 
+## Hidden fields
+
+- **CUMK-075** A `hidden` field renders a field node, `crudui-node crudui-node--field` with `data-field-path`,
+  without a header, and an `input` of type `hidden` directly in the node body, without the `crudui-widget` wrapper.
+  The input has the class `valid-target`, without `crudui-input`, followed by the classes of `design.class`, and
+  `id`, `name`, `value` and the data attributes of the field (`data-default`, `data-name`, `data-rule-name`); it
+  has no `placeholder`, no `style` and no attributes of `behavior`. The value is the data value of the field, or the
+  text of `default` when the data holds none, and `data-default` is the text of `default`; without either, both
+  are empty. A `hidden` field is a field of the form; the hidden inputs of the render option `hidden` (CURT-014)
+  are written outside the fields.
+
+```html
+<div class="crudui-node crudui-node--field" data-field-path="tok"><div class="crudui-node__body"><input
+  class="valid-target" data-default="d" data-name="tok" data-rule-name="tok" id="crudui:tok" name="tok"
+  type="hidden" value="r7"></div></div>
+```
+
 ## Date and time fields
 
 - **CUMK-074** A `datetime` field and its alias `datetime-local` render an `input` of type
