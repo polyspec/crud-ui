@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: ba67ee5210a9d988d0f602459dee2b8c2bb522a1a48ef5037b60cbcd1082a17a -->
+<!-- source-sha256: bbe99552682914b2c5a14047f8634ab7c44df51b67c52aee8bc80afe3a546f7d -->
 
 ## Unreleased
 
+- cross-check suite의 run마다 Vite 의존성 cache가 따로 있다(C19.38). 입력: `make crudui-test-cross-check`. 이전 동작: suite가 checkout이 공유하는 `node_modules/.vite`를 써서, SSR 의존성을 최적화할 때 시험 167개가 ENOTEMPTY로 실패했다. 현재: `vitest.config.mjs`가 `cacheDir`를 임시 디렉터리 아래의 run 디렉터리로 두고 끝날 때 지운다.
 - cross-check console의 Go validator process가 `npm run build:go`가 쓰는 program을 돌린다(C19.37). 입력: `legacy/examples/cross-check-console/server/package.json`의 build:go script. 이전 동작: script가 `legacy/var/build/cross-check-console/go-validate`에 썼고, `var/build/cross-check-console/go-validate`를 돌리는 Go process가 ENOENT로 실패했다. 현재: script가 process가 돌리는 경로에 program을 쓰고, `build-paths.test.mjs`가 그 경로를 요구한다.
 - `crudui describe`가 expression grammar §1의 규칙을 읽는다(C19.36). 입력: `docs/spec/expressions.md` §1. 이전 동작: §1의 모든 줄이 token requirement여야 해서, 규칙 CUXP-024 때문에 `crudui describe`와 `crudui explain`이 실패했다. 현재: token을 이름하지 않는 requirement와 그 들여 쓴 줄은 규칙이고 token을 주지 않는다. 다른 형식의 token requirement와 다른 모양의 줄은 여전히 실패한다.
 - viewport와 Tailwind 검사가 list와 detail render case를 case 형태로 읽는다(C19.35). 입력: `tests/viewport.test.mts`와 `tests/tailwind-styles.test.mts`. 이전 동작: 둘 다 `tests/fixtures/list-render/cases.json`과 `tests/fixtures/detail-render/cases.json`을 배열로 읽어 시험을 하나도 돌리기 전에 실패했다. 현재: 두 파일의 모든 group을 읽어 3307개 시험을 돌린다.
