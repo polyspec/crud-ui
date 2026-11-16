@@ -83,10 +83,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "polyspec-binding-core"
+version = "0.0.12"
+source = "git+https://github.com/polyspec/binding.git?tag=v0.0.12#d81bf71dad3de19f2dd2214fcdb8ef5fa80daad7"
+dependencies = [
+ "indexmap",
+ "libc",
+ "tokio-util",
+]
+
+[[package]]
 name = "polyspec-crud-ui-validator"
 version = "0.0.20"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-json",
  "serde",
  "serde_json",
@@ -105,7 +115,7 @@ name = "polyspec-json"
 version = "0.0.30"
 source = "git+https://github.com/polyspec/json.git?tag=v0.0.30#a34218e3dd131a5d74d0979ed1be045dda94982e"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.10",
  "ryu-js",
  "serde",
  "serde_json",

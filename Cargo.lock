@@ -1214,6 +1214,16 @@ source = "git+https://github.com/polyspec/binding.git?tag=v0.0.10#e38c4a2b3c7ceb
 dependencies = [
  "indexmap",
  "libc",
+ "tokio-util",
+]
+
+[[package]]
+name = "polyspec-binding-core"
+version = "0.0.12"
+source = "git+https://github.com/polyspec/binding.git?tag=v0.0.12#d81bf71dad3de19f2dd2214fcdb8ef5fa80daad7"
+dependencies = [
+ "indexmap",
+ "libc",
  "serde_json",
  "tokio",
  "tokio-util",
@@ -1228,7 +1238,7 @@ dependencies = [
  "libtest-mimic",
  "num-bigint",
  "num-traits",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
@@ -1242,7 +1252,7 @@ dependencies = [
 name = "polyspec-crud-ui-generator-go"
 version = "0.0.20"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
@@ -1255,7 +1265,7 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
@@ -1266,7 +1276,7 @@ name = "polyspec-crud-ui-generator-php-ext"
 version = "0.0.20"
 dependencies = [
  "ext-php-rs",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
@@ -1276,7 +1286,7 @@ dependencies = [
 name = "polyspec-crud-ui-generator-python"
 version = "0.0.20"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
@@ -1288,7 +1298,7 @@ name = "polyspec-crud-ui-generator-wasm"
 version = "0.0.20"
 dependencies = [
  "js-sys",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-generator",
  "polyspec-crud-ui-validator",
  "polyspec-json",
@@ -1300,7 +1310,7 @@ name = "polyspec-crud-ui-validator"
 version = "0.0.20"
 dependencies = [
  "libtest-mimic",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-json",
  "serde",
  "serde_json",
@@ -1310,7 +1320,7 @@ dependencies = [
 name = "polyspec-crud-ui-validator-go"
 version = "0.0.20"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-validator",
  "polyspec-json",
 ]
@@ -1322,7 +1332,7 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-validator",
  "polyspec-json",
 ]
@@ -1332,7 +1342,7 @@ name = "polyspec-crud-ui-validator-php-ext"
 version = "0.0.20"
 dependencies = [
  "ext-php-rs",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-validator",
  "polyspec-json",
 ]
@@ -1341,7 +1351,7 @@ dependencies = [
 name = "polyspec-crud-ui-validator-python"
 version = "0.0.20"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-validator",
  "polyspec-json",
  "pyo3",
@@ -1352,7 +1362,7 @@ name = "polyspec-crud-ui-validator-wasm"
 version = "0.0.20"
 dependencies = [
  "js-sys",
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.12",
  "polyspec-crud-ui-validator",
  "polyspec-json",
  "wasm-bindgen",
@@ -1363,7 +1373,7 @@ name = "polyspec-json"
 version = "0.0.30"
 source = "git+https://github.com/polyspec/json.git?tag=v0.0.30#a34218e3dd131a5d74d0979ed1be045dda94982e"
 dependencies = [
- "polyspec-binding-core",
+ "polyspec-binding-core 0.0.10",
  "ryu-js",
  "serde",
  "serde_json",
