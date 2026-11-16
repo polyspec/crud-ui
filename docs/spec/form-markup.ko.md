@@ -1,6 +1,6 @@
 # 폼 마크업
 <!-- doc-id: docs-spec-form-markup -->
-<!-- source-sha256: 19d3b7b2b4454cd5685c97b9442d4f8d90ed58839e86b282ccd740bd4d3454de -->
+<!-- source-sha256: b6f68e80ef8b5a003e6a815ef158c7640bc752d174cb4ef1e9d0a816693c189b -->
 
 [English](form-markup.md). 이 문서는 평가된 폼 노드의 렌더링 방식을 정의합니다.
 React, Vue, Svelte, HTML 렌더러와 네이티브 렌더러는 같은 마크업을 생성합니다.
@@ -216,6 +216,23 @@ select 필드의 선택 목록은 그룹을 가질 수 있습니다([스키마](
   value="auto">Automatic</option><optgroup label="Europe"><option value="eu-west">West</option><option
   value="eu-north" selected="">North</option></optgroup><optgroup label="Asia"><option
   value="ap-east">East</option></optgroup></select></div>
+```
+
+## 날짜와 시간 필드
+
+- **CUMK-074** `datetime` 필드와 그 별칭 `datetime-local`은 type이 `datetime-local`인 `input`을
+  노드 본문에 바로 렌더링하며, `date` 필드가 갖는 `crudui-widget` 감싸개가 없습니다. 입력에는 class
+  `valid-target crudui-input`, `id`, `name`, `value`, 필드의 data 속성(`data-default`, `data-name`,
+  `data-rule-name`)과 `behavior`의 속성이 있습니다. 값이 없거나 비어 있으면 `value=""`입니다. 날짜에
+  선택적인 시간, 초, 소수, 시간대가 붙은 값(`YYYY-MM-DD` 뒤에 `T`나 공백과 `HH:mm`, `:ss`,
+  `.fraction`, `Z` 또는 `±HH:mm`)이나 RFC 2822 날짜는 UTC 시각으로 `YYYY-MM-DDTHH:mm:ss` 형태로
+  씁니다. 생략한 시간은 `00:00:00`, 생략한 초는 `00`이고, 소수는 버리고 시간대는 적용합니다. 존재하지
+  않는 날짜처럼 그 밖의 값은 바꾸지 않고 씁니다.
+
+```html
+<div class="crudui-node__body"><input class="valid-target crudui-input" data-default=""
+  data-name="dtm" data-rule-name="dtm" id="crudui:dtm" name="dtm" type="datetime-local"
+  value="2026-06-14T10:30:00"></div>
 ```
 
 ## 범위 필드

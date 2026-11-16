@@ -2222,7 +2222,8 @@
     "requirements": [
       "CUMK-001",
       "CUMK-002",
-      "CUMK-003"
+      "CUMK-003",
+      "CUMK-074"
     ],
     "spec": {
       "type": "group",
@@ -2247,7 +2248,8 @@
     "requirements": [
       "CUMK-001",
       "CUMK-002",
-      "CUMK-003"
+      "CUMK-003",
+      "CUMK-074"
     ],
     "spec": {
       "type": "group",
@@ -2274,7 +2276,8 @@
     "requirements": [
       "CUMK-001",
       "CUMK-002",
-      "CUMK-003"
+      "CUMK-003",
+      "CUMK-074"
     ],
     "spec": {
       "type": "group",
@@ -3592,7 +3595,8 @@
     "requirements": [
       "CUMK-001",
       "CUMK-002",
-      "CUMK-003"
+      "CUMK-003",
+      "CUMK-074"
     ],
     "spec": {
       "type": "group",

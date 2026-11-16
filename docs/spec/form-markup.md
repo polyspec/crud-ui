@@ -233,6 +233,24 @@ outside groups. With the data `region: eu-north`, the example of the schema writ
   value="ap-east">East</option></optgroup></select></div>
 ```
 
+## Date and time fields
+
+- **CUMK-074** A `datetime` field and its alias `datetime-local` render an `input` of type
+  `datetime-local` directly in the node body, without the `crudui-widget` wrapper that a `date` field
+  has. The input has the class `valid-target crudui-input`, `id`, `name`, `value`, the data attributes of
+  the field (`data-default`, `data-name`, `data-rule-name`) and the attributes of `behavior`. An absent or
+  empty value is `value=""`. A value that is a date with an optional time, seconds, fraction and zone
+  (`YYYY-MM-DD`, then `T` or a space and `HH:mm`, `:ss`, `.fraction`, `Z` or `±HH:mm`) or an RFC 2822
+  date is written as its UTC time in the form `YYYY-MM-DDTHH:mm:ss`: an omitted time is `00:00:00`,
+  omitted seconds are `00`, a fraction is dropped and a zone is applied. Any other value, such as a date
+  that does not exist, is written unchanged.
+
+```html
+<div class="crudui-node__body"><input class="valid-target crudui-input" data-default=""
+  data-name="dtm" data-rule-name="dtm" id="crudui:dtm" name="dtm" type="datetime-local"
+  value="2026-06-14T10:30:00"></div>
+```
+
 ## Range fields
 
 A `range` field ([schema](schema.md#range-fields)) renders a `crudui-widget crudui-widget--range`
