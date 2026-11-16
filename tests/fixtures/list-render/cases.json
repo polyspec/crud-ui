@@ -8620,7 +8620,9 @@
         "total": null
       },
       "raises": {
-        "kind": "invalid_argument_type"
+        "kind": "invalid_argument_type",
+        "status": null,
+        "category": "type"
       }
     },
     {
@@ -8714,7 +8716,9 @@
         "total": null
       },
       "raises": {
-        "kind": "invalid_number"
+        "kind": "invalid_number",
+        "status": null,
+        "category": "value"
       }
     },
     {
@@ -8759,7 +8763,9 @@
         "total": null
       },
       "raises": {
-        "kind": "invalid_number"
+        "kind": "invalid_number",
+        "status": null,
+        "category": "value"
       }
     },
     {
@@ -8805,7 +8811,9 @@
         "layout": "grid"
       },
       "raises": {
-        "kind": "invalid_number"
+        "kind": "invalid_number",
+        "status": null,
+        "category": "value"
       }
     },
     {
@@ -8850,7 +8858,9 @@
         "total": 2.5
       },
       "raises": {
-        "kind": "invalid_number"
+        "kind": "invalid_number",
+        "status": null,
+        "category": "value"
       }
     },
     {
@@ -8895,7 +8905,9 @@
         "total": true
       },
       "raises": {
-        "kind": "invalid_argument_type"
+        "kind": "invalid_argument_type",
+        "status": null,
+        "category": "type"
       }
     },
     {
