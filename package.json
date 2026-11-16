@@ -119,7 +119,7 @@
     "@polyspec/crudui-generator-html": "0.0.20",
     "@polyspec/crudui-validator": "0.0.20",
     "@polyspec/json": "https://github.com/polyspec/json/releases/download/v0.0.32/polyspec-json-0.0.32.tgz",
-    "@polyspec/kit": "https://github.com/polyspec/kit/releases/download/v0.0.116/polyspec-kit-0.0.116.tgz",
+    "@polyspec/kit": "https://github.com/polyspec/kit/releases/download/v0.0.117/polyspec-kit-0.0.117.tgz",
     "@polyspec/ordered-json": "https://github.com/polyspec/ordered-json/releases/download/v0.0.25/polyspec-ordered-json-0.0.25.tgz",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@tailwindcss/node": "4.3.3",
