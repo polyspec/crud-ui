@@ -3,7 +3,7 @@
 
 ## Unreleased
 
-- The pin of binding 0.0.16, json 0.0.33 and kit 0.0.117 is planned as one row (C19.59). Input: the plan. Behaviour before: none. Now: the row states the Red of each check before the pin.
+- The pin of binding 0.0.17, json 0.0.34 and kit 0.0.117 is planned as one row (C19.59). Input: the plan. Behaviour before: none. Now: the row states the Red of each check before the pin.
 - The cargo of the Makefile recipes follows `.links` (C19.58). Input: `make build-rust`, `make lint-bindings`, the binding builds. Behaviour before: cargo ran as given, so a linked checkout was not built. Now: kit's `link.mjs cargo` patches the linked crates, and runs cargo as given with no `.links`.
 - A `datetime` input writes `step="any"` (C19.48). Input: a `datetime` or `datetime-local` field with a value that has seconds, such as `2026-06-14T10:30:45`. Behaviour before: the input had the default step of 60 seconds, so the browser refused to submit the form with a step mismatch. Now: `step="any"` lets the browser submit every value that the core writes; CUMK-075 and CUDF-092 hold unchanged.
 - A list case that gives a `page` or a `total` outside `uint` expects the refusal of the binding (C19.50). Input: `build_list`, `render_list` with such an option. Behaviour before: the cases expected the `invalid_form_input` of the core. Now: `invalid_argument_type` for a value that is no number and `invalid_number` for a number outside the type, as binding GN-12a gives; the core suite skips those cases by that kind.
