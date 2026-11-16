@@ -1844,7 +1844,7 @@
     "options": {
       "language": "ko"
     },
-    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dtm\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dtm\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dtm\" data-rule-name=\"dtm\" id=\"crudui:dtm\" name=\"dtm\" type=\"datetime-local\" value=\"\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dtm\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dtm\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dtm\" data-rule-name=\"dtm\" id=\"crudui:dtm\" name=\"dtm\" step=\"any\" type=\"datetime-local\" value=\"\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
   },
   {
     "name": "datetime-with-data",
@@ -1866,7 +1866,7 @@
     "options": {
       "language": "ko"
     },
-    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dtm\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dtm\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dtm\" data-rule-name=\"dtm\" id=\"crudui:dtm\" name=\"dtm\" type=\"datetime-local\" value=\"2026-06-14T10:30:00\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dtm\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dtm\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dtm\" data-rule-name=\"dtm\" id=\"crudui:dtm\" name=\"dtm\" step=\"any\" type=\"datetime-local\" value=\"2026-06-14T10:30:00\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
   },
   {
     "name": "datetime-local-alias",
@@ -1888,7 +1888,7 @@
     "options": {
       "language": "ko"
     },
-    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dl\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dl\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dl\" data-rule-name=\"dl\" id=\"crudui:dl\" name=\"dl\" type=\"datetime-local\" value=\"2026-06-14T10:30:45\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dl\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dl\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dl\" data-rule-name=\"dl\" id=\"crudui:dl\" name=\"dl\" step=\"any\" type=\"datetime-local\" value=\"2026-06-14T10:30:45\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
   },
   {
     "name": "image-empty",
@@ -2933,7 +2933,7 @@
     "options": {
       "language": "ko"
     },
-    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dtm\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dtm\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dtm\" data-rule-name=\"dtm\" id=\"crudui:dtm\" name=\"dtm\" onchange=\"dtChange()\" type=\"datetime-local\" value=\"\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"dtm\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:dtm\">일시</label></div><div class=\"crudui-node__body\"><input class=\"valid-target crudui-input\" data-default=\"\" data-name=\"dtm\" data-rule-name=\"dtm\" id=\"crudui:dtm\" name=\"dtm\" onchange=\"dtChange()\" step=\"any\" type=\"datetime-local\" value=\"\"></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
   },
   {
     "name": "button-behavior-onclick",
