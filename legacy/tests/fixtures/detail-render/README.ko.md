@@ -1,6 +1,6 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: 6b9debbb082a7cfa9be91060e0b0b7073d5a2050d1cbbb9248f333be63921847 -->
+<!-- source-sha256: 944132dbd0160ce4ff13541caf194616c70d63048305d4c520d5a888b78a5fba -->
 
 [English](README.md).
 
@@ -34,6 +34,6 @@ React와 같은 전체 원본 HTML을 반환해야 합니다. 필드의 `value`�
 [HTML 렌더러](../../../packages/html/src/detail-conformance.test.ts)의 상세 적합성 검사가
 사용합니다.
 
-## 재생성
+## 관리
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/detail-render`의 생성기는 [`tests/fixtures/detail-render/generate.mts`](../../../../tests/fixtures/detail-render/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 사례의 사본입니다([AGENTS.md](../../../../AGENTS.ko.md)). 어떤 스크립트도 이 `cases.json`을 쓰지 않으며 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다.

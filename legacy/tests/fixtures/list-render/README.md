@@ -32,6 +32,6 @@ The cases are read by the list conformance tests in
 [HTML renderer](../../../packages/html/src/list-conformance.test.ts).
 Composition error cases require the recorded error code.
 
-## Regeneration
+## Maintenance
 
-This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/list-render` is [`tests/fixtures/list-render/generate.mts`](../../../../tests/fixtures/list-render/generate.mts).
+This directory is the copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)). No script writes its `cases.json`; it is edited directly, and a change of a rule of `docs/spec` changes its cases with the legacy implementations while they remain the base of the differential tests.

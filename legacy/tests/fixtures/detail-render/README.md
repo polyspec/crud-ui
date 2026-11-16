@@ -37,6 +37,6 @@ The cases are read by the detail conformance tests in
 [Svelte](../../../../packages/svelte/tests/detail-render.conformance.test.mjs) and the
 [HTML renderer](../../../packages/html/src/detail-conformance.test.ts).
 
-## Regeneration
+## Maintenance
 
-This directory is the fixed copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)); its `cases.json` is not written again. The generator of the shared fixture `tests/fixtures/detail-render` is [`tests/fixtures/detail-render/generate.mts`](../../../../tests/fixtures/detail-render/generate.mts).
+This directory is the copy of the cases that the legacy implementations read ([AGENTS.md](../../../../AGENTS.md)). No script writes its `cases.json`; it is edited directly, and a change of a rule of `docs/spec` changes its cases with the legacy implementations while they remain the base of the differential tests.

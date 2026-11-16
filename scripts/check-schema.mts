@@ -389,8 +389,8 @@ const isCompositionEntry = (spec: unknown): boolean =>
   spec !== null && typeof spec === 'object' && '$ref' in spec && typeof spec.$ref === 'string' && !('type' in spec);
 
 // A case of the binding case form holds no key that no test reads: binding check reports such a key (CK-96), and no test,
-// check or generator reads requirement ids, so no case gives `requirements`.
-for (const family of ['validate', 'list-validity', 'detail-validity', 'list-render', 'detail-render']) {
+// check or generator reads requirement ids, so no case gives `requirements`; the form render cases follow the same rule.
+for (const family of ['validate', 'list-validity', 'detail-validity', 'list-render', 'detail-render', 'form-render']) {
   for (const test of readCases(`../tests/fixtures/${family}/cases.json`)) {
     assert.ok(!('requirements' in test), `${family}:${test.name}: a case gives requirements, which no test reads`);
   }

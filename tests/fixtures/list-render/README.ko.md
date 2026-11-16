@@ -1,6 +1,6 @@
 # 목록 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-list-render-readme -->
-<!-- source-sha256: a0f8bb226b4d61b8ab1a74d634b4fecfb69148bb721f2be7444fe72f25d3b2a9 -->
+<!-- source-sha256: ea532e9fe00e7c5756b1198be82b46858bdebcdbabf33a0e58fbf37d7e6d7c3a -->
 
 [English](README.md).
 
@@ -36,5 +36,5 @@ group `row_shapes`는 `rows`가 목록이 아니어서 `rows`의 타입으로 �
 
 ## 작성
 
-`cases.json`은 직접 고치는 데이터입니다. [`generate.mts`](generate.mts)는 React 렌더러로 legacy 사본의 형식으로 이 파일을
-썼습니다. 이 생성기는 legacy 구현의 도구이며 실행하지 않습니다.
+`cases.json`은 직접 고치는 데이터이며 어떤 스크립트도 이 파일을 쓰지 않습니다. 각 사례는 기대 html이나 실패를 명세에서
+적습니다.

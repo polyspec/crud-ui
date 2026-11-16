@@ -37,18 +37,14 @@ Normalized layout equality does not establish original HTML equality. The
 compares original HTML, DOM, CSS, controls and runtime state separately for
 initial data and later injection.
 
-## Generation and verification
+## Authoring and verification
 
-Run from the repository root after building the packages:
+`cases.json` is data that is edited directly; no script writes it. Each case states its `expected_html` or its
+`expectError` from the specification. Run the framework conformance suites from the repository root after building the
+packages:
 
 ```sh
-node_modules/.bin/tsx packages/react/scripts/generate-form-render-cases.mts
 npm run test:forms
 ```
 
-The generation script uses React's internal `renderFields` helper as the layout
-reference and normalizes its output. It renders the scenarios of
-[`scenario-form-render-cases.ts`](../../../packages/react/scripts/scenario-form-render-cases.ts) and the widget
-cases, and adds the cases in [`written-form-render-cases.ts`](../../../packages/react/scripts/written-form-render-cases.ts), whose `expected_html` is
-written from the specification and never rendered. The cases follow the scenarios, then the widget and written cases, each in source order; a widget or written case takes the place of the scenario of the same name. Review generated changes before accepting them; regeneration alone is not
-a correctness check. All three framework conformance suites must pass.
+All three framework conformance suites must pass.

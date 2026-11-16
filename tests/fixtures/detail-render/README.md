@@ -43,5 +43,5 @@ The cases are read by the detail conformance tests in
 
 ## Authoring
 
-`cases.json` is data that is edited directly. [`generate.mts`](generate.mts) wrote it from the React renderer in the
-form of the legacy copy; it is a tool of the legacy implementations and is not run.
+`cases.json` is data that is edited directly; no script writes it. Each case states its expected html or failure from
+the specification.

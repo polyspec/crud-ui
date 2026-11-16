@@ -1,6 +1,6 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: c8e4f66b75605c2fd03135969360d506b6ca4632eaa07b95dd618ebd8104418e -->
+<!-- source-sha256: e112fbaea9919de347d6d2453d912f0e9acceecfbdfa23bec18824794455e695 -->
 
 [English](README.md).
 
@@ -39,5 +39,5 @@ React와 같은 전체 원본 HTML을 반환해야 합니다. 필드의 `value`�
 
 ## 작성
 
-`cases.json`은 직접 고치는 데이터입니다. [`generate.mts`](generate.mts)는 React 렌더러로 legacy 사본의 형식으로 이 파일을
-썼습니다. 이 생성기는 legacy 구현의 도구이며 실행하지 않습니다.
+`cases.json`은 직접 고치는 데이터이며 어떤 스크립트도 이 파일을 쓰지 않습니다. 각 사례는 기대 html이나 실패를 명세에서
+적습니다.

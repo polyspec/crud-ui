@@ -1,6 +1,6 @@
 # 폼 렌더링 고정 사례
 <!-- doc-id: tests-fixtures-form-render-readme -->
-<!-- source-sha256: 66918874ee2b16c635066890e44c35db4104c5f0647b5df3284a9eb5a2780c8b -->
+<!-- source-sha256: 2237e2ac16aa19e3dd856ae6879d303901655a2d0c9f7c8c0d0e16c0cde31809 -->
 
 [English](README.md).
 
@@ -29,18 +29,13 @@ React·Vue·Svelte 레이아웃 일치 검사는 `cases.json`을 공유합니다
 [폼 검사기](../../form-inspector/form-snapshot.mts)는 초기 데이터와
 나중 주입의 HTML 원문, DOM, CSS, 입력과 런타임 상태를 별도로 비교합니다.
 
-## 생성과 검증
+## 작성과 검증
 
-패키지를 빌드한 후 저장소 루트에서 실행합니다.
+`cases.json`은 직접 고치는 데이터이며 어떤 스크립트도 이 파일을 쓰지 않습니다. 각 사례는 `expected_html`이나
+`expectError`를 명세에서 적습니다. 패키지를 빌드한 후 저장소 루트에서 프레임워크 일치 검사를 실행합니다.
 
 ```sh
-node_modules/.bin/tsx packages/react/scripts/generate-form-render-cases.mts
 npm run test:forms
 ```
 
-생성 스크립트는 React 내부 `renderFields` 함수를 레이아웃 기준으로 사용하고
-출력을 정규화합니다. 이 스크립트는 [`scenario-form-render-cases.ts`](../../../packages/react/scripts/scenario-form-render-cases.ts)의 시나리오와 위젯 사례를
-렌더링하고 [`written-form-render-cases.ts`](../../../packages/react/scripts/written-form-render-cases.ts)의 사례를 추가합니다. 후자의 `expected_html`은 명세에서 작성하며 렌더링으로 만들지 않습니다.
-사례는 시나리오, 그 뒤 위젯 사례와 작성한 사례의 순서이며 각각 source의 순서를 따르고, 같은 이름의 위젯 사례나 작성한 사례는 시나리오의 자리를 대신합니다.
-적용 전에 생성된 변경을 검토해야 하며 재생성만으로 정확성을 확인할 수는 없습니다.
 세 프레임워크의 일치 검사가 모두 통과해야 합니다.

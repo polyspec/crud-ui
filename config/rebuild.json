@@ -390,18 +390,6 @@
       "kind": "policy",
       "reason": "one contract (contracts/unicode-properties.json) feeds the tables of several languages (S6), and no ecosystem tool defines that contract"
     },
-    "packages/react/scripts/generate-form-render-cases.mts": {
-      "kind": "policy",
-      "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
-    },
-    "packages/react/scripts/scenario-form-render-cases.ts": {
-      "kind": "policy",
-      "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
-    },
-    "packages/react/scripts/written-form-render-cases.ts": {
-      "kind": "policy",
-      "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
-    },
     "packages/svelte/tools/eslint.config.js": {
       "kind": "ecosystem",
       "tool": "ESLint with eslint-plugin-svelte and typescript-eslint lints the Svelte components"
@@ -582,10 +570,6 @@
       "kind": "record",
       "record": "docs/rebuild/test-commands.md"
     },
-    "tests/fixtures/detail-render/generate.mts": {
-      "kind": "policy",
-      "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
-    },
     "tests/fixtures/form-complete/generate.mts": {
       "kind": "policy",
       "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
@@ -595,10 +579,6 @@
       "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
     },
     "tests/fixtures/form-state/generate.mts": {
-      "kind": "policy",
-      "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
-    },
-    "tests/fixtures/list-render/generate.mts": {
       "kind": "policy",
       "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
     },
@@ -625,14 +605,6 @@
     "examples/form-comparison/src/native-fields.mjs": {
       "kind": "policy",
       "reason": "the module (src/native-fields.mjs) of the form comparison example, an application of CRUDUI; it implements no tool of an ecosystem"
-    },
-    "packages/react/scripts/group-source-form-render-cases.ts": {
-      "kind": "policy",
-      "reason": "the reference implementation writes the shared conformance fixtures that every port must reproduce (S6); no ecosystem tool defines the fixtures"
-    },
-    "packages/react/scripts/condition-editor-form-render-cases.ts": {
-      "kind": "policy",
-      "reason": "Defines structured condition editor fixtures and expected markup from the CRUDUI specification; no ecosystem tool defines these domain-specific test vectors."
     }
   }
 }

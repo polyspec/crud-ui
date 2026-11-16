@@ -1,6 +1,6 @@
 # 목록 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-list-render-readme -->
-<!-- source-sha256: 202f6b8262417da1196ba997a67cf1b17383323674b22ed27764c52082284086 -->
+<!-- source-sha256: 1987b299982dad1fc7236976a64327bc1d12b445f52dfaf3693259609e5517c3 -->
 
 [English](README.md).
 
@@ -30,6 +30,6 @@
 [HTML 렌더러](../../../packages/html/src/list-conformance.test.ts)의
 목록 적합성 검사가 사용합니다. 합성 오류 사례는 기록된 오류 코드를 확인합니다.
 
-## 재생성
+## 관리
 
-이 폴더는 legacy 구현이 읽는 case의 고정 사본이며([AGENTS.md](../../../../AGENTS.ko.md)) `cases.json`을 다시 쓰지 않습니다. 공유 fixture `tests/fixtures/list-render`의 생성기는 [`tests/fixtures/list-render/generate.mts`](../../../../tests/fixtures/list-render/generate.mts)입니다.
+이 폴더는 legacy 구현이 읽는 사례의 사본입니다([AGENTS.md](../../../../AGENTS.ko.md)). 어떤 스크립트도 이 `cases.json`을 쓰지 않으며 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다.

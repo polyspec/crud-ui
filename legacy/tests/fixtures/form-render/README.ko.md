@@ -1,6 +1,6 @@
 # 폼 렌더링 고정 사례
 <!-- doc-id: tests-fixtures-form-render-readme -->
-<!-- source-sha256: 003a0a779086e6dfc1d7c80223b014508cc577984f3c0a155d9dd50b6a1fe472 -->
+<!-- source-sha256: 52ae3faf7f410ab443a8ad68cfb0b684536249206f634e74862752b529285cfc -->
 
 [English](README.md).
 
@@ -29,18 +29,6 @@ React·Vue·Svelte 레이아웃 일치 검사는 `cases.json`을 공유합니다
 [폼 검사기](../../../../tests/form-inspector/form-snapshot.mts)는 초기 데이터와
 나중 주입의 HTML 원문, DOM, CSS, 입력과 런타임 상태를 별도로 비교합니다.
 
-## 생성과 검증
+## 관리
 
-패키지를 빌드한 후 저장소 루트에서 실행합니다.
-
-```sh
-node_modules/.bin/tsx packages/react/scripts/generate-form-render-cases.mts
-npm run test:forms
-```
-
-생성 스크립트는 React 내부 `renderFields` 함수를 레이아웃 기준으로 사용하고
-출력을 정규화합니다. 이 스크립트는 [`scenario-form-render-cases.ts`](../../../../packages/react/scripts/scenario-form-render-cases.ts)의 시나리오와 위젯 사례를
-렌더링하고 [`written-form-render-cases.ts`](../../../../packages/react/scripts/written-form-render-cases.ts)의 사례를 추가합니다. 후자의 `expected_html`은 명세에서 작성하며 렌더링으로 만들지 않습니다.
-사례는 시나리오, 그 뒤 위젯 사례와 작성한 사례의 순서이며 각각 source의 순서를 따르고, 같은 이름의 위젯 사례나 작성한 사례는 시나리오의 자리를 대신합니다.
-적용 전에 생성된 변경을 검토해야 하며 재생성만으로 정확성을 확인할 수는 없습니다.
-세 프레임워크의 일치 검사가 모두 통과해야 합니다.
+이 폴더는 legacy 구현이 읽는 사례의 사본입니다([AGENTS.md](../../../../AGENTS.ko.md)). 어떤 스크립트도 이 `cases.json`을 쓰지 않으며 직접 고칩니다. legacy 구현이 차이 시험의 기준으로 남는 동안, `docs/spec`의 규칙을 바꾸는 변경은 legacy 구현과 함께 이 사례도 바꿉니다.
