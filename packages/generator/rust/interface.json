@@ -3345,22 +3345,38 @@
     {
       "member": "generator.build_list",
       "file": "tests/fixtures/list-render/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expected_html",
+        "name"
+      ]
     },
     {
       "member": "generator.render_list",
       "file": "tests/fixtures/list-render/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expected_html",
+        "name"
+      ]
     },
     {
       "member": "generator.build_detail",
       "file": "tests/fixtures/detail-render/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expected_html",
+        "name"
+      ]
     },
     {
       "member": "generator.render_detail",
       "file": "tests/fixtures/detail-render/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expected_html",
+        "name"
+      ]
     },
     {
       "member": "generator.compile_form",

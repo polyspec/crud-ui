@@ -925,17 +925,31 @@
     {
       "member": "validator.validate",
       "file": "tests/fixtures/validate/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expected",
+        "name"
+      ]
     },
     {
       "member": "validator.validate_list",
       "file": "tests/fixtures/list-validity/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expect",
+        "name",
+        "reason"
+      ]
     },
     {
       "member": "validator.validate_detail",
       "file": "tests/fixtures/detail-validity/cases.json",
-      "group": "cases"
+      "group": "cases",
+      "reads": [
+        "expect",
+        "name",
+        "reason"
+      ]
     },
     {
       "member": "validator.validate",

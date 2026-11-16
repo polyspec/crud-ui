@@ -538,8 +538,8 @@ dependencies = [
 
 [[package]]
 name = "polyspec-binding-core"
-version = "0.0.12"
-source = "git+https://github.com/polyspec/binding.git?tag=v0.0.12#d81bf71dad3de19f2dd2214fcdb8ef5fa80daad7"
+version = "0.0.13"
+source = "git+https://github.com/polyspec/binding.git?tag=v0.0.13#4c3653bef093f696efb6c0c679887548f0f57103"
 dependencies = [
  "indexmap",
  "libc",
@@ -554,7 +554,7 @@ dependencies = [
  "getrandom",
  "num-bigint",
  "num-traits",
- "polyspec-binding-core 0.0.12",
+ "polyspec-binding-core 0.0.13",
  "polyspec-crud-ui-validator",
  "polyspec-json",
  "regex",
@@ -567,7 +567,7 @@ dependencies = [
 name = "polyspec-crud-ui-validator"
 version = "0.0.20"
 dependencies = [
- "polyspec-binding-core 0.0.12",
+ "polyspec-binding-core 0.0.13",
  "polyspec-json",
  "serde",
  "serde_json",
