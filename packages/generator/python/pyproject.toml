@@ -8,7 +8,7 @@ name = "polyspec-crud-ui-generator"
 version = "0.0.20"
 requires-python = ">=3.14"
 license = "MIT"
-dependencies = ["polyspec-crud-ui-validator", "polyspec-json==0.0.31"]
+dependencies = ["polyspec-crud-ui-validator", "polyspec-json==0.0.32"]
 
 [tool.maturin]
 module-name = "polyspec.crud_ui.generator._native"

@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: c495f80f504c9864b780fe0e2b16cb6d01569631de12f1bd292d8f598c432146 -->
+<!-- source-sha256: b764715c3eb7f3f69b696eab7884696b877bba569e7c20ae6226484893d5b945 -->
 
 ## Unreleased
 
+- crudui가 json 0.0.32를 pin한다(C19.57). 입력: `npm ci`, `cargo build`, `go build`, `pip download`, PIE. 이전 동작: PIE가 PHP 확장을 받을 수 없는 json 0.0.31. 현재: 모든 manifest와 lock이 json 0.0.32다.
 - `make duplication-check`가 clone을 찾지 않는다(C19.56). 입력: `make kit-gates-static`. 이전 동작: clone 열 개가 gate를 실패시켰다. 현재: binding의 파일을 생성 파일로 선언하고, loader 연산, 표 publish, 목록과 상세의 options를 공유하며, `config/duplication.json`이 나머지가 같게 남는 이유를 적는다.
 - `make layout-check`가 legacy PHP 확장의 stub에 대한 kit 규칙을 통과한다(C19.55). 입력: `make layout-check`. 이전 동작: S10이 `legacy/packages/php-ext/src` 아래의 stub을 거부했다. 현재: layout이 그 경로를 전환의 S6 예외로 이름한다.
 - crudui가 `@polyspec/kit` 0.0.116을 pin한다(C19.54). 입력: `npm ci`. 이전 동작: kit 0.0.114가 설치되었다. 현재: kit 0.0.116이 설치된다.

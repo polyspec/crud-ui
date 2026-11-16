@@ -102,8 +102,8 @@ dependencies = [
 
 [[package]]
 name = "polyspec-json"
-version = "0.0.31"
-source = "git+https://github.com/polyspec/json.git?tag=v0.0.31#bd3a115e84f6bbe02c12846b6b311f762dad476e"
+version = "0.0.32"
+source = "git+https://github.com/polyspec/json.git?tag=v0.0.32#ef641ccfba2341136831075e774df7a527ec9de8"
 dependencies = [
  "polyspec-binding-core",
  "ryu-js",
