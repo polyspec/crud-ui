@@ -23,8 +23,7 @@ const publications = [
     'legacy/packages/validator/ts/scripts/generate-unicode-properties.mjs',
   ].map(file => ({ output: 'a TypeScript table', file, staging: /writeFileSync\(`\$\{target\}\.\$\{process\.pid\}`, text\)/, publish: /renameSync\(`\$\{target\}\.\$\{process\.pid\}`, target\)/ })),
   ...[
-    'legacy/packages/php-ext/tools/generate-unicode-data.mjs',
-    'legacy/packages/php-ext/tools/generate-interface-messages.mjs',
+    'legacy/packages/php-ext/tools/write-table.mjs',
   ].map(file => ({ output: 'a table of the PHP extension', file, staging: /writeFile\(`\$\{outputPath\}\.\$\{process\.pid\}`, /, publish: /rename\(`\$\{outputPath\}\.\$\{process\.pid\}`, outputPath\)/ })),
   ...[
     'legacy/packages/validator/python/scripts/generate_unicode_data.py',

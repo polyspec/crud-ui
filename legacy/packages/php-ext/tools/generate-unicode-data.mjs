@@ -2,9 +2,10 @@
 // Writes legacy/packages/php-ext/src/unicode_data.c from contracts/unicode-properties.json.
 // Run from the repository root: node legacy/packages/php-ext/tools/generate-unicode-data.mjs
 // make php-ext-tables runs it before every target that reads the sources of the extension; the output is untracked (P34).
-import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { writeTableWhenRun } from './write-table.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 export const contractPath = path.join(root, 'contracts/unicode-properties.json');
@@ -66,9 +67,4 @@ export function unicodeDataSource(contract) {
   ].join('\n');
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const contract = JSON.parse(await readFile(contractPath, 'utf8'));
-  // The table is written to <table>.<pid> and renamed into place, so a run that reads it finds the previous table or the new one.
-  await writeFile(`${outputPath}.${process.pid}`, unicodeDataSource(contract));
-  await rename(`${outputPath}.${process.pid}`, outputPath);
-}
+await writeTableWhenRun(import.meta.url, contractPath, outputPath, unicodeDataSource);

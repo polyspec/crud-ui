@@ -44,6 +44,26 @@
       "reason": "test: a test states its case in full; the rule separates the concerns of components"
     },
     {
+      "glob": "packages/*/rust/src/**/tests.rs",
+      "reason": "test: a test states its case in full; the unit tests of a Rust crate lie in a tests.rs beside the module they test"
+    },
+    {
+      "glob": "packages/generator/rust/src/error.rs",
+      "reason": "binding: the trait binding_core::Kinds requires kind, status and errno of every error type, so that each states its status and errno (binding core-api.md:53); FormError states them as ComposeLoadError of the validator does"
+    },
+    {
+      "glob": "packages/validator/rust/src/compose/errors.rs",
+      "reason": "binding: the trait binding_core::Kinds requires kind, status and errno of every error type, so that each states its status and errno (binding core-api.md:53); ComposeLoadError states them as FormError of the generator does"
+    },
+    {
+      "glob": "legacy/packages/generator/python/scripts/generate_interface_messages.py",
+      "reason": "legacy: the two Python table generators of the legacy packages publish their tables alike and share no module across their packages; the change of C19.2 that removes the legacy Python packages removes this entry"
+    },
+    {
+      "glob": "legacy/packages/validator/python/scripts/generate_unicode_data.py",
+      "reason": "legacy: the two Python table generators of the legacy packages publish their tables alike and share no module across their packages; the change of C19.2 that removes the legacy Python packages removes this entry"
+    },
+    {
       "glob": "legacy/packages/php-ext/src/polyspec_*.stub.php",
       "reason": "ecosystem: the S10 stub declares the library under the same names and signatures"
     }

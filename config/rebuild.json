@@ -386,6 +386,10 @@
       "kind": "policy",
       "reason": "one contract (contracts/interface-messages.json) feeds the tables of several languages (S6), and no ecosystem tool defines that contract"
     },
+    "legacy/packages/php-ext/tools/write-table.mjs": {
+      "kind": "policy",
+      "reason": "the publication of the tables of the two generators beside it, which one contract each feeds (S6); no ecosystem tool defines those contracts"
+    },
     "legacy/packages/php-ext/tools/generate-unicode-data.mjs": {
       "kind": "policy",
       "reason": "one contract (contracts/unicode-properties.json) feeds the tables of several languages (S6), and no ecosystem tool defines that contract"
