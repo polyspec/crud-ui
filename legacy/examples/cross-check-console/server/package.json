@@ -6,7 +6,7 @@
   "description": "Cross-check gateway: 4-language CRUDUI validation processes + HTML/React/Svelte/Vue rendering + static console",
   "main": "server.mjs",
   "scripts": {
-    "build:go": "cd ../validators/go && go build -o ../../../../var/build/cross-check-console/go-validate .",
+    "build:go": "cd ../validators/go && go build -o ../../../../../var/build/cross-check-console/go-validate .",
     "build:rust": "node build-rust.mjs",
     "build:validators": "node ../../../../scripts/require-current-build.mts && npm run build:go && npm run build:rust",
     "start": "node server.mjs",
