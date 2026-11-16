@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 286b10edf7fc10dc21bce8e7ae2175bc39cd3f70cb8b271c916bb744bb3f2e3e -->
+<!-- source-sha256: 33d41b0466928f3cbe011a464af83810279c806d30c94bf3bb6d1e96852102b5 -->
 
 ## Unreleased
 
+- 모든 목록 셀과 상세 값의 class를 CUDF-092로 정한다(C19.42). 입력: `docs/spec/display-formats.md`. 이전 동작: CUDF-083은 text, date, number, choice-label의 셀 class만 적었고, CUDF-084~CUDF-088은 셀 안의 마크업만 적었다. 현재: CUDF-092가 모든 format의 `td`와 `dd` class와 그 뒤의 `design.class` class를 정한다.
 - `hidden` 필드의 마크업을 CUMK-075로 정한다(C19.41). 입력: `docs/spec/form-markup.md`. 이전 동작: `hidden` 필드는 header가 없다는 언급만 있었고, 공유 case 하나가 그것을 고정했다. 현재: CUMK-075가 노드, widget 감싸개 없는 `hidden` 입력, 그 class와 속성과 값을 정하고, case `hidden-with-data`와 `hidden-empty`가 data 값과 빈 값을 고정한다.
 - 세 loader 연산의 loader case `loads_a_file`이 fixture의 호출을 적는다(C19.44). 입력: `contracts/validator-cases.json`. 이전 동작: loader의 호출을 적는 loader case가 없어서, 생성 package의 K-2 시험이 placeholder form data를 넘기고 loader가 돌기 전에 실패했다. 현재: `loads_a_file`이 `file_loader.normalize`와 `file_loader.load`를 인자와 함께 적고, 그 시험이 그 인자를 쓴다.
 - `datetime` 필드의 마크업을 CUMK-074로 정한다(C19.40). 입력: `docs/spec/form-markup.md`. 이전 동작: `datetime` 필드의 요소, 속성, 값 형태를 밝힌 문서가 없었고 공유 render case만 그것을 고정했다. 현재: CUMK-074가 widget 감싸개 없는 `datetime-local` 입력, 빈 값, 날짜 값의 UTC 형태를 정하고, `datetime` case 넷이 그것을 이름한다.

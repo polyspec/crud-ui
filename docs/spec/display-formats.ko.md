@@ -1,6 +1,6 @@
 # 표시 형식
 <!-- doc-id: docs-spec-display-formats -->
-<!-- source-sha256: d7ecccf53cde5fdaa4b0fd1876f4a1a85ae4786ecbf64f36650d0ab9099cac8b -->
+<!-- source-sha256: 7acdc568ed4f7d14c8fd297936de8e19d77e0d63ed65e80c214e12ed889a83c4 -->
 
 [English](display-formats.md).
 
@@ -275,6 +275,13 @@ PHP에서는 [PHP API 계약](../operations/php-extension.ko.md)이 어떤 PHP �
 - **CUDF-086** bool — 목록 표 셀: `data-crudui-state`와 필요한 `aria-label`을 가진 `span.crudui-bool crudui-bool--text`, `--icon` 또는 `--check`; 상세 값: `dd` 안에 같은 마크업
 - **CUDF-087** image — 목록 표 셀: `src`, `alt`, 선언한 `width`와 `height`를 가진 `img`; 상세 값: `dd` 안에 같은 마크업
 - **CUDF-088** html — 목록 표 셀: 이스케이프하지 않은 마크업; 상세 값: `dd` 안에 같은 마크업
+- **CUDF-092** CUDF-083의 format과 badge, link, bool, image, html까지 모든 format은 목록 표 셀을 class
+  `crudui-list__cell crudui-value crudui-value--FORMAT`인 `td`로, 상세 값을 class
+  `crudui-detail__value crudui-value crudui-value--FORMAT`인 `dd`로 쓰고, 그 안에 CUDF-083~CUDF-088의 마크업을
+  씁니다. FORMAT은 format의 이름입니다. 열의 `design.class` class가 그 뒤에 옵니다. 시각이 있는 날짜는 `HH`가 든
+  pattern을 가진 format `date`([date](#date))이므로 그 셀은 `crudui-value--date`이고, 보이지 않는 열은 제목도 셀도 쓰지
+  않습니다. [목록](../../tests/fixtures/list-render/README.ko.md)과 [상세](../../tests/fixtures/detail-render/README.ko.md)
+  fixture의 `format-*` case가 format마다 class를 고정하고, `design-column-class-style`이 그 뒤의 class를 고정합니다.
 
 상세는 `dl.crudui-detail`이며 필드마다 `dt.crudui-detail__label`과 값을 담은
 `div.crudui-detail__field`를 둡니다. 목록 루트는 `crudui-list`이며 설명, 표, 제목, 셀, 카드,

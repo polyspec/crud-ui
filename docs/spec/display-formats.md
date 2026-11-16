@@ -308,6 +308,14 @@ PHP array is accepted for a root object argument and for the fixed object option
 - **CUDF-086** bool — List table cell: `span.crudui-bool crudui-bool--text`, `--icon` or `--check`, with `data-crudui-state` and the applicable `aria-label`; Detail value: the same inside the `dd`
 - **CUDF-087** image — List table cell: `img` with `src`, `alt`, and declared `width` and `height`; Detail value: the same inside the `dd`
 - **CUDF-088** html — List table cell: the markup, unescaped; Detail value: the same inside the `dd`
+- **CUDF-092** Every format, those of CUDF-083 and badge, link, bool, image and html alike, writes its list table
+  cell as a `td` of the class `crudui-list__cell crudui-value crudui-value--FORMAT` and its detail value as a `dd` of
+  the class `crudui-detail__value crudui-value crudui-value--FORMAT`, FORMAT being the name of the format, and the
+  markup of CUDF-083 to CUDF-088 inside it; the classes of the column's `design.class` follow. A date with a time is
+  the format `date` with a pattern that holds `HH` ([date](#date)), so its cell is `crudui-value--date`, and a column that
+  is not shown writes neither its heading nor its cells. The `format-*` cases of the
+  [list](../../tests/fixtures/list-render/README.md) and [detail](../../tests/fixtures/detail-render/README.md)
+  fixtures fix the class of each format, and `design-column-class-style` the classes that follow it.
 
 A detail is a `dl.crudui-detail` with one `div.crudui-detail__field` per field, each holding
 `dt.crudui-detail__label` and the value. A list root is `crudui-list`; its description, table,
