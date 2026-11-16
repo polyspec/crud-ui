@@ -22,6 +22,7 @@ let result = validate(&spec, &data, &ValidateOptions::default())?;
 - `validate_list(&spec, &ValidateListOptions)` checks list structure and
   `validate_detail(&spec, &ValidateDetailOptions)` checks detail structure,
   including the `fields` map. Both return `Ok(())` for a clean structure.
+  `ValidateDetailOptions` is the same type as `ValidateListOptions`.
 
 Options accept `files`, a virtual file set for `$ref`, a `loader` and a
 `basepath` for relative references. `validate` returns

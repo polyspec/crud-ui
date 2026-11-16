@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 3b3151fcc74b0756e3a8d1d60e53fd41cd2a9d38142313a3aad02e17a66081fb -->
+<!-- source-sha256: c495f80f504c9864b780fe0e2b16cb6d01569631de12f1bd292d8f598c432146 -->
 
 ## Unreleased
 
+- `make duplication-check`가 clone을 찾지 않는다(C19.56). 입력: `make kit-gates-static`. 이전 동작: clone 열 개가 gate를 실패시켰다. 현재: binding의 파일을 생성 파일로 선언하고, loader 연산, 표 publish, 목록과 상세의 options를 공유하며, `config/duplication.json`이 나머지가 같게 남는 이유를 적는다.
 - `make layout-check`가 legacy PHP 확장의 stub에 대한 kit 규칙을 통과한다(C19.55). 입력: `make layout-check`. 이전 동작: S10이 `legacy/packages/php-ext/src` 아래의 stub을 거부했다. 현재: layout이 그 경로를 전환의 S6 예외로 이름한다.
 - crudui가 `@polyspec/kit` 0.0.116을 pin한다(C19.54). 입력: `npm ci`. 이전 동작: kit 0.0.114가 설치되었다. 현재: kit 0.0.116이 설치된다.
 - legacy fixture 사본의 README가 각 사본을 직접 고치고 명세를 따른다고 적는다(C19.53). 입력: `legacy/tests/fixtures/*/README.md`. 이전 동작: 그중 여섯이 사본이 고정이라고 적었다. 현재: 모든 사본이 `AGENTS.md`의 규칙을 적는다.

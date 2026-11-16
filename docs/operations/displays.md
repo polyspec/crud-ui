@@ -184,7 +184,8 @@ The `polyspec-crud-ui-generator` crate exports `build_list`, `render_list`, `bui
 `loader`, `basepath`, `language`, `data`, `page`, `total` and `layout`; `data`, `page`, `total`
 and `layout` are JSON values, and the default language is `ko`. The `polyspec-crud-ui-validator` crate
 exports `validate_list` with `ValidateListOptions` and `validate_detail` with
-`ValidateDetailOptions` (`files`, `loader`, `basepath`). A structure failure is
+`ValidateDetailOptions` (`files`, `loader`, `basepath`), the same type as `ValidateListOptions`, since a list and a
+detail take the same specification arguments and options ([CUIT-009](../spec/input-text.md)). A structure failure is
 `Err(ComposeLoadError)`.
 
 ```rust

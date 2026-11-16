@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- `make duplication-check` finds no clone (C19.56). Input: `make kit-gates-static`. Behaviour before: ten clones failed the gate. Now: the files of binding are declared generated, the loader operations, the table publication and the options of a list and a detail are shared, and `config/duplication.json` states why the rest stays alike.
 - `make layout-check` passes the stub rule of kit for the legacy PHP extension (C19.55). Input: `make layout-check`. Behaviour before: S10 refused the stub under `legacy/packages/php-ext/src`. Now: the layout names that path as the S6 exception of the transition.
 - crudui pins `@polyspec/kit` 0.0.116 (C19.54). Input: `npm ci`. Behaviour before: kit 0.0.114 was installed. Now: kit 0.0.116 is installed.
 - The READMEs of the legacy fixture copies state that each copy is edited directly and follows the specification (C19.53). Input: `legacy/tests/fixtures/*/README.md`. Behaviour before: six of them still stated that the copy was fixed. Now: every copy states the rule of `AGENTS.md`.

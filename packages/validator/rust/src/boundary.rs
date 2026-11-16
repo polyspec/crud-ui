@@ -358,21 +358,22 @@ pub fn validate_with_loader(
 }
 
 /// Run `validation` on the entered `spec` with the loader of `loader` and the basepath of `options` (CURP-031): a failure
-/// of the loader is the failure of the call, as every validation with a loader gives it.
+/// of the loader is the failure of the call, as every validation with a loader gives it. A list and a detail take the
+/// same options (CUIT-009).
 fn with_spec_files(
     spec: &JsonValue,
     loader: &mut dyn FileLoader,
     options: &ValidateOptions,
-    validation: impl FnOnce(
-        &Value,
-        &dyn crate::compose::FileLoader,
-        Option<String>,
-    ) -> Result<(), ValidateError>,
+    validation: fn(&Value, &crate::ValidateListOptions<'_>) -> Result<(), ValidateError>,
 ) -> Result<(), Failure<ValidateError>> {
     let bridge = LoaderBridge::new(loader);
     let result = (|| {
-        let basepath = loader_basepath(options)?;
-        validation(&specification(spec)?, &bridge, basepath)
+        let options = crate::ValidateListOptions {
+            files: None,
+            loader: Some(&bridge),
+            basepath: loader_basepath(options)?,
+        };
+        validation(&specification(spec)?, &options)
     })();
     bridge.settle(result)
 }
@@ -386,16 +387,7 @@ pub fn validate_list_with_loader(
     loader: &mut dyn FileLoader,
     options: &ValidateOptions,
 ) -> Result<(), Failure<ValidateError>> {
-    with_spec_files(spec, loader, options, |spec, loader, basepath| {
-        crate::validate_list(
-            spec,
-            &crate::ValidateListOptions {
-                files: None,
-                loader: Some(loader),
-                basepath,
-            },
-        )
-    })
+    with_spec_files(spec, loader, options, crate::validate_list)
 }
 
 /// [`validate_detail`] with the files of a loader (CURP-031).
@@ -407,16 +399,7 @@ pub fn validate_detail_with_loader(
     loader: &mut dyn FileLoader,
     options: &ValidateOptions,
 ) -> Result<(), Failure<ValidateError>> {
-    with_spec_files(spec, loader, options, |spec, loader, basepath| {
-        crate::validate_detail(
-            spec,
-            &crate::ValidateDetailOptions {
-                files: None,
-                loader: Some(loader),
-                basepath,
-            },
-        )
-    })
+    with_spec_files(spec, loader, options, crate::validate_detail)
 }
 
 /// [`crate::hidden_paths`] at the boundary.

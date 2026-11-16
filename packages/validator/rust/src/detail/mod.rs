@@ -15,22 +15,15 @@
 //! The meta-schema separately checks closed objects and shapes. The shared
 //! fixture `tests/fixtures/detail-validity/cases.json` declares both results.
 
-use serde_json::{Map, Value};
+use serde_json::Value;
 
 use crate::compose::{ComposeLoadError, ComposeOptions, FileLoader};
 use crate::structure::{compose_map_slot, compose_root, validate_structure};
 use crate::{FormInputError, ValidateError};
 
-/// Options for a detail-spec validation run (no data, so no `data` field).
-#[derive(Default)]
-pub struct ValidateDetailOptions<'a> {
-    /// Virtual file set for `$ref` resolution (default empty — no `$ref`).
-    pub files: Option<Map<String, Value>>,
-    /// A custom loader (overrides `files`).
-    pub loader: Option<&'a dyn FileLoader>,
-    /// Basepath for relative `$ref` resolution.
-    pub basepath: Option<String>,
-}
+/// Options for a detail-spec validation run: the options of a list, since a detail specification takes the same
+/// specification arguments and options (CUIT-009).
+pub type ValidateDetailOptions<'a> = crate::list::ValidateListOptions<'a>;
 
 /// Validate a detail-spec's STRUCTURE: compose then forbidden-scan (§6).
 ///

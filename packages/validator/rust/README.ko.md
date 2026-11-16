@@ -1,6 +1,6 @@
 # CRUDUI Rust 검증기
 <!-- doc-id: packages-validator-rust-readme -->
-<!-- source-sha256: 8cd7c03ae03089c2a0b632acc1bcde2f7a4191de80a376bcc61595bedf38e529 -->
+<!-- source-sha256: b37d5087ef8d33483044cb86bc5bdc64dd158f32d7ccc09688db70bd04a080f0 -->
 
 [English](README.md).
 
@@ -22,6 +22,7 @@ let result = validate(&spec, &data, &ValidateOptions::default())?;
 - `validate_list(&spec, &ValidateListOptions)`는 목록 구조를,
   `validate_detail(&spec, &ValidateDetailOptions)`는 `fields` 맵을 포함한 상세
   구조를 검사합니다. 둘 다 깨끗한 구조에 `Ok(())`를 반환합니다.
+  `ValidateDetailOptions`는 `ValidateListOptions`와 같은 타입입니다.
 
 옵션은 `$ref`용 가상 파일 집합 `files`, `loader`, 상대 참조용 `basepath`를
 받습니다. `validate`는 합성 실패나 금지 키 실패에 `Err(ValidateError::Load)`를,

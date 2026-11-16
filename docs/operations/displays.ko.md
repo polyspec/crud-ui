@@ -1,6 +1,6 @@
 # 목록과 상세 개발과 검증
 <!-- doc-id: docs-operations-displays -->
-<!-- source-sha256: e354c4ef027b4d1c2b9bb153022d3d8bd736c040a35e67feafec1a145aa54015 -->
+<!-- source-sha256: 8eefaa46f517446e1161167009060dda7a72aba2a5ab5b9cd2de8a4399cd816b -->
 
 [English](displays.md). [표시 형식](../spec/display-formats.ko.md)은 각 형식, 허용 입력과
 마크업을 정의합니다. [명세 구조](../spec/schema.ko.md)는 목록과 상세 필드와
@@ -183,7 +183,8 @@ func main() {
 `language`, `data`, `page`, `total`, `layout`이며, `data`, `page`, `total`, `layout`은 JSON 값이고
 기본 언어는 `ko`입니다. `polyspec-crud-ui-validator` 크레이트는 `ValidateListOptions`를 받는
 `validate_list`와 `ValidateDetailOptions`(`files`, `loader`, `basepath`)를 받는
-`validate_detail`을 내보냅니다. 구조 실패는 `Err(ComposeLoadError)`입니다.
+`validate_detail`을 내보냅니다. 목록과 상세는 같은 명세 인자와 옵션을 받으므로([CUIT-009](../spec/input-text.ko.md))
+`ValidateDetailOptions`는 `ValidateListOptions`와 같은 타입입니다. 구조 실패는 `Err(ComposeLoadError)`입니다.
 
 ```rust
 use polyspec_crud_ui_generator::{build_detail, render_detail, render_list, DetailOptions, ListOptions};
