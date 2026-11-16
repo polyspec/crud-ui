@@ -1,10 +1,11 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 52f222871852a7dfab61dbe5b8dea6e08fa0da7667b2ed90a94cf0fa34893760 -->
+<!-- source-sha256: ef671added824dd171a72189a4fdce93f443708332bf97d4fde0b1984d055abb -->
 
 ## Unreleased
 
 - Makefile recipe의 cargo가 `.links`를 따른다(C19.58). 입력: `make build-rust`, `make lint-bindings`, binding 빌드. 이전 동작: cargo가 주어진 대로 실행되어 연결된 checkout이 빌드되지 않았다. 현재: kit의 `link.mjs cargo`가 연결된 crate를 patch하고, `.links`가 없으면 cargo를 주어진 대로 실행한다.
+- `datetime` 입력이 `step="any"`를 쓴다(C19.48). 입력: `2026-06-14T10:30:45`처럼 초를 가진 값의 `datetime`이나 `datetime-local` 필드. 이전 동작: 입력이 60초의 기본 step을 가져, 브라우저가 step 불일치로 폼 제출을 거부했다. 현재: `step="any"`로 코어가 쓰는 모든 값을 브라우저가 제출한다. CUMK-075와 CUDF-092는 바뀌지 않고 성립한다.
 - `uint` 밖의 `page`나 `total`을 주는 목록 사례가 binding의 거부를 기대한다(C19.50). 입력: 그런 option의 `build_list`, `render_list`. 이전 동작: 사례가 코어의 `invalid_form_input`을 기대했다. 현재: binding GN-12a대로 숫자가 아닌 값은 `invalid_argument_type`, 타입 밖의 숫자는 `invalid_number`이며, 코어 suite는 그 kind로 이 사례를 건너뛴다.
 - crudui가 json 0.0.32를 pin한다(C19.57). 입력: `npm ci`, `cargo build`, `go build`, `pip download`, PIE. 이전 동작: PIE가 PHP 확장을 받을 수 없는 json 0.0.31. 현재: 모든 manifest와 lock이 json 0.0.32다.
 - `make duplication-check`가 clone을 찾지 않는다(C19.56). 입력: `make kit-gates-static`. 이전 동작: clone 열 개가 gate를 실패시켰다. 현재: binding의 파일을 생성 파일로 선언하고, loader 연산, 표 publish, 목록과 상세의 options를 공유하며, `config/duplication.json`이 나머지가 같게 남는 이유를 적는다.

@@ -240,7 +240,9 @@ fn text_control(kind: &str, ctx: &WidgetContext<'_>) -> Value {
             },
         );
     }
-    if kind == "number" {
+    // The default step of number (1) and datetime-local (60 seconds) would make a stored value off that step a step
+    // mismatch that stops the submission (CUMK-019, CUMK-074).
+    if kind == "number" || kind == "datetime" {
         put_string(&mut attrs, "step", "any");
     }
     if dummy {

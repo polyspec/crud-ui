@@ -255,7 +255,9 @@ outside groups. With the data `region: eu-north`, the example of the schema writ
 - **CUMK-074** A `datetime` field and its alias `datetime-local` render an `input` of type
   `datetime-local` directly in the node body, without the `crudui-widget` wrapper that a `date` field
   has. The input has the class `valid-target crudui-input`, `id`, `name`, `value`, the data attributes of
-  the field (`data-default`, `data-name`, `data-rule-name`) and the attributes of `behavior`. An absent or
+  the field (`data-default`, `data-name`, `data-rule-name`), `step="any"` and the attributes of `behavior`:
+  the default step of `datetime-local` is 60 seconds, so without it a value with seconds that are not zero
+  would be a step mismatch that stops the submission of the form, as CUMK-019 states of a number. An absent or
   empty value is `value=""`. A value that is a date with an optional time, seconds, fraction and zone
   (`YYYY-MM-DD`, then `T` or a space and `HH:mm`, `:ss`, `.fraction`, `Z` or `±HH:mm`) or an RFC 2822
   date is written as its UTC time in the form `YYYY-MM-DDTHH:mm:ss`: an omitted time is `00:00:00`,
@@ -264,7 +266,7 @@ outside groups. With the data `region: eu-north`, the example of the schema writ
 
 ```html
 <div class="crudui-node__body"><input class="valid-target crudui-input" data-default=""
-  data-name="dtm" data-rule-name="dtm" id="crudui:dtm" name="dtm" type="datetime-local"
+  data-name="dtm" data-rule-name="dtm" id="crudui:dtm" name="dtm" step="any" type="datetime-local"
   value="2026-06-14T10:30:00"></div>
 ```
 
