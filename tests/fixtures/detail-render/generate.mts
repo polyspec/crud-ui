@@ -312,7 +312,7 @@ const SCENARIOS: DetailFixtureCase[] = [
     note: 'the list-only page, total and layout options are neither checked nor used by a detail.',
     spec: { fields: { name: { field: 'name', label: 'Name' } } },
     record: ADA,
-    options: { page: 0, total: -1, layout: 'grid' },
+    options: { page: 0, total: 7, layout: 'grid' },
   },
   {
     name: 'reject-specification-before-record',

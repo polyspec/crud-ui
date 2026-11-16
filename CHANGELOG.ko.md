@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: b4843588d3cfdccad768abce93c1c0deb04ae0b2bce400bb922b8037747d6d03 -->
+<!-- source-sha256: 5ed22041d992e38ecf1542c8ff422016467f6e48bb31cf1a161f40e25e51668f -->
 
 ## Unreleased
 
+- detail case `list-options-ignored`가 `total`에 그 타입의 값을 준다(C19.46). 입력: `tests/fixtures/detail-render/cases.json`. 이전 동작: case가 계약의 `uint` 밖인 -1을 `total`에 주어 generator의 생성 Go 시험이 compile되지 않았다. 현재: `total`은 7이고, case는 여전히 detail이 list 옵션을 무시함을 보인다.
 - 각 생성 Go module이 `go.sum`을 추적한다(C19.45). 입력: `packages/validator/go`, `packages/generator/go`. 이전 동작: module은 저장소의 `go.work`로만 `github.com/polyspec/json/packages/go`를 풀었으므로, 혼자 빌드한 module은 `missing go.sum entry`로 실패했다. 현재: 각 module이 그것을 고정하는 `go.sum`을 추적한다.
 - generator core가 wasm32-unknown-unknown으로 compile된다(C19.43). 입력: `packages/generator/rust/Cargo.toml`. 이전 동작: getrandom 0.4.3이 그 target에서 build를 멈추어 generator의 생성 WASM package가 compile되지 않았다. 현재: wasm32 target에서 getrandom의 feature `wasm_js`를 켜고, 새 instance id는 host의 crypto.getRandomValues에서 난수 byte를 얻는다.
 - 모든 목록 셀과 상세 값의 class를 CUDF-092로 정한다(C19.42). 입력: `docs/spec/display-formats.md`. 이전 동작: CUDF-083은 text, date, number, choice-label의 셀 class만 적었고, CUDF-084~CUDF-088은 셀 안의 마크업만 적었다. 현재: CUDF-092가 모든 format의 `td`와 `dd` class와 그 뒤의 `design.class` class를 정한다.

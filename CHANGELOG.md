@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- The detail case `list-options-ignored` gives `total` a value of its type (C19.46). Input: `tests/fixtures/detail-render/cases.json`. Behaviour before: the case gave `total` -1, outside the `uint` of the contract, so the generated Go test of the generator did not compile. Now: `total` is 7, and the case still shows that a detail ignores the list options.
 - Each generated Go module tracks its `go.sum` (C19.45). Input: `packages/validator/go`, `packages/generator/go`. Behaviour before: the modules resolved `github.com/polyspec/json/packages/go` only through the `go.work` of the repository, so a module built alone failed with `missing go.sum entry`. Now: each module tracks a `go.sum` that pins it.
 - The generator core compiles for wasm32-unknown-unknown (C19.43). Input: `packages/generator/rust/Cargo.toml`. Behaviour before: getrandom 0.4.3 stopped the build on that target, so the generated WASM package of the generator did not compile. Now: the feature `wasm_js` of getrandom is enabled for wasm32 targets, and a new instance id takes its random bytes from crypto.getRandomValues of the host.
 - The class of every list cell and detail value is stated as CUDF-092 (C19.42). Input: `docs/spec/display-formats.md`. Behaviour before: CUDF-083 stated the cell class of text, date, number and choice-label only, and CUDF-084 to CUDF-088 stated only the markup inside the cell. Now: CUDF-092 states the `td` and `dd` class of every format and the classes of `design.class` after it.

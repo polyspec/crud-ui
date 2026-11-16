@@ -5138,7 +5138,7 @@
         "language": "ko",
         "data": null,
         "page": 0,
-        "total": -1,
+        "total": 7,
         "layout": "grid"
       },
       "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Name</dt><dd class=\"crudui-detail__value crudui-value crudui-value--text\">&lt;Ada &amp; Lin&gt;</dd></div></dl>"
