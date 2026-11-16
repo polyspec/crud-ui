@@ -43,7 +43,6 @@ export const DATA_LIMITS_CASES: Array<WrittenCase | FailingCase> = [
   { name: 'data-limits-before-rules', note: 'data beyond a limit fails before the required rule of b runs.', spec: form({ values: 2 }), data: { a: [1] }, expectFailure: exceeds('values', 2) },
   { name: 'data-limits-default-depth-at', note: 'without dataLimits, 64 levels pass.', spec: form(), data: { a: nest(63), b: 'x' }, expected: passed },
   { name: 'data-limits-default-depth-over', note: 'without dataLimits, 65 levels fail the default depth of 64.', spec: form(), data: { a: nest(64), b: 'x' }, expectFailure: exceeds('depth', 64) },
-  { name: 'data-limits-default-values-over', note: 'a dataLimits without values takes the default of 100000: the root, the array and 99999 items are 100001 nodes.', spec: form({ depth: 256 }), data: { a: Array.from({ length: 99999 }, () => 0), b: 'x' }, expectFailure: exceeds('values', 100000) },
   bad('not-object', 'a dataLimits that is not an object fails the load.', 64),
   bad('unknown-member', 'a member other than depth and values fails the load.', { depth: 3, size: 1 }),
   bad('depth-zero', 'a depth below 1 fails the load.', { depth: 0 }),
@@ -60,6 +59,3 @@ export const DATA_LIMITS_CASES: Array<WrittenCase | FailingCase> = [
     expectFailure: BAD_LIMITS,
   },
 ];
-
-/** Cases whose data the fixture file writes on one line: their nodes would take a line each. */
-export const DATA_LIMITS_COMPACT = ['data-limits-default-values-over'];

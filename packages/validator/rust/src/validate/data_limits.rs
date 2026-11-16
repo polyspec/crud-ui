@@ -84,3 +84,31 @@ pub(crate) fn check_data_limits(data: &Value, limits: &DataLimits) -> Result<(),
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    /// An array of `n` zeros under a member: the root, the array and its items are `n + 2` nodes.
+    fn nodes(n: usize) -> Value {
+        json!({ "a": vec![0; n] })
+    }
+
+    #[test]
+    fn a_root_without_values_takes_the_default_of_100000() {
+        for (root, depth) in [
+            (json!({}), 64),
+            (json!({ "dataLimits": { "depth": 256 } }), 256),
+        ] {
+            let limits = data_limits(&root).unwrap();
+            assert_eq!((limits.depth, limits.values), (depth, 100_000), "{root}");
+            assert!(check_data_limits(&nodes(99_998), &limits).is_ok());
+            let error = check_data_limits(&nodes(99_999), &limits).unwrap_err();
+            assert_eq!(
+                error.to_string(),
+                "Submitted data exceeds the values limit of 100000"
+            );
+        }
+    }
+}

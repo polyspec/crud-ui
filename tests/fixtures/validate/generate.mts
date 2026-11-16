@@ -46,7 +46,7 @@ import { REFERENCE_CASES } from './reference-rules.mts';
 import { CONTAINED_IN_CASES } from './contained-in.mts';
 import { TYPE_FROM_CASES } from './type-from.mts';
 import { BOUNDS_FROM_CASES } from './bounds-from.mts';
-import { DATA_LIMITS_CASES, DATA_LIMITS_COMPACT } from './data-limits.mts';
+import { DATA_LIMITS_CASES } from './data-limits.mts';
 import { CONDITION_FIELD_CASES } from './condition-field.mts';
 import { parseJson } from '../../json.mts';
 
@@ -1141,15 +1141,7 @@ const EXPRESSION_CASES: CaseSpec[] = [
 
 const generated = [...SPECS.map(build), ...AUTHORED_CASES.map(authored), ...VISIBILITY_CASES.map(written), ...NUMERIC_CASES.map(written), ...REFERENCE_CASES.map(written), ...EXPRESSION_CASES.map(build), ...GROUP_SOURCE_CASES.map(written), ...COMBINED_ITEMS_CASES.map(written), ...MULTIPLE_SHAPE_CASES.map(written), ...KEYED_MAP_CASES.map(written), ...CONDITION_TREE_CASES.map(written), ...CONTAINED_IN_CASES.map(written), ...TYPE_FROM_CASES.map(written), ...BOUNDS_FROM_CASES.map(written), ...DATA_LIMITS_CASES.map(written), ...CONDITION_FIELD_CASES.map(written)];
 const out: Record<string, unknown>[] = generated;
-const dataPlaceholder = (name: string) => `__DATA_TEXT_${name}__`;
-const compactData = (name: string) => JSON.stringify(dataPlaceholder(name));
-let text = JSON.stringify(out.map(c => (DATA_LIMITS_COMPACT.includes(String(c.name)) ? { ...c, data: dataPlaceholder(String(c.name)) } : c)), null, 2);
-// Data of many nodes is written on one line, which a line per node would make the largest part of the file.
-for (const c of out) {
-  if (!DATA_LIMITS_COMPACT.includes(String(c.name))) continue;
-  if (text.split(compactData(String(c.name))).length !== 2) throw new Error(`data text placeholder for ${String(c.name)} must occur once`);
-  text = text.replace(compactData(String(c.name)), JSON.stringify(c.data));
-}
+let text = JSON.stringify(out, null, 2);
 for (const c of SPECS) {
   if (c.specText === undefined) continue;
   const placeholder = JSON.stringify(`__SPEC_TEXT_${c.name}__`);

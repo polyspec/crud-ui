@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- The validator cases no longer hold a case of 100001 nodes (C19.52). Input: `tests/fixtures/validate/cases.json`. Behaviour before: `data_limits_default_values_over` tested the default values limit with 3.0 MB of data, and the generated Go test took tens of minutes to compile. Now: the small limit cases test the limit, and a unit test of the core fixes the default of 100000.
 - `.gitignore` ignores the workspace file of every Go module that `make link` links (C19.51). Input: `.gitignore`. Behaviour before: two entries named the paths of the modules before they moved under `legacy/`, and the generated modules had none, so `make link` refused to write their `go.work`. Now: each of them is ignored, and `make link` links the Go providers.
 - The detail case `list-options-ignored` gives `total` a value of its type (C19.46). Input: `tests/fixtures/detail-render/cases.json`. Behaviour before: the case gave `total` -1, outside the `uint` of the contract, so the generated Go test of the generator did not compile. Now: `total` is 7, and the case still shows that a detail ignores the list options.
 - Each generated Go module tracks its `go.sum` (C19.45). Input: `packages/validator/go`, `packages/generator/go`. Behaviour before: the modules resolved `github.com/polyspec/json/packages/go` only through the `go.work` of the repository, so a module built alone failed with `missing go.sum entry`. Now: each module tracks a `go.sum` that pins it.
