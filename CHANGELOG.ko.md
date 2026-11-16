@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: fd89ae73bac62b604536bf43f0f5263a4b87906cf4a3b7cada3bf7f806734da6 -->
+<!-- source-sha256: a5e7256c1bcf3ce5f897782eb7ca52f0ebc04f7c466f5436aa88f090195cae62 -->
 
 ## Unreleased
 
+- 생성기의 boundary는 binding이 계약 member에 주는 형태를 갖고, outline 연산은 입력의 실패를 이름한다(C19.32). 입력: binding 0.0.13으로 `make bindings`와 생성기의 생성 binding crate 빌드. 이전 동작: default가 있는 필드와 파라미터가 binding이 `Option`을 넘기는 자리에서 core의 값이었고, json과 record 인자 네 개가 binding이 참조를 넘기는 자리에서 값이었으며, `build_outline`, `collapsible_rows`, `set_all_expanded_view`가 계약이 실패를 이름하지 않는데 result를 돌려주어 crate가 컴파일되지 않았다. 현재: 그 필드와 파라미터는 없으면 default인 `Option`이고, 인자는 참조이며, 세 outline 연산은 입력 텍스트 규칙을 어기는 node에 `invalid_form_input`을 낸다.
 - 고정 binding은 0.0.13이고, `tests/fixtures`의 파일을 이름하는 `cases`의 행은 core 시험이 읽는 case key를 `reads`에 선언한다(C19.31). 입력: crate manifest 열두 개, `package.json`, `binding check`. 이전 동작: 모든 줄이 binding v0.0.12를 이름했고, binding check가 어떤 생성기도 읽지 않는 case key 1,498개(`name`, `expected`, `expect`, `reason`, `expected_html`)를 보고했으며 그 key는 모두 시험이 읽는다. 현재: 모든 줄이 v0.0.13을 이름하고 binding check가 CK-96을 보고하지 않는다. json v0.0.30이 binding v0.0.10을 이름하므로 lock 네 개가 `polyspec-binding-core` 0.0.13과 0.0.10을 담고, json release가 binding v0.0.13을 이름할 때까지 binding check가 CK-20을 보고한다.
 - `validate`, `list-validity`, `detail-validity`, `detail-render`의 case는 `requirements`를 갖지 않는다(C19.30). 입력: `tests/fixtures/*/cases.json` 네 파일. 이전 동작: 502, 9, 8, 68개 case가 어떤 test, check, 생성기도 읽지 않는 requirement id를 적었고(`scripts/check-schema.mts`는 그 모양만 검사했다), binding의 case key 검사가 그런 key를 보고한다. 기대: case, `validate`와 `detail-render`의 생성기, README 짝에 `requirements`가 없고, `make docs-schema`가 그것을 적은 case를 실패시킨다.
 - 고정 binding은 0.0.12다(C19.29). 입력: crate manifest 열두 개, `package.json`, `make bindings-check`. 이전 동작: 모든 줄이 binding v0.0.10을 적었다. 지금: 모든 줄이 v0.0.12를 적고 skeleton은 `binding scaffold` 0.0.12가 쓰는 것이다. json v0.0.30이 binding v0.0.10을 적으므로 네 lock은 `polyspec-binding-core` 0.0.12와 0.0.10을 함께 가지며, json release가 binding v0.0.12를 적을 때까지 `binding check`는 CK-20을 보고한다.

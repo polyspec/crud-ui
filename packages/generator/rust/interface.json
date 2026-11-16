@@ -2623,7 +2623,9 @@
           "returns": {
             "list": "json_value"
           },
-          "raises": [],
+          "raises": [
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::boundary::build_outline"
         },
@@ -2736,7 +2738,9 @@
           "returns": {
             "list": "text"
           },
-          "raises": [],
+          "raises": [
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::boundary::collapsible_rows"
         },
@@ -2807,7 +2811,9 @@
           "returns": {
             "unit": "view_state"
           },
-          "raises": [],
+          "raises": [
+            "polyspec_crud_ui_generator::FormErrorCode::InvalidFormInput"
+          ],
           "wait": "none",
           "core": "polyspec_crud_ui_generator::boundary::set_all_expanded_view"
         },

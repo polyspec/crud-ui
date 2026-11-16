@@ -701,6 +701,29 @@
       "id": "outlines_no_node",
       "note": "an outline of no node is empty.",
       "nodes": []
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a node whose text holds a lone surrogate fails the input text rules.",
+      "nodes": [
+        {
+          "kind": "map",
+          "value": [
+            [
+              "label",
+              {
+                "kind": "text",
+                "value": "\ud800"
+              }
+            ]
+          ]
+        }
+      ],
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
     }
   ],
   "render_outline_view": [
@@ -813,6 +836,29 @@
       "id": "no_node",
       "note": "no node has no collapsible row.",
       "nodes": []
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a node whose text holds a lone surrogate fails the input text rules.",
+      "nodes": [
+        {
+          "kind": "map",
+          "value": [
+            [
+              "label",
+              {
+                "kind": "text",
+                "value": "\ud800"
+              }
+            ]
+          ]
+        }
+      ],
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
     }
   ],
   "set_all_expanded_view": [
@@ -821,6 +867,30 @@
       "note": "expanding no node collapses no row.",
       "nodes": [],
       "expanded": true
+    },
+    {
+      "id": "invalid_form_input",
+      "note": "a node whose text holds a lone surrogate fails the input text rules.",
+      "nodes": [
+        {
+          "kind": "map",
+          "value": [
+            [
+              "label",
+              {
+                "kind": "text",
+                "value": "\ud800"
+              }
+            ]
+          ]
+        }
+      ],
+      "expanded": true,
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value"
+      }
     }
   ],
   "empty_history": [
@@ -5066,7 +5136,7 @@
               "text",
               {
                 "kind": "text",
-                "value": "저장"
+                "value": "\uc800\uc7a5"
               }
             ],
             [
@@ -13705,7 +13775,7 @@
               "text",
               {
                 "kind": "text",
-                "value": "저장"
+                "value": "\uc800\uc7a5"
               }
             ],
             [

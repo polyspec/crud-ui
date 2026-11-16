@@ -23,8 +23,8 @@ fn failure(error: ValidateError) -> FormError {
 }
 
 /// `files` given with a loader are refused (CURP-031).
-fn no_files(files: &OrderedMap<JsonValue>) -> FormResult<()> {
-    if files.is_empty() {
+fn no_files(files: Option<&OrderedMap<JsonValue>>) -> FormResult<()> {
+    if files.is_none_or(OrderedMap::is_empty) {
         Ok(())
     } else {
         Err(FormError::input(FILES_WITH_LOADER_MESSAGE))
@@ -55,9 +55,27 @@ fn enter_list(name: &str, values: &[JsonValue]) -> FormResult<Vec<Value>> {
         .collect()
 }
 
-/// The composition files that enter as `options.files`, in their order (CUIT-023).
-fn enter_files(files: &OrderedMap<JsonValue>) -> FormResult<Map<String, Value>> {
-    polyspec_crud_ui_validator::boundary::files(files).map_err(failure)
+/// The composition files that enter as `options.files`, in their order (CUIT-023); none are no files.
+fn enter_files(files: Option<&OrderedMap<JsonValue>>) -> FormResult<Map<String, Value>> {
+    match files {
+        Some(files) => polyspec_crud_ui_validator::boundary::files(files).map_err(failure),
+        None => Ok(Map::new()),
+    }
+}
+
+/// A value with the default `{empty: "object"}` that enters as the argument `name`; none is the empty
+/// object (binding GN-6i).
+fn enter_or_object(name: &str, value: Option<&JsonValue>) -> FormResult<Value> {
+    match value {
+        Some(value) => enter(name, value),
+        None => Ok(Value::Object(Map::new())),
+    }
+}
+
+/// A list with the default `{empty: "list"}` that enters as the argument `name`; none is the empty
+/// list (binding GN-6i).
+fn enter_list_or_empty(name: &str, values: Option<&[JsonValue]>) -> FormResult<Vec<Value>> {
+    enter_list(name, values.unwrap_or_default())
 }
 
 /// A value that leaves.
@@ -87,8 +105,9 @@ fn or_default(value: Option<&String>, default: &str) -> String {
 /// The options of [`compile_form`].
 #[derive(Debug, Clone, Default)]
 pub struct CompileOptions {
-    /// The composition files by name.
-    pub files: OrderedMap<JsonValue>,
+    /// The composition files by name; none is no files. A field with a default is an `Option` of the
+    /// core (binding GN-6i).
+    pub files: Option<OrderedMap<JsonValue>>,
     /// The base path of relative references; none is [`DEFAULT_BASEPATH`].
     pub basepath: Option<String>,
     /// The root prefix of input names.
@@ -106,8 +125,8 @@ pub struct BindOptions {
     pub key_prefix: Option<String>,
     /// `throw` or `marker` for a field type that binding does not support.
     pub unsupported: Option<String>,
-    /// The row paths rendered collapsed (CURT-069).
-    pub collapsed: Vec<String>,
+    /// The row paths rendered collapsed (CURT-069); none is no path (binding GN-6i).
+    pub collapsed: Option<Vec<String>>,
 }
 
 impl BindOptions {
@@ -122,7 +141,14 @@ impl BindOptions {
             language: text(&self.language),
             key_prefix: text(&self.key_prefix),
             unsupported: text(&self.unsupported),
-            collapsed: Value::Array(self.collapsed.iter().cloned().map(Value::String).collect()),
+            collapsed: Value::Array(
+                self.collapsed
+                    .iter()
+                    .flatten()
+                    .cloned()
+                    .map(Value::String)
+                    .collect(),
+            ),
         }
     }
 }
@@ -130,8 +156,9 @@ impl BindOptions {
 /// The options of the list and detail operations.
 #[derive(Debug, Clone, Default)]
 pub struct ListOptions {
-    /// The composition files by name.
-    pub files: OrderedMap<JsonValue>,
+    /// The composition files by name; none is no files. A field with a default is an `Option` of the
+    /// core (binding GN-6i).
+    pub files: Option<OrderedMap<JsonValue>>,
     /// The base path of relative references; none is [`DEFAULT_BASEPATH`].
     pub basepath: Option<String>,
     /// The content language; none is [`DEFAULT_LANGUAGE`].
@@ -147,7 +174,7 @@ pub struct ListOptions {
 impl ListOptions {
     /// The options of the crate that read the files of `bridge` (CURP-031).
     fn loaded<'a>(&self, bridge: &'a LoaderBridge<'_>) -> FormResult<crate::ListOptions<'a>> {
-        no_files(&self.files)?;
+        no_files(self.files.as_ref())?;
         let mut options: crate::ListOptions<'a> = self.core()?;
         options.loader = Some(bridge);
         Ok(options)
@@ -160,7 +187,7 @@ impl ListOptions {
             None => Value::Null,
         };
         Ok(crate::ListOptions {
-            files: enter_files(&self.files)?,
+            files: enter_files(self.files.as_ref())?,
             loader: None,
             basepath: or_default(self.basepath.as_ref(), DEFAULT_BASEPATH),
             language: or_default(self.language.as_ref(), DEFAULT_LANGUAGE),
@@ -179,7 +206,7 @@ impl ListOptions {
 pub fn compile_form(spec: &JsonValue, options: &CompileOptions) -> FormResult<FormTemplate> {
     let spec = enter_spec(spec)?;
     let options = crate::CompileOptions {
-        files: enter_files(&options.files)?,
+        files: enter_files(options.files.as_ref())?,
         loader: None,
         basepath: or_default(options.basepath.as_ref(), DEFAULT_BASEPATH),
         key_prefix: options.key_prefix.clone(),
@@ -198,7 +225,7 @@ pub fn compile_form_with_loader(
 ) -> Result<FormTemplate, Failure<FormError>> {
     let bridge = LoaderBridge::new(loader);
     let result = (|| {
-        no_files(&options.files)?;
+        no_files(options.files.as_ref())?;
         let spec = enter_spec(spec)?;
         let options = crate::CompileOptions {
             files: Map::new(),
@@ -229,15 +256,15 @@ pub fn bind_form(
     )?)
 }
 
-/// [`crate::bind_buttons`] at the boundary.
+/// [`crate::bind_buttons`] at the boundary; `data` has a default, so it is an `Option` (binding GN-6i).
 pub fn bind_buttons(
     template: &FormTemplate,
-    data: &JsonValue,
+    data: Option<&JsonValue>,
     options: &BindOptions,
 ) -> FormResult<Vec<JsonValue>> {
     leave_list(&crate::bind_buttons(
         template,
-        &enter("data", data)?,
+        &enter_or_object("data", data)?,
         &options.core(),
     )?)
 }
@@ -275,52 +302,52 @@ pub fn render_form_view(
     )
 }
 
-/// [`crate::build_list`] at the boundary.
+/// [`crate::build_list`] at the boundary; `rows` has a default, so it is an `Option` (binding GN-6i).
 pub fn build_list(
     spec: &JsonValue,
-    rows: &[JsonValue],
+    rows: Option<&[JsonValue]>,
     options: &ListOptions,
 ) -> FormResult<JsonValue> {
     let spec = enter_spec(spec)?;
     leave(&crate::build_list(
         &spec,
-        &enter_list("rows", rows)?,
+        &enter_list_or_empty("rows", rows)?,
         &options.core()?,
     )?)
 }
 
-/// [`crate::render_list`] at the boundary.
+/// [`crate::render_list`] at the boundary; `rows` has a default, so it is an `Option` (binding GN-6i).
 pub fn render_list(
     spec: &JsonValue,
-    rows: &[JsonValue],
+    rows: Option<&[JsonValue]>,
     options: &ListOptions,
 ) -> FormResult<String> {
     let spec = enter_spec(spec)?;
-    crate::render_list(&spec, &enter_list("rows", rows)?, &options.core()?)
+    crate::render_list(&spec, &enter_list_or_empty("rows", rows)?, &options.core()?)
 }
 
-/// [`crate::build_detail`] at the boundary.
+/// [`crate::build_detail`] at the boundary; `record` has a default, so it is an `Option` (binding GN-6i).
 pub fn build_detail(
     spec: &JsonValue,
-    record: &JsonValue,
+    record: Option<&JsonValue>,
     options: &ListOptions,
 ) -> FormResult<JsonValue> {
     let spec = enter_spec(spec)?;
     leave(&crate::build_detail(
         &spec,
-        &enter("record", record)?,
+        &enter_or_object("record", record)?,
         &options.core()?,
     )?)
 }
 
-/// [`crate::render_detail`] at the boundary.
+/// [`crate::render_detail`] at the boundary; `record` has a default, so it is an `Option` (binding GN-6i).
 pub fn render_detail(
     spec: &JsonValue,
-    record: &JsonValue,
+    record: Option<&JsonValue>,
     options: &ListOptions,
 ) -> FormResult<String> {
     let spec = enter_spec(spec)?;
-    crate::render_detail(&spec, &enter("record", record)?, &options.core()?)
+    crate::render_detail(&spec, &enter_or_object("record", record)?, &options.core()?)
 }
 
 /// [`build_list`] with the files of a loader (CURP-031).
@@ -461,29 +488,30 @@ pub fn empty_history() -> History<JsonValue> {
     crate::empty_history()
 }
 
-/// [`crate::record_change`] at the boundary; the records are kept as they crossed it.
+/// [`crate::record_change`] at the boundary; the records are kept as they crossed it. A json value
+/// parameter is a reference of the core (binding GN-6), so the record is cloned into the history.
 pub fn record_change(
     history: &History<JsonValue>,
-    previous: JsonValue,
+    previous: &JsonValue,
     path: Option<&str>,
 ) -> History<JsonValue> {
-    crate::record_change(history, previous, path)
+    crate::record_change(history, previous.clone(), path)
 }
 
-/// [`crate::undo_change`] at the boundary.
+/// [`crate::undo_change`] at the boundary; `current` is a reference of the core (binding GN-6).
 pub fn undo_change(
     history: &History<JsonValue>,
-    current: JsonValue,
+    current: &JsonValue,
 ) -> FormResult<HistoryResult<JsonValue>> {
-    crate::undo_change(history, current)
+    crate::undo_change(history, current.clone())
 }
 
-/// [`crate::redo_change`] at the boundary.
+/// [`crate::redo_change`] at the boundary; `current` is a reference of the core (binding GN-6).
 pub fn redo_change(
     history: &History<JsonValue>,
-    current: JsonValue,
+    current: &JsonValue,
 ) -> FormResult<HistoryResult<JsonValue>> {
-    crate::redo_change(history, current)
+    crate::redo_change(history, current.clone())
 }
 
 /// The values and the position of an added row at the boundary.
@@ -519,14 +547,18 @@ pub struct Form {
 }
 
 impl Form {
-    /// [`crate::Form::new`] at the boundary.
+    /// [`crate::Form::new`] at the boundary; `data` has a default, so it is an `Option` (binding GN-6i).
     pub fn new(
         template: &FormTemplate,
-        data: &JsonValue,
+        data: Option<&JsonValue>,
         options: &BindOptions,
     ) -> FormResult<Self> {
         Ok(Self {
-            form: crate::Form::new(template.clone(), &enter("data", data)?, options.core())?,
+            form: crate::Form::new(
+                template.clone(),
+                &enter_or_object("data", data)?,
+                options.core(),
+            )?,
         })
     }
 
@@ -606,14 +638,14 @@ impl Form {
         )
     }
 
-    /// Copy a row (CURT-005).
+    /// Copy a row (CURT-005); a record parameter is a reference of the core (binding GN-6).
     pub fn copy_row(
         &mut self,
         path: &str,
         key: &str,
-        options: crate::CopyRowOptions,
+        options: &crate::CopyRowOptions,
     ) -> FormResult<String> {
-        self.form.copy_row(path, key, options)
+        self.form.copy_row(path, key, options.clone())
     }
 
     /// Remove a row.
@@ -717,14 +749,14 @@ mod tests {
             language: Some(DEFAULT_LANGUAGE.to_owned()),
             ..ListOptions::default()
         };
-        let left_out = render_list(&list, &rows, &ListOptions::default()).unwrap();
-        assert_eq!(left_out, render_list(&list, &rows, &explicit).unwrap());
+        let left_out = render_list(&list, Some(&rows[..]), &ListOptions::default()).unwrap();
+        assert_eq!(left_out, render_list(&list, Some(&rows[..]), &explicit).unwrap());
         assert!(left_out.contains("이름"));
         let english = ListOptions {
             language: Some("en".to_owned()),
             ..ListOptions::default()
         };
-        assert!(render_list(&list, &rows, &english)
+        assert!(render_list(&list, Some(&rows[..]), &english)
             .unwrap()
             .contains("Name"));
         let spec = json(r#"{"type":"group","properties":{"name":{"type":"text"}}}"#);
@@ -752,7 +784,7 @@ mod tests {
         for (name, file) in files.members().unwrap().iter() {
             named.insert(name.string_value().unwrap(), file.clone());
         }
-        options.files = named;
+        options.files = Some(named);
         let declared = compile_form(&spec, &options).unwrap();
         assert_eq!(
             serde_json::to_string(&loaded).unwrap(),
@@ -845,7 +877,7 @@ mod tests {
         let spec = r#"{"type":"group","properties":{"b":{"type":"text"},"a":{"type":"number"}}}"#;
         let data = r#"{"b":"x","a":9007199254740993}"#;
         let template = compile_form(&json(spec), &CompileOptions::default()).unwrap();
-        let form = Form::new(&template, &json(data), &BindOptions::default()).unwrap();
+        let form = Form::new(&template, Some(&json(data)), &BindOptions::default()).unwrap();
         let core_template = crate::compile_form(
             &serde_json::from_str(spec).unwrap(),
             &crate::CompileOptions::default(),

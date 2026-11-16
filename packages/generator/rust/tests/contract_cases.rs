@@ -95,7 +95,7 @@ fn list_options(case: &Value) -> ListOptions {
     };
     let data = argument(options, "data");
     ListOptions {
-        files,
+        files: Some(files),
         basepath: Some(text(argument(options, "basepath"))),
         language: Some(text(argument(options, "language"))),
         data: (data.kind() != Kind::Null).then(|| case_value(data)),
@@ -198,7 +198,7 @@ fn run(member: &str, case: &Value) -> Result<(), FormError> {
             }
             let key_prefix = argument(options, "key_prefix");
             let options = CompileOptions {
-                files,
+                files: Some(files),
                 basepath: Some(text(argument(options, "basepath"))),
                 key_prefix: (key_prefix.kind() != Kind::Null).then(|| text(key_prefix)),
             };
@@ -254,25 +254,25 @@ fn run(member: &str, case: &Value) -> Result<(), FormError> {
         "create_row_key" => create_row_key().map(|_| ()),
         "build_list" => build_list(
             &case_value(argument(case, "spec")),
-            &values(argument(case, "rows")),
+            Some(&values(argument(case, "rows"))),
             &list_options(case),
         )
         .map(|_| ()),
         "render_list" => render_list(
             &case_value(argument(case, "spec")),
-            &values(argument(case, "rows")),
+            Some(&values(argument(case, "rows"))),
             &list_options(case),
         )
         .map(|_| ()),
         "build_detail" => build_detail(
             &case_value(argument(case, "spec")),
-            &case_value(argument(case, "record")),
+            Some(&case_value(argument(case, "record"))),
             &list_options(case),
         )
         .map(|_| ()),
         "render_detail" => render_detail(
             &case_value(argument(case, "spec")),
-            &case_value(argument(case, "record")),
+            Some(&case_value(argument(case, "record"))),
             &list_options(case),
         )
         .map(|_| ()),
@@ -414,7 +414,7 @@ fn compile_options(options: &Value) -> CompileOptions {
         files.insert(text(name), case_value(file));
     }
     CompileOptions {
-        files,
+        files: Some(files),
         basepath: Some(text(argument(options, "basepath"))),
         key_prefix: optional_text(argument(options, "key_prefix")),
     }
@@ -427,12 +427,14 @@ fn bind_options(options: &Value) -> BindOptions {
         language: optional_text(argument(options, "language")),
         key_prefix: optional_text(argument(options, "key_prefix")),
         unsupported: optional_text(argument(options, "unsupported")),
-        collapsed: argument(options, "collapsed")
-            .items()
-            .unwrap()
-            .iter()
-            .map(text)
-            .collect(),
+        collapsed: Some(
+            argument(options, "collapsed")
+                .items()
+                .unwrap()
+                .iter()
+                .map(text)
+                .collect(),
+        ),
     }
 }
 
@@ -462,7 +464,7 @@ fn make(value: &Value) -> Instance {
             )?)),
             "form.constructor" => Instance::Form(Box::new(Form::new(
                 &template_of(argument(args(), "template")),
-                &case_value(argument(args(), "data")),
+                Some(&case_value(argument(args(), "data"))),
                 &bind_options(argument(args(), "options")),
             )?)),
             "generator.initial_view" => Instance::View(initial_view()),
@@ -473,7 +475,7 @@ fn make(value: &Value) -> Instance {
             "generator.empty_history" => Instance::History(empty_history()),
             "generator.record_change" => Instance::History(record_change(
                 &history_of(argument(args(), "history")),
-                case_value(argument(args(), "previous")),
+                &case_value(argument(args(), "previous")),
                 optional_text(argument(args(), "path")).as_deref(),
             )),
             other => panic!("no factory {other} of an instance value"),
@@ -592,7 +594,7 @@ fn form_method(
             Some(serde_json::json!(form.copy_row(
                 &path(),
                 &key(),
-                options
+                &options
             )?))
         }
         "form.remove_row" => {
@@ -651,7 +653,7 @@ fn instance_member(group: &str, case: &Value) -> Result<Option<serde_json::Value
         "form_constructor" => {
             drop(Form::new(
                 &template_of(arg("template")),
-                &case_value(arg("data")),
+                Some(&case_value(arg("data"))),
                 &bind_options(arg("options")),
             )?);
             None
@@ -666,7 +668,7 @@ fn instance_member(group: &str, case: &Value) -> Result<Option<serde_json::Value
         }
         "bind_buttons" => case_list(&bind_buttons(
             &template_of(arg("template")),
-            &case_value(arg("data")),
+            Some(&case_value(arg("data"))),
             &bind_options(arg("options")),
         )?),
         "render_form" => {
@@ -728,7 +730,7 @@ fn instance_member(group: &str, case: &Value) -> Result<Option<serde_json::Value
         "record_change" => {
             drop(record_change(
                 &history_of(arg("history")),
-                case_value(arg("previous")),
+                &case_value(arg("previous")),
                 optional_text(arg("path")).as_deref(),
             ));
             None
@@ -738,14 +740,14 @@ fn instance_member(group: &str, case: &Value) -> Result<Option<serde_json::Value
         "undo_change" => {
             drop(undo_change(
                 &history_of(arg("history")),
-                case_value(arg("current")),
+                &case_value(arg("current")),
             )?);
             None
         }
         "redo_change" => {
             drop(redo_change(
                 &history_of(arg("history")),
-                case_value(arg("current")),
+                &case_value(arg("current")),
             )?);
             None
         }
