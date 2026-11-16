@@ -530,8 +530,8 @@ checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
 name = "polyspec-binding-core"
-version = "0.0.13"
-source = "git+https://github.com/polyspec/binding.git?tag=v0.0.13#4c3653bef093f696efb6c0c679887548f0f57103"
+version = "0.0.17"
+source = "git+https://github.com/polyspec/binding.git?tag=v0.0.17#8db1add67c520673e07cfaf75038252ede40f282"
 dependencies = [
  "indexmap",
  "libc",
@@ -583,8 +583,8 @@ dependencies = [
 
 [[package]]
 name = "polyspec-json"
-version = "0.0.32"
-source = "git+https://github.com/polyspec/json.git?tag=v0.0.32#ef641ccfba2341136831075e774df7a527ec9de8"
+version = "0.0.34"
+source = "git+https://github.com/polyspec/json.git?tag=v0.0.34#f13de8d689c62958650fc4f6c441e3b69652dfe6"
 dependencies = [
  "polyspec-binding-core",
  "ryu-js",

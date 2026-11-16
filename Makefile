@@ -232,10 +232,10 @@ lint-rust: ## Lint the Rust: cargo clippy in each Cargo workspace with the [work
 BINDING ?= $(CURDIR)/node_modules/@polyspec/binding/dist/cli.js
 bindings: ## Write the generated folders of the binding packages with BINDING=<cli of binding>
 	@test -n "$(BINDING)" || { echo "bindings: set BINDING to the cli of binding"; exit 1; }
-	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) generate --contract $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
+	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) generate --contract $(CURDIR)/packages/$$component/rust/interface.json --cargo "$(CARGO)" || status=1; done; exit $$status
 bindings-check: ## Check the interface contract of each component with BINDING=<cli of binding>
 	@test -n "$(BINDING)" || { echo "bindings-check: set BINDING to the cli of binding"; exit 1; }
-	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) check $(CURDIR)/packages/$$component/rust/interface.json || status=1; done; exit $$status
+	@status=0; for component in $(BINDING_COMPONENTS); do $(NODE) $(BINDING) check $(CURDIR)/packages/$$component/rust/interface.json --cargo "$(CARGO)" || status=1; done; exit $$status
 lint-bindings: bindings ## Lint the binding crates after make bindings
 	$(CARGO) clippy --locked $(foreach crate,$(BINDING_CRATES),-p $(crate)) --all-targets -- -D warnings
 test-bindings: bindings ## Run the tests of the binding crates after make bindings

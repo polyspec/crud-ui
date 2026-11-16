@@ -5,7 +5,7 @@ go 1.27.3
 
 require (
 	github.com/polyspec/crud-ui/packages/validator/go v0.0.0
-	github.com/polyspec/json/packages/go v0.0.32
+	github.com/polyspec/json/packages/go v0.0.34
 )
 
 replace github.com/polyspec/crud-ui/packages/validator/go => ../../validator/go

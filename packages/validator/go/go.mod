@@ -3,4 +3,4 @@ module github.com/polyspec/crud-ui/packages/validator/go
 
 go 1.27.3
 
-require github.com/polyspec/json/packages/go v0.0.32
+require github.com/polyspec/json/packages/go v0.0.34
