@@ -3926,7 +3926,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          { "member": "file_loader.normalize", "args": { "path": "base.yml", "basepath": "specs" } },
+          { "member": "file_loader.load", "args": { "key": "specs/base.yml" } }
+        ]
       },
       "options": {
         "files": null,
@@ -4769,7 +4773,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          { "member": "file_loader.normalize", "args": { "path": "base.yml", "basepath": "specs" } },
+          { "member": "file_loader.load", "args": { "key": "specs/base.yml" } }
+        ]
       },
       "options": {
         "files": null,
@@ -5612,7 +5620,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          { "member": "file_loader.normalize", "args": { "path": "base.yml", "basepath": "specs" } },
+          { "member": "file_loader.load", "args": { "key": "specs/base.yml" } }
+        ]
       },
       "options": {
         "files": null,

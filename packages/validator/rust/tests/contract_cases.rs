@@ -102,11 +102,15 @@ struct Row {
     answer: Answer,
 }
 
-/// The file loader of a case: the rows of its callback fixture, and the calls that no row answered.
+/// The file loader of a case: the rows of its callback fixture, the calls that no row answered, every call in order,
+/// and the calls that the fixture names (`calls`), which the binding tests take as the calls of the operation (binding
+/// GN-13y).
 struct FixtureLoader {
     normalize: Vec<Row>,
     load: Vec<Row>,
     unexpected: Vec<String>,
+    made: Vec<String>,
+    named: Option<Vec<String>>,
 }
 
 impl FixtureLoader {
@@ -148,12 +152,41 @@ impl FixtureLoader {
     }
 
     fn new(case: &Value) -> Self {
-        let fixture = argument(argument(case, "loader"), "callback");
+        let loader = argument(case, "loader");
+        let fixture = argument(loader, "callback");
+        let named = loader.get("calls").unwrap().map(|calls| {
+            calls
+                .items()
+                .unwrap()
+                .iter()
+                .map(|call| {
+                    let args = argument(call, "args");
+                    match text(argument(call, "member")).as_str() {
+                        "file_loader.normalize" => Self::normalize_call(
+                            &text(argument(args, "path")),
+                            &text(argument(args, "basepath")),
+                        ),
+                        "file_loader.load" => Self::load_call(&text(argument(args, "key"))),
+                        member => panic!("calls names {member}, which is no member of the loader"),
+                    }
+                })
+                .collect()
+        });
         Self {
             normalize: Self::rows(fixture, "file_loader.normalize", &["path", "basepath"]),
             load: Self::rows(fixture, "file_loader.load", &["key"]),
             unexpected: Vec::new(),
+            made: Vec::new(),
+            named,
         }
+    }
+
+    fn normalize_call(path: &str, basepath: &str) -> String {
+        format!("normalize({path:?}, {basepath:?})")
+    }
+
+    fn load_call(key: &str) -> String {
+        format!("load({key:?})")
     }
 
     /// The failure of a call that no row answers, which the call records.
@@ -165,17 +198,19 @@ impl FixtureLoader {
 
 impl FileLoader for FixtureLoader {
     fn normalize(&mut self, path: &str, basepath: &str) -> Result<String, Failure<ValidateError>> {
+        self.made.push(Self::normalize_call(path, basepath));
         let row = self
             .normalize
             .iter()
             .find(|row| row.args == [path, basepath]);
         match row.map(|row| &row.answer) {
             Some(Answer::Key(key)) => Ok(key.clone()),
-            _ => Err(self.unexpected(format!("normalize({path:?}, {basepath:?})"))),
+            _ => Err(self.unexpected(Self::normalize_call(path, basepath))),
         }
     }
 
     fn load(&mut self, key: &str) -> Result<Value, Failure<ValidateError>> {
+        self.made.push(Self::load_call(key));
         let row = self.load.iter().find(|row| row.args == [key]);
         match row.map(|row| &row.answer) {
             Some(Answer::Document(document)) => Ok(document.clone()),
@@ -187,13 +222,13 @@ impl FileLoader for FixtureLoader {
                     Vec::new(),
                 ),
             ))),
-            _ => Err(self.unexpected(format!("load({key:?})"))),
+            _ => Err(self.unexpected(Self::load_call(key))),
         }
     }
 }
 
-/// The result of an operation with the fixture loader of the case. A call that no row answered fails the case, and so
-/// does a failure that is no kind.
+/// The result of an operation with the fixture loader of the case. A call that no row answered fails the case, so do
+/// calls other than those that the fixture names, in their order, and a failure that is no kind.
 fn with_loader<T>(
     case: &Value,
     operation: impl FnOnce(&mut FixtureLoader) -> Result<T, Failure<ValidateError>>,
@@ -205,6 +240,12 @@ fn with_loader<T>(
         "no row answers {:?}",
         loader.unexpected
     );
+    if let Some(named) = &loader.named {
+        assert_eq!(
+            &loader.made, named,
+            "the loader calls other than those that the case names"
+        );
+    }
     match result {
         Ok(_) => Ok(()),
         Err(Failure::Kind(error)) => Err(error),

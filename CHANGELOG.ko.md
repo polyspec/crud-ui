@@ -1,9 +1,10 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: 616f52a87be1413dad5bd335188476e6920bb85e9121604b8e74d432e4444159 -->
+<!-- source-sha256: 1a05b878d907e84b959cc8ff70b566899707c447574933efeb180d47d94ea61c -->
 
 ## Unreleased
 
+- 세 loader 연산의 loader case `loads_a_file`이 fixture의 호출을 적는다(C19.44). 입력: `contracts/validator-cases.json`. 이전 동작: loader의 호출을 적는 loader case가 없어서, 생성 package의 K-2 시험이 placeholder form data를 넘기고 loader가 돌기 전에 실패했다. 현재: `loads_a_file`이 `file_loader.normalize`와 `file_loader.load`를 인자와 함께 적고, 그 시험이 그 인자를 쓴다.
 - `datetime` 필드의 마크업을 CUMK-074로 정한다(C19.40). 입력: `docs/spec/form-markup.md`. 이전 동작: `datetime` 필드의 요소, 속성, 값 형태를 밝힌 문서가 없었고 공유 render case만 그것을 고정했다. 현재: CUMK-074가 widget 감싸개 없는 `datetime-local` 입력, 빈 값, 날짜 값의 UTC 형태를 정하고, `datetime` case 넷이 그것을 이름한다.
 - 표 생성기가 표를 원자적으로 게시한다(C17.106-6). 입력: make php-tables, python-tables, php-ext-tables와 TypeScript 패키지의 prebuild script. 이전 동작: 생성기 여덟 개가 추적하지 않는 표를 그 자리에 써서, 다른 run이 쓰는 동안 표를 읽는 run은 덜 쓰인 표를 읽을 수 있었다. 현재: 각 생성기가 `<table>.<pid>`에 쓴 뒤 표 자리로 rename한다. 표는 전과 byte 단위로 같고, `tests/build/atomic-publish.test.mts`가 각 생성기에 그 형태를 요구한다.
 - cross-check console이 Rust core와 legacy validator가 다른 dataLimits case를 이름 붙은 목록으로 가진다(C19.39). 입력: `make crudui-test-cross-check`. 이전 동작: dataLimits case 열 개가 실패했다. legacy validator는 고정 fixture를 따라 depth 512까지 받고, core는 CUSC-087을 따라 depth 256까지 받기 때문이다. 현재: `core-divergences.mjs`가 열 case를 core의 실패와 두 근거와 함께 나열하고, 시험은 legacy validator에서 fixture를, core에서 그 실패를 요구하며, 그 밖의 차이는 실패다.
