@@ -721,6 +721,29 @@ static bool append_error(validation_context *context, const ps_text *path, size_
     free(full.bytes); return ok;
 }
 
+/*
+ * A repeated group source value as a unique field error at its data path (CUVR-096): one error per path, and an error
+ * already recorded at that path stays. The default message of unique is the message.
+ */
+static bool repeat_error(validation_context *context, const ps_value *repeat)
+{
+    ps_text at = ps_string(ps_get_text(repeat, PS_TEXT("at")));
+    for (size_t i = 0; i < ps_size(context->errors); ++i) {
+        const ps_value *known = ps_get_text(ps_at(context->errors, i), PS_TEXT("path"));
+        if (known && ps_text_equal(ps_string(known), at)) return true;
+    }
+    ps_value *error = ps_object_value();
+    bool ok = error &&
+        ps_set(error, "path", ps_text_value(at)) &&
+        ps_set(error, "field", ps_text_value(ps_string(ps_get_text(repeat, PS_TEXT("field"))))) &&
+        ps_set(error, "rule", ps_text_value(PS_TEXT("unique"))) &&
+        ps_set(error, "message", ps_text_value(PS_TEXT("Values must be unique."))) &&
+        ps_set(error, "value", ps_value_clone(ps_get_text(repeat, PS_TEXT("value"))));
+    ok = ok && ps_append(context->errors, error);
+    if (!ok) ps_value_free(error);
+    return ok;
+}
+
 /* Record a failed rule; false when the error cannot be recorded. */
 static bool rule_error(validation_context *context, const ps_text *path, size_t length,
                        const ps_value *field, ps_text rule, const ps_value *parameter,
@@ -778,7 +801,7 @@ static bool validate_rules(const ps_value *field, const ps_value *value,
     /* A group source checks the value against the choices of its rows before the declared rules (validation-rules.md, "Values"). */
     const ps_value *items = ps_get(field, "items");
     if (!array_level && ps_is_group_source(items)) {
-        /* A repeated value among the source rows is data that the choices cannot express (CUVR-087). */
+        /* A literal choice repeated among the source rows is data that the choices cannot express (CUVR-087). */
         ps_chars repeat = {NULL, 0};
         int repeat_state = ps_group_source_repeat(items, context->data, &repeat);
         if (repeat_state < 0) return allocation_failure(context);
@@ -787,6 +810,13 @@ static bool validate_rules(const ps_value *field, const ps_value *value,
             free(repeat.bytes);
             return false;
         }
+        /* A value that repeats an earlier row is a field error with rule unique at its data path (CUVR-096). */
+        ps_value *repeats = ps_group_source_repeats(items, context->data);
+        if (!repeats) return allocation_failure(context);
+        bool recorded = true;
+        for (size_t i = 0; recorded && i < ps_size(repeats); ++i) recorded = repeat_error(context, ps_at(repeats, i));
+        ps_value_free(repeats);
+        if (!recorded) return allocation_failure(context);
         ps_chars repeated = {NULL, 0};
         ps_value *members = group_members(items, context->data, &repeated);
         if (!members) {

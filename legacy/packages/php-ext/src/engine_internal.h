@@ -422,6 +422,11 @@ ps_value *ps_group_source_choices(const ps_value *items, const ps_value *data, p
  * (CUVR-087): 0 when none repeats, 1 with the message in *message, -1 on allocation failure.
  */
 int ps_group_source_repeat(const ps_value *items, const ps_value *data, ps_chars *message);
+/*
+ * ps_group_source_repeats: the rows whose choice value repeats an earlier row (CUVR-096), as objects with at, field and
+ * value; an empty array when none repeats, NULL on allocation failure.
+ */
+ps_value *ps_group_source_repeats(const ps_value *items, const ps_value *data);
 
 /* Membership (rule_in.c). ps_in_passes: 1, 0, or -1 on allocation failure; the parameter is valid. */
 ps_parameter_problem ps_in_parameter(const ps_value *parameter);
