@@ -269,6 +269,9 @@ BINDING_PYTHON_FIND_LINKS ?= $(BINDING_VAR)/deps/python
 BINDING_NODE_DEPS ?= $(CURDIR)/node_modules/@polyspec/json $(CURDIR)/node_modules/@polyspec/json-$(BINDING_PLATFORM)
 BINDING_PIE = $(BINDING_VAR)/deps/php
 BINDING_PHP_EXTENSIONS ?= $(wildcard $(BINDING_PIE)/*/vendor/polyspec/json/polyspec_json.so)
+# The components whose PHP extension a component's extension requires, which PHP loads after json and before it: the
+# generator extension raises the error classes of the validator extension, such as ComposeLoadError.
+BINDING_PHP_REQUIRES_generator = validator
 # The test features of a binding crate: every feature of its manifest (binding GN-5), joined by commas.
 binding_features = $(shell sed -n '/^\[features\]/,/^\[/s/^\([a-z][a-z0-9-]*\) = .*/\1/p' $(1) | paste -sd, -)
 # The build tags of the test features of a Go crate, polyspec_<feature> with _ for - (binding GN-5).
@@ -329,12 +332,13 @@ test-binding-wasm-$(1): binding-node-package-$(1)
 	$$(call binding_tap_count,test-binding-wasm-$(1),$(BINDING_VAR)/$(1)/node/wasm.tap)
 
 # The extension built with the test features against the PHP of BINDING_PHP, its stub linted, and the generated tests on
-# PHPUnit with the extensions of BINDING_PHP_EXTENSIONS and the extension loaded; a run without a test or with a skipped
-# test fails.
+# PHPUnit with the extensions of BINDING_PHP_EXTENSIONS, the extensions of BINDING_PHP_REQUIRES_<component> and the
+# extension loaded; a run without a test or with a skipped test fails.
 test-binding-php-$(1): bindings
+	$$(foreach required,$$(BINDING_PHP_REQUIRES_$(1)),$(CARGO) build --locked -p polyspec-crud-ui-$$(required)-php-ext --features $$(call binding_features,packages/$$(required)/php-ext/Cargo.toml) &&) true
 	$(CARGO) build --locked -p polyspec-crud-ui-$(1)-php-ext --features $$(call binding_features,packages/$(1)/php-ext/Cargo.toml)
 	$(BINDING_PHP) -l packages/$(1)/php-ext/generated/polyspec_crud_ui_$(1).stub.php
-	$(BINDING_PHP) $$(foreach extension,$$(BINDING_PHP_EXTENSIONS),-d extension=$$(extension)) -d extension=$(CURDIR)/target/debug/libpolyspec_crud_ui_$(1).$(BINDING_DYLIB) $(BINDING_PHPUNIT) --fail-on-empty-test-suite --fail-on-skipped packages/$(1)/php-ext/generated/tests
+	$(BINDING_PHP) $$(foreach extension,$$(BINDING_PHP_EXTENSIONS),-d extension=$$(extension)) $$(foreach required,$$(BINDING_PHP_REQUIRES_$(1)),-d extension=$(CURDIR)/target/debug/libpolyspec_crud_ui_$$(required).$(BINDING_DYLIB)) -d extension=$(CURDIR)/target/debug/libpolyspec_crud_ui_$(1).$(BINDING_DYLIB) $(BINDING_PHPUNIT) --fail-on-empty-test-suite --fail-on-skipped packages/$(1)/php-ext/generated/tests
 
 # The generated tests of the Go package on go test with the build tags of the test features, after gofmt and go vet, through
 # the go.work of the checkout, whose go.work.sum holds the sums of the modules of json. binding go-link builds the static
