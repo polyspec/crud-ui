@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- `unique`가 반복 그룹의 여러 필드에 함께 성립한다(C19.66). 입력: `items.*.name`의 `unique: [kind]` 같은 필드 이름 목록의 `unique`. 이전 동작: 검증이 `Invalid unique parameter: expected true, false or a string`로 실패했다. 현재: 앞선 행이 그 필드와 이름 붙은 각 필드의 값을 같게 가지면 행이 실패한다(CUVR-097).
 - 빈 `badge` 값이 element를 쓰지 않는다(C19.67). 입력: 값이 `null`, 없음, `false`, 빈 문자열인 `badge` format의 list나 detail 셀. 이전 동작: 셀이 빈 `<span class="crudui-badge">`를 담았다. 현재: `map`이 무엇을 담든 셀이 빈다(CUDF-093).
 - 그룹 소스의 반복된 값이 필드 오류다(C19.68). 입력: 그룹 소스의 행이 값을 반복하는 데이터의 `validate`. 이전 동작: 검증이 `INVALID_FORM_INPUT`과 빈 위치로 멈춰 어떤 필드도 오류를 보이지 않았다. 현재: 반복하는 각 행이 그 경로에서 `messages.unique`가 바꿀 수 있는 `unique`로 실패하고, 읽는 필드는 암묵적 `in` 검사를 건너뛰며, 검증은 필드 오류를 반환한다.
 - release가 validator와 generator의 binding 패키지를 게시하고 legacy `crudui-*` 패키지는 게시하지 않는다(C19.71). 입력: 다음 tag. 이전 동작: v0.0.20은 legacy npm archive, 순수 PHP 패키지의 Composer `packages.json`, `py3-none-any` wheel을 게시했고, 그 뒤 `config/release.json`은 패키지를 적지 않았다. 현재: tag가 component마다 linux-x64-gnu, linux-arm64-gnu, darwin-arm64에서 PHP 8.4와 8.5용 PIE PHP 확장, abi3 wheel, platform 패키지를 가진 npm 패키지, Go module을 게시하고, `.github/workflows/assets.yml`이 그것을 만든다. legacy `crudui-*` 패키지는 의도적으로 release하지 않으며, release 또는 asset job이 Go를 설치하기 전에 Go가 필요한 호출을 실행하면 시험이 실패한다.

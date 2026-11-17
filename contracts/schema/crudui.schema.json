@@ -525,13 +525,21 @@
               "$ref": "#/definitions/RuleLength"
             },
             "unique": {
-              "description": "Uniqueness when enabled; a string names an item field or a filter condition. Passed unchanged.",
+              "description": "Uniqueness when enabled; a string names an item field or a filter condition, and a list names the fields of the row that the value is unique together with (CUVR-097). Passed unchanged.",
               "anyOf": [
                 {
                   "type": "boolean"
                 },
                 {
                   "type": "string"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
                 },
                 {
                   "description": "Disables the rule.",

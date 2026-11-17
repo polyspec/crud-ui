@@ -30010,7 +30010,7 @@
     {
       "id": "reference_unique_number_parameter",
       "name": "reference-unique-number-parameter",
-      "note": "a unique parameter is true, false or a string, not a number.",
+      "note": "a unique parameter is true, false, a string or a list of field names, not a number.",
       "spec": {
         "kind": "map",
         "value": [
@@ -30077,14 +30077,14 @@
         "kind": "invalid_rule_parameter",
         "status": null,
         "category": "value",
-        "message": "Invalid unique parameter: expected true, false or a string",
+        "message": "Invalid unique parameter: expected true, false, a string or a list of field names",
         "at": "value"
       }
     },
     {
       "id": "reference_unique_list_parameter",
       "name": "reference-unique-list-parameter",
-      "note": "a unique parameter is true, false or a string, not a list.",
+      "note": "a list of field names is a unique parameter; on a field outside a repeated group it makes no failure (CUVR-097).",
       "spec": {
         "kind": "map",
         "value": [
@@ -30152,12 +30152,10 @@
           ]
         ]
       },
-      "raises": {
-        "kind": "invalid_rule_parameter",
-        "status": null,
-        "category": "value",
-        "message": "Invalid unique parameter: expected true, false or a string",
-        "at": "value"
+      "expected": {
+        "valid": true,
+        "errors": [],
+        "hidden": []
       }
     },
     {
@@ -33685,6 +33683,758 @@
           }
         ],
         "hidden": []
+      }
+    },
+    {
+      "id": "unique_row_fields_together",
+      "name": "unique-row-fields-together",
+      "note": "unique with a list of field names holds over the field and the named fields of a row together: rows may share a name with different kinds, a row whose named field is empty takes no part (CUVR-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "rows",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "kind",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ],
+                            [
+                              "name",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ],
+                                  [
+                                    "validate",
+                                    {
+                                      "kind": "map",
+                                      "value": [
+                                        [
+                                          "unique",
+                                          {
+                                            "kind": "list",
+                                            "value": [
+                                              {
+                                                "kind": "text",
+                                                "value": "kind"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "rows",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "__0000000000001__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "a"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000002__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "b"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000003__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "a"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000004__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": ""
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000005__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "b"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "y"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000006__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "b"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "rows.__0000000000003__.name",
+            "field": "name",
+            "rule": "unique",
+            "message": "Values must be unique.",
+            "value": "x"
+          },
+          {
+            "path": "rows.__0000000000006__.name",
+            "field": "name",
+            "rule": "unique",
+            "message": "Values must be unique.",
+            "value": "x"
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
+      "id": "unique_row_fields_distinct",
+      "name": "unique-row-fields-distinct",
+      "note": "rows that differ in a named field are unique together (CUVR-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "rows",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "kind",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ],
+                            [
+                              "name",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ],
+                                  [
+                                    "validate",
+                                    {
+                                      "kind": "map",
+                                      "value": [
+                                        [
+                                          "unique",
+                                          {
+                                            "kind": "list",
+                                            "value": [
+                                              {
+                                                "kind": "text",
+                                                "value": "kind"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "rows",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "__0000000000001__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "a"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000002__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "b"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "__0000000000003__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "c"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "errors": [],
+        "hidden": []
+      }
+    },
+    {
+      "id": "unique_fields_empty_list",
+      "name": "unique-fields-empty-list",
+      "note": "an empty list of field names is no unique parameter (CUVR-056, CUVR-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "rows",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "kind",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ],
+                            [
+                              "name",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ],
+                                  [
+                                    "validate",
+                                    {
+                                      "kind": "map",
+                                      "value": [
+                                        [
+                                          "unique",
+                                          {
+                                            "kind": "list",
+                                            "value": []
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "rows",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "__0000000000001__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "a"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "raises": {
+        "kind": "invalid_rule_parameter",
+        "status": null,
+        "category": "value",
+        "message": "Invalid unique parameter: expected true, false, a string or a list of field names",
+        "at": "rows.name"
+      }
+    },
+    {
+      "id": "unique_fields_member_not_text",
+      "name": "unique-fields-member-not-text",
+      "note": "a member of the list of field names that is not a non-empty string is no unique parameter (CUVR-056, CUVR-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "rows",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "kind",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ],
+                            [
+                              "name",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ],
+                                  [
+                                    "validate",
+                                    {
+                                      "kind": "map",
+                                      "value": [
+                                        [
+                                          "unique",
+                                          {
+                                            "kind": "list",
+                                            "value": [
+                                              {
+                                                "kind": "text",
+                                                "value": "kind"
+                                              },
+                                              {
+                                                "kind": "number",
+                                                "value": "1"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "rows",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "__0000000000001__",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "kind",
+                        {
+                          "kind": "text",
+                          "value": "a"
+                        }
+                      ],
+                      [
+                        "name",
+                        {
+                          "kind": "text",
+                          "value": "x"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "raises": {
+        "kind": "invalid_rule_parameter",
+        "status": null,
+        "category": "value",
+        "message": "Invalid unique parameter: expected true, false, a string or a list of field names",
+        "at": "rows.name"
       }
     },
     {
@@ -45977,7 +46727,7 @@
             "field": "tiny",
             "rule": "step",
             "message": "Please enter a value that is a multiple of 0.1.",
-            "value": 2e-7
+            "value": 2e-07
           },
           {
             "path": "near",
@@ -46101,7 +46851,7 @@
             "field": "notSmall",
             "rule": "step",
             "message": "Please enter a value that is a multiple of 2e-7.",
-            "value": 3e-7
+            "value": 3e-07
           }
         ],
         "hidden": []

@@ -32,7 +32,7 @@ entry points, load failures and input failures.
   and names a calendar day that exists. Other layouts, numbers and other values are not ISO dates.
 - **CUVR-013** `enddate`: Start-date field path; a parsed end date must not precede the parsed start date.
 - **CUVR-014** `mincount`, `maxcount`: Minimum or maximum collection size.
-- **CUVR-015** `unique`: Uniqueness check, optionally using a reference or filter parameter.
+- **CUVR-015** `unique`: Uniqueness check, optionally using a reference or filter parameter, or a list of field names (CUVR-097).
 - **CUVR-016** `accept`: File extension or MIME-type parameter, a comma-separated string or a list of such strings.
   A string value is a file name or a MIME type, an object value is a file (`type` or `mimeType`, `name` or
   `filename`), and a list value holds files that each match. A list member that is not an object and a value of
@@ -391,7 +391,7 @@ without row keys. Every runtime reports the same code and message:
 - **CUVR-081** `minFrom`, `maxFrom` that is not a string — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid {rule} parameter: expected a field reference string`
 - **CUVR-055** `notEqual` that is not a string, number or boolean — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid notEqual parameter: expected a string, number or boolean`
 - **CUVR-095** `accept` that is neither a string nor a list of strings — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid accept parameter: expected a string or a list of strings`. The rule is never skipped because its parameter has another type.
-- **CUVR-056** `unique` that is not a boolean or a string — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid unique parameter: expected true, false or a string`
+- **CUVR-056** `unique` that is not a boolean, a string or a non-empty list of non-empty strings — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid unique parameter: expected true, false, a string or a list of field names`
 - **CUVR-074** `reference` that is not a string, or a string that is not the declaration path of a field of the form whose type is not `group` and whose `lang` is absent, `false` or `null` — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid reference parameter: expected the declaration path of a field`
 - **CUVR-057** `pattern`, `match` outside the language — Code: `INVALID_RULE_PATTERN`; Message: `Invalid {rule} pattern: {reason} at {offset}`
 - **CUVR-068** `conditionTree` other than `true`, `false`, `null` and `judge` — Code: `INVALID_RULE_PARAMETER`; Message: `Invalid conditionTree parameter: expected true, false or judge`
@@ -444,6 +444,14 @@ order, such as a language value. An empty value (empty after White_Space trimmin
 On a repeated field the collection fails when two values are the same; on a field inside a
 repeated group each row fails whose value is the same as that of an earlier row, and a filter
 condition is evaluated once per row. The check takes time linear in the number of values.
+
+- **CUVR-097** A list of field names makes `unique` hold over several fields together. On a field
+  inside a repeated group, such as `unique: [kind]` on `items.*.name`, a row fails at the path of
+  its field when an earlier row holds the same value of the field and the same value of each named
+  field of the row, compared as above, so two rows may share a `name` with different `kind`s. On a
+  field that is not inside a repeated group a list makes no failure, as `true` makes none. A row whose value of the field or of a named field is empty takes no part.
+  A list has no filter; a list that is empty or holds a member that is not a non-empty string is
+  CUVR-056.
 
 ## Data limits
 

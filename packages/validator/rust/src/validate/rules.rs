@@ -1251,6 +1251,14 @@ fn rule_unique(ctx: &RuleContext) -> Option<String> {
         _ => None,
     };
     let error_message = rule_message(ctx.messages, "unique", "Values must be unique.");
+    // The names of the fields that a row holds together with the field (CUVR-097).
+    let together: Vec<&str> = match ctx.rule_param {
+        Value::Array(names) => names.iter().filter_map(Value::as_str).collect(),
+        _ => Vec::new(),
+    };
+    if !together.is_empty() && (ctx.value.is_array() || ctx.value.is_object()) {
+        return None;
+    }
 
     // Array-level: the field value is the array itself.
     if ctx.value.is_array() || ctx.value.is_object() {
@@ -1329,7 +1337,8 @@ fn rule_unique(ctx: &RuleContext) -> Option<String> {
     // A filter is written after a marker that tells it from no filter.
     let filter_key = match filter_condition {
         Some(filter) => format!("1{filter}"),
-        None => "0".to_owned(),
+        None if together.is_empty() => "0".to_owned(),
+        None => format!("2{}", Value::from(together.clone())),
     };
     let cache_key = format!(
         "{}\u{0}{}\u{0}{}",
@@ -1366,7 +1375,22 @@ fn rule_unique(ctx: &RuleContext) -> Option<String> {
                     continue;
                 }
             }
-            if !seen.insert(comparison_key(item_value)) {
+            let mut row_key = comparison_key(item_value);
+            for name in &together {
+                let held = match row.get(*name) {
+                    Some(held) if !is_empty(held) => held,
+                    _ => {
+                        row_key.clear();
+                        break;
+                    }
+                };
+                row_key.push('\u{0}');
+                row_key.push_str(&comparison_key(held));
+            }
+            if row_key.is_empty() {
+                continue;
+            }
+            if !seen.insert(row_key) {
                 duplicates.insert(key);
             }
         }

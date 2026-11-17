@@ -283,8 +283,18 @@ pub(crate) fn check(
         },
         "unique" => match parameter {
             Value::String(_) | Value::Bool(true) => Ok(Parameter::Unchecked),
+            // A list of field names held together with the field (CUVR-097).
+            Value::Array(names)
+                if !names.is_empty()
+                    && names
+                        .iter()
+                        .all(|name| name.as_str().is_some_and(|name| !name.is_empty())) =>
+            {
+                Ok(Parameter::Unchecked)
+            }
             _ => Err(invalid(
-                "Invalid unique parameter: expected true, false or a string".to_string(),
+                "Invalid unique parameter: expected true, false, a string or a list of field names"
+                    .to_string(),
             )),
         },
         "conditionTree" => {
