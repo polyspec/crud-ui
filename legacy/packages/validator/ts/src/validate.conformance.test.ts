@@ -43,24 +43,23 @@ interface FixtureCase {
   name: string;
   note: string;
   spec: Record<string, unknown>;
-  files?: Record<string, Record<string, unknown>>;
+  files?: Record<string, unknown>;
   data: unknown;
   expected?: unknown;
   expectFailure?: unknown;
 }
 
-/** Whether a value is a set of composition files: an object of JSON objects. */
-const isFileSet = (value: unknown): value is Record<string, Record<string, unknown>> =>
-  isRecord(value) && Object.values(value).every(isRecord);
+/** Whether a value is a set of composition files: an object whose members are JSON values, a file that is not an object included (C19.92). */
+const isFileSet = (value: unknown): value is Record<string, unknown> => isRecord(value);
 
 /** The cases of the fixture, each checked to hold a name, a spec and, when present, composition files. */
 function readCases(file: string): FixtureCase[] {
   const value: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
   if (!Array.isArray(value)) throw new TypeError(`${file} holds no list of cases`);
   return value.map((item: unknown, index): FixtureCase => {
-    if (!isRecord(item) || typeof item.name !== 'string' || typeof item.note !== 'string' || !isRecord(item.spec)
+    if (!isRecord(item) || typeof item.name !== 'string' || typeof item.note !== 'string' || !('spec' in item)
       || (item.files !== undefined && !isFileSet(item.files))) {
-      throw new TypeError(`case ${index} of ${file} has no name, note and spec, or files that are no file set`);
+      throw new TypeError(`case ${index} of ${file} has no name, note or spec, or files that are no file set`);
     }
     return {
       name: item.name, note: item.note, spec: item.spec, data: item.data,
