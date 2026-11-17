@@ -1,10 +1,22 @@
 {
   "schema": 1,
-  "comment": "The toolchains of crudui that no other file declares. mise is the release that make install-tools TOOLS=npm installs with the sha256 of each platform; mise.toml declares the tools it installs (Go, uv and Python, alint for make layout-check, ruff and vulture for make lint-python, golangci-lint and deadcode for make lint-go, cargo-audit for make dependency-review, and Composer, which installs PHPCS and PHPStan of config/php-lint for make lint-php) and mise.lock locks them. PHP is verified at the declared release.",
+  "comment": "The toolchains of crudui that no other file declares. mise is the release that make install-tools TOOLS=npm installs with the sha256 of each platform; mise.toml declares the tools it installs (Go, uv and Python, alint for make layout-check, ruff and vulture for make lint-python, golangci-lint and deadcode for make lint-go, cargo-audit for make dependency-review, and Composer, which installs PHPCS and PHPStan of config/php-lint for make lint-php) and mise.lock locks them. PHP is verified at the declared release; phpExtension names the PHP minors for which a release builds the PHP extensions, and llvm the LLVM that their build reads.",
   "php": [
     "8.4"
   ],
   "exceptions": [],
+  "llvm": {
+    "version": "21",
+    "reason": "the major release of the LLVM whose libclang and clang the bindgen of ext-php-rs uses in make release-php-ext-<component> of packages/<component>/release.mk (binding GN-19d, GN-19h): clang-sys takes the libclang of the highest LLVM that it finds and bindgen asks the clang of PATH for its headers, so the two differ on a machine with several LLVM releases. No recipe installs it: the ubuntu-26.04 images hold it at /usr/lib/llvm-<major>, the default LLVM_ROOT of the recipe, and the macOS job of .github/workflows/assets.yml installs it with install-llvm-action (whose version names this major) and passes its LLVM_PATH as LLVM_ROOT",
+    "removal": "when the build of the PHP extension no longer runs bindgen, or a release of ext-php-rs no longer reads the libclang of the machine"
+  },
+  "phpExtension": {
+    "minors": [
+      "8.4",
+      "8.5"
+    ],
+    "reason": "the PHP minors for which a release builds the PHP extensions of packages/validator/php-ext and packages/generator/php-ext on each platform (.github/workflows/assets.yml): a build of an extension loads only in the PHP minor that built it, and each php-ext/composer.json requires PHP >=8.4, so the list starts at that lower bound and names every stable minor after it; a new stable PHP minor is added here and in assets.yml (tests/build/ci-local.test.mts compares the two)"
+  },
   "mise": {
     "version": "2026.10.8",
     "sha256": {

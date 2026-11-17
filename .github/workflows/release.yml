@@ -20,9 +20,21 @@
 #   release-zip      fails unless zip, which Composer needs for the release archives, is on PATH
 #   release-prepare  the preparation of the release (none)
 #   release-tools    installs the tools that config/release.json needs for the packages of this repository
-#   release-assets  builds the archive of every package, and packages.json of the Composer packages, into var/release/assets
+#   release-assets  builds the archive of every package, the zips of the PHP extensions of packages/validator/php-ext and
+#                    packages/generator/php-ext, and packages.json, the Composer repository from which PIE installs them,
+#                    into var/release/assets, and the recipe merges the assets of the job assets into it
+#   release-recipes  writes packages/<component>/release.mk, the release recipes of the bindings (binding GN-19h), after the
+#                    install of Rust, the crates and Go
+#   release-go-module-<component> carries the Go module of each component with the static libraries of the platforms
+#                    (binding GN-19f) and pushes its tag, with the identity of the actor of the run
 #   release-publish creates the GitHub Release of the tag as a draft, with its notes and those files
+#   release-platform-assets-<component> uploads the assets of each platform to the draft under their labels (binding GN-19g)
 #   release-undraft makes the release public
+# The job assets calls assets.yml with the tag (binding GN-19i, C19.71): it builds the assets of each platform on the runner of
+# that platform, after the release check of binding (make release-binding-check-<component>), which fails while a dependency
+# line of polyspec-binding-core names a branch or a commit (binding CK-70). The job publish downloads those assets into
+# var/release/platform-assets before its run step. The packages of the release are the binding packages of the components; the
+# legacy crudui-* packages are no package of config/release.json, so the release publishes none of them.
 # The recipe of publish runs with var/tools/bin first on PATH. A failed target leaves the release a draft and fails the run.
 # GH_TOKEN, the token of the run, is the one variable that a run step sets.
 name: release
@@ -77,8 +89,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: make ci-release-tag RUN=${{ inputs.run }}
 
-  publish:
+  assets:
     needs: tag
+    if: ${{ needs.tag.outputs.tag != '' }}
+    uses: ./.github/workflows/assets.yml
+    with:
+      ref: ${{ needs.tag.outputs.tag }}
+      release: true
+
+  publish:
+    needs: [tag, assets]
     if: ${{ needs.tag.outputs.tag != '' }}
     concurrency:
       group: release-${{ github.repository }}-publish
@@ -101,6 +121,13 @@ jobs:
           tools: none
           # The proof runs with no debugger or coverage driver, as the checks do.
           coverage: none
+      # actions/download-artifact v8.0.1: the assets of each platform that the job assets built, merged into
+      # var/release/platform-assets, which make ci-release-publish merges into var/release/assets after release-assets.
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: assets-*
+          path: var/release/platform-assets
+          merge-multiple: true
       # The bootstrap of kit for the tagged commit, with its own kit and packages (K992).
       - uses: ./.github/actions/kit-bootstrap
       - name: release the tag

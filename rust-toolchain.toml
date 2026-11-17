@@ -1,6 +1,11 @@
 [toolchain]
 channel = "1.99.0"
 profile = "minimal"
-components = ["rustfmt", "clippy"]
-# The WASM binding crates packages/<component>/ts/wasm are built for wasm32-unknown-unknown (binding GN-18).
-targets = ["wasm32-unknown-unknown"]
+# rustfmt and clippy are the form and the lint of the crates. llvm-tools holds llvm-strip, llvm-size and llvm-nm, which the
+# release recipes of packages/<component>/release.mk read from the toolchain of the checkout, never from PATH (binding GN-19b,
+# GN-19f).
+components = ["rustfmt", "clippy", "llvm-tools"]
+# The WASM binding crates packages/<component>/ts/wasm are built for wasm32-unknown-unknown (binding GN-18), and the musl
+# targets of the two Linux arches are those of the Go static libraries that make release-go-static-<component> builds on a
+# Linux host (binding GN-19b, GN-19h).
+targets = ["wasm32-unknown-unknown", "x86_64-unknown-linux-musl", "aarch64-unknown-linux-musl"]

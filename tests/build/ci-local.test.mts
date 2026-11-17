@@ -129,8 +129,8 @@ test('each make job runs the kit bootstrap action before make (K992)', async () 
 
 // Every workflow of the repository (C19.20). The recipe of a job is ci-<job>; a job of release.yml names its workflow before its
 // job, ci-release-<job>, because its job names are also names of jobs of the other workflows.
-const CI_WORKFLOWS = ['ci-pipeline.yml', 'ci.yml', 'pages.yml', 'release.yml'];
-const RECIPE_PREFIX: Record<string, string> = { 'release.yml': 'release-' };
+const CI_WORKFLOWS = ['assets.yml', 'ci-pipeline.yml', 'ci.yml', 'pages.yml', 'release.yml'];
+const RECIPE_PREFIX: Record<string, string> = { 'assets.yml': 'assets-', 'release.yml': 'release-' };
 // The token of the run, which the release recipes give gh; it is the one variable a run step may set.
 const TOKEN_ENV = { GH_TOKEN: '${{ github.token }}' };
 // The plan job writes the outputs from which the matrix of the runtime jobs fans out; the judgement jobs read the results of
@@ -242,6 +242,111 @@ test('every job of the workflows that CI runs holds its content in a recipe of t
   const findings: string[] = [];
   for (const file of CI_WORKFLOWS) findings.push(...jobContentFindings(await workflowFile(file), RECIPE_PREFIX[file]).map(finding => `${file} ${finding}`));
   assert.deepEqual(findings, []);
+});
+
+// The tools that a call of a release or asset recipe runs, by the pattern of the call (C19.71): the release check of binding and
+// binding release-go-module read the Go module with go (binding CK-19) and build with cargo, the builds of the binding packages
+// run cargo, and the wheels of the job platform are built by the uv and the Python of mise.toml. A job that runs such a call
+// without installing each of its tools with make install-tools before it fails on the runner, for example with spawnSync go
+// ENOENT, after the tag is pushed.
+const RELEASE_TOOLS: [RegExp, string[]][] = [
+  [/^make release-binding-check-[\w-]+\b/, ['go', 'rust']],
+  [/^(?:[A-Z_]+="[^"]*" )*make release-go-module-[\w-]+\b/, ['go', 'rust']],
+  [/\bbinding(?:\.js)? check\b.*--release\b/, ['go', 'rust']],
+  [/^make release-assets-platform-[\w-]+\b/, ['rust', 'go', 'uv', 'python']],
+  [/^make release-assets-(?:php|npm)-[\w-]+\b/, ['rust']],
+];
+
+/** The tools that `make install-tools TOOLS=...` of the call `command` installs; none for another call. */
+function installedTools(command: string): string[] {
+  const match = /^make install-tools TOOLS=(?:"([^"]*)"|(\S+))$/.exec(command);
+  return match ? (match[1] ?? match[2] ?? '').split(/\s+/).filter(Boolean) : [];
+}
+
+/**
+ * The calls of `calls`, the make calls of one recipe in order, with the targets of make ci-targets split out, that run a tool
+ * of RELEASE_TOOLS that no make install-tools before them installed, as `call: needs <tool>`.
+ */
+export function missingReleaseTools(calls: string[]): string[] {
+  const findings: string[] = [];
+  const installed = new Set<string>();
+  for (const call of calls) {
+    for (const tool of installedTools(call)) installed.add(tool);
+    const targets = /^make ci-targets TARGETS="([^"]+)"/.exec(call);
+    for (const command of targets?.[1] !== undefined ? targets[1].split(' ').map(target => `make ${target}`) : [call]) {
+      for (const [pattern, tools] of RELEASE_TOOLS) {
+        if (!pattern.test(command)) continue;
+        for (const tool of tools) if (!installed.has(tool)) findings.push(`${command}: needs ${tool}`);
+      }
+    }
+  }
+  return findings;
+}
+
+test('a release or asset job installs every tool that its calls run before it runs them (C19.70, C19.71)', async () => {
+  assert.deepEqual(missingReleaseTools([
+    'make install-tools TOOLS="rust"',
+    'make release-recipes',
+    'make ci-targets TARGETS="release-binding-check-validator release-assets-php-validator"',
+    'GIT_AUTHOR_NAME="$GITHUB_ACTOR" make release-go-module-validator',
+    'make install-tools TOOLS=go',
+    'make release-go-module-generator',
+    'node binding.js check packages/x/interface.json --release',
+  ]), [
+    'make release-binding-check-validator: needs go',
+    'GIT_AUTHOR_NAME="$GITHUB_ACTOR" make release-go-module-validator: needs go',
+  ]);
+  assert.deepEqual(missingReleaseTools(['make ci-targets TARGETS="release-assets-platform-generator"', 'make install-tools TOOLS="rust go uv python"']), [
+    'make release-assets-platform-generator: needs rust',
+    'make release-assets-platform-generator: needs go',
+    'make release-assets-platform-generator: needs uv',
+    'make release-assets-platform-generator: needs python',
+  ]);
+  const findings: string[] = [];
+  const checked: string[] = [];
+  for (const file of ['assets.yml', 'release.yml']) {
+    for (const [id, job] of Object.entries((await workflowFile(file)).jobs)) {
+      const step = (job.steps ?? []).find(entry => typeof entry.run === 'string')?.run?.trim();
+      if (step === undefined) continue;
+      // The jobs of assets.yml run the release check with RELEASE=true, as release.yml calls them, a matrix value is that of
+      // the first include entry and another input is a placeholder; the job publish reads TAG from the tag of HEAD, which the
+      // checkout of a branch has not.
+      const run = step
+        .replace(/\$\{\{ matrix\.([\w-]+) \}\}/g, (_, key: string) => matrixValues(job, key)[0] ?? '')
+        .replace(/\$\{\{ inputs\.release \}\}/g, 'true')
+        .replace(/\$\{\{ inputs\.[\w-]+ \}\}/g, '1');
+      const calls = recipeCalls(`${run}${run === 'make ci-release-publish' ? ' TAG=v0.0.1' : ''}`);
+      const commands = calls.flatMap(call => /^make ci-targets TARGETS="([^"]+)"/.exec(call)?.[1]?.split(' ').map(target => `make ${target}`) ?? [call]);
+      if (commands.some(command => RELEASE_TOOLS.some(([pattern]) => pattern.test(command)))) checked.push(`${file} ${id}`);
+      findings.push(...missingReleaseTools(calls).map(finding => `${file} ${id}: ${finding}`));
+    }
+  }
+  assert.deepEqual(checked, ['assets.yml platform', 'assets.yml php', 'assets.yml npm', 'release.yml publish']);
+  assert.deepEqual(findings, []);
+});
+
+/** The values of the key `key` of the include entries of the matrix of `job`. */
+function matrixValues(job: Job, key: string): string[] {
+  const include = field(job.strategy?.matrix, 'include');
+  return Array.isArray(include) ? include.map(entry => field(entry, key)).filter((value): value is string => typeof value === 'string') : [];
+}
+
+// The job php of assets.yml builds the PHP extension of each component for each PHP minor of phpExtension.minors of
+// config/toolchain.json on each platform of the job platform, and release-platform-assets-<component> requires an asset of each
+// (binding GN-19a); a minor of the matrix that the list does not name, or one that it names and the matrix lacks, fails the
+// release after the tag is pushed.
+test('the PHP minors of the job php of assets.yml are phpExtension.minors of config/toolchain.json on every platform (C19.71)', async () => {
+  const toolchain: unknown = JSON.parse(await read('config/toolchain.json'));
+  const minors = strings(field(field(toolchain, 'phpExtension'), 'minors'), 'phpExtension.minors of config/toolchain.json');
+  assert.ok(minors.length > 0 && minors.every(minor => /^\d+\.\d+$/.test(minor)), JSON.stringify(minors));
+  const workflow = await workflowFile('assets.yml');
+  const platforms = matrixValues(jobOf(workflow, 'platform'), 'platform');
+  assert.deepEqual(platforms, ['linux-x64-gnu', 'linux-arm64-gnu', 'darwin-arm64']);
+  const php = jobOf(workflow, 'php');
+  const phpMinors = matrixValues(php, 'php');
+  const entries = matrixValues(php, 'platform').map((platform, index) => `${platform} ${phpMinors[index] ?? ''}`);
+  assert.deepEqual([...entries].sort(), platforms.flatMap(platform => minors.map(minor => `${platform} ${minor}`)).sort());
+  assert.match((php.steps ?? []).find(step => typeof step.run === 'string')?.run ?? '', /^make ci-assets-php PHP_MINOR=\$\{\{ matrix\.php \}\} RELEASE=/);
 });
 
 // The calls of a recipe that prepare a runner rather than check the repository.

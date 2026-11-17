@@ -173,7 +173,7 @@ test('the checkout records one exact version of every tool', async () => {
   assert.equal(Number(node.split('.')[0]) % 2, 0, 'the Node.js release must be of an even, LTS-designated major');
   const toolchain = await read('rust-toolchain.toml');
   assert.match(toolchain, /^profile = "minimal"$/m);
-  assert.match(toolchain, /^components = \["rustfmt", "clippy"\]$/m);
+  assert.match(toolchain, /^components = \["rustfmt", "clippy", "llvm-tools"\]$/m);
   const config = parseJson(await read('config/toolchain.json'), toolchainSchema, 'config/toolchain.json');
   // setup-php and Homebrew cannot install the same patch, so PHP is pinned by its minor release; the patch is evidence.
   assert.ok(config.php.length > 0 && config.php.every(release => /^\d+\.\d+$/.test(release)), `config/toolchain.json must record php as minor releases; it records ${JSON.stringify(config.php)}`);
@@ -210,8 +210,11 @@ test('every workflow runs on ubuntu-24.04 with actions named by commit SHA and n
   const violations: string[] = [];
   for (const { file, text, workflow } of await workflows()) {
     if (workflow.env?.RUSTUP_AUTO_INSTALL !== '0' || workflow.env?.GOTOOLCHAIN !== 'local') violations.push(`${file}: env must set RUSTUP_AUTO_INSTALL: '0' and GOTOOLCHAIN: local`);
-    // A job that calls a reusable workflow of this repository has no runner; the called workflow's jobs do.
+    // A job that calls a reusable workflow of this repository has no runner; the called workflow's jobs do. The jobs of
+    // assets.yml build the assets of each platform on the runner of that platform, since no tool of the release compiles for
+    // another one (binding GN-19i, C19.71), and tests/build/ci-local.test.mts checks their platforms.
     for (const [id, job] of Object.entries(workflow.jobs).filter(([, job]) => job.uses === undefined)) {
+      if (file === 'assets.yml' && ['${{ matrix.runner }}', 'ubuntu-26.04-arm'].includes(String(job['runs-on']))) continue;
       if (job['runs-on'] !== 'ubuntu-24.04') violations.push(`${file} ${id}: runs-on ${String(job['runs-on'])}`);
     }
     for (const line of text.split('\n').filter(entry => /^\s*(?:- )?uses:/.test(entry) && !/^\s*(?:- )?uses: \.\//.test(entry))) {
@@ -298,6 +301,9 @@ test('every setup-php step reads the PHP minor of .php-version', async () => {
     for (const [id, job] of Object.entries(workflow.jobs)) {
       for (const step of job.steps ?? []) {
         if (!stepText(step, 'uses').startsWith('shivammathur/setup-php@')) continue;
+        // The job php of assets.yml builds the PHP extensions for each minor of phpExtension.minors of config/toolchain.json,
+        // one per matrix entry (C19.71); tests/build/ci-local.test.mts keeps its matrix equal to that list.
+        if (name === 'assets.yml' && id === 'php' && step.with?.['php-version'] === '${{ matrix.php }}' && step.with['php-version-file'] === undefined) continue;
         if (step.with?.['php-version-file'] !== '.php-version' || step.with['php-version'] !== undefined) {
           violations.push(`${name} ${id}: setup-php reads php-version ${String(step.with?.['php-version'])} and php-version-file ${String(step.with?.['php-version-file'])}, not php-version-file .php-version alone`);
         }

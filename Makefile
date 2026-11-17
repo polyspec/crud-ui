@@ -472,7 +472,7 @@ $(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-
 CI_SHARDS := 4
 ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
 ci-docs-web: export DOCS_BASE_PATH := /crudui/
-.PHONY: ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+.PHONY: ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-assets-platform ci-assets-php ci-assets-npm ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
 
 ci-shared: ## The job shared of ci-pipeline.yml: kit's job shared, its tools, its setup, then the static gates in the shared context
 	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --job shared
@@ -694,13 +694,21 @@ uv-install: ## Install the Python sources of DIR with one uv sync --locked and c
 	UV_SYNC="--locked $(SYNC)" $(ONLINE) $(NODE) $(KIT)/uv-install.$(KIT_EXT) $(DIR)
 
 # The release steps (config/release.json), which .github/workflows/release.yml runs in this order: release-tag, release-prepare,
-# release-tools, release-assets, release-publish, release-undraft.
+# release-tools, release-assets, release-go-module-<component>, release-publish, release-platform-assets-<component>,
+# release-undraft.
 .PHONY: release-prepare release-tools release-tag release-zip release-tag-output release-candidate release-assets release-candidate-assets release-publish release-undraft release-coverage
 # The jobs of release.yml (C19.20). ci-release-tag is the job tag: release-tag tags the commit of the CI run RUN, the input run
 # of a dispatch or the run of the workflow_run event of GITHUB_EVENT_PATH, with AUTO for that event (K987), and writes TAG and
 # VERSION into GITHUB_ENV; release-tag-output reads them from there and gives them to the job publish. ci-release-publish is the
 # job publish, on the checkout of the tag: the archive tool, the tools of the release with var/tools/bin and the shims first on
-# PATH, the assets, the draft release and its publication. TAG is the tag of HEAD.
+# PATH, the assets, the draft release and its publication. TAG is the tag of HEAD. The packages of the release are the binding
+# packages of each component of BINDING_COMPONENTS (C19.71): the job assets of release.yml builds the assets of each platform
+# (.github/workflows/assets.yml) and the job publish downloads them into var/release/platform-assets before its run step; the
+# recipe merges them into var/release/assets after release-assets built the PHP extension archives and packages.json, installs
+# Rust and the crates and Go, which binding release-go-module runs on the Go module (binding CK-19), writes the release recipes
+# again, carries the Go module of each component with the identity of the actor of the run (GITHUB_ACTOR), as the tags of
+# release-tag are, creates the draft, uploads the assets of each platform under their labels (binding GN-19g) and makes the
+# release public. The legacy crudui-* packages are no package of config/release.json, so the release publishes none of them.
 CI_EVENT_RUN = $(NODE) -p 'JSON.parse(require("fs").readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")).workflow_run?.id ?? ""'
 ci-release-tag: ## The job tag of release.yml: tag the commit of the CI run RUN, or of the workflow_run event, and give the tag to the job publish
 	run='$(RUN)'; test -n "$$run" || run="$$($(CI_EVENT_RUN))"; RUN="$$run" $(CI_MAKE) release-tag $(if $(filter workflow_run,$(GITHUB_EVENT_NAME)),AUTO=1)
@@ -710,6 +718,14 @@ release-tag-output: ## Write TAG and VERSION of the environment into GITHUB_OUTP
 	@test -n "$$GITHUB_OUTPUT" || { echo 'release-tag-output: GITHUB_OUTPUT is not set; run it in the release workflow' >&2; exit 2; }
 	printf 'tag=%s\nversion=%s\n' "$$TAG" "$$VERSION" >> "$$GITHUB_OUTPUT"
 
+# CI_NEWLINE ends a recipe line inside $(foreach), so each call that it makes for a component is a line of its own, which stops
+# the recipe at its failure and which a dry run prints; CI_ACTOR is the identity of the actor of the run (GITHUB_ACTOR) for the
+# commit and the tag of a Go module.
+define CI_NEWLINE
+
+
+endef
+CI_ACTOR = GIT_AUTHOR_NAME="$$GITHUB_ACTOR" GIT_AUTHOR_EMAIL="$$GITHUB_ACTOR@users.noreply.github.com" GIT_COMMITTER_NAME="$$GITHUB_ACTOR" GIT_COMMITTER_EMAIL="$$GITHUB_ACTOR@users.noreply.github.com"
 ci-release-publish: export TAG = $(shell git describe --tags --exact-match HEAD 2>/dev/null)
 ci-release-publish: export VERSION = $(patsubst v%,%,$(TAG))
 ci-release-publish: export PATH := $(TOOLS_DIR)/mise/shims:$(TOOLS_DIR)/bin:$(PATH)
@@ -719,8 +735,48 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 	$(CI_MAKE) release-prepare
 	$(CI_MAKE) release-tools
 	$(CI_MAKE) release-assets
+	mkdir -p var/release/assets && cp -R var/release/platform-assets/. var/release/assets/
+	$(CI_MAKE) install-tools TOOLS="rust go"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) release-recipes
+	$(foreach component,$(BINDING_COMPONENTS),$(CI_ACTOR) $(CI_MAKE) release-go-module-$(component)$(CI_NEWLINE))
 	$(CI_MAKE) release-publish
+	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) release-platform-assets-$(component)$(CI_NEWLINE))
 	$(CI_MAKE) release-undraft
+
+# The jobs of .github/workflows/assets.yml (C19.71), which the job assets of release.yml calls for the tree of the tag with
+# RELEASE=true, which runs the release check of binding on the contract of each component before the builds (make
+# release-binding-check-<component>, binding GN-19g, CK-70). Each job installs Rust and the crates and Go first, because the
+# check reads packages/<component>/go/go.sum with go (binding CK-19), then writes the release recipes of
+# packages/<component>/release.mk and runs the check and the builds of each component through ci-targets, each to its end, so
+# one run names every asset that does not build. ci-assets-platform builds, on the runner of its platform, the Go static
+# library, the abi3 wheel with the uv and the Python of mise.toml and the npm platform package of each component;
+# ci-assets-php the PHP extension of each component for PHP_MINOR, the minor that setup-php of the job selected, of
+# phpExtension.minors of config/toolchain.json; ci-assets-npm the npm package of each component with the wasm-bindgen of
+# mise.toml. The job provisions the LLVM of config/toolchain.json before ci-assets-php (binding GN-19i): the ubuntu-26.04
+# images hold it at /usr/lib/llvm-<major>, the default LLVM_ROOT of packages/<component>/release.mk, and on macOS
+# install-llvm-action installs it and sets LLVM_PATH, which the build takes as LLVM_ROOT. install-llvm-action appends
+# DYLD_LIBRARY_PATH and LD_LIBRARY_PATH with /usr/lib first to GITHUB_ENV, and the PHP of setup-php then loads the libsqlite3 of
+# the system and aborts, so that recipe and its sub-makes run with both empty.
+CI_RELEASE_CHECK = $(if $(filter true,$(RELEASE)),$(foreach component,$(BINDING_COMPONENTS),release-binding-check-$(component)))
+ci-assets-platform: ## The job platform of assets.yml: the Go static library, the wheel and the npm platform package of each component
+	$(CI_MAKE) install-tools TOOLS="rust go uv python"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) release-recipes
+	$(CI_MAKE) ci-targets TARGETS="$(strip $(CI_RELEASE_CHECK) $(foreach component,$(BINDING_COMPONENTS),release-assets-platform-$(component)))"
+ci-assets-php: DYLD_LIBRARY_PATH :=
+ci-assets-php: LD_LIBRARY_PATH :=
+ci-assets-php: ## The job php of assets.yml: the PHP extension of each component for PHP_MINOR, the PHP minor of the job
+	@test -n "$(PHP_MINOR)" || { echo 'ci-assets-php: PHP_MINOR is required, the PHP minor of the job, for example make ci-assets-php PHP_MINOR=8.4' >&2; exit 2; }
+	$(CI_MAKE) install-tools TOOLS="rust go"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) release-recipes
+	$(CI_MAKE) ci-targets TARGETS="$(strip $(CI_RELEASE_CHECK) $(foreach component,$(BINDING_COMPONENTS),release-assets-php-$(component)))" EXPECTED_PHP_MINOR=$(PHP_MINOR)$(if $(LLVM_PATH), LLVM_ROOT=$(LLVM_PATH))
+ci-assets-npm: ## The job npm of assets.yml: the npm package of each component
+	$(CI_MAKE) install-tools TOOLS="rust go"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) release-recipes
+	$(CI_MAKE) ci-targets TARGETS="$(strip $(CI_RELEASE_CHECK) $(foreach component,$(BINDING_COMPONENTS),release-assets-npm-$(component)))"
 
 release-zip: ## Fail unless zip, which Composer needs for the release archives, is on PATH
 	@command -v zip >/dev/null || { echo 'release-zip: Info-ZIP is required for Composer release archives; install the zip package on the Ubuntu runner' >&2; exit 1; }
