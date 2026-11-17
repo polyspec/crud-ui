@@ -349,6 +349,27 @@ class Validator:
             if not _is_object(field):
                 continue
             path = [*declaration_path, property_key]
+            # The shapes of validate and messages are checked before the rules they hold (CUVR-056, CURP-018).
+            slot = field.get("validate")
+            if slot is not None and not isinstance(slot, bool) and not _is_object(slot):
+                raise ComposeLoadError(
+                    "INVALID_RULE_PARAMETER",
+                    f"Invalid validate at {'.'.join(path)}: expected an object",
+                    path,
+                )
+            if "messages" in field and not _is_object(field["messages"]):
+                raise ComposeLoadError(
+                    "INVALID_RULE_PARAMETER",
+                    f"Invalid messages at {'.'.join(path)}: expected an object",
+                    path,
+                )
+            for message_rule, message in (_field_messages(field) or {}).items():
+                if not isinstance(message, str):
+                    raise ComposeLoadError(
+                        "INVALID_RULE_PARAMETER",
+                        f"Invalid messages.{message_rule} at {'.'.join(path)}: expected a string",
+                        path,
+                    )
             # The shape of multiple is checked before the field's group source and rules (schema.md, CUSC-081).
             if "multiple" in field and not _is_multiple_shape(field["multiple"]):
                 raise ComposeLoadError(
@@ -843,7 +864,7 @@ def _files_loader(options: Mapping[str, Any]) -> MemoryLoader:
     """The memory loader of the `files` option, each document in specification member order."""
     files = options.get("files") or {}
     return MemoryLoader(
-        {key: _ordered_spec(document) for key, document in files.items()}
+        {key: ordered_value(document) for key, document in files.items()}
         if isinstance(files, dict)
         else files
     )
@@ -896,6 +917,12 @@ def validate(
     wrong shape.
     """
     options = options or {}
+    # A specification is an object before anything reads it (CUSC-001).
+    if not _is_object(spec):
+        raise FormInputError("Form specification must be an object")
+    # A root that is no reference is a group with properties (CUSC-001).
+    if "$ref" not in spec and not _is_object(spec.get("properties")):
+        raise FormInputError("A form spec must be a group with properties")
     checked = checked_composition(spec, options)
     check_input_text([("data", data)])
     check_option_text(options, ["basepath"])
@@ -903,6 +930,8 @@ def validate(
         raise FormInputError("Form data must be an object")
     ordered = _ordered_spec(spec)
     properties = _composed_properties(ordered, checked, options)
+    if not _is_object(properties):
+        raise FormInputError("A form spec must be a group with properties")
     # The data limits are checked after the forbidden-key scan and before the rule names.
     limits = data_limits(ordered)
     return Validator({"type": "group", "properties": properties}, limits).validate(data)

@@ -995,6 +995,12 @@ def _rule_accept(context: RuleContext) -> str | None:
         return None
     if isinstance(value, list):
         for item in value:
+            # A member that is no file object fails the rule (CUVR-016).
+            if not isinstance(item, dict):
+                message = _message(
+                    context, "accept", "Please upload a file with a valid format."
+                )
+                return message
             if isinstance(item, dict):
                 mime = item.get("type") or item.get("mimeType") or ""
                 name = item.get("name") or item.get("filename") or ""
@@ -1019,7 +1025,8 @@ def _rule_accept(context: RuleContext) -> str | None:
             )
             return message
         return None
-    return None
+    # A value that is no string, list or object names no file (CUVR-016).
+    return _message(context, "accept", "Please upload a file with a valid format.")
 
 
 def _rule_condition_tree(context: RuleContext) -> str | None:
@@ -1091,6 +1098,7 @@ _CHECKED_RULES = {
     "unique",
     "conditionTree",
     "reference",
+    "accept",
 }
 
 
@@ -1193,6 +1201,13 @@ def rule_parameter_failure(rule_name: str, param: object) -> tuple[str, str] | N
         )
     if rule_name == "reference":
         return None if isinstance(param, str) else invalid(REFERENCE_PARAMETER_MESSAGE)
+    if rule_name == "accept":
+        return (
+            None
+            if isinstance(param, str)
+            or (isinstance(param, list) and all(isinstance(item, str) for item in param))
+            else invalid("Invalid accept parameter: expected a string or a list of strings")
+        )
     if rule_name == "unique":
         # CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).
         return (
