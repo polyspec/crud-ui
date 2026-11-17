@@ -55,10 +55,11 @@ A malformed request fails the first of these rules, checked in this order:
 | `spec` is present | `Request spec must be an object` |
 | `mode` is absent, `form`, `list` or `detail` | `Unsupported validation mode` |
 | `files` is absent, `null` or an object | `Request files must be an object` |
-| every `files` member is an object | `Request files must contain objects` |
 | `basepath` is absent, `null` or a string | `Request basepath must be a string` |
 
 A `spec` that is present but not an object is not a request failure: the validator answers it (for example `Form specification must be an object`, as in the shared fixture, CUVR-088).
+
+The console envelope sees only the shape of a request: whether it is present and whether it is JSON. It never decides a value that the shared fixture asks of the validator.
 
 In form mode, `data` that is present and not an object, `null` included, is the input failure
 `Form data must be an object` (exit `2`).

@@ -25,7 +25,6 @@ use Polyspec\Crudui\Validator\Validate\FormInputError;
  *  4. mode present and not exactly "form", "list" or "detail" (null and
  *     non-strings included)                    → "Unsupported validation mode"
  *  5. files present, not null, not an object   → "Request files must be an object"
- *  6. a files member is not an object          → "Request files must contain objects"
  *  7. basepath present, not null, not a string → "Request basepath must be a string"
  * Absent or null files and basepath mean none. An absent mode is "form"; "list"
  * runs validateList and "detail" runs validateDetail, both ignoring data. In
@@ -66,11 +65,6 @@ if (!in_array($mode, ['form', 'list', 'detail'], true)) {
 $files = $request->files ?? new stdClass();
 if (!$files instanceof stdClass) {
     $reject('Request files must be an object');
-}
-foreach ($files as $file) {
-    if (!$file instanceof stdClass) {
-        $reject('Request files must contain objects');
-    }
 }
 $basepath = $request->basepath ?? '';
 if (!is_string($basepath)) {

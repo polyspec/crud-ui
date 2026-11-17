@@ -123,13 +123,15 @@
     }
   },
   {
-    "name": "file-not-object",
-    "note": "every files member must be an object.",
+    "name": "file-not-object-unreferenced",
+    "note": "a files member that is no object is not an envelope failure; a validator answers it only when a $ref reaches it (CUSC-092).",
     "input": "{\"spec\":{\"type\": \"group\", \"properties\": {\"a\": {\"type\": \"text\"}}},\"files\":{\"a.yml\":[]}}",
     "expected": {
-      "exit": 1,
+      "exit": 0,
       "output": {
-        "error": "Request files must contain objects"
+        "valid": true,
+        "errors": [],
+        "hidden": []
       }
     }
   },
@@ -388,24 +390,26 @@
     }
   },
   {
-    "name": "null-file",
-    "note": "a null files member is not an object.",
+    "name": "null-file-unreferenced",
+    "note": "a files member that is no object is not an envelope failure; a validator answers it only when a $ref reaches it (CUSC-092).",
     "input": "{\"spec\":{\"columns\":{}},\"mode\":\"list\",\"files\":{\"a.yml\":{},\"b.yml\":null}}",
     "expected": {
-      "exit": 1,
+      "exit": 0,
       "output": {
-        "error": "Request files must contain objects"
+        "valid": true,
+        "errors": [],
+        "hidden": []
       }
     }
   },
   {
-    "name": "file-before-basepath",
-    "note": "the files member rule is checked before the basepath rule.",
+    "name": "file-member-then-basepath",
+    "note": "the envelope does not check a files member, so the basepath rule is the first to fail.",
     "input": "{\"spec\":{\"type\": \"group\", \"properties\": {\"a\": {\"type\": \"text\"}}},\"files\":{\"a.yml\":\"x\"},\"basepath\":1}",
     "expected": {
       "exit": 1,
       "output": {
-        "error": "Request files must contain objects"
+        "error": "Request basepath must be a string"
       }
     }
   },

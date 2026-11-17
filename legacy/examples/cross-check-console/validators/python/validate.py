@@ -59,8 +59,6 @@ def main():
     files = request.get("files")
     if files is not None and not is_object(files):
         reject("Request files must be an object")
-    if files is not None and not all(is_object(file) for file in files.values()):
-        reject("Request files must contain objects")
     basepath = request.get("basepath")
     if basepath is not None and not isinstance(basepath, str):
         reject("Request basepath must be a string")

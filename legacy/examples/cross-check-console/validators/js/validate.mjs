@@ -46,7 +46,6 @@ function respond(raw) {
   if (mode !== 'form' && mode !== 'list' && mode !== 'detail') return reject('Unsupported validation mode');
   const files = request.files ?? null;
   if (files !== null && !isObject(files)) return reject('Request files must be an object');
-  if (files !== null && !Object.values(files).every(isObject)) return reject('Request files must contain objects');
   const basepath = request.basepath ?? null;
   if (basepath !== null && typeof basepath !== 'string') return reject('Request basepath must be a string');
 

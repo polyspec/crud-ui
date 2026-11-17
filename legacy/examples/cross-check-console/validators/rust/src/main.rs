@@ -14,7 +14,6 @@
 //!   3. `spec` absent → "Request spec must be an object"
 //!   4. `mode` present and not "form"/"list"/"detail" → "Unsupported validation mode"
 //!   5. `files` present, not null and not an object → "Request files must be an object"
-//!   6. a `files` member not an object → "Request files must contain objects"
 //!   7. `basepath` present, not null and not a string → "Request basepath must be a string"
 //!
 //! Absent or null `files`/`basepath` mean none. A load failure or form input
@@ -75,13 +74,10 @@ fn main() {
         Some(_) => fail_request("Unsupported validation mode"),
     };
 
-    // 5–6. files: absent or null → none; otherwise an object of objects.
+    // 5. files: absent or null → none; otherwise an object whose members go to the validator as they are.
     let files = match req.get("files") {
         None | Some(Value::Null) => None,
         Some(Value::Object(m)) => {
-            if !m.values().all(Value::is_object) {
-                fail_request("Request files must contain objects");
-            }
             Some(m.clone())
         }
         Some(_) => fail_request("Request files must be an object"),

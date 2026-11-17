@@ -117,10 +117,8 @@ func ValidateListJSON(specJSON []byte, filesJSON map[string][]byte, basepath str
 		if derr != nil {
 			return ListValidationResult{}, fmt.Errorf("validate-list: file %q decode: %w", k, derr)
 		}
-		doc, isMap := docAny.(*compose.OMap)
-		if !isMap {
-			return ListValidationResult{}, fmt.Errorf("validate-list: file %q is not an object", k)
-		}
+		// A file that is no object is kept as nil: only a $ref that reaches it fails the load (CUSC-092).
+		doc, _ := docAny.(*compose.OMap)
 		files[k] = doc
 	}
 

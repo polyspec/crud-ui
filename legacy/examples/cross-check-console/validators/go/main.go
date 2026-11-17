@@ -13,7 +13,6 @@
 //  4. mode present and not exactly "form", "list" or "detail" (null and
 //     non-strings included) → "Unsupported validation mode"
 //  5. files present, not null and not an object → "Request files must be an object"
-//  6. any files member not an object → "Request files must contain objects"
 //  7. basepath present, not null and not a string → "Request basepath must be a string"
 //
 // Absent or null files/basepath mean none. An absent mode selects form; list
@@ -115,7 +114,6 @@ const (
 	msgSpec        = "Request spec must be an object"
 	msgMode        = "Unsupported validation mode"
 	msgFiles       = "Request files must be an object"
-	msgFileMembers = "Request files must contain objects"
 	msgBasepath    = "Request basepath must be a string"
 )
 
@@ -176,9 +174,6 @@ func parseRequest(input []byte) (request, string) {
 			return req, msgFiles
 		}
 		for _, file := range files {
-			if jsonKind(file.Value) != '{' {
-				return req, msgFileMembers
-			}
 			req.Files[file.Name] = file.Value
 		}
 	}
