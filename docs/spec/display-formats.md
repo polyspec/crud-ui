@@ -171,6 +171,9 @@ A detail takes the `data`, `language`, `files` and `basepath` options. It neithe
 the list-only `page`, `total` and `layout` options.
 `buildList` does not read `layout`; `renderList` checks it after the other list input rules and
 before composition.
+In a generated binding, `layout` is an optional text of the list options: the binding refuses a
+value that is not a string with `invalid_argument_type` at its boundary (binding GN-12a), and the
+core refuses a string other than `table` or `card` by CUDF-031.
 
 The rules check argument shapes in argument order first, then the declaration, then options.
 An option that is absent or `null` uses its default: an empty context, no current page, no total

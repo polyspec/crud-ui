@@ -169,6 +169,8 @@ pub struct ListOptions {
     pub page: Option<u64>,
     /// The total number of rows.
     pub total: Option<u64>,
+    /// The output layout of `render_list`, `table` or `card` (CUDF-031); none is `table`. The core checks the text.
+    pub layout: Option<String>,
 }
 
 impl ListOptions {
@@ -197,7 +199,10 @@ impl ListOptions {
             },
             page: number(self.page),
             total: number(self.total),
-            ..crate::ListOptions::default()
+            layout: match &self.layout {
+                Some(layout) => Value::from(layout.as_str()),
+                None => Value::Null,
+            },
         })
     }
 }

@@ -1,6 +1,8 @@
-//! The list rendering fixtures against the Rust generator: each case of `tests/fixtures/list-render` renders its rows
-//! to the recorded layout, or raises the recorded code and message. Results are compared as normalized layout trees
-//! (tests/support) without the image preload links, as the Python runner does. One trial per case.
+//! The list rendering fixtures against the Rust generator: each case of `tests/fixtures/list-render`, and each list
+//! layout case of the `render_list` group of `contracts/generator-cases.json` (the cases with a `name`, which only
+//! `render_list` checks), renders its rows to the recorded layout, or raises the recorded code and message. Results are
+//! compared as normalized layout trees (tests/support) without the image preload links, as the Python runner does. One
+//! trial per case.
 
 #![allow(
     clippy::unwrap_used,
@@ -68,13 +70,12 @@ fn check_case(case: &Value) {
             built.code
         ),
     }
-    if let Some(expected) = case.get("raises") {
+    // The core rule of a case that the binding refuses at its boundary (binding GN-12a) is its `core_raises`: the layout
+    // of the crate is a JSON value, which the binding types as text.
+    if let Some(expected) = case.get("core_raises").or_else(|| case.get("raises")) {
         let error = result.err().unwrap_or_else(|| panic!("{name} must fail"));
-        assert_eq!(
-            error.code,
-            support::raised_code(case).unwrap().as_str(),
-            "{name}: code"
-        );
+        let code = expected["kind"].as_str().unwrap().to_uppercase();
+        assert_eq!(error.code, code.as_str(), "{name}: code");
         if let Some(message) = expected.get("message").and_then(Value::as_str) {
             assert!(
                 error.message.contains(message),
@@ -89,7 +90,11 @@ fn check_case(case: &Value) {
         Err(error) => panic!("{name}: {error}"),
     };
     let actual = PRELOAD.replace_all(&actual, "");
-    let expected = case["expected_html"].as_str().unwrap();
+    let expected = case
+        .get("expected_html")
+        .or_else(|| case.get("result"))
+        .and_then(Value::as_str)
+        .unwrap();
     if let Some(difference) =
         support::first_difference(&support::html_tree(&actual), &support::html_tree(expected))
     {
@@ -97,9 +102,28 @@ fn check_case(case: &Value) {
     }
 }
 
+/// The list layout cases of the `render_list` group of the generator contract: the cases that carry a `name`. The
+/// contract holds texts with unpaired surrogates, which serde_json refuses, so polyspec-json reads the file and each
+/// layout case is read again from its source text.
+fn layout_cases() -> Vec<Value> {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../contracts/generator-cases.json");
+    let source = std::fs::read(&path).unwrap();
+    let file = polyspec_json::parse(&source, &polyspec_json::ParseOptions::default()).unwrap();
+    file.get("render_list")
+        .unwrap()
+        .unwrap()
+        .items()
+        .unwrap()
+        .iter()
+        .filter(|case| case.get("name").unwrap().is_some())
+        .map(|case| serde_json::from_str(case.raw()).unwrap())
+        .collect()
+}
+
 fn main() {
     let cases = support::case_groups("list-render", &["cases", "row_shapes"]);
-    assert_eq!(cases.len(), 165, "list-render holds 165 cases");
+    assert_eq!(cases.len(), 159, "list-render holds 159 cases");
     let (refused, cases): (Vec<Value>, Vec<Value>) =
         cases.into_iter().partition(support::boundary_refusal);
     assert_eq!(
@@ -107,20 +131,25 @@ fn main() {
         6,
         "list-render holds 6 refusals of the binding boundary"
     );
-    let trials = cases.into_iter().map(|case| {
+    let layouts = layout_cases();
+    assert_eq!(layouts.len(), 6, "render_list holds 6 list layout cases");
+    let cases = cases
+        .into_iter()
+        .map(|case| ("tests/fixtures/list-render/cases.json", case))
+        .chain(
+            layouts
+                .into_iter()
+                .map(|case| ("contracts/generator-cases.json", case)),
+        );
+    let trials = cases.map(|(fixture, case)| {
         let name = case["name"].as_str().unwrap().to_string();
         Trial::test(
             format!("list_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
             move || {
-                support::evidence::prove_all(
-                    &["buildList", "renderList"],
-                    "tests/fixtures/list-render/cases.json",
-                    &name,
-                    || {
-                        check_case(&case);
-                        Ok(())
-                    },
-                )
+                support::evidence::prove_all(&["buildList", "renderList"], fixture, &name, || {
+                    check_case(&case);
+                    Ok(())
+                })
             },
         )
     });

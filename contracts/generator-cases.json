@@ -1104,7 +1104,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -1137,7 +1138,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -1175,7 +1177,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -1226,7 +1229,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -1305,7 +1309,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -1343,7 +1348,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -1424,7 +1430,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -1513,7 +1520,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -1607,7 +1615,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -1660,7 +1669,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -1713,7 +1723,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -1735,7 +1746,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
@@ -1790,7 +1802,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -1823,7 +1836,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -1861,7 +1875,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -1912,7 +1927,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -1991,7 +2007,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -2029,7 +2046,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -2110,7 +2128,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -2199,7 +2218,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -2293,7 +2313,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -2346,7 +2367,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -2399,7 +2421,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -2421,13 +2444,761 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
         "status": null,
         "category": "value"
       }
+    },
+    {
+      "id": "card_layout",
+      "name": "card-layout",
+      "note": "card layout → one .crudui-list__card article per row with label:value pairs, no <table>.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "en",
+                              {
+                                "kind": "text",
+                                "value": "Name"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "status",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "status"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "en",
+                              {
+                                "kind": "text",
+                                "value": "Status"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "format",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "type",
+                              {
+                                "kind": "text",
+                                "value": "badge"
+                              }
+                            ],
+                            [
+                              "map",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "active",
+                                    {
+                                      "kind": "text",
+                                      "value": "success"
+                                    }
+                                  ],
+                                  [
+                                    "blocked",
+                                    {
+                                      "kind": "text",
+                                      "value": "danger"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "rows": [
+        {
+          "kind": "map",
+          "value": [
+            [
+              "id",
+              {
+                "kind": "number",
+                "value": "1"
+              }
+            ],
+            [
+              "name",
+              {
+                "kind": "text",
+                "value": "Ada"
+              }
+            ],
+            [
+              "status",
+              {
+                "kind": "text",
+                "value": "active"
+              }
+            ],
+            [
+              "joined",
+              {
+                "kind": "text",
+                "value": "2026-01-02T09:00:00"
+              }
+            ],
+            [
+              "score",
+              {
+                "kind": "number",
+                "value": "1234567.5"
+              }
+            ],
+            [
+              "admin",
+              {
+                "kind": "number",
+                "value": "1"
+              }
+            ],
+            [
+              "avatar",
+              {
+                "kind": "text",
+                "value": "/img/ada.png"
+              }
+            ],
+            [
+              "jointablename",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "id",
+                    {
+                      "kind": "number",
+                      "value": "101"
+                    }
+                  ]
+                ]
+              }
+            ],
+            [
+              "join",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "join",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "text",
+                            "value": "Ada"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "map",
+          "value": [
+            [
+              "id",
+              {
+                "kind": "number",
+                "value": "2"
+              }
+            ],
+            [
+              "name",
+              {
+                "kind": "text",
+                "value": "Lin"
+              }
+            ],
+            [
+              "status",
+              {
+                "kind": "text",
+                "value": "blocked"
+              }
+            ],
+            [
+              "joined",
+              {
+                "kind": "text",
+                "value": "2026-03-15T12:00:00"
+              }
+            ],
+            [
+              "score",
+              {
+                "kind": "number",
+                "value": "42"
+              }
+            ],
+            [
+              "admin",
+              {
+                "kind": "number",
+                "value": "0"
+              }
+            ],
+            [
+              "avatar",
+              {
+                "kind": "text",
+                "value": "/img/lin.png"
+              }
+            ],
+            [
+              "jointablename",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "id",
+                    {
+                      "kind": "number",
+                      "value": "102"
+                    }
+                  ]
+                ]
+              }
+            ],
+            [
+              "join",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "join",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "text",
+                            "value": "Lin"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "en",
+        "data": null,
+        "page": null,
+        "total": null,
+        "layout": "card"
+      },
+      "result": "<div class=\"crudui-list\"><div class=\"crudui-list__cards\"><article class=\"crudui-list__card\"><div class=\"crudui-list__cell crudui-value crudui-value--text\"><span class=\"crudui-list__card-label\">Name</span><span class=\"crudui-list__card-value\">Ada</span></div><div class=\"crudui-list__cell crudui-value crudui-value--badge\"><span class=\"crudui-list__card-label\">Status</span><span class=\"crudui-list__card-value\"><span class=\"crudui-badge\" data-crudui-variant=\"success\">active</span></span></div></article><article class=\"crudui-list__card\"><div class=\"crudui-list__cell crudui-value crudui-value--text\"><span class=\"crudui-list__card-label\">Name</span><span class=\"crudui-list__card-value\">Lin</span></div><div class=\"crudui-list__cell crudui-value crudui-value--badge\"><span class=\"crudui-list__card-label\">Status</span><span class=\"crudui-list__card-value\"><span class=\"crudui-badge\" data-crudui-variant=\"danger\">blocked</span></span></div></article></div></div>"
+    },
+    {
+      "id": "reject_unknown_layout",
+      "name": "reject-unknown-layout",
+      "note": "a layout other than table or card is rejected.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "rows": [],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "ko",
+        "data": null,
+        "page": null,
+        "total": null,
+        "layout": "grid"
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value",
+        "message": "List layout must be table or card"
+      }
+    },
+    {
+      "id": "reject_number_layout",
+      "name": "reject-number-layout",
+      "note": "a layout that is not a string is rejected.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "rows": [],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "ko",
+        "data": null,
+        "page": null,
+        "total": null,
+        "layout": 5
+      },
+      "raises": {
+        "kind": "invalid_argument_type",
+        "status": null,
+        "category": "type"
+      },
+      "core_raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value",
+        "message": "List layout must be table or card"
+      }
+    },
+    {
+      "id": "reject_layout_before_composition",
+      "name": "reject-layout-before-composition",
+      "note": "the layout option is an input rule: renderList checks it before composition; buildList does not read it.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "$ref",
+                  {
+                    "kind": "text",
+                    "value": "missing.yml"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "rows": [],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "ko",
+        "data": null,
+        "page": null,
+        "total": null,
+        "layout": "grid"
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value",
+        "message": "List layout must be table or card"
+      }
+    },
+    {
+      "id": "reject_layout_before_declarations",
+      "name": "reject-layout-before-declarations",
+      "note": "renderList checks the layout option before the declarations.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "limit",
+            {
+              "kind": "number",
+              "value": "10"
+            }
+          ]
+        ]
+      },
+      "rows": [],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "ko",
+        "data": null,
+        "page": null,
+        "total": null,
+        "layout": "grid"
+      },
+      "raises": {
+        "kind": "invalid_form_input",
+        "status": null,
+        "category": "value",
+        "message": "List layout must be table or card"
+      }
+    },
+    {
+      "id": "layout_null_selects_table",
+      "name": "layout-null-selects-table",
+      "note": "a null layout selects the table layout, as an absent layout does.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "name",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "name"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "Name"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "rows": [
+        {
+          "kind": "map",
+          "value": [
+            [
+              "id",
+              {
+                "kind": "number",
+                "value": "1"
+              }
+            ],
+            [
+              "name",
+              {
+                "kind": "text",
+                "value": "Ada"
+              }
+            ],
+            [
+              "status",
+              {
+                "kind": "text",
+                "value": "active"
+              }
+            ],
+            [
+              "joined",
+              {
+                "kind": "text",
+                "value": "2026-01-02T09:00:00"
+              }
+            ],
+            [
+              "score",
+              {
+                "kind": "number",
+                "value": "1234567.5"
+              }
+            ],
+            [
+              "admin",
+              {
+                "kind": "number",
+                "value": "1"
+              }
+            ],
+            [
+              "avatar",
+              {
+                "kind": "text",
+                "value": "/img/ada.png"
+              }
+            ],
+            [
+              "jointablename",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "id",
+                    {
+                      "kind": "number",
+                      "value": "101"
+                    }
+                  ]
+                ]
+              }
+            ],
+            [
+              "join",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "join",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "text",
+                            "value": "Ada"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "map",
+          "value": [
+            [
+              "id",
+              {
+                "kind": "number",
+                "value": "2"
+              }
+            ],
+            [
+              "name",
+              {
+                "kind": "text",
+                "value": "Lin"
+              }
+            ],
+            [
+              "status",
+              {
+                "kind": "text",
+                "value": "blocked"
+              }
+            ],
+            [
+              "joined",
+              {
+                "kind": "text",
+                "value": "2026-03-15T12:00:00"
+              }
+            ],
+            [
+              "score",
+              {
+                "kind": "number",
+                "value": "42"
+              }
+            ],
+            [
+              "admin",
+              {
+                "kind": "number",
+                "value": "0"
+              }
+            ],
+            [
+              "avatar",
+              {
+                "kind": "text",
+                "value": "/img/lin.png"
+              }
+            ],
+            [
+              "jointablename",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "id",
+                    {
+                      "kind": "number",
+                      "value": "102"
+                    }
+                  ]
+                ]
+              }
+            ],
+            [
+              "join",
+              {
+                "kind": "map",
+                "value": [
+                  [
+                    "join",
+                    {
+                      "kind": "map",
+                      "value": [
+                        [
+                          "name",
+                          {
+                            "kind": "text",
+                            "value": "Lin"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "en",
+        "data": null,
+        "page": null,
+        "total": null,
+        "layout": null
+      },
+      "result": "<div class=\"crudui-list\"><table class=\"crudui-list__table\"><thead><tr><th class=\"crudui-list__heading\" data-field=\"name\"><span class=\"crudui-list__heading-label\">Name</span></th></tr></thead><tbody><tr><td class=\"crudui-list__cell crudui-value crudui-value--text\">Ada</td></tr><tr><td class=\"crudui-list__cell crudui-value crudui-value--text\">Lin</td></tr></tbody></table></div>"
     }
   ],
   "build_detail": [
@@ -2479,7 +3250,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -2515,7 +3287,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -2556,7 +3329,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -2610,7 +3384,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -2692,7 +3467,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -2733,7 +3509,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -2817,7 +3594,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -2909,7 +3687,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -3006,7 +3785,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -3062,7 +3842,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -3118,7 +3899,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -3143,7 +3925,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
@@ -3201,7 +3984,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -3237,7 +4021,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -3278,7 +4063,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -3332,7 +4118,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -3414,7 +4201,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -3455,7 +4243,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -3539,7 +4328,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -3631,7 +4421,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -3728,7 +4519,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -3784,7 +4576,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -3840,7 +4633,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -3865,7 +4659,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
@@ -17243,7 +18038,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -17300,7 +18096,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -17341,7 +18138,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -17411,7 +18209,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -17521,7 +18320,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -17562,7 +18362,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -17662,7 +18463,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -17770,7 +18572,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -17883,7 +18686,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -17939,7 +18743,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -17995,7 +18800,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -18041,7 +18847,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
@@ -18140,7 +18947,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -18197,7 +19005,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -18238,7 +19047,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -18308,7 +19118,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -18418,7 +19229,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -18459,7 +19271,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -18559,7 +19372,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -18667,7 +19481,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -18780,7 +19595,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -18836,7 +19652,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -18892,7 +19709,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -18938,7 +19756,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
@@ -19040,7 +19859,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -19100,7 +19920,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -19144,7 +19965,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -19217,7 +20039,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -19330,7 +20153,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -19374,7 +20198,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -19477,7 +20302,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -19588,7 +20414,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -19704,7 +20531,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -19763,7 +20591,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -19822,7 +20651,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -19871,7 +20701,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",
@@ -19973,7 +20804,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       }
     },
     {
@@ -20033,7 +20865,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_file_not_found",
@@ -20077,7 +20910,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_format_error",
@@ -20150,7 +20984,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_detect_key_not_found",
@@ -20263,7 +21098,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_cycle",
@@ -20307,7 +21143,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "ref_value_type",
@@ -20410,7 +21247,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_shape",
@@ -20521,7 +21359,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_path_conflict",
@@ -20637,7 +21476,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "patch_remove_target_missing",
@@ -20696,7 +21536,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "forbidden_meta_key",
@@ -20755,7 +21596,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_text",
@@ -20804,7 +21646,8 @@
         "language": "ko",
         "data": null,
         "page": null,
-        "total": null
+        "total": null,
+        "layout": null
       },
       "raises": {
         "kind": "invalid_form_input",

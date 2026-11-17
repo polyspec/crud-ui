@@ -101,6 +101,7 @@ fn list_options(case: &Value) -> ListOptions {
         data: (data.kind() != Kind::Null).then(|| case_value(data)),
         page: number("page"),
         total: number("total"),
+        layout: optional_text(argument(options, "layout")),
     }
 }
 
@@ -369,6 +370,14 @@ const INSTANCE_GROUPS: [&str; 46] = [
 fn outcome(member: &str, case: &Value) -> Result<Option<serde_json::Value>, FormError> {
     if INSTANCE_GROUPS.contains(&member) {
         instance_member(member, case)
+    } else if member == "render_list" {
+        // The HTML of a list is the result of a case that names one (binding GN-13e).
+        render_list(
+            &case_value(argument(case, "spec")),
+            Some(&values(argument(case, "rows"))),
+            &list_options(case),
+        )
+        .map(|html| Some(serde_json::json!(html)))
     } else {
         run(member, case).map(|()| None)
     }
@@ -926,6 +935,7 @@ fn main() {
     let source = std::fs::read(&path).unwrap();
     let file = polyspec_json::parse(&source, &ParseOptions::default()).unwrap();
     let mut trials = Vec::new();
+    let mut refused = 0;
     for member in [
         "compile_form",
         "build_outline",
@@ -957,6 +967,12 @@ fn main() {
             .to_vec();
         assert!(!cases.is_empty(), "the group {member} holds no case");
         for case in cases {
+            // A case whose kind the binding gives at its boundary (binding GN-12a), such as a layout that is no text,
+            // holds a value that the Rust types of the boundary cannot carry; the generated tests run it.
+            if boundary_refusal(&case) {
+                refused += 1;
+                continue;
+            }
             let id = text(argument(&case, "id"));
             let faults = case.get("faults").unwrap().cloned();
             let trial = Trial::test(format!("{member}::{id}"), move || {
@@ -966,5 +982,22 @@ fn main() {
             trials.push(trial);
         }
     }
+    assert_eq!(
+        refused, 1,
+        "the generator contract holds 1 refusal of the binding boundary"
+    );
     libtest_mimic::run(&Arguments::from_args(), trials).exit();
+}
+
+/// Whether a case raises a kind that the binding gives at its boundary (binding GN-12a).
+fn boundary_refusal(case: &Value) -> bool {
+    case.get("raises")
+        .unwrap()
+        .and_then(|raises| raises.get("kind").unwrap())
+        .is_some_and(|kind| {
+            matches!(
+                text(kind).as_str(),
+                "invalid_argument_type" | "invalid_number"
+            )
+        })
 }

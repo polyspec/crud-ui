@@ -152,6 +152,8 @@ columns:
 검사하지도 사용하지도 않습니다.
 `buildList`는 `layout`을 읽지 않습니다. `renderList`는 다른 목록 입력 규칙 다음, 조합 전에 이 옵션을
 검사합니다.
+생성 binding에서 `layout`은 목록 옵션의 optional text입니다. 문자열이 아닌 값은 binding이 경계에서
+`invalid_argument_type`으로 거부하고(binding GN-12a), `table`이나 `card`가 아닌 문자열은 core가 CUDF-031로 거부합니다.
 
 규칙은 인자 형태를 인자 순서대로 먼저 검사하고, 그다음 선언, 마지막으로 옵션을 검사합니다. 옵션이 없거나 `null`이면 기본값을 씁니다. 빈 컨텍스트, 현재 페이지 없음, 전체 수 없음, `table` 레이아웃입니다.
 `page`는 현재 페이지, `total`은 전체 레코드 수입니다. 둘 다 호출자가 제공하고 생성기는 행에서 계산하지 않으며,

@@ -456,6 +456,18 @@
             "literal": null
           },
           "reason": "CUDF-081"
+        },
+        {
+          "name": [
+            "layout"
+          ],
+          "type": {
+            "optional": "text"
+          },
+          "default": {
+            "literal": null
+          },
+          "reason": "CUDF-031"
         }
       ]
     },
@@ -3457,7 +3469,11 @@
     {
       "member": "generator.render_list",
       "file": "contracts/generator-cases.json",
-      "group": "render_list"
+      "group": "render_list",
+      "reads": [
+        "core_raises",
+        "name"
+      ]
     },
     {
       "member": "generator.build_detail",

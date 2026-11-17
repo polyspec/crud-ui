@@ -38,9 +38,18 @@ function readGroups(path: string): RenderCase[] {
     .map(item => ({ ...item, name: String(item.name), ...(typeof item.expected_html === 'string' ? { expected_html: item.expected_html } : {}), spec: caseValue(item.spec) }));
 }
 const rendered = (item: RenderCase): item is RenderCase & { expected_html: string } => Boolean(item.expected_html);
+/** The list layout cases of the render_list group of the generator contract: the cases with a name, whose HTML is
+ * their `result` (binding GN-13e). */
+function layoutCases(): (RenderCase & { expected_html: string })[] {
+  const document: unknown = JSON.parse(readFileSync(new URL('../../contracts/generator-cases.json', import.meta.url), 'utf8'));
+  return caseGroup(document, 'render_list')
+    .filter(item => typeof item.name === 'string' && typeof item.result === 'string')
+    .map(item => ({ name: String(item.name), expected_html: String(item.result), spec: caseValue(item.spec) }));
+}
 const fixtures: [label: string, html: string, spec: unknown][] = [
   ...read('../fixtures/form-render/cases.json', renderCases).filter(rendered).map((item): [string, string, unknown] => [`form-render/${item.name}`, item.expected_html, item.spec]),
   ...readGroups('../fixtures/list-render/cases.json').filter(rendered).map((item): [string, string, unknown] => [`list-render/${item.name}`, item.expected_html, item.spec]),
+  ...layoutCases().map((item): [string, string, unknown] => [`render_list/${item.name}`, item.expected_html, item.spec]),
   ...readGroups('../fixtures/detail-render/cases.json').filter(rendered).map((item): [string, string, unknown] => [`detail-render/${item.name}`, item.expected_html, item.spec]),
   ...read('../fixtures/form-outline/cases.json', outlineCases).flatMap((item): [string, string, unknown][] => [
     [`form-outline/${item.name}/outline`, item.expected_outline_html, item.spec],
