@@ -13,6 +13,8 @@ typedef struct {
     bool unsupported_marker;
     /* The collapsed option: a list of row paths rendered collapsed, NULL when absent. */
     const ps_value *collapsed;
+    /* The root fields by name: a source of selected values reads the field it names (CUSC-097). */
+    const ps_value *root;
 } bind_context;
 
 /* Enclosing repeated rows: path segment positions, one-based numbers and sticky headers. */
@@ -193,8 +195,7 @@ static ps_value *build_widget(const ps_value *spec, const ps_value *value,
     if (!ps_is_group_source(items))
         return build_declared_widget(spec, value, path, design, context, scope, error);
     ps_chars repeated = {NULL, 0};
-    /* The rendered choices take no root, so a source of selected values has its literal choices only. */
-    ps_value *choices = ps_group_source_choices(items, context->data, NULL, &repeated);
+    ps_value *choices = ps_group_source_choices(items, context->data, context->root, &repeated);
     if (!choices && repeated.bytes) {
         /* A row that repeats a literal choice is the input failure of the validator (CUSC-089), its cause. */
         ps_value *cause = ps_error_text("input", "INVALID_FORM_INPUT", ps_view(repeated), PS_TEXT(""), NULL);
@@ -909,9 +910,21 @@ static ps_result bind_form(const ps_value *template, const ps_value *data,
         const ps_value *stored = member(template, "keyPrefix");
         if (stored && stored->kind == PS_STRING) key_prefix = ps_string(stored);
     }
+    /* The root fields by name, each with its spec: a source of selected values reads the field it names (CUSC-097, C19.150). */
+    ps_value *root_fields = ps_object_value();
+    const ps_value *root_templates = member(template, "fields");
+    for (size_t i = 0; root_fields && i < ps_size(root_templates); ++i) {
+        const ps_value *field = ps_at(root_templates, i);
+        const ps_value *name = member(field, "name");
+        const ps_value *spec = member(field, "spec");
+        if (!name || name->kind != PS_STRING || !spec || !ps_set_text(root_fields, ps_string(name), ps_value_clone(spec))) {
+            ps_value_free(root_fields); root_fields = NULL;
+        }
+    }
+    if (!root_fields) return ps_fail("internal", "INTERNAL_ERROR", "C form binding failed", "");
     bind_context context = {
         data, key_prefix, id_prefix.bytes ? id_prefix : PS_TEXT("crudui"), language, messages,
-        ps_is_string(unsupported, "marker"), collapsed
+        ps_is_string(unsupported, "marker"), collapsed, root_fields
     };
     row_scope root = {NULL, NULL, 0, 0, false};
     ps_value *fields = ps_array_value();
@@ -925,6 +938,7 @@ static ps_result bind_form(const ps_value *template, const ps_value *data,
             ps_value_free(model); ps_value_free(fields); fields = NULL; break;
         }
     }
+    ps_value_free(root_fields);
     if (!fields) {
         if (error) return (ps_result){NULL, error};
         return ps_fail("internal", "INTERNAL_ERROR", "C form binding failed", "");

@@ -459,11 +459,9 @@ func selectionChoices(source *compose.OMap, field *compose.OMap, data any) []Gro
 	}
 	from, _ := source.Get("from")
 	text := stringOf(from)
-	object, ok := data.(map[string]any)
-	if !ok {
-		return choices
-	}
-	members, ok := object[text].([]any)
+	// The data of a generator is a compose object, which objectMember reads as a plain map does (C19.150).
+	member, _ := objectMember(data, text)
+	members, ok := member.([]any)
 	if !ok {
 		return choices
 	}

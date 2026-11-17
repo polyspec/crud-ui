@@ -34,6 +34,11 @@ final class Binding
         $options = ['rowSegments' => [], 'rowNumbers' => [], 'stickyDepth' => 0, ...$options];
         $options['rowSegments'] = $options['rowNumbers'] = [];
         $options['stickyDepth'] = 0;
+        // The root fields by name: a source of selected values reads the field it names (CUSC-097, C19.150).
+        $options['root'] = [];
+        foreach ($template->fields as $root) {
+            $options['root'][$root->name] = $root->spec;
+        }
         return array_map(static fn ($field) => self::field($field, $field->name, $data, $options), $template->fields);
     }
 
@@ -229,7 +234,7 @@ final class Binding
             return Value::record([...$root, 'header' => $header, 'body' => self::body(), 'checkbox' => $checkbox]);
         }
         $widget = Widget::evaluate(
-            ChoiceList::resolve($spec, $data),
+            ChoiceList::resolve($spec, $data, $state['root'] ?? []),
             $value,
             $path,
             $design,
@@ -366,7 +371,7 @@ final class Binding
         $number = implode('.', $numbers);
         if ($item === 'field') {
             $widget = Widget::evaluate(
-                ChoiceList::resolve($spec, $data),
+                ChoiceList::resolve($spec, $data, $state['root'] ?? []),
                 Value::path($data, $rowPath),
                 $rowPath,
                 $rowDesign,
@@ -451,7 +456,7 @@ final class Binding
                 'header' => (object) ['className' => '', 'label' => $code],
                 'body' => self::body(),
                 'widget' => Widget::evaluate(
-                    ChoiceList::resolve($spec, $data),
+                    ChoiceList::resolve($spec, $data, $state['root'] ?? []),
                     Value::path($data, $langPath),
                     $langPath,
                     $langDesign,

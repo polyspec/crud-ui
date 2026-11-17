@@ -37,6 +37,7 @@ export interface RegisteredFixture {
   runtimes?: string[];
   featureCases?: Record<string, string[]>;
   featureRuntimes?: Record<string, string[]>;
+  notApplicable?: Record<string, string[]>;
   supports?: string[];
 }
 
@@ -171,6 +172,12 @@ export function checkConformance(
         problems.invalidApplicability.push(`${fixture.path}: ${feature} runtime override ${JSON.stringify(runtimes)} must select supported applicable runtimes`);
       }
     }
+    for (const [runtime, names] of Object.entries(fixture.notApplicable ?? {})) {
+      // A case that the runtime does not run must exist in the fixture and belong to a feature the runtime supports.
+      if (!owners.some(owner => owner.support[runtime] === 'pass') || names.some(name => !cases[fixture.path]?.includes(name))) {
+        problems.invalidApplicability.push(`${fixture.path}: notApplicable ${runtime} must name existing cases of a runtime that an owning feature supports`);
+      }
+    }
     if (fixture.featureCases) {
       const selected = new Set<string>();
       for (const owner of owners) if (!Object.hasOwn(fixture.featureCases, owner.id)) {
@@ -200,8 +207,10 @@ export function checkConformance(
         if (support !== 'pass' || (registration?.runtimes && !registration.runtimes.includes(runtime))
           || (registration?.featureRuntimes?.[feature.id] && !registration.featureRuntimes[feature.id]?.includes(runtime))) continue;
         const runtimeNames = caseNames(fixture, runtime) ?? [];
-        const selected = registration?.featureCases
-          ? (registration.featureCases[feature.id] ?? []).filter(name => runtimeNames.includes(name)) : runtimeNames;
+        const excluded = registration?.notApplicable?.[runtime] ?? [];
+        const selected = (registration?.featureCases
+          ? (registration.featureCases[feature.id] ?? []).filter(name => runtimeNames.includes(name)) : runtimeNames)
+          .filter(name => !excluded.includes(name));
         for (const name of selected) {
           const id = key(feature.id, fixture, runtime, name);
           required.add(id);

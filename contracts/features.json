@@ -369,7 +369,17 @@
     },
     {
       "path": "tests/fixtures/list-render/cases.json",
-      "kind": "list-html"
+      "kind": "list-html",
+      "notApplicable": {
+        "rust": [
+          "reject-string-page",
+          "reject-fractional-page",
+          "reject-unsafe-page",
+          "reject-negative-total",
+          "reject-fractional-total",
+          "reject-boolean-total"
+        ]
+      }
     },
     {
       "path": "tests/fixtures/detail-render/cases.json",

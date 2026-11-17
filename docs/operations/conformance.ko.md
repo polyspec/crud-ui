@@ -15,6 +15,8 @@ runtime을 나열하며, 이 값이 없으면 지원하는 모든 runtime을 계
 모든 feature는 case를 선택해야 하며, 지원하는 feature runtime마다 적용 가능한 case가 있어야 합니다. Unknown runtime,
 unknown case와 empty selection은 실패합니다.
 
+`notApplicable`은 runtime별로, 타입이 있는 API가 입력을 담을 수 없어 실행하지 않는 fixture case를 지정합니다(문자열이거나 소수이거나 안전 범위 밖인 값은 core가 실행되기 전에 host binding이 거부한다). 그 runtime은 그 case의 증거를 요구받지 않으며, 소유 feature가 지원하는 다른 runtime은 여전히 요구받습니다.
+
 `featureRuntimes`는 fixture를 소유한 feature의 operation이 실제 실행되는 runtime으로 해당 feature의 적용 범위를
 제한합니다. Override가 없는 feature는 fixture의 기본 runtime 범위를 유지합니다. Override는 해당 feature가 지원하고
 fixture가 허용하는 runtime을 비어 있지 않게 선택해야 합니다. Python outline case는 outline을 만들기 전에 template을

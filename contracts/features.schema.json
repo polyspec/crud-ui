@@ -89,6 +89,7 @@
         "runtimes": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true },
         "featureCases": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true } },
         "featureRuntimes": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true } },
+        "notApplicable": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true } },
         "supports": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true }
       },
       "additionalProperties": false

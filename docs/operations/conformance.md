@@ -13,6 +13,9 @@ its actual execution runtimes; without it every supported runtime remains requir
 feature to its exact case names when a family tests several operations. Every case must belong to a feature, every
 owning feature must select cases, and every supported feature runtime must still have applicable cases. Unknown
 runtimes, unknown cases and empty selections fail the check.
+`notApplicable` names, per runtime, the cases of a fixture that the runtime does not run, because a typed API cannot hold their input
+(a value that is no number, a fraction, or an integer out of range is refused by the host binding before the core runs). The
+runtime is then not required to prove those cases; every other runtime that the owning feature supports still is.
 
 `featureRuntimes` restricts one owning feature to the fixture runtimes in which that operation actually runs. An omitted
 feature keeps the fixture's default runtime coverage. Each override must select nonempty runtimes supported by that

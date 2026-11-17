@@ -34,13 +34,13 @@ final class ChoiceList
      * the source gives for the root form data as a choice list of value and label pairs; any other
      * spec is returned as it is.
      */
-    public static function resolve(stdClass $spec, stdClass $data): stdClass
+    public static function resolve(stdClass $spec, stdClass $data, array $root = []): stdClass
     {
         if (!GroupSource::isSource($spec->items ?? null)) {
             return $spec;
         }
         try {
-            $choices = GroupSource::choices((array) $spec->items, $data);
+            $choices = GroupSource::choices((array) $spec->items, $data, $root);
         } catch (FormInputError $error) {
             throw new FormError($error->getErrorCode(), $error->getMessage(), previous: $error);
         }

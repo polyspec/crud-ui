@@ -372,3 +372,14 @@ test('the Rust evidence recorder writes each record as one whole line under a lo
   assert.match(source, /out\.write_all\(line\.as_bytes\(\)\)/);
   assert.match(source, /LOCK\.lock\(\)/);
 });
+
+// C19.148: the six boundary refusals of list-render are not applicable to rust, whose typed options cannot hold the values
+// (page or total that is a string, a fraction, a negative or out of the safe range), which the host bindings refuse at the
+// boundary. The four dynamic runtimes record them (javascript, php, python, go). The registry declares the exclusion per case.
+test('the six boundary refusals of list-render are not applicable to rust (C19.148)', async () => {
+  const registry = JSON.parse(await readFile(path.join(ROOT, 'contracts/features.json'), 'utf8'));
+  const entry = registry.fixtures.find((item: { path: string }) => item.path === 'tests/fixtures/list-render/cases.json');
+  assert.deepEqual(entry.notApplicable?.rust, [
+    'reject-string-page', 'reject-fractional-page', 'reject-unsafe-page', 'reject-negative-total', 'reject-fractional-total', 'reject-boolean-total',
+  ]);
+});
