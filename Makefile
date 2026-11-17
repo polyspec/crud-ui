@@ -305,11 +305,14 @@ crudui-install-json-php: install-pie ## Download with PIE the polyspec_json exte
 	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) download polyspec/json:$(BINDING_JSON_PHP) --no-interaction
 
 define binding_package_rules
-# The wheel that maturin builds through uv with the test features, installed without an index into a virtual environment
-# with the wheels of json and, for the generator, the wheel of the validator, and the generated tests on unittest.
+# The wheel that the maturin of mise.toml builds with the test features through the link script of kit, which passes the
+# options of a link declaration to the cargo that maturin runs (kit K1266), so that a checkout with a link builds the wheel
+# against the linked crates as it builds the other bindings; it is installed without an index into a virtual environment
+# with the wheels of json and, for the generator, the wheel of the validator, and the generated tests run on unittest.
 test-binding-python-$(1): bindings $(if $(filter generator,$(1)),test-binding-python-validator)
 	$$(PYTHON) -m venv --clear $(BINDING_VAR)/$(1)/python/venv
-	MATURIN_PEP517_ARGS='--locked --features $$(call binding_features,packages/$(1)/python/Cargo.toml)' $$(UV) build --wheel --python $(BINDING_VAR)/$(1)/python/venv/bin/python --clear --out-dir $(BINDING_VAR)/$(1)/python/wheels packages/$(1)/python
+	rm -rf $(BINDING_VAR)/$(1)/python/wheels
+	MATURIN=$$(MATURIN) $(NODE) $(abspath $(KIT))/link.$(KIT_EXT) maturin $(CURDIR)/packages/$(1)/python build --locked --offline --features $$(call binding_features,packages/$(1)/python/Cargo.toml) --interpreter $(BINDING_VAR)/$(1)/python/venv/bin/python --out $(BINDING_VAR)/$(1)/python/wheels
 	$(BINDING_VAR)/$(1)/python/venv/bin/python -m pip install -q --no-index --find-links $(BINDING_PYTHON_FIND_LINKS) $(if $(filter generator,$(1)),--find-links $(BINDING_VAR)/validator/python/wheels) --force-reinstall $(BINDING_VAR)/$(1)/python/wheels/*.whl
 	cd $(BINDING_VAR)/$(1)/python && venv/bin/python -m unittest discover -s $(CURDIR)/packages/$(1)/python/generated/tests -t $(CURDIR)/packages/$(1)/python/generated/tests
 
@@ -849,6 +852,7 @@ PYTHON_ROOTS := legacy/packages/generator/python legacy/packages/validator/pytho
 # UV_PROJECT_ENVIRONMENT, and without it the link finds no environment of the repository and fails (K360-2).
 install-link link: export UV_PROJECT_ENVIRONMENT := $(PYTHON_VENV)
 UV := $(TOOLS_DIR)/mise/shims/uv
+MATURIN := $(TOOLS_DIR)/mise/shims/maturin
 # The python3 of mise.toml, which runs the table generators of the Python packages before the venv of PYTHON_VENV exists.
 PYTHON := $(TOOLS_DIR)/mise/shims/python3
 # The go and Composer of mise.toml, by the absolute paths of their shims: make 3.81 runs a recipe line without shell syntax
