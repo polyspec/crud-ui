@@ -9,7 +9,7 @@
 // exactly {"error": <message>}:
 //  1. stdin is not UTF-8 or not valid JSON → "Request must be valid JSON"
 //  2. the request is not a JSON object → "Request must be an object"
-//  3. spec absent or not an object → "Request spec must be an object"
+//  3. spec absent → "Request spec must be an object"
 //  4. mode present and not exactly "form", "list" or "detail" (null and
 //     non-strings included) → "Unsupported validation mode"
 //  5. files present, not null and not an object → "Request files must be an object"
@@ -146,7 +146,7 @@ func parseRequest(input []byte) (request, string) {
 	}
 
 	spec, ok := members["spec"]
-	if !ok || jsonKind(spec) != '{' {
+	if !ok {
 		return req, msgSpec
 	}
 	req.Spec = spec

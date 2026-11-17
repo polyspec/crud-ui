@@ -45,23 +45,25 @@
   },
   {
     "name": "array-spec",
-    "note": "a spec that is not an object is malformed.",
+    "note": "a spec that is not an object reaches the validator, which answers as the shared fixture does (CUVR-088).",
     "input": "{\"spec\":[]}",
     "expected": {
-      "exit": 1,
+      "exit": 2,
       "output": {
-        "error": "Request spec must be an object"
+        "error": "Form specification must be an object",
+        "code": "INVALID_FORM_INPUT",
+        "at": ""
       }
     }
   },
   {
-    "name": "spec-before-mode",
-    "note": "the spec rule is checked before the mode rule.",
+    "name": "mode-before-list-spec",
+    "note": "the mode rule is checked before a spec that is not an object reaches the validator.",
     "input": "{\"spec\":[],\"mode\":\"grid\"}",
     "expected": {
       "exit": 1,
       "output": {
-        "error": "Request spec must be an object"
+        "error": "Unsupported validation mode"
       }
     }
   },
@@ -273,23 +275,27 @@
   },
   {
     "name": "null-spec",
-    "note": "a null spec is malformed.",
+    "note": "a spec that is not an object reaches the validator, which answers as the shared fixture does (CUVR-088).",
     "input": "{\"spec\":null}",
     "expected": {
-      "exit": 1,
+      "exit": 2,
       "output": {
-        "error": "Request spec must be an object"
+        "error": "Form specification must be an object",
+        "code": "INVALID_FORM_INPUT",
+        "at": ""
       }
     }
   },
   {
     "name": "string-spec",
-    "note": "a string spec is malformed.",
+    "note": "a spec that is not an object reaches the validator, which answers as the shared fixture does (CUVR-088).",
     "input": "{\"spec\":\"x\"}",
     "expected": {
-      "exit": 1,
+      "exit": 2,
       "output": {
-        "error": "Request spec must be an object"
+        "error": "Form specification must be an object",
+        "code": "INVALID_FORM_INPUT",
+        "at": ""
       }
     }
   },

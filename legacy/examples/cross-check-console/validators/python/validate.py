@@ -50,9 +50,9 @@ def main():
         reject("Request must be valid JSON")
     if not is_object(request):
         reject("Request must be an object")
-    spec = request.get("spec")
-    if not is_object(spec):
+    if "spec" not in request:
         reject("Request spec must be an object")
+    spec = request["spec"]
     mode = request.get("mode", "form")
     if not (isinstance(mode, str) and mode in MODES):
         reject("Unsupported validation mode")

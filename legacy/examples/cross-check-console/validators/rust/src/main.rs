@@ -11,7 +11,7 @@
 //! Request rules, checked in this order (each → exit 1, stdout exactly `{ "error" }`):
 //!   1. stdin is not UTF-8 or not valid JSON → "Request must be valid JSON"
 //!   2. the request is not an object → "Request must be an object"
-//!   3. `spec` absent or not an object → "Request spec must be an object"
+//!   3. `spec` absent → "Request spec must be an object"
 //!   4. `mode` present and not "form"/"list"/"detail" → "Unsupported validation mode"
 //!   5. `files` present, not null and not an object → "Request files must be an object"
 //!   6. a `files` member not an object → "Request files must contain objects"
@@ -61,10 +61,10 @@ fn main() {
         _ => fail_request("Request must be an object"),
     };
 
-    // 3. `spec` must be present and an object.
+    // 3. `spec` must be present; its value goes to the validator, which answers for a value that is not an object.
     let spec = match req.get("spec") {
-        Some(v @ Value::Object(_)) => v.clone(),
-        _ => fail_request("Request spec must be an object"),
+        Some(v) => v.clone(),
+        None => fail_request("Request spec must be an object"),
     };
 
     // 4. mode: absent → "form"; only "form" | "list" | "detail" are accepted

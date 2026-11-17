@@ -21,7 +21,7 @@ use Polyspec\Crudui\Validator\Validate\FormInputError;
  * exactly {error}. The request is checked in this order:
  *  1. stdin is not UTF-8 or not valid JSON     → "Request must be valid JSON"
  *  2. the request is not a JSON object         → "Request must be an object"
- *  3. spec absent or not an object             → "Request spec must be an object"
+ *  3. spec absent                              → "Request spec must be an object"
  *  4. mode present and not exactly "form", "list" or "detail" (null and
  *     non-strings included)                    → "Unsupported validation mode"
  *  5. files present, not null, not an object   → "Request files must be an object"
@@ -56,7 +56,7 @@ try {
 if (!$request instanceof stdClass) {
     $reject('Request must be an object');
 }
-if (!property_exists($request, 'spec') || !$request->spec instanceof stdClass) {
+if (!property_exists($request, 'spec')) {
     $reject('Request spec must be an object');
 }
 $mode = property_exists($request, 'mode') ? $request->mode : 'form';

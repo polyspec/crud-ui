@@ -41,7 +41,7 @@ function respond(raw) {
   }
   if (!isObject(request)) return reject('Request must be an object');
   const { spec } = request;
-  if (!isObject(spec)) return reject('Request spec must be an object');
+  if (!Object.hasOwn(request, 'spec')) return reject('Request spec must be an object');
   const mode = Object.hasOwn(request, 'mode') ? request.mode : 'form';
   if (mode !== 'form' && mode !== 'list' && mode !== 'detail') return reject('Unsupported validation mode');
   const files = request.files ?? null;

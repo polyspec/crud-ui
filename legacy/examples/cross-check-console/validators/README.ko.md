@@ -53,11 +53,13 @@ Composer 자동 로더를 불러옵니다. Python 프로그램은 `make crudui-i
 | --- | --- |
 | 표준 입력이 UTF-8이며 올바른 JSON | `Request must be valid JSON` |
 | 요청이 객체 | `Request must be an object` |
-| `spec`이 객체 | `Request spec must be an object` |
+| `spec`이 있음 | `Request spec must be an object` |
 | `mode`가 없거나 `form`, `list`, `detail` | `Unsupported validation mode` |
 | `files`가 없거나 `null`이거나 객체 | `Request files must be an object` |
 | `files`의 모든 항목이 객체 | `Request files must contain objects` |
 | `basepath`가 없거나 `null`이거나 문자열 | `Request basepath must be a string` |
+
+객체가 아닌 `spec`이 있으면 요청 실패가 아니다. validator가 답한다(예: 공유 fixture와 같이 `Form specification must be an object`, CUVR-088).
 
 폼 모드에서 값이 있으면서 객체가 아닌 `data`(`null` 포함)는 입력 실패
 `Form data must be an object`(종료 상태 `2`)입니다.
