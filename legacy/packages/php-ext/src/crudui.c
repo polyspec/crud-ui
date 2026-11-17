@@ -540,7 +540,7 @@ PHP_METHOD(Polyspec_Crudui_Validator, validate)
     ZVAL_DEREF(spec);
     bool spec_object = Z_TYPE_P(spec) == IS_OBJECT && instanceof_function(Z_OBJCE_P(spec), zend_standard_class_def);
     if (Z_TYPE_P(spec) == IS_ARRAY) spec_object = zend_hash_num_elements(Z_ARRVAL_P(spec)) != 0 && !zend_array_is_list(Z_ARRVAL_P(spec));
-    if (!spec_object) { crudui_invalid_value("Form specification must be an object", true); return; }
+    if (!spec_object) { crudui_input_failure("Form specification must be an object"); return; }
     /* Input text is checked first: the specification, the files, the data, then the options. */
     if (!crudui_check_specification_text(spec, options, false) ||
         !crudui_check_input_text(&(crudui_text_input){"data", data}, 1, options, basepath_option, 1, false)) return;
