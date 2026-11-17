@@ -274,8 +274,9 @@ BINDING_PHP_EXTENSIONS ?= $(wildcard $(BINDING_PIE)/*/vendor/polyspec/json/polys
 BINDING_PHP_REQUIRES_generator = validator
 # The test features of a binding crate: every feature of its manifest (binding GN-5), joined by commas.
 binding_features = $(shell sed -n '/^\[features\]/,/^\[/s/^\([a-z][a-z0-9-]*\) = .*/\1/p' $(1) | paste -sd, -)
-# The build tags of the test features of a Go crate, polyspec_<feature> with _ for - (binding GN-5).
-binding_go_tags = $(subst -,_,$(shell echo '$(call binding_features,$(1))' | sed 's/\([^,]*\)/polyspec_\1/g'))
+# The build tags of the test features of the Go crate packages/<component>/go/internal/ffi/Cargo.toml,
+# polyspec_crud_ui_<component>_<feature> with _ for -, the tags of the generated files (binding GN-5, GN-13bf).
+binding_go_tags = $(subst -,_,$(shell echo '$(call binding_features,$(1))' | sed 's/\([^,]*\)/polyspec_crud_ui_$(word 2,$(subst /, ,$(1)))_\1/g'))
 # The count of the tests of the TAP report $(2) of the target $(1); a report of no test fails.
 binding_tap_count = $(NODE) -e 'const m = /^\# tests (\d+)$$/m.exec(require("fs").readFileSync(process.argv[1], "utf8")); const n = m ? Number(m[1]) : 0; console.log(`$(1): $${n} tests`); if (n === 0) { console.error("$(1): ran no test case in $(2)"); process.exit(1); }' $(2)
 # The count of the tests of the go test -json report $(2) of the target $(1); a report of no test fails.
