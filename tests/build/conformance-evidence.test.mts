@@ -383,3 +383,19 @@ test('the six boundary refusals of list-render are not applicable to rust (C19.1
     'reject-string-page', 'reject-fractional-page', 'reject-unsafe-page', 'reject-negative-total', 'reject-fractional-total', 'reject-boolean-total',
   ]);
 });
+
+// C19.151 (HR-84): the conformance check is one test, so its summary counts it and its exit status is the kit's result. A run that
+// checks nothing fails with one failed test, and the summary never says that no test ran.
+test('an empty evidence directory fails the conformance check with one failed test (C19.151, HR-84)', async () => {
+  const empty = await mkdtemp(path.join(os.tmpdir(), 'crudui-conformance-empty-'));
+  try {
+    const run = spawnSync(process.execPath, [path.join(ROOT, 'scripts/check-conformance.mts')], {
+      cwd: ROOT, env: { ...process.env, CRUDUI_CONFORMANCE_EVIDENCE: empty }, encoding: 'utf8',
+    });
+    assert.equal(run.status, 1, run.stdout + run.stderr);
+    assert.match(run.stdout, /conformance: 0 passed, 1 failed/);
+    assert.doesNotMatch(run.stdout, /no test ran/);
+  } finally {
+    await rm(empty, { recursive: true, force: true });
+  }
+});

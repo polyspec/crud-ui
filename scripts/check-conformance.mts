@@ -437,7 +437,8 @@ async function main(): Promise<void> {
   const problems = checkConformance({ features, registry, cases, families, evidence, legacyCases });
   const lines = createProgress({ write: text => process.stdout.write(text) });
   const out = (text: string): unknown => lines.line(text);
-  lines.start('conformance: evidence against contracts/features.json', { group: true });
+  // The check is one test: its summary counts it, and its exit status is the same count (C19.151, HR-84).
+  lines.start('conformance: evidence against contracts/features.json');
   out(`conformance: ${evidence.length} evidence records from ${files} files, ${runs.length} suite runs`);
   for (const problem of problems.invalidApplicability) out(`✖ ${problem}`);
   for (const item of problems.undeclaredFixtures) out(`✖ ${item.feature} names ${item.fixture}, which is not a registered case fixture`);
