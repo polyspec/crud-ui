@@ -1025,7 +1025,10 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/binding-python-link.test.mts \
 	tests/build/release-go-push.test.mts \
 	tests/build/ci-install-selectors.test.mts \
-	tests/build/ci-validator-php-json.test.mts
+	tests/build/ci-validator-php-json.test.mts \
+	tests/build/ci-json-install.test.mts \
+	tests/build/ci-installs.test.mts \
+	tests/build/manifest-summary.test.mts
 crudui-test-runtimes: ## Exact runtime versions and test standards
 	$(NODE) scripts/run-tests.mts node -- --test-concurrency=1 $(if $(CRUDUI_TEST_SHARD),--test-shard=$(CRUDUI_TEST_SHARD)) $(CRUDUI_RUNTIME_TESTS)
 # The TypeScript tables are untracked build output of contracts/ (P34): the build script of legacy/packages/validator/ts writes
