@@ -75,6 +75,9 @@ final class RuleParameters
         }
     }
 
+    /** The message of an accept parameter that is no string or list of strings (CUVR-016). */
+    private const ACCEPT_MESSAGE = 'Invalid accept parameter: expected a string or a list of strings';
+
     /** A non-empty list of non-empty strings: the field names of a unique list (CUVR-097). */
     private static function isNameList(mixed $parameter): bool
     {
@@ -102,12 +105,12 @@ final class RuleParameters
         if (\is_array($parameter) && array_is_list($parameter)) {
             foreach ($parameter as $item) {
                 if (!\is_string($item)) {
-                    throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, 'Invalid accept parameter: expected a string or a list of strings');
+                    throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, self::ACCEPT_MESSAGE);
                 }
             }
             return;
         }
-        throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, 'Invalid accept parameter: expected a string or a list of strings');
+        throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, self::ACCEPT_MESSAGE);
     }
 
     /**

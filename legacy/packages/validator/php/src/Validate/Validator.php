@@ -963,7 +963,12 @@ final class Validator
 
         // The rows of this collection field are walked once per validation: the filter is
         // evaluated once per row and each row whose value an earlier row holds is recorded.
-        $cacheKey = implode("\0", [...$containerPath, $fieldName, $isFilterCondition ? $ruleParam : '', $together !== null ? json_encode($together) : '']);
+        $cacheKey = implode("\0", [
+            ...$containerPath,
+            $fieldName,
+            $isFilterCondition ? $ruleParam : '',
+            $together !== null ? json_encode($together) : '',
+        ]);
         if (!isset($this->duplicatesByField[$cacheKey])) {
             $duplicates = [];
             $seen = [];

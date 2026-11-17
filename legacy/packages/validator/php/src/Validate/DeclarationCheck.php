@@ -50,8 +50,8 @@ final class DeclarationCheck
             }
             // The shapes of validate and messages are checked before the rules they hold (CUVR-056, CURP-018).
             $validate = $field['validate'] ?? null;
-            if (array_key_exists('validate', $field) && $validate !== null && !\is_bool($validate)
-                && !self::isObject($validate)) {
+            $validateIsShape = $validate === null || \is_bool($validate) || self::isObject($validate);
+            if (array_key_exists('validate', $field) && !$validateIsShape) {
                 throw new ComposeLoadError(
                     'INVALID_RULE_PARAMETER',
                     sprintf('Invalid validate at %s: expected an object', implode('.', $fieldPath)),
@@ -65,11 +65,16 @@ final class DeclarationCheck
                     $fieldPath
                 );
             }
-            foreach (self::isObject($field['messages'] ?? null) ? (array) $field['messages'] : [] as $ruleName => $message) {
+            $messages = self::isObject($field['messages'] ?? null) ? (array) $field['messages'] : [];
+            foreach ($messages as $ruleName => $message) {
                 if (!\is_string($message)) {
                     throw new ComposeLoadError(
                         'INVALID_RULE_PARAMETER',
-                        sprintf('Invalid messages.%s at %s: expected a string', (string) $ruleName, implode('.', $fieldPath)),
+                        sprintf(
+                            'Invalid messages.%s at %s: expected a string',
+                            (string) $ruleName,
+                            implode('.', $fieldPath)
+                        ),
                         $fieldPath
                     );
                 }

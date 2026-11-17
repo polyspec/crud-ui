@@ -59,7 +59,10 @@ final class GroupSource
         // A source of selected values names a root selection field with literal items (CUSC-097).
         if (self::selectionField($source['from'], $root) !== null) {
             if (array_key_exists('label', $source)) {
-                return sprintf('Invalid items.label at %s: a source of selected values takes the labels of its field', $path);
+                return sprintf(
+                    'Invalid items.label at %s: a source of selected values takes the labels of its field',
+                    $path
+                );
             }
             if (array_key_exists('choices', $source) && self::literalChoices($source['choices']) === null) {
                 return sprintf(
