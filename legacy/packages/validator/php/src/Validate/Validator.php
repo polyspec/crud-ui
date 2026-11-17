@@ -611,10 +611,23 @@ final class Validator
         if (!GroupSource::isSource($field['items'] ?? null)) {
             return false;
         }
-        // A repeated value among the source rows is data that the choices cannot express (CUVR-087).
+        // A literal choice repeated among the source rows is an input failure (CUVR-087).
         $repeat = GroupSource::repeat((array) $field['items'], $allData);
         if ($repeat !== null) {
             throw new FormInputError($repeat);
+        }
+        // A value that repeats an earlier row is a field error with rule `unique` at its data path (CUVR-096).
+        foreach (GroupSource::repeats((array) $field['items'], $allData) as $found) {
+            if (!isset($errors[$found['at']])) {
+                $parts = explode('.', $found['at']);
+                $errors[$found['at']] = [
+                    'path' => $found['at'],
+                    'field' => (string) end($parts),
+                    'rule' => 'unique',
+                    'message' => (string) ($messages['unique'] ?? 'Values must be unique.'),
+                    'value' => $found['value'],
+                ];
+            }
         }
         $members = array_map(
             static fn (array $choice): string => $choice[0],
@@ -870,8 +883,14 @@ final class Validator
         }
 
         $isFilterCondition = is_string($ruleParam) && $this->isConditionExpression($ruleParam);
+        // A list of field names holds the field together with the named fields (CUVR-097).
+        $together = is_array($ruleParam) ? $ruleParam : null;
 
         if (is_array($value) || $value instanceof \stdClass) {
+            // A list makes no failure on a field that holds an array, as true makes none.
+            if ($together !== null) {
+                return true;
+            }
             // Array-level: the field value is the array itself.
             $valuesToCheck = [];
             if ($isFilterCondition) {
@@ -942,7 +961,7 @@ final class Validator
 
         // The rows of this collection field are walked once per validation: the filter is
         // evaluated once per row and each row whose value an earlier row holds is recorded.
-        $cacheKey = implode("\0", [...$containerPath, $fieldName, $isFilterCondition ? $ruleParam : '']);
+        $cacheKey = implode("\0", [...$containerPath, $fieldName, $isFilterCondition ? $ruleParam : '', $together !== null ? json_encode($together) : '']);
         if (!isset($this->duplicatesByField[$cacheKey])) {
             $duplicates = [];
             $seen = [];
@@ -950,9 +969,22 @@ final class Validator
                 if (!is_array($item) && !$item instanceof \stdClass) {
                     continue;
                 }
-                $itemValue = ((array) $item)[$fieldName] ?? null;
-                if (EmptyValue::is($itemValue)) {
-                    continue;
+                if ($together !== null) {
+                    // The row's value is the list of the field and the named fields; an empty member takes no part.
+                    $members = [];
+                    foreach ([$fieldName, ...$together] as $name) {
+                        $member = ((array) $item)[$name] ?? null;
+                        if (EmptyValue::is($member)) {
+                            continue 2;
+                        }
+                        $members[] = $member;
+                    }
+                    $itemValue = $members;
+                } else {
+                    $itemValue = ((array) $item)[$fieldName] ?? null;
+                    if (EmptyValue::is($itemValue)) {
+                        continue;
+                    }
                 }
                 $key = (string) $key;
                 if (

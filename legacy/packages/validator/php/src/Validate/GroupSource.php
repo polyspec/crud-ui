@@ -174,7 +174,37 @@ final class GroupSource
      */
     public static function repeat(array $source, mixed $data): ?string
     {
-        return self::firstRepeat($source, $data, true);
+        return self::firstRepeat($source, $data, false);
+    }
+
+    /**
+     * The rows whose choice value repeats the value of an earlier row, in data order, as the data path of the
+     * value field and its canonical text (CUVR-087, CUVR-096). Each is a field error with rule `unique`.
+     *
+     * @param array<array-key, mixed> $source
+     * @return list<array{at: string, value: string}>
+     */
+    public static function repeats(array $source, mixed $data): array
+    {
+        $segments = explode('.', (string) $source['from']);
+        $valueName = (string) end($segments);
+        $groupPath = implode('.', array_slice($segments, 0, -2));
+        $seen = [];
+        $repeats = [];
+        foreach (self::rows($source, $data) as $key => $row) {
+            if (!JsonValue::isObject($row)) {
+                continue;
+            }
+            $value = self::choiceText(((array) $row)[$valueName] ?? null);
+            if ($value === null) {
+                continue;
+            }
+            if (isset($seen[$value])) {
+                $repeats[] = ['at' => $groupPath . '.' . (string) $key . '.' . $valueName, 'value' => $value];
+            }
+            $seen[$value] = true;
+        }
+        return $repeats;
     }
 
     /**
