@@ -11,12 +11,17 @@ import { readJson } from '../json.mts';
 const root = path.resolve(import.meta.dirname, '../..');
 // The PHP that make install-tools installs into var/tools of this checkout, also in a linked worktree.
 const php = path.join(root, 'var/tools/bin/php');
+// The generator suites read their fixtures through the JSON extension, whose module make exports (C19.62).
+const json = process.env.POLYSPEC_JSON_MODULE ?? '';
+// The JSON extension that make loads into the PHP of each PHPUnit run, before the suite selection.
+const jsonExtension = '(?: --php-extension "[^"]*polyspec_json\\.so")?';
 
 function listing(component: string, args: string[]): Set<string> {
   const directory = mkdtempSync(path.join(os.tmpdir(), 'crudui-php-scope-'));
   try {
     const xml = path.join(directory, 'tests.xml');
-    const command = [path.join(root, 'vendor/phpunit/phpunit/phpunit'), '-c', 'phpunit.xml', '--list-tests-xml', xml, ...args];
+    assert.ok(json !== '', 'POLYSPEC_JSON_MODULE names the polyspec_json module; run make crudui-install-json-php');
+    const command = ['-d', `extension=${json}`, path.join(root, 'vendor/phpunit/phpunit/phpunit'), '-c', 'phpunit.xml', '--list-tests-xml', xml, ...args];
     const result = spawnSync(php, command, { cwd: path.join(root, 'legacy/packages', component, 'php'), encoding: 'utf8', timeout: 60_000 });
     assert.equal(result.error, undefined, `${php} ${command.join(' ')}: ${result.error?.message ?? ''}`);
     assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -52,12 +57,12 @@ test('PHP source entry points select public and source-internal suites', { timeo
   for (const target of ['crudui-test-php-api', 'crudui-test-validators']) {
     const result = makeDryRun(root, target);
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /phpunit --cwd legacy\/packages\/(?:generator|validator)\/php -- --testsuite public,php-source-internal/);
+    assert.match(result.stdout, new RegExp(`phpunit${jsonExtension} --cwd legacy/packages/(?:generator|validator)/php -- --testsuite public,php-source-internal`));
   }
   const source = makeDryRun(root, 'crudui-test-php-source');
   assert.equal(source.status, 0, source.stderr);
   for (const component of ['generator', 'validator']) {
-    assert.ok(source.stdout.includes(`phpunit --cwd legacy/packages/${component}/php -- --testsuite public,php-source-internal`));
+    assert.match(source.stdout, new RegExp(`phpunit${jsonExtension} --cwd legacy/packages/${component}/php -- --testsuite public,php-source-internal`));
   }
   assert.doesNotMatch(source.stdout, /runtime-targets|crudui-test-php-source-internals/);
   const filtered = makeDryRun(root, 'crudui-test-php-source',{ variables: ['CASES=ExamplePattern'] });

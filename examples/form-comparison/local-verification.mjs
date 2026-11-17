@@ -54,28 +54,27 @@ export function verificationStages({ origin, results, data, prepared, library = 
     return [selectedServers(servers).map(browser)];
   }
   return [
-    // The PHPUnit suite of the PHP server in the php mode, whose group modules starts the processor modes with the
-    // modules of this run.
-    [check('php-modes', [phpRunTests, 'phpunit', '--cwd', 'examples/form-comparison/servers/php'], {
+    // The PHPUnit suite of the PHP server in the php mode, with the JSON module of this run loaded into the PHP of
+    // PHPUnit; its group modules starts the processor modes with the modules of this run.
+    [check('php-modes', [phpRunTests, 'phpunit', '--php-extension', prepared.jsonModule,
+      '--cwd', 'examples/form-comparison/servers/php'], {
       FORM_PHP_SERVER: 'php',
       FORM_PHP_NATIVE_AUTOLOAD: prepared.nativePhpAutoload,
-      FORM_ORDERED_JSON_MODULE: prepared.orderedJsonModule,
-      FORM_JSON_EXTENSION: prepared.orderedJsonExtensionName,
+      POLYSPEC_JSON_MODULE: prepared.jsonModule,
       FORM_CRUDUI_MODULE: prepared.cruduiModule,
     })],
-    // The same suite in the php-ext mode: the run-tests of kit loads the selected OrderedJSON and CRUDUI modules into
-    // the PHP of PHPUnit (K165), and the suite runs as in the php mode. It shares the cache
+    // The same suite in the php-ext mode: the run-tests of kit loads the JSON and CRUDUI modules into the PHP of
+    // PHPUnit (K165), and the suite runs as in the php mode. It shares the cache
     // directory of PHPUnit with the php mode, so it runs after it.
     [check('php-ext-mode', [phpRunTests, 'phpunit',
-      '--php-extension', prepared.orderedJsonModule, '--php-extension', prepared.cruduiModule,
+      '--php-extension', prepared.jsonModule, '--php-extension', prepared.cruduiModule,
       '--cwd', 'examples/form-comparison/servers/php'], {
       COMPOSER: prepared.nativeComposerManifest,
       COMPOSER_VENDOR_DIR: prepared.nativeComposerVendor,
       FORM_PHP_AUTOLOAD: prepared.nativePhpAutoload,
       FORM_PHP_NATIVE_AUTOLOAD: prepared.nativePhpAutoload,
       FORM_PHP_SERVER: 'php-ext',
-      FORM_ORDERED_JSON_MODULE: prepared.orderedJsonModule,
-      FORM_JSON_EXTENSION: prepared.orderedJsonExtensionName,
+      POLYSPEC_JSON_MODULE: prepared.jsonModule,
       FORM_CRUDUI_MODULE: prepared.cruduiModule,
     })],
     [check('generation', ['check-generation.mjs', '--url', origin,

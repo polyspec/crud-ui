@@ -514,10 +514,6 @@
       "kind": "record",
       "record": "docs/rebuild/install-phpdocumentor.md"
     },
-    "scripts/ordered-json-package.mts": {
-      "kind": "policy",
-      "reason": "records the one package folder that PIE built, from the installed.json that PIE writes under its work folder; PIE defines no such record, so no ecosystem tool applies"
-    },
     "scripts/package-dist.mts": {
       "kind": "ecosystem",
       "tool": "npm pack, run under the holder-lock of @polyspec/kit"

@@ -6,16 +6,15 @@
 // never connects.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import net from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 
-import { anyLoopbackPort, orderedJsonBuildStages, orderedJsonCopyArguments, publicServerDefinition, startProcess } from './local-servers.mjs';
+import { anyLoopbackPort, jsonModule, publicServerDefinition, startProcess } from './local-servers.mjs';
 
-const { orderedJsonProvider } = await import('./local-servers.mjs');
 
 const localServers = pathToFileURL(path.join(import.meta.dirname, 'local-servers.mjs')).href;
 
@@ -167,72 +166,12 @@ test('the local pipeline stack has no summed hook limit and starts and stops in 
   assert.match(stack, /teardown\('browser close'/);
 });
 
-test('the copy of the unpacked OrderedJSON extension source puts config.m4 at the top of the destination', async t => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'crudui-ordered-json-copy-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
-  const extension = path.join(directory, 'extension');
-  const destination = path.join(directory, 'copied');
-  await mkdir(path.join(extension, 'src'), { recursive: true });
-  await mkdir(destination);
-  await writeFile(path.join(extension, 'src/config.m4'), 'PHP_ARG_ENABLE([ordered-json])\n');
-  await new Promise((resolve, reject) => {
-    spawn('cp', orderedJsonCopyArguments(extension, destination, 'src'), { stdio: 'inherit' })
-      .once('error', reject)
-      .once('close', status => (status === 0 ? resolve() : reject(new Error(`cp ended with status ${status}`))));
-  });
-  await access(path.join(destination, 'config.m4'));
-});
-
-
-test('local OrderedJSON native sources come from the Composer provider of the link declaration (C18.18)', async t => {
-  const root = await mkdtemp(path.join(tmpdir(), 'crudui-ordered-json-provider-'));
+test('both PHP servers load the one polyspec_json module that PIE downloaded (C19.62)', async t => {
+  const root = await mkdtemp(path.join(tmpdir(), 'crudui-json-module-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const provider = path.join(root, 'checkout/legacy/packages/php-ext');
-  await mkdir(path.join(provider, 'src'), { recursive: true });
-  await writeFile(path.join(provider, 'composer.json'), JSON.stringify({
-    name: 'polyspec/ordered-json-php-ext', version: '0.0.10',
-    'php-ext': { 'extension-name': 'polyspec_ordered_json', 'build-path': 'src' },
-  }));
-  await writeFile(path.join(provider, 'src/config.m4'), 'PHP_ARG_ENABLE([polyspec-ordered-json])\n');
-  // kit's link providers prints each Composer provider of .links as the name, a tab and the folder (K1008).
-  const calls = [];
-  const providers = async (executable, args, options) => {
-    calls.push({ executable, args, cwd: options?.cwd });
-    return { stdout: `polyspec/other-php\t/elsewhere\npolyspec/ordered-json-php-ext\t${provider}\n` };
-  };
-  const selected = await orderedJsonProvider({ root, mode: 'local', providers });
-  assert.deepEqual(selected, {
-    directory: provider, extensionName: 'polyspec_ordered_json', buildPath: 'src', version: '0.0.10', mode: 'local',
-  });
-  assert.deepEqual(calls, [{ executable: process.execPath,
-    args: [fileURLToPath(import.meta.resolve('@polyspec/kit/link')), 'providers', '--ecosystem', 'composer'], cwd: root }]);
-  // Without a provider of the package in .links, LOCAL=1 has no source and fails by name.
-  await assert.rejects(orderedJsonProvider({ root, mode: 'local', providers: async () => ({ stdout: '' }) }),
-    /polyspec\/ordered-json-php-ext/);
-});
-
-test('a local and a release OrderedJSON extension build only from their package folder (C18.18)', () => {
-  const provider = { directory: '/links/ordered-json/legacy/packages/php-ext', extensionName: 'polyspec_ordered_json', buildPath: 'src', version: '0.0.19' };
-  const local = orderedJsonBuildStages({ ...provider, mode: 'local' }, '/build/ordered-json-php-ext');
-  assert.deepEqual(local, orderedJsonBuildStages({ ...provider, mode: 'release' }, '/build/ordered-json-php-ext'));
-  for (const item of local.flat()) {
-    assert.ok(!item.cwd.startsWith('/links/ordered-json/') || item.cwd.startsWith(provider.directory), `${item.id} runs in the package folder or the build`);
-    for (const argument of item.args) assert.ok(!argument.startsWith('/links/') || argument.startsWith(provider.directory), `${item.id} reads only the package folder`);
-  }
-  assert.deepEqual(local.at(-1), [{ id: 'ordered-json-make', command: 'make', args: [], cwd: '/build/ordered-json-php-ext/src' }]);
-});
-
-test('the release native source is the OrderedJSON php-ext package that make ordered-json-ext recorded (C17.84, C17.90)', async t => {
-  const root = await mkdtemp(path.join(tmpdir(), 'crudui-ordered-json-release-'));
-  t.after(() => rm(root, { recursive: true, force: true }));
-  const directory = path.join(root, 'pie/vendor/polyspec/ordered-json-php-ext');
-  await mkdir(path.join(root, 'var'), { recursive: true });
-  await writeFile(path.join(root, 'var/ordered-json-package'), `${directory}\n`);
-  await mkdir(path.join(directory, 'src'), { recursive: true });
-  await writeFile(path.join(directory, 'composer.json'), JSON.stringify({ version: '0.0.9',
-    'php-ext': { 'extension-name': 'ordered_json', 'build-path': 'src' } }));
-  await writeFile(path.join(directory, 'src/config.m4'), 'PHP_ARG_ENABLE([ordered-json])\n');
-  assert.deepEqual(await orderedJsonProvider({ root, mode: 'release' }), {
-    directory, extensionName: 'ordered_json', buildPath: 'src', version: '0.0.9', mode: 'release',
-  });
+  await assert.rejects(jsonModule({ root }), /crudui-install-json-php/);
+  const module = path.join(root, 'var/bindings/deps/php/php8.4_0/vendor/polyspec/json/polyspec_json.so');
+  await mkdir(path.dirname(module), { recursive: true });
+  await writeFile(module, '');
+  assert.equal(await jsonModule({ root }), module);
 });

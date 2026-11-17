@@ -5,22 +5,24 @@ declare(strict_types=1);
 namespace Polyspec\Crudui\FormComparison;
 
 use InvalidArgumentException;
-use Polyspec\OrderedJson\Value;
+use Polyspec\Json\Kind;
+use Polyspec\Json\OrderedMap;
+use Polyspec\Json\Value;
 use stdClass;
 
-/** Convert ordered JSON values to objects, arrays and scalar values. */
+/** Convert the JSON values of the extension polyspec_json to objects, arrays and scalar values. */
 final class FormJson
 {
     public static function decode(string $source): mixed
     {
-        // The selected OrderedJSON implementation must match the verified PHP server mode.
+        // The loaded extensions must match the verified PHP server mode.
         ServerMode::current();
-        return self::data(\Polyspec\OrderedJson\parse($source));
+        return self::data(\Polyspec\Json\parse($source));
     }
 
     public static function encode(mixed $data): string
     {
-        return \Polyspec\OrderedJson\stringify(self::value($data));
+        return \Polyspec\Json\stringify(self::value($data));
     }
 
     /** Convert objects only after request shape validation has completed. */
@@ -74,13 +76,22 @@ final class FormJson
     private static function data(Value $value): mixed
     {
         return match ($value->kind()) {
-            'object' => (object) array_map(self::data(...), $value->members()),
-            'array' => array_map(self::data(...), $value->items()),
-            'string' => $value->stringValue(),
-            'boolean' => $value->booleanValue(),
-            'number' => self::number($value->numberLiteral()),
-            'null' => null,
+            Kind::Object_ => self::object($value->members()),
+            Kind::Array_ => array_map(self::data(...), $value->items()),
+            Kind::String_ => $value->stringValue(),
+            Kind::Boolean => $value->booleanValue(),
+            Kind::Number => self::number($value->numberLiteral()),
+            Kind::Null_ => null,
         };
+    }
+
+    private static function object(OrderedMap $members): stdClass
+    {
+        $object = new stdClass();
+        foreach ($members as $name => $member) {
+            $object->{$name->stringValue()} = self::data($member);
+        }
+        return $object;
     }
 
     private static function number(string $literal): int|float
@@ -110,12 +121,21 @@ final class FormJson
             return Value::number($literal);
         }
         if ($data instanceof stdClass) {
-            return Value::object(array_map(self::value(...), get_object_vars($data)));
+            return self::members(get_object_vars($data));
         }
         if (is_array($data)) {
-            $values = array_map(self::value(...), $data);
-            return array_is_list($data) ? Value::array($values) : Value::object($values);
+            return array_is_list($data) ? Value::array(array_map(self::value(...), $data)) : self::members($data);
         }
         throw new InvalidArgumentException('Expected JSON form data');
+    }
+
+    /** @param array<array-key, mixed> $data */
+    private static function members(array $data): Value
+    {
+        $members = new OrderedMap();
+        foreach ($data as $name => $item) {
+            $members->insert(Value::string((string) $name), self::value($item));
+        }
+        return Value::object($members);
     }
 }

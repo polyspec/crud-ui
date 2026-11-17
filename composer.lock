@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4be1753a8f50c738129a8845750c0ea2",
+    "content-hash": "5e27fa8b4ef067a142e0aa9cdbe74434",
     "packages": [
         {
             "name": "polyspec/crudui-generator",
@@ -93,44 +93,6 @@
                 "symlink": true,
                 "relative": true
             }
-        },
-        {
-            "name": "polyspec/ordered-json",
-            "version": "0.0.25",
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/polyspec/ordered-json/releases/download/v0.0.25/polyspec-ordered-json-php-0.0.25.zip",
-                "shasum": "e826c14375e0b24e2a612a48c4fedf82d95c8e97"
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-pcre": "*",
-                "php": ">=8.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "13.4.5"
-            },
-            "suggest": {
-                "ext-polyspec_ordered_json": "Native backend from the polyspec/ordered-json-php-ext PIE package"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Polyspec\\OrderedJson\\": "src/"
-                },
-                "files": [
-                    "src/OrderedJson.php"
-                ]
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Polyspec\\OrderedJson\\Tests\\": "tests/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "JSON document order at every depth, with optional native parser"
         }
     ],
     "packages-dev": [

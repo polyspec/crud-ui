@@ -18,7 +18,7 @@ golangci-lint = "2.14.0"
 # their wasm-bindgen crate (binding GN-18); mise.lock pins the digest of its release asset.
 "github:wasm-bindgen/wasm-bindgen" = "0.2.130"
 "http:composer" = { version = "2.10.3", url = "https://getcomposer.org/download/{{ version }}/composer.phar", checksum = "sha256:7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6", bin = "composer" }
-# The PIE PHAR builds and installs the OrderedJSON extension from the Composer repository of the release (C17.84); its
+# The PIE PHAR downloads the prebuilt polyspec_json extension from the Composer repository of the json release (C19.62); its
 # sha256 is that of the release asset pie.phar.
 "http:pie" = { version = "1.4.10", url = "https://github.com/php/pie/releases/download/{{version}}/pie.phar", checksum = "sha256:b88792235c8e80be568436d4cb043b49fd1869c89b64e83d23e2882ae19d70a8", bin = "pie" }
 

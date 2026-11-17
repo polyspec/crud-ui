@@ -7,8 +7,9 @@ namespace Polyspec\CruduiTestSupport;
 use RuntimeException;
 
 /**
- * One child PHP process of a test: `php -n` with the extension modules a test names and one script, by default after
- * the mbstring and dom extensions that the binary builds as shared modules and the Composer autoloader of the checkout.
+ * One child PHP process of a test: `php -n` with the JSON extension module that POLYSPEC_JSON_MODULE names, the
+ * extension modules a test names and one script, by default after the mbstring and dom extensions that the binary
+ * builds as shared modules and the Composer autoloader of the checkout.
  * The PHP tests of the form comparison and of the PHP extension start their processes with it.
  * Its namespace lies outside Polyspec\Crudui\: a php-ext run of the form comparison requires every class under that
  * namespace but its own to be internal to the crudui extension, and the PHPUnit process of that run loads this class.
@@ -23,8 +24,9 @@ final class PhpProcess
     }
 
     /**
-     * Run `$script` in a child process with the extension modules `$modules` and the environment variables
-     * `$environment` added to those of this process; with `$libraries`, after mbstring, dom and the autoloader.
+     * Run `$script` in a child process with the JSON extension, the extension modules `$modules` and the environment
+     * variables `$environment` added to those of this process; with `$libraries`, after mbstring, dom and the
+     * autoloader.
      *
      * @param list<string> $modules Absolute paths of extension modules.
      * @param array<string, string> $environment
@@ -41,13 +43,17 @@ final class PhpProcess
                 array_push($arguments, '-d', 'extension=' . $name);
             }
         }
-        foreach ($modules as $module) {
+        $json = $environment['POLYSPEC_JSON_MODULE'] ?? getenv('POLYSPEC_JSON_MODULE');
+        if (!is_string($json) || !str_starts_with($json, '/') || !is_file($json)) {
+            throw new RuntimeException('POLYSPEC_JSON_MODULE must name the absolute polyspec_json extension module');
+        }
+        foreach ([$json, ...$modules] as $module) {
             array_push($arguments, '-d', 'extension=' . $module);
         }
-        $orderedModule = $environment['FORM_ORDERED_JSON_MODULE'] ?? getenv('FORM_ORDERED_JSON_MODULE');
-        $orderedPath = is_string($orderedModule) ? realpath($orderedModule) : false;
-        $nativeOrderedJson = $orderedPath !== false && in_array($orderedPath, array_map(realpath(...), $modules), true);
-        if ($libraries && $nativeOrderedJson) {
+        $cruduiModule = $environment['FORM_CRUDUI_MODULE'] ?? getenv('FORM_CRUDUI_MODULE');
+        $cruduiPath = is_string($cruduiModule) ? realpath($cruduiModule) : false;
+        $nativeCrudui = $cruduiPath !== false && in_array($cruduiPath, array_map(realpath(...), $modules), true);
+        if ($libraries && $nativeCrudui) {
             $autoload = $environment['FORM_PHP_NATIVE_AUTOLOAD'] ?? getenv('FORM_PHP_NATIVE_AUTOLOAD');
             if (!is_string($autoload) || $autoload === '') {
                 throw new RuntimeException(

@@ -74,7 +74,7 @@ final class FormRepositoryTest extends TestCase
             $rejected = false;
             try {
                 $repo->read();
-            } catch (\Polyspec\OrderedJson\ParseError) {
+            } catch (\Polyspec\Json\ParseError) {
                 $rejected = true;
             }
             self::assertTrue(

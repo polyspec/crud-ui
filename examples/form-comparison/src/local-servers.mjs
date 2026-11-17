@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { execFile, fork, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
@@ -17,18 +17,22 @@ const execFileAsync = promisify(execFile);
 export const exampleDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const repositoryRoot = path.resolve(exampleDirectory, '../..');
 /**
- * The file that make ordered-json-ext writes with the folder of the OrderedJSON php-ext package that PIE built from the
- * packages.json repository of the release (C17.84, C17.90, C17.96).
+ * The folder under which make crudui-install-json-php downloads, with PIE, the prebuilt extension polyspec_json of the
+ * json release that packages/validator/php-ext/composer.json requires (the BINDING_PIE of the Makefile).
  */
-const orderedJsonPackageFile = 'var/ordered-json-package';
+const jsonPieDirectory = 'var/bindings/deps/php';
 
-/**
- * The folder of the OrderedJSON php-ext package that make ordered-json-ext recorded, or undefined.
- */
-async function pieOrderedJsonDirectory(root) {
-  const folder = (await readFile(path.join(root, orderedJsonPackageFile), 'utf8').catch(() => '')).trim();
-  if (folder === '') return undefined;
-  return (await stat(path.join(folder, 'composer.json')).then(file => file.isFile(), () => false)) ? folder : undefined;
+/** The one polyspec_json module that PIE downloaded under `jsonPieDirectory`. */
+export async function jsonModule({ root = repositoryRoot } = {}) {
+  const folder = path.join(root, jsonPieDirectory);
+  const targets = await readdir(folder).catch(() => []);
+  const modules = [];
+  for (const target of targets) {
+    const module = path.join(folder, target, 'vendor/polyspec/json/polyspec_json.so');
+    if (await stat(module).then(file => file.isFile(), () => false)) modules.push(module);
+  }
+  assert.equal(modules.length, 1, `${jsonPieDirectory} holds ${modules.length} polyspec_json modules, not one; run make crudui-install-json-php`);
+  return modules[0];
 }
 
 /** Print one progress line of the local server harness. */
@@ -43,47 +47,6 @@ function progress(write, text) {
 const readyLine = server => new RegExp(`^CRUDUI_READY ${server} (127\\.0\\.0\\.1:\\d+)$`, 'm');
 /** The loopback address on which a local server takes a port of the system. */
 export const anyLoopbackPort = '127.0.0.1:0';
-
-/**
- * The arguments of cp that copy the contents of the src directory of an unpacked OrderedJSON PHP extension
- * into `destination`. The source ends with a dot so that cp copies its contents; `path.join` drops that segment,
- * so the string is made here.
- */
-export function orderedJsonCopyArguments(extension, destination, buildPath) {
-  return ['-R', `${path.join(extension, buildPath)}${path.sep}.`, destination];
-}
-
-/**
- * The folder of the Composer package `name` that a checkout of the link declaration (.links) provides: kit's link providers
- * prints each Composer provider as the name, a tab and the folder (K1008), so no path of another repository is written here.
- */
-async function linkedComposerFolder(name, { root, providers }) {
-  const { stdout } = await providers(process.execPath, [fileURLToPath(import.meta.resolve('@polyspec/kit/link')), 'providers', '--ecosystem', 'composer'], { cwd: root });
-  const line = stdout.split('\n').find(item => item.startsWith(`${name}\t`));
-  assert.ok(line, `no checkout of .links provides ${name}, which LOCAL=1 builds; declare its checkout in .links`);
-  return line.slice(name.length + 1);
-}
-
-/** Select the explicitly requested native provider and read its own extension identity. */
-export async function orderedJsonProvider({ root = repositoryRoot, mode, providers = execFileAsync }) {
-  assert.ok(mode === 'local' || mode === 'release', `Unknown native dependency mode: ${mode}`);
-  let directory;
-  if (mode === 'local') {
-    directory = await linkedComposerFolder('polyspec/ordered-json-php-ext', { root, providers });
-  } else {
-    directory = await pieOrderedJsonDirectory(root);
-    assert.ok(directory, `${orderedJsonPackageFile} names no OrderedJSON php-ext package; run make ordered-json-ext, which PIE builds (C17.84, C17.90)`);
-  }
-  const manifest = JSON.parse(await readFile(path.join(directory, 'composer.json'), 'utf8'));
-  const extensionName = manifest['php-ext']?.['extension-name'];
-  const buildPath = manifest['php-ext']?.['build-path'];
-  assert.ok(typeof extensionName === 'string' && /^[a-z][a-z0-9_]*$/.test(extensionName), `${directory}/composer.json declares a native extension name`);
-  assert.ok(typeof buildPath === 'string' && buildPath !== '' && !path.isAbsolute(buildPath)
-    && !path.relative(directory, path.resolve(directory, buildPath)).split(path.sep).includes('..'), `${directory}/composer.json declares a package-relative build path`);
-  assert.equal(typeof manifest.version, 'string', `${directory}/composer.json declares its version`);
-  assert.ok((await stat(path.join(directory, buildPath, 'config.m4'))).isFile(), `${directory}/${buildPath}/config.m4 is a file`);
-  return { directory, extensionName, buildPath, version: manifest.version, mode };
-}
 
 /** Prepare the explicit native Composer profile with its own native dependency and autoload records. */
 async function prepareNativePhpAutoload({ directory, root = repositoryRoot, write = text => process.stdout.write(text) }) {
@@ -103,51 +66,29 @@ async function prepareNativePhpAutoload({ directory, root = repositoryRoot, writ
 }
 
 /**
- * The stages that build the OrderedJSON PHP extension of the package folder `provider.directory` in `copied`: its build
- * path is copied and built with phpize, configure and make, whether the folder is the release that PIE unpacked or a
- * checkout of .links. Only the package folder is read, never the repository around it (C18.18).
- */
-export function orderedJsonBuildStages(provider, copied) {
-  const build = path.join(copied, provider.buildPath);
-  return [
-    [{ id: 'ordered-json-php-directory', command: 'mkdir', args: ['-p', build], cwd: repositoryRoot }],
-    [{ id: 'ordered-json-php-copy', command: 'cp', args: orderedJsonCopyArguments(provider.directory, build, provider.buildPath), cwd: repositoryRoot },
-      { id: 'ordered-json-manifest-copy', command: 'cp', args: [path.join(provider.directory, 'composer.json'), path.join(copied, 'composer.json')], cwd: repositoryRoot }],
-    [{ id: 'ordered-json-phpize', command: 'phpize', args: [], cwd: build }],
-    [{ id: 'ordered-json-configure', command: './configure', args: [`--enable-${provider.extensionName.replaceAll('_', '-')}`], cwd: build }],
-    [{ id: 'ordered-json-make', command: 'make', args: [], cwd: build }],
-  ];
-}
-
-/**
- * Build what the five record servers run: the OrderedJSON PHP extension source, both PHP extensions and the
- * Go and Rust server binaries. Every build is one step that
+ * Build what the five record servers run: the CRUDUI PHP extension and the Go and Rust server binaries; both PHP
+ * servers load the polyspec_json module that PIE downloaded. Every build is one step that
  * runs to its end without a time limit and prints its output and progress.
  */
 export async function prepareRecordServers({ buildDirectory, write = text => process.stdout.write(text) }) {
-  const mode = process.env.LOCAL === '1' ? 'local' : 'release';
-  const provider = await orderedJsonProvider({ mode });
+  const json = await jsonModule();
   const nativeComposer = await prepareNativePhpAutoload({ directory: path.join(buildDirectory, 'php-native'), write });
-  progress(write, `OrderedJSON ${provider.version}: ${provider.mode} ${provider.directory}`);
+  progress(write, `JSON extension: ${json}`);
   const goBinary = path.join(buildDirectory, 'go-server');
   const step = (id, command, args, cwd = repositoryRoot, environment = {}) =>
     ({ id, command, args, cwd, environment });
-  const copied = path.join(buildDirectory, 'ordered-json-php-ext');
-  const build = path.join(copied, provider.buildPath);
-  const nativeSteps = orderedJsonBuildStages(provider, copied).map(stage => stage.map(item => step(item.id, item.command, item.args, item.cwd)));
   const results = await runStages([[
     step('crudui-php-extension', 'make', ['build-php-ext']),
     step('go-server', 'go', ['build', '-trimpath', '-o', goBinary, '.'],
       path.join(exampleDirectory, 'servers/go'), { CGO_ENABLED: '0' }),
     step('rust-server', process.execPath, [path.join(repositoryRoot, 'scripts/run-rust-command.mts'),
       'build', '--locked'], path.join(exampleDirectory, 'servers/rust')),
-  ], ...nativeSteps], { label: 'local-servers', write });
+  ]], { label: 'local-servers', write });
   const failed = results.find(result => result.status !== 'passed');
   assert.equal(failed, undefined, `Building ${failed?.id} ${failed?.status}`);
   return {
     cruduiModule: path.join(repositoryRoot, 'var/php-ext/polyspec_crudui.so'),
-    orderedJsonModule: path.join(build, 'modules', `${provider.extensionName}.so`),
-    orderedJsonExtensionName: provider.extensionName,
+    jsonModule: json,
     nativePhpAutoload: nativeComposer.autoload,
     nativeComposerManifest: nativeComposer.manifest,
     nativeComposerVendor: nativeComposer.vendorDirectory,
@@ -191,8 +132,8 @@ export async function recordServerProcess(server, { dataDirectory, publicDirecto
   const sourceFile = path.join(publicDirectory, 'source.json');
   if (server === 'php' || server === 'php-ext') {
     const common = [...await phpExtensionArguments('mbstring'), ...await phpExtensionArguments('dom')];
-    const extensions = server === 'php-ext'
-      ? ['-d', `extension=${prepared.orderedJsonModule}`, '-d', `extension=${prepared.cruduiModule}`] : [];
+    const extensions = ['-d', `extension=${prepared.jsonModule}`,
+      ...server === 'php-ext' ? ['-d', `extension=${prepared.cruduiModule}`] : []];
     return {
       server, address,
       command: process.execPath,
@@ -200,7 +141,6 @@ export async function recordServerProcess(server, { dataDirectory, publicDirecto
         '-n', ...common, ...extensions, '-d', 'enable_post_data_reading=0', '-d', 'display_errors=0', '-d', 'log_errors=1'],
       environment: {
         FORM_PHP_SERVER: server,
-        FORM_JSON_EXTENSION: prepared.orderedJsonExtensionName,
         ...(server === 'php-ext' ? { FORM_PHP_AUTOLOAD: prepared.nativePhpAutoload } : {}),
         FORM_DATA_DIRECTORY: dataDirectory,
         FORM_PUBLIC_DIRECTORY: publicDirectory,

@@ -267,6 +267,14 @@ export const evidenceSuites: EvidenceSuite[] = [
 ];
 
 /**
+ * Whether a run loads an extension other than polyspec_json: every PHP run loads that JSON extension, so only another
+ * extension, such as the crudui build, makes a run an extension run.
+ */
+function cruduiExtensionRun(record: RunRecord): boolean {
+  return (record.phpExtensions ?? []).some(file => !file.endsWith('/polyspec_json.so'));
+}
+
+/**
  * The state of each suite from the run records: `did not run`, `did not finish`, `ended with
  * failure (exit <status>)` or `passed`. The latest record of each command decides, and a suite run
  * by several commands takes the worst state of them.
@@ -285,7 +293,7 @@ export function suiteStates(
     for (const record of runs) {
       if (record.program !== program || (tool !== undefined && record.tool !== tool)
         || (cwd !== undefined && record.cwd !== cwd) || (argument !== undefined && !record.args.includes(argument))
-        || (phpExtensions !== undefined && Boolean(record.phpExtensions?.length) !== phpExtensions)) continue;
+        || (phpExtensions !== undefined && cruduiExtensionRun(record) !== phpExtensions)) continue;
       const command = JSON.stringify([record.tool, record.cwd, record.args, record.phpExtensions ?? []]);
       const previous = latest.get(command);
       if (!previous || previous.started < record.started) latest.set(command, record);

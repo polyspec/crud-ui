@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  The PHPUnit suite of the PHP record server of the form comparison. FORM_PHP_SERVER selects the mode: php runs the PHP
-  library, php-ext the ordered_json and crudui extensions that the run loads; the group modules starts child processes
-  with the extension modules that FORM_ORDERED_JSON_MODULE and FORM_CRUDUI_MODULE name.
+  The PHPUnit suite of the PHP record server of the form comparison. Both modes read JSON through the polyspec_json
+  extension that the run loads. FORM_PHP_SERVER selects the mode: php runs the PHP library, php-ext the crudui extension
+  that the run loads; the group modules starts child processes with the extension modules that POLYSPEC_JSON_MODULE and
+  FORM_CRUDUI_MODULE name.
 -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="../../../../vendor/phpunit/phpunit/phpunit.xsd"

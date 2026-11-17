@@ -272,6 +272,11 @@ BINDING_PYTHON_FIND_LINKS ?= $(BINDING_VAR)/deps/python
 BINDING_NODE_DEPS ?= $(CURDIR)/node_modules/@polyspec/json $(CURDIR)/node_modules/@polyspec/json-$(BINDING_PLATFORM)
 BINDING_PIE = $(BINDING_VAR)/deps/php
 BINDING_PHP_EXTENSIONS ?= $(wildcard $(BINDING_PIE)/*/vendor/polyspec/json/polyspec_json.so)
+# The PHP tests of the checkout read JSON through that extension: kit's run-tests loads it into the PHP of PHPUnit
+# (PHP_JSON_EXTENSION), and the child processes of tests/php/PhpProcess.php load the module that POLYSPEC_JSON_MODULE
+# names (C19.62).
+export POLYSPEC_JSON_MODULE = $(firstword $(BINDING_PHP_EXTENSIONS))
+PHP_JSON_EXTENSION = --php-extension "$(POLYSPEC_JSON_MODULE)"
 # The components whose PHP extension a component's extension requires, which PHP loads after json and before it: the
 # generator extension raises the error classes of the validator extension, such as ComposeLoadError.
 BINDING_PHP_REQUIRES_generator = validator
@@ -290,8 +295,11 @@ binding_go_count = $(NODE) -e 'const e = require("fs").readFileSync(process.argv
 # its version): PIE resolves it in the Composer repository of that json release and downloads the prebuilt archive for the
 # PHP of PATH into BINDING_PIE. `pie download` installs nothing into the PHP; the tests load the library with -d extension.
 BINDING_JSON_PHP = $(shell $(NODE) -p 'require("./packages/validator/php-ext/composer.json").require["polyspec/json"]')
-crudui-install-bindings: install-pie
+crudui-install-bindings: crudui-install-json-php
 	$(ONLINE) $(PYTHON) -m pip download -q --require-hashes --no-deps -r packages/validator/python/requirements-bindings.txt -d $(BINDING_VAR)/deps/python
+
+.PHONY: crudui-install-json-php
+crudui-install-json-php: install-pie ## Download with PIE the polyspec_json extension that the PHP tests and servers load; ONLINE
 	rm -rf $(BINDING_PIE)
 	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) repository:add composer https://github.com/polyspec/json/releases/download/v$(BINDING_JSON_PHP)/packages.json --no-interaction
 	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) download polyspec/json:$(BINDING_JSON_PHP) --no-interaction
@@ -848,32 +856,13 @@ PYTHON := $(TOOLS_DIR)/mise/shims/python3
 # from the PATH that make started with (kit K171).
 GO := $(TOOLS_DIR)/mise/shims/go
 COMPOSER_BIN := $(TOOLS_DIR)/mise/shims/composer
-# The folder that make ordered-json-ext records for the local record servers (examples/form-comparison/src/local-servers.mjs).
-ORDERED_JSON_PACKAGE_FILE := $(CURDIR)/var/ordered-json-package
-# PIE is the shim of the http:pie of mise.toml, which install-pie installs (C17.93). Each build starts in an empty working
-# directory of the package under var/pie (C17.96).
+# PIE is the shim of the http:pie of mise.toml, which install-pie installs (C17.93).
 PIE := $(TOOLS_DIR)/mise/shims/pie
-PIE_WORK := $(CURDIR)/var/pie/polyspec/ordered-json-php-ext
 
 .PHONY: install-pie
-install-pie: ## Install the PIE of mise.toml (http:pie) that the OrderedJSON build runs; ONLINE
+install-pie: ## Install the PIE of mise.toml (http:pie) that downloads the polyspec_json extension; ONLINE
 	$(MAKE) --no-print-directory install-tools TOOLS=pie
 
-# The OrderedJSON php-ext package of the release that composer.lock installs, from the packages.json repository of
-# composer.json, built with PIE directly (C17.96, C18.22): PIE adds the repository and
-# builds the package in an empty working directory, and the one installed.json entry of that build names the package folder,
-# which the record servers read from ORDERED_JSON_PACKAGE_FILE. kit's pie-build is not used, since kit main removes it (K931), to be released in 0.0.81.
-.PHONY: ordered-json-ext
-ordered-json-ext: install-pie ## Build the OrderedJSON php-ext package of the release packages.json with PIE and record its folder (C17.84, C17.96); ONLINE
-	@mkdir -p $(CURDIR)/var
-	rm -rf $(PIE_WORK)
-	mkdir -p $(PIE_WORK)
-	@set -e; \
-	version="$$($(NODE) -p 'JSON.parse(require("fs").readFileSync("composer.lock", "utf8")).packages.find(item => item.name === "polyspec/ordered-json").version')"; \
-	packages="$$($(NODE) -p 'require("./composer.json").repositories.find(item => item.type === "composer").url')"; \
-	PIE_WORKING_DIRECTORY=$(PIE_WORK) $(ONLINE) $(PIE) repository:add composer "$$packages" --no-interaction; \
-	PIE_WORKING_DIRECTORY=$(PIE_WORK) $(ONLINE) $(PIE) build "polyspec/ordered-json-php-ext:$$version" --no-interaction
-	@$(NODE) scripts/ordered-json-package.mts $(PIE_WORK) $(ORDERED_JSON_PACKAGE_FILE)
 export CRUDUI_PYTHON := $(PYTHON_VENV)/bin/python
 help: ## 타겟 설명
 	@echo "CRUDUI docs — make targets:"
@@ -916,8 +905,8 @@ help: ## 타겟 설명
 	@echo ""
 
 # The npm, Go and cargo-audit releases that the checkout declares into var/tools and the Rust toolchain of rust-toolchain.toml
-# (install-tools), the dependencies of the lock files, the crates of every Cargo.lock, the OrderedJSON
-# checkout of the comparison and the phpDocumentor release that scripts/install-phpdocumentor.mts checks by its SHA-256.
+# (install-tools), the dependencies of the lock files, the crates of every Cargo.lock, the polyspec_json extension that
+# the PHP tests load (crudui-install-json-php) and the phpDocumentor release that scripts/install-phpdocumentor.mts checks by its SHA-256.
 # PHP is installed at the minor of config/toolchain.json by the machine's package manager; Node.js, Python, Go and
 # Composer are the tools of mise.toml in var/tools.
 
@@ -925,7 +914,7 @@ help: ## 타겟 설명
 # writes vendor/composer/platform_check.php from the tracked composer.lock, which demands the PHP of the released polyspec
 # packages; install-link, which install runs again at its end, points them at the sibling checkouts and writes the check for the
 # PHP of .php-version, so it runs before phpDocumentor, the first step that runs PHP, and after the Python install it needs.
-crudui-install: install-kit crudui-install-python crudui-install-composer install-link crudui-install-crates crudui-install-go-modules crudui-install-phpdocumentor crudui-install-browsers
+crudui-install: install-kit crudui-install-python crudui-install-composer install-link crudui-install-crates crudui-install-go-modules crudui-install-json-php crudui-install-phpdocumentor crudui-install-browsers
 
 # The tools of packages/svelte that need the TypeScript 6 API (svelte-check, @sveltejs/package and the Svelte lint)
 # are a project of their own outside the npm workspaces, so that no package that npm hoists to the root reaches the
@@ -933,9 +922,9 @@ crudui-install: install-kit crudui-install-python crudui-install-composer instal
 crudui-install-svelte-tools: ## Install the tools project of packages/svelte from its package-lock.json; ONLINE
 	$(ONLINE) $(NPM) ci --prefix packages/svelte/tools --no-audit --no-fund
 
-# The private root Composer project resolves this checkout's PHP packages and OrderedJSON from its packages.json repository.
-# Composer owns the path links, autoload files and installed metadata. Updating the path packages refreshes their native
-# metadata when a source manifest changes; make link replaces the installed OrderedJSON with a checkout that .links declares.
+# The private root Composer project resolves this checkout's PHP packages; PHP reads JSON through the polyspec_json
+# extension, which no Composer manifest names. Composer owns the path links, autoload files and installed metadata.
+# Updating the path packages refreshes their native metadata when a source manifest changes.
 crudui-install-composer: php-tables ## Resolve and install the current local PHP source packages with Composer
 ifeq ($(GITHUB_ACTIONS),true)
 	$(ONLINE) $(COMPOSER_BIN) install --no-interaction --prefer-dist
@@ -980,12 +969,9 @@ crudui-install-go-modules: ## Download the modules that the Go workspace require
 	@modules="$$($(ONLINE) $(GO) list -m -f '{{if not .Main}}{{.Path}}@{{.Version}}{{end}}' all)" || exit $$?; \
 	printf '%s\n' "$$modules" | xargs $(ONLINE) $(GO) mod download
 
-ifneq ($(LOCAL),1)
-crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-form-comparison-checks:
-endif
-# The targets that start the local form-comparison stack read the OrderedJSON php-ext that make ordered-json-ext records (C17.84, C17.90),
-# so a fresh checkout builds it before them (C17.85).
-crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-form-comparison-checks: ordered-json-ext
+# The targets that start the local form-comparison stack load the polyspec_json extension that make crudui-install-json-php
+# downloads, so a fresh checkout downloads it before them (C19.62).
+crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-form-comparison-checks: crudui-install-json-php
 
 # The checking commands of the CI workflow, one target each (CI_TARGETS).
 # The tests of crudui-test-runtimes; CRUDUI_TEST_SHARD, i/n, selects the native Node shard of them (C18.9).
@@ -1014,8 +1000,7 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/release-fixtures.test.mts \
 	tests/build/offline-checks.test.mts \
 	tests/build/install-lock.test.mts \
-	tests/build/rust-generators.test.mts \
-	tests/build/ordered-json-pie.test.mts
+	tests/build/rust-generators.test.mts
 crudui-test-runtimes: ## Exact runtime versions and test standards
 	$(NODE) scripts/run-tests.mts node -- --test-concurrency=1 $(if $(CRUDUI_TEST_SHARD),--test-shard=$(CRUDUI_TEST_SHARD)) $(CRUDUI_RUNTIME_TESTS)
 # The TypeScript tables are untracked build output of contracts/ (P34): the build script of legacy/packages/validator/ts writes
@@ -1218,9 +1203,9 @@ crudui-test-native-generators:
 
 crudui-test-php-api: php-tables require-build build-php-ext
 	@status=0; \
-	PHP_EXTENSION="$(PHP_EXTENSION)" $(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/php-ext || status=1; \
-	$(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal || status=1; \
-	$(NODE) tests/conformance/run-suite.mts phpunit --cwd legacy/packages/generator/php --php-extension "$(PHP_EXTENSION)" -- tests/FormStateTest.php tests/ButtonsConformanceTest.php tests/TemplateShapeTest.php tests/HistoryFunctionsTest.php || status=1; \
+	PHP_EXTENSION="$(PHP_EXTENSION)" $(NODE) tests/conformance/run-suite.mts phpunit $(PHP_JSON_EXTENSION) --cwd legacy/packages/php-ext || status=1; \
+	$(NODE) tests/conformance/run-suite.mts phpunit $(PHP_JSON_EXTENSION) --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal || status=1; \
+	$(NODE) tests/conformance/run-suite.mts phpunit $(PHP_JSON_EXTENSION) --cwd legacy/packages/generator/php --php-extension "$(PHP_EXTENSION)" -- tests/FormStateTest.php tests/ButtonsConformanceTest.php tests/TemplateShapeTest.php tests/HistoryFunctionsTest.php || status=1; \
 	exit $$status
 
 # Compare every declared generator runtime independently of the language unit suites.
@@ -1341,6 +1326,6 @@ CI_TARGETS = \
 # which runs the PHP tests of each PHP package with the runtime targets (C17.86).
 crudui-test-php-source: php-tables
 	@status=0; \
-	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
+	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit $(PHP_JSON_EXTENSION) --cwd legacy/packages/generator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
 	$(NODE) $(KIT)/run-tests.$(KIT_EXT) phpunit --cwd legacy/packages/validator/php -- --testsuite public,php-source-internal $(if $(CASES),--filter "$$CASES") || status=1; \
 	exit $$status

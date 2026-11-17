@@ -205,18 +205,8 @@ final class ApiTest extends TestCase
         $file = __DIR__ . '/' . substr($class, strrpos($class, '\\') + 1) . '.php';
         $files = $composer ? [] : [$file];
         if (!$composer && $class === ValidateReport::class) {
-            $orderedSource = (new \ReflectionClass(\Polyspec\OrderedJson\Value::class))->getFileName();
-            if ($orderedSource === false) {
-                throw new RuntimeException('The fixture decoder requires the installed OrderedJSON PHP source');
-            }
-            $directory = dirname($orderedSource);
-            $files = [
-                $directory . '/OrderedJson.php',
-                $directory . '/ParseError.php',
-                $orderedSource,
-                dirname(__DIR__, 4) . '/tests/php/FixtureJson.php',
-                $file,
-            ];
+            // The fixture decoder reads JSON through the extension polyspec_json, which every child process loads.
+            $files = [dirname(__DIR__, 4) . '/tests/php/FixtureJson.php', $file];
         }
         $script = implode('', array_map(
             static fn(string $required): string => 'require ' . var_export($required, true) . ';',

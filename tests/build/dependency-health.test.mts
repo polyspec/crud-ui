@@ -446,12 +446,14 @@ test('Composer path repositories link the local packages', () => {
   assert.deepEqual(failures, []);
 });
 
-test('the canonical Composer project resolves polyspec/ordered-json from its release packages.json', () => {
+// PHP reads JSON through the extension polyspec_json of polyspec/json, which PIE downloads (crudui-install-json-php); no
+// Composer manifest or lock names the pure PHP package polyspec/ordered-json or its packages.json repository (C19.62).
+test('no Composer manifest or lock names polyspec/ordered-json (C19.62)', () => {
+  const named = [...trackedComposerFiles('composer.json'), ...trackedComposerFiles('composer.lock')]
+    .filter(file => /polyspec\/ordered-json/.test(readFileSync(path.join(root, file), 'utf8')));
+  assert.deepEqual(named, []);
   const manifest = readJson(path.join(root, 'composer.json'), composerSchema);
-  const release = manifest.repositories?.find(repository => repository.type === 'composer' && repository.url?.endsWith('/packages.json'));
-  assert.ok(release, 'the composer repository of the release packages.json is declared');
   assert.equal(manifest.repositories?.some(repository => repository.url?.startsWith('../')), false);
-  assert.equal(manifest.require?.['polyspec/ordered-json'], '0.0.*');
   assert.equal(manifest.repositories?.some(repository => repository.type === 'artifact'), false);
   assert.equal(existsSync(path.join(root, 'composer.local.json')), false);
   assert.equal(existsSync(path.join(root, 'composer.local.lock')), false);

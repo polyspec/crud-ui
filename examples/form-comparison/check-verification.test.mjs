@@ -105,11 +105,10 @@ async function evidenceFixture(t) {
 const stackOrigin = 'http://127.0.0.1:41000';
 const formServerIds = () => [...formServers];
 const prepared = {
-  orderedJsonExtensionName: 'polyspec_ordered_json',
   nativePhpAutoload: '/run/native/vendor/autoload.php',
   nativeComposerManifest: '/checkout/examples/form-comparison/servers/php/native/composer.json',
   nativeComposerVendor: '/run/native/vendor',
-  orderedJsonModule: '/run/sources/ordered-json/legacy/packages/php-ext/src/modules/ordered_json.so',
+  jsonModule: '/checkout/var/bindings/deps/php/php8.4/vendor/polyspec/json/polyspec_json.so',
   cruduiModule: '/checkout/legacy/packages/php-ext/modules/polyspec_crudui.so',
 };
 
@@ -127,20 +126,21 @@ test('verifies the local stack in stages, against the origin of its public serve
     assert.doesNotThrow(() => assertStep(check), `${check.id} holds no time limit`);
   }
   const byId = Object.fromEntries(checks.map(check => [check.id, check]));
-  assert.deepEqual(byId['php-modes'].args.slice(1), ['phpunit', '--cwd', 'examples/form-comparison/servers/php']);
+  // Both legs load the polyspec_json module into the PHP of PHPUnit; the php-ext leg loads the crudui module as well
+  // and runs the whole suite of the php leg.
+  assert.deepEqual(byId['php-modes'].args.slice(1), ['phpunit', '--php-extension', prepared.jsonModule,
+    '--cwd', 'examples/form-comparison/servers/php']);
   assert.deepEqual(byId['php-modes'].environment, {
-    FORM_PHP_SERVER: 'php', FORM_PHP_NATIVE_AUTOLOAD: prepared.nativePhpAutoload, FORM_ORDERED_JSON_MODULE: prepared.orderedJsonModule,
-    FORM_JSON_EXTENSION: prepared.orderedJsonExtensionName, FORM_CRUDUI_MODULE: prepared.cruduiModule,
+    FORM_PHP_SERVER: 'php', FORM_PHP_NATIVE_AUTOLOAD: prepared.nativePhpAutoload, POLYSPEC_JSON_MODULE: prepared.jsonModule,
+    FORM_CRUDUI_MODULE: prepared.cruduiModule,
   });
-  // The php-ext leg loads the ordered_json and crudui modules into the PHP of PHPUnit and runs the whole suite of the php leg.
   assert.deepEqual(byId['php-ext-mode'].args.slice(1), ['phpunit',
-    '--php-extension', prepared.orderedJsonModule, '--php-extension', prepared.cruduiModule,
+    '--php-extension', prepared.jsonModule, '--php-extension', prepared.cruduiModule,
     '--cwd', 'examples/form-comparison/servers/php']);
   assert.deepEqual(byId['php-ext-mode'].environment, {
     COMPOSER: prepared.nativeComposerManifest, COMPOSER_VENDOR_DIR: prepared.nativeComposerVendor,
     FORM_PHP_AUTOLOAD: prepared.nativePhpAutoload, FORM_PHP_NATIVE_AUTOLOAD: prepared.nativePhpAutoload,
-    FORM_PHP_SERVER: 'php-ext', FORM_ORDERED_JSON_MODULE: prepared.orderedJsonModule,
-    FORM_JSON_EXTENSION: prepared.orderedJsonExtensionName, FORM_CRUDUI_MODULE: prepared.cruduiModule,
+    FORM_PHP_SERVER: 'php-ext', POLYSPEC_JSON_MODULE: prepared.jsonModule, FORM_CRUDUI_MODULE: prepared.cruduiModule,
   });
   assert.deepEqual(byId.generation.args, ['check-generation.mjs', '--url', stackOrigin,
     '--library', '/checkout', '--report', '/run/results/generation.json']);
