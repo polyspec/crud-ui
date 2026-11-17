@@ -7,7 +7,7 @@ import { makeDryRun } from './make-dry-run.mts';
 
 const ROOT = path.resolve(import.meta.dirname, '../..');
 
-test('release and candidate archives prepare caches before current package builds (C18.10-17, C18.10-19)', () => {
+test('release and candidate archives prepare caches before the release build (C18.10-17, C18.10-19, C19.76)', () => {
   const database = makeDryRun(ROOT, 'help', { database: true });
   assert.equal(database.status, 0, database.stderr);
   const targets = makeTargets(database.stdout);
@@ -15,7 +15,8 @@ test('release and candidate archives prepare caches before current package build
   assert.ok(notParallel, 'archive preparation requires native Make serialization');
   const serialized = notParallel.slice('.NOTPARALLEL:'.length).trim().split(/\s+/);
   for (const target of ['release-assets', 'release-candidate-assets']) {
-    assert.deepEqual(targets[target]?.prerequisites, ['crudui-prepare-release-build', 'build'], target);
+    // C19.76: the archives hold only the packages of config/release.json, so no current package build is a prerequisite.
+    assert.deepEqual(targets[target]?.prerequisites, ['crudui-prepare-release-build'], target);
     assert.ok(serialized.includes(target), `${target}: native preparation must complete before the build`);
   }
   assert.deepEqual(targets['crudui-prepare-release-build']?.prerequisites,
