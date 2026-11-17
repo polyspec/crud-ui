@@ -87,7 +87,7 @@ const rows = (stdout: string): BenchRow[] => stdout.split('\n').filter(line => l
 
 for (const [name, program] of Object.entries(programs)) {
   test(`${name} accepts a count inside the range`, async () => {
-    assert.ok(existsSync(program.command) || !path.isAbsolute(program.command), `${program.command} is missing; run node benchmarks/validators/build-drivers.mjs`);
+    assert.ok(existsSync(program.command) || !path.isAbsolute(program.command), `${program.command} is missing; run make crudui-build-bench-drivers`);
     const result = await run(program, cases.accepted.args, ACCEPTED_DEADLINE_MS);
     assert.equal(result.timedOut, false, `${name} did not finish`);
     assert.equal(result.status, 0, result.stderr);

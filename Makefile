@@ -1084,7 +1084,11 @@ crudui-test-build-repeat: ## The reproducible build
 	$(NPM) run test:build:repeat
 crudui-test-inspector: ## The browser inspector
 	$(NPM) run test:inspector
-crudui-test-bench: ## The benchmark drivers
+# The Go and Rust benchmark drivers that tests/build/bench-drivers.test.mts runs; crudui-test-bench builds them first (C19.83).
+.PHONY: crudui-build-bench-drivers
+crudui-build-bench-drivers: ## Build the Go and Rust benchmark drivers
+	$(NODE) benchmarks/validators/build-drivers.mjs
+crudui-test-bench: crudui-build-bench-drivers ## The benchmark drivers
 	$(NPM) run test:bench
 check-conformance: ## The conformance evidence against contracts/features.json
 	$(NODE) scripts/check-conformance.mts

@@ -334,10 +334,10 @@ test('root example imports are declared by the root package', async () => {
 // make install-packages allows the URLs of the root package.json alone.
 const KIT_ASSET = /^https:\/\/github\.com\/polyspec\/kit\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-kit-\1\.tgz$/;
 const ORDERED_JSON_ASSET = /^https:\/\/github\.com\/polyspec\/ordered-json\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-ordered-json-\1\.tgz$/;
-// The binding and json packages come from their own releases (binding 0.0.21, json 0.0.37 are not in the npm registry):
-// the package and the platform packages of json name the release asset of the one version of their URL.
-const BINDING_ASSET = /^https:\/\/github\.com\/polyspec\/binding\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-binding-\1\.tgz$/;
-const JSON_ASSET = /^https:\/\/github\.com\/polyspec\/json\/releases\/download\/v(\d+\.\d+\.\d+)\/polyspec-json(?:-[a-z0-9-]+)?-\1\.tgz$/;
+// The binding and json packages come from the release assets of their GitHub repositories (they are not in the npm registry).
+// The rule is the origin and the path of a release asset; the version comes from package.json and is checked against the lock below.
+const POLYSPEC_RELEASE_ASSET = /^https:\/\/github\.com\/polyspec\/(binding|json)\/releases\/download\/v\d+\.\d+\.\d+\/polyspec-\1(?:-[a-z0-9-]+)?-\d+\.\d+\.\d+\.tgz$/;
+const isPolyspecRelease = (packageName: string, specifier: string): boolean => (packageName === '@polyspec/binding' || packageName.startsWith('@polyspec/json')) && POLYSPEC_RELEASE_ASSET.test(specifier);
 
 // Every runtime of crudui requires the OrderedJSON release that the root package.json pins (C17.110): a Go module requires
 // its module tag, and a Rust crate that still takes a Git tag of polyspec/ordered-json takes that one; the Rust server of
@@ -384,8 +384,7 @@ test('npm installs only registry packages, linked directories and the kit and Or
   ].filter(([packageName, specifier]) => remote.test(specifier) && !specifier.startsWith('npm:')
     && !(directory === '.' && packageName === '@polyspec/kit' && KIT_ASSET.test(specifier))
     && !(directory === '.' && packageName === '@polyspec/ordered-json' && ORDERED_JSON_ASSET.test(specifier))
-    && !(directory === '.' && packageName === '@polyspec/binding' && BINDING_ASSET.test(specifier))
-    && !(directory === '.' && packageName.startsWith('@polyspec/json') && JSON_ASSET.test(specifier)))
+    && !(directory === '.' && isPolyspecRelease(packageName, specifier)))
     .map(([packageName, specifier]) => `${directory}: ${packageName} ${specifier}`));
   assert.deepEqual(remoteDependencies, []);
 
@@ -398,12 +397,20 @@ test('npm installs only registry packages, linked directories and the kit and Or
     }
     const asset = (location === 'node_modules/@polyspec/kit' && KIT_ASSET.test(entry.resolved ?? ''))
       || (location === 'node_modules/@polyspec/ordered-json' && ORDERED_JSON_ASSET.test(entry.resolved ?? ''))
-      || (location === 'node_modules/@polyspec/binding' && BINDING_ASSET.test(entry.resolved ?? ''))
-      || (location.startsWith('node_modules/@polyspec/json') && JSON_ASSET.test(entry.resolved ?? ''));
+      || (/^node_modules\/@polyspec\/(binding|json)/.test(location) && POLYSPEC_RELEASE_ASSET.test(entry.resolved ?? ''));
     if (!entry.resolved?.startsWith(registry) && !asset) return [`${location}: resolves ${entry.resolved ?? 'nothing'}`];
     return /^sha512-[A-Za-z0-9+/]+={0,2}$/.test(entry.integrity ?? '') ? [] : [`${location}: no SHA-512 integrity`];
   });
   assert.deepEqual(unexpected, []);
+
+  // The version of each polyspec release in package.json is the version the lock resolves (C19.82).
+  const root_ = packageManifest('.');
+  for (const name of ['@polyspec/binding', '@polyspec/json']) {
+    const spec = root_.dependencies?.[name] ?? root_.devDependencies?.[name] ?? root_.optionalDependencies?.[name] ?? '';
+    const declared = /-(\d+\.\d+\.\d+)\.tgz$/.exec(spec)?.[1];
+    assert.ok(declared, `${name} in package.json names no release version`);
+    assert.equal(lock.packages?.[`node_modules/${name}`]?.version, declared, `${name} in the lock`);
+  }
 
   const configFile = path.join(root, '.npmrc');
   const config = existsSync(configFile) ? readFileSync(configFile, 'utf8') : '';
