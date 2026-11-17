@@ -435,11 +435,11 @@ lint-php-ext: php-ext-tables php-tables ## Check the names, the one stub and the
 PHP_JSON_SCAN := $(CURDIR)/var/php-ext/json-scan
 .PHONY: php-json-scan
 php-json-scan: ## Write the ini file that loads the polyspec_json module into the PHP tests of test-php-ext; needs crudui-install-json-php
-	@test -f "$(POLYSPEC_JSON_MODULE)" || { echo 'php-json-scan: POLYSPEC_JSON_MODULE is not a file; run make crudui-install-json-php first' >&2; find $(BINDING_PIE) 2>/dev/null | head -60 >&2; exit 1; }
+	@test -n "$$(find $(BINDING_PIE) -path '*/vendor/polyspec/json/polyspec_json.so' 2>/dev/null | head -n 1)" || { echo 'php-json-scan: no polyspec_json.so under $(BINDING_PIE); run make crudui-install-json-php first' >&2; find $(BINDING_PIE) 2>/dev/null | head -60 >&2; exit 1; }
 	mkdir -p $(PHP_JSON_SCAN)
 	# PHP reads one scan directory from PHP_INI_SCAN_DIR, so the ini files of PHP's own scan directory are copied here with the json ini (C19.129).
 	for f in $$(php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')/*.ini; do if [ -f "$$f" ]; then cp "$$f" $(PHP_JSON_SCAN)/; fi; done
-	printf 'extension=%s\n' '$(POLYSPEC_JSON_MODULE)' > $(PHP_JSON_SCAN)/polyspec_json.ini
+	printf 'extension=%s\n' "$$(find $(BINDING_PIE) -path '*/vendor/polyspec/json/polyspec_json.so' | head -n 1)" > $(PHP_JSON_SCAN)/polyspec_json.ini
 
 test-php-ext: build-php-ext php-json-scan ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
 	PHP_INI_SCAN_DIR=$(PHP_JSON_SCAN) $(NODE) $(KIT)/php-extension.$(KIT_EXT) test --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php -- --roots legacy/packages/generator/php legacy/packages/php-ext legacy/packages/validator/php

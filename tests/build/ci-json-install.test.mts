@@ -67,3 +67,14 @@ test('php-json-scan lists what PIE wrote when the module is missing (C19.139)', 
   assert.equal(dry.status, 0, dry.stderr);
   assert.ok(dry.stdout.split('\n').some(line => line.includes('find ') && line.includes('var/bindings/deps/php')), dry.stdout);
 });
+
+// C19.141: php-json-scan finds polyspec_json.so when it runs, in the shell, not through the make variable POLYSPEC_JSON_MODULE,
+// whose $(wildcard) make expands when the variable is read (a directory that PIE creates in the same make call may be unseen).
+test('php-json-scan finds the module at run time, not through a make wildcard (C19.141)', () => {
+  const makefile = readFileSync(`${ROOT}/Makefile`, 'utf8');
+  const start = makefile.indexOf('\nphp-json-scan:');
+  assert.notEqual(start, -1, 'Makefile has no php-json-scan recipe');
+  const recipe = makefile.slice(start, makefile.indexOf('\n\n', start));
+  assert.match(recipe, /find \$\(BINDING_PIE\) -path '\*\/vendor\/polyspec\/json\/polyspec_json\.so'/);
+  assert.match(recipe, /printf 'extension=%s\\n' "\$\$\(find \$\(BINDING_PIE\) -path '\*\/vendor\/polyspec\/json\/polyspec_json\.so'/);
+});
