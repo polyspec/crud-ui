@@ -75,7 +75,10 @@ fn enter_or_object(name: &str, value: Option<&JsonValue>) -> FormResult<Value> {
 /// A list with the default `{empty: "list"}` that enters as the argument `name`; none is the empty
 /// list (binding GN-6i).
 fn enter_list_or_empty(name: &str, values: Option<&[JsonValue]>) -> FormResult<Vec<Value>> {
-    enter_list(name, values.unwrap_or_default())
+    match values {
+        Some(values) => enter_list(name, values),
+        None => Ok(Vec::new()),
+    }
 }
 
 /// A value that leaves.
