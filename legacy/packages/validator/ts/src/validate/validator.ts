@@ -289,8 +289,12 @@ export class Validator {
    */
   constructor(composedSpec: ComposedField, limits?: { depth: number; values: number }) {
     this.limits = limits;
+    if (!isRecord(composedSpec)) throw new FormInputError('Form specification must be an object');
     const props = composedSpec.properties;
-    this.properties = isRecord(props) ? props : {};
+    if (composedSpec.type !== 'group' || !isRecord(props)) {
+      throw new FormInputError('A form spec must be a group with properties');
+    }
+    this.properties = props;
     this.checkDeclaredParameters(this.properties, []);
   }
 
@@ -401,6 +405,18 @@ export class Validator {
         continue;
       }
       const path = [...declarationPath, propertyKey];
+      // The shapes of validate and messages are checked before the rules they hold (CUVR-056, CURP-018).
+      if (field.validate !== undefined && field.validate !== null && typeof field.validate !== 'boolean' && !isRecord(field.validate)) {
+        throw new ComposeLoadError('INVALID_RULE_PARAMETER', `Invalid validate at ${path.join('.')}: expected an object`, path);
+      }
+      if (field.messages !== undefined && !isRecord(field.messages)) {
+        throw new ComposeLoadError('INVALID_RULE_PARAMETER', `Invalid messages at ${path.join('.')}: expected an object`, path);
+      }
+      for (const [ruleName, message] of Object.entries(fieldMessages(field) ?? {})) {
+        if (typeof message !== 'string') {
+          throw new ComposeLoadError('INVALID_RULE_PARAMETER', `Invalid messages.${ruleName} at ${path.join('.')}: expected a string`, path);
+        }
+      }
       // The shape of multiple is checked before the field's group source and rules (schema.md, CUSC-081).
       if (Object.prototype.hasOwnProperty.call(field, 'multiple') && !isMultipleShape(field.multiple)) {
         throw new ComposeLoadError('INVALID_RULE_PARAMETER', `Invalid multiple at ${path.join('.')}: expected a boolean, only or an object`, path);

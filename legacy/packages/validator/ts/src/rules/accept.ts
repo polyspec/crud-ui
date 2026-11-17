@@ -233,17 +233,19 @@ export const acceptRule: RuleDefinition = {
     // Handle array of files (React, etc.)
     if (Array.isArray(value)) {
       for (const file of value) {
-        if (isRecord(file)) {
-          const mimeType = fileText(file, 'type', 'mimeType');
-          const filename = fileText(file, 'name', 'filename');
+        // A member that is no file object fails the rule (CUVR-016).
+        if (!isRecord(file)) {
+          return messages?.accept ?? 'Please upload a file with a valid format.';
+        }
+        const mimeType = fileText(file, 'type', 'mimeType');
+        const filename = fileText(file, 'name', 'filename');
 
-          const isValid =
-            (mimeType && matchesMimeType(mimeType, acceptList)) ||
-            (filename && matchesExtension(filename, acceptList));
+        const isValid =
+          (mimeType && matchesMimeType(mimeType, acceptList)) ||
+          (filename && matchesExtension(filename, acceptList));
 
-          if (!isValid) {
-            return messages?.accept ?? 'Please upload files with valid formats.';
-          }
+        if (!isValid) {
+          return messages?.accept ?? 'Please upload files with valid formats.';
         }
       }
       return null;
@@ -277,8 +279,10 @@ export const acceptRule: RuleDefinition = {
       if (!isValid) {
         return messages?.accept ?? 'Please upload a file with a valid format.';
       }
+      return null;
     }
 
-    return null;
+    // A value that is no string, list or object names no file (CUVR-016).
+    return messages?.accept ?? 'Please upload a file with a valid format.';
   },
 };

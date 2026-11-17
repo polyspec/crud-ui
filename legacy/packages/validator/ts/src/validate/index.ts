@@ -63,6 +63,12 @@ export function validate(
   data: unknown,
   options: ValidateOptions = {}
 ): ValidationResult {
+  // A specification is an object before anything reads it (CUSC-001).
+  if (!isRecord(spec)) throw new FormInputError('Form specification must be an object');
+  // A root that is no reference is a group with properties (CUSC-001).
+  if (!('$ref' in spec) && !isRecord(spec.properties)) {
+    throw new FormInputError('A form spec must be a group with properties');
+  }
   // Input text is checked first: the specification and files, the data, then the options.
   const checked = checkedComposition(spec, options);
   checkInputText([['data', data]]);
@@ -72,6 +78,7 @@ export function validate(
     throw new FormInputError('Form data must be an object');
   }
   const properties = composedProperties(spec, checked, options);
+  if (!isRecord(properties)) throw new FormInputError('A form spec must be a group with properties');
   // The data limits are checked after the forbidden-key scan and before the rule names.
   return new Validator({ type: 'group', properties }, dataLimits(spec)).validate(data);
 }

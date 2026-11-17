@@ -22,6 +22,7 @@ interface ParameterFailure {
 
 /** Rule names whose parameters this module checks. */
 const CHECKED_RULES = new Set([
+  'accept',
   'minlength',
   'maxlength',
   'rangelength',
@@ -94,6 +95,10 @@ function ruleParameterFailure(ruleName: string, param: unknown): ParameterFailur
       return typeof param === 'string' || typeof param === 'boolean' || isFiniteNumber(param)
         ? null
         : invalid('Invalid notEqual parameter: expected a string, number or boolean');
+    case 'accept':
+      return typeof param === 'string' || (Array.isArray(param) && param.every(item => typeof item === 'string'))
+        ? null
+        : invalid('Invalid accept parameter: expected a string or a list of strings');
     case 'unique':
       // CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).
       return typeof param === 'string' || param === true || param === false

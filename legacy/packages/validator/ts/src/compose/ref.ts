@@ -117,6 +117,10 @@ function resolveSingleRef(
   }
 
   const doc = loader.load(key); // throws REF_FILE_NOT_FOUND if absent
+  // A document that is no object fails the load, never as a missing file (CUSC-092).
+  if (!isRecord(doc)) {
+    throw new ComposeLoadError('REF_FORMAT_ERROR', `$ref file is not an object: ${orgPath}`, [...visiting, key]);
+  }
 
   // Descend detectKeys.
   let node: unknown = doc;
