@@ -191,6 +191,7 @@ lint: ## Run lint-<runtime> for every runtime of packages/; offline
 # the go job of ci-pipeline.yml runs it before its gates, with the crates of cargo that binding generate runs (C19.128).
 crudui-generate-go: ## Write the generated Go target of packages/generator/go with binding generate; offline once the crates are installed
 	$(NODE) $(BINDING) generate --contract $(CURDIR)/packages/generator/rust/interface.json --target go --cargo "$(CARGO)"
+	$(NODE) $(BINDING) generate --contract $(CURDIR)/packages/validator/rust/interface.json --target go --cargo "$(CARGO)"
 
 build-go: ## Build each Go package with go build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/go legacy/packages/validator/go -- $(GO) build ./...
@@ -277,7 +278,9 @@ BINDING_PLATFORM := $(shell $(NODE) -p 'process.platform + "-" + process.arch + 
 BINDING_PYTHON_FIND_LINKS ?= $(BINDING_VAR)/deps/python
 BINDING_NODE_DEPS ?= $(CURDIR)/node_modules/@polyspec/json $(CURDIR)/node_modules/@polyspec/json-$(BINDING_PLATFORM)
 BINDING_PIE = $(BINDING_VAR)/deps/php
-BINDING_PHP_EXTENSIONS ?= $(wildcard $(BINDING_PIE)/*/vendor/polyspec/json/polyspec_json.so)
+# $(shell find), not $(wildcard): find runs at each expansion, so it sees a module that PIE wrote after an earlier expansion.
+# The wildcard reading is the leader's hypothesis for C19.139; it is not confirmed here (C19.143).
+BINDING_PHP_EXTENSIONS ?= $(shell find $(BINDING_PIE) -path '*/vendor/polyspec/json/polyspec_json.so' 2>/dev/null)
 # The PHP tests of the checkout read JSON through that extension: kit's run-tests loads it into the PHP of PHPUnit
 # (PHP_JSON_EXTENSION), and the child processes of tests/php/PhpProcess.php load the module that POLYSPEC_JSON_MODULE
 # names (C19.62).

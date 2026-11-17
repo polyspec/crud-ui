@@ -78,3 +78,13 @@ test('php-json-scan finds the module at run time, not through a make wildcard (C
   assert.match(recipe, /find \$\(BINDING_PIE\) -path '\*\/vendor\/polyspec\/json\/polyspec_json\.so'/);
   assert.match(recipe, /printf 'extension=%s\\n' "\$\$\(find \$\(BINDING_PIE\) -path '\*\/vendor\/polyspec\/json\/polyspec_json\.so'/);
 });
+
+// C19.143: BINDING_PHP_EXTENSIONS finds polyspec_json.so with find at each expansion, not with $(wildcard), which make reads from
+// a directory listing it has kept (the cause of the CI failure is the leader's hypothesis for C19.139, not confirmed here).
+test('BINDING_PHP_EXTENSIONS finds the module with find at each expansion (C19.143)', () => {
+  const makefile = readFileSync(`${ROOT}/Makefile`, 'utf8');
+  const line = makefile.split('\n').find(l => l.startsWith('BINDING_PHP_EXTENSIONS ?='));
+  assert.ok(line !== undefined, 'Makefile has no BINDING_PHP_EXTENSIONS definition');
+  assert.match(line, /\$\(shell find \$\(BINDING_PIE\) -path '\*\/vendor\/polyspec\/json\/polyspec_json\.so'/);
+  assert.doesNotMatch(line, /\$\(wildcard/);
+});
