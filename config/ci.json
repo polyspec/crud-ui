@@ -19,6 +19,7 @@
       ],
       "php-ext": [
         "crudui-install-composer",
+        "crudui-install-json-php",
         "require-build"
       ],
       "python": [

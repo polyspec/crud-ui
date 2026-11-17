@@ -536,14 +536,14 @@ PHP_METHOD(Polyspec_Crudui_Validator, validate)
         Z_PARAM_OPTIONAL
         Z_PARAM_ARRAY(options)
     ZEND_PARSE_PARAMETERS_END();
-    /* A specification is an object before anything reads it (CUSC-001). */
+    /* Input text is checked first: the specification, the files, the data, then the options. */
     ZVAL_DEREF(spec);
+    if (!crudui_check_specification_text(spec, options, false) ||
+        !crudui_check_input_text(&(crudui_text_input){"data", data}, 1, options, basepath_option, 1, false)) return;
+    /* A specification is an object before anything reads it (CUSC-001), after the input text. */
     bool spec_object = Z_TYPE_P(spec) == IS_OBJECT && instanceof_function(Z_OBJCE_P(spec), zend_standard_class_def);
     if (Z_TYPE_P(spec) == IS_ARRAY) spec_object = zend_hash_num_elements(Z_ARRVAL_P(spec)) != 0 && !zend_array_is_list(Z_ARRVAL_P(spec));
     if (!spec_object) { crudui_input_failure("Form specification must be an object"); return; }
-    /* Input text is checked first: the specification, the files, the data, then the options. */
-    if (!crudui_check_specification_text(spec, options, false) ||
-        !crudui_check_input_text(&(crudui_text_input){"data", data}, 1, options, basepath_option, 1, false)) return;
     /* Root data is a request precondition; an empty PHP array is an empty object. */
     if (Z_TYPE_P(data) == IS_ARRAY && zend_hash_num_elements(Z_ARRVAL_P(data)) != 0 &&
         zend_array_is_list(Z_ARRVAL_P(data))) {

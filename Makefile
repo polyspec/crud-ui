@@ -424,8 +424,18 @@ build-php-ext: php-ext-tables php-tables ## Build legacy/packages/php-ext with p
 lint-php-ext: php-ext-tables php-tables ## Check the names, the one stub and the stub hash of the arginfo header of legacy/packages/php-ext; offline
 	$(NODE) $(KIT)/php-extension.$(KIT_EXT) check --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php
 
-test-php-ext: build-php-ext ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
-	$(NODE) $(KIT)/php-extension.$(KIT_EXT) test --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php -- --roots legacy/packages/generator/php legacy/packages/php-ext legacy/packages/validator/php
+# The PHPUnit process of test-php-ext loads the polyspec_json module that the tests call through FixtureJson (C19.109, C19.110).
+# kit's php-extension test loads only the built extension, and it keeps the PHP_INI_SCAN_DIR of its caller (K900), so this
+# directory names the module in an ini file.
+PHP_JSON_SCAN := $(CURDIR)/var/php-ext/json-scan
+.PHONY: php-json-scan
+php-json-scan: ## Write the ini file that loads the polyspec_json module into the PHP tests of test-php-ext; needs crudui-install-json-php
+	@test -f "$(POLYSPEC_JSON_MODULE)" || { echo 'php-json-scan: POLYSPEC_JSON_MODULE is not a file; run make crudui-install-json-php first' >&2; exit 1; }
+	mkdir -p $(PHP_JSON_SCAN)
+	printf 'extension=%s\n' '$(POLYSPEC_JSON_MODULE)' > $(PHP_JSON_SCAN)/polyspec_json.ini
+
+test-php-ext: build-php-ext php-json-scan ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
+	PHP_INI_SCAN_DIR=$(PHP_JSON_SCAN) $(NODE) $(KIT)/php-extension.$(KIT_EXT) test --extension legacy/packages/php-ext --build-dir var/php-ext --skip vendor --skip node_modules --library legacy/packages/generator/php --library legacy/packages/validator/php -- --roots legacy/packages/generator/php legacy/packages/php-ext legacy/packages/validator/php
 
 .PHONY: kit-gates-static kit-gates-runtime-ts kit-gates-runtime-php kit-gates-runtime-python kit-gates-runtime-go kit-gates-runtime-rust kit-gates-runtime-php-ext
 # The gates of this repository, in the partitions that the jobs of .github/workflows/ci-pipeline.yml run. A partition runs each
