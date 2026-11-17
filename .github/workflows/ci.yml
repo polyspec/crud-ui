@@ -244,6 +244,11 @@ jobs:
             ~/.cargo/git/db
             target
           key: cargo-${{ runner.os }}-${{ runner.arch }}-bindings-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock') }}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version-file: .php-version
+          tools: phpize, php-config
       - name: Install, then run the checks and write their report
         run: make ci-bindings
       - name: Upload the report of the checks

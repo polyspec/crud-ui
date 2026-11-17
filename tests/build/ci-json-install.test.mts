@@ -5,6 +5,7 @@
 // extension (`The JSON extension polyspec_json is not loaded`, C19.126). A job that runs such a target without the install gets
 // an empty module path.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { makeDryRun } from './make-dry-run.mts';
@@ -45,3 +46,24 @@ for (const target of ['crudui-test-form-comparison', 'crudui-test-form-compariso
     assert.ok(dry.stdout.split('\n').some(line => line.includes('PHP_INI_SCAN_DIR=') && line.includes('var/php-ext/json-scan')), dry.stdout);
   });
 }
+
+// C19.138: install-tools php wraps the php that PATH names when it runs, so the bindings job sets up PHP 8.4 with setup-php before
+// it (the branch run wrapped the runner's 8.3 and PIE downloaded for it). Every other job that installs php sets it up the same way.
+test('the bindings job sets up PHP before its run step installs the PHP of the checkout (C19.138)', () => {
+  const workflow = readFileSync(`${ROOT}/.github/workflows/ci.yml`, 'utf8');
+  const start = workflow.indexOf('\n  bindings:\n');
+  assert.notEqual(start, -1, 'ci.yml has no bindings job');
+  const job = workflow.slice(start, workflow.indexOf('\n  python:\n', start));
+  const setup = job.indexOf('shivammathur/setup-php');
+  const run = job.indexOf('run: make ci-bindings');
+  assert.notEqual(setup, -1, 'the bindings job has no setup-php step');
+  assert.ok(setup < run, 'the bindings job runs make ci-bindings before its PHP is set up');
+});
+
+// C19.139: when PIE leaves no polyspec_json.so where POLYSPEC_JSON_MODULE looks, php-json-scan lists what PIE wrote, so that the
+// run shows the layout of the install (the branch run failed without it, C19.139).
+test('php-json-scan lists what PIE wrote when the module is missing (C19.139)', () => {
+  const dry = makeDryRun(ROOT, 'php-json-scan');
+  assert.equal(dry.status, 0, dry.stderr);
+  assert.ok(dry.stdout.split('\n').some(line => line.includes('find ') && line.includes('var/bindings/deps/php')), dry.stdout);
+});

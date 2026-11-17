@@ -435,7 +435,7 @@ lint-php-ext: php-ext-tables php-tables ## Check the names, the one stub and the
 PHP_JSON_SCAN := $(CURDIR)/var/php-ext/json-scan
 .PHONY: php-json-scan
 php-json-scan: ## Write the ini file that loads the polyspec_json module into the PHP tests of test-php-ext; needs crudui-install-json-php
-	@test -f "$(POLYSPEC_JSON_MODULE)" || { echo 'php-json-scan: POLYSPEC_JSON_MODULE is not a file; run make crudui-install-json-php first' >&2; exit 1; }
+	@test -f "$(POLYSPEC_JSON_MODULE)" || { echo 'php-json-scan: POLYSPEC_JSON_MODULE is not a file; run make crudui-install-json-php first' >&2; find $(BINDING_PIE) 2>/dev/null | head -60 >&2; exit 1; }
 	mkdir -p $(PHP_JSON_SCAN)
 	# PHP reads one scan directory from PHP_INI_SCAN_DIR, so the ini files of PHP's own scan directory are copied here with the json ini (C19.129).
 	for f in $$(php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')/*.ini; do if [ -f "$$f" ]; then cp "$$f" $(PHP_JSON_SCAN)/; fi; done
