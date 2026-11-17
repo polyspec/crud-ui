@@ -397,8 +397,7 @@
       "exit": 0,
       "output": {
         "valid": true,
-        "errors": [],
-        "hidden": []
+        "errors": []
       }
     }
   },
