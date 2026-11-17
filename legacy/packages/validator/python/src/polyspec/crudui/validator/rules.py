@@ -1172,10 +1172,20 @@ def rule_parameter_failure(rule_name: str, param: object) -> tuple[str, str] | N
     if rule_name == "reference":
         return None if isinstance(param, str) else invalid(REFERENCE_PARAMETER_MESSAGE)
     if rule_name == "unique":
+        # CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).
         return (
             None
-            if isinstance(param, str) or param is True
-            else invalid("Invalid unique parameter: expected true, false or a string")
+            if isinstance(param, str)
+            or param is True
+            or param is False
+            or (
+                isinstance(param, list)
+                and param
+                and all(isinstance(name, str) and name != "" for name in param)
+            )
+            else invalid(
+                "Invalid unique parameter: expected true, false, a string or a list of field names"
+            )
         )
     if not isinstance(param, str):
         return invalid(f"Invalid {rule_name} parameter: expected a pattern string")
