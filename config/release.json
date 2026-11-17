@@ -46,7 +46,14 @@
     "packages/validator/ts/wasm/Cargo.toml": "version",
     "packages/validator/go/internal/ffi/Cargo.toml": "version",
     "packages/generator/ts/wasm/Cargo.toml": "version",
-    "packages/generator/go/internal/ffi/Cargo.toml": "version"
+    "packages/generator/go/internal/ffi/Cargo.toml": "version",
+    "legacy/packages/validator/ts/package.json": "version",
+    "legacy/packages/generator/ts/package.json": "version",
+    "legacy/packages/html/package.json": "version",
+    "packages/react/package.json": "version",
+    "packages/vue/package.json": "version",
+    "packages/svelte/package.json": "version",
+    "packages/form-binding/package.json": "version"
   },
   "notReleased": {
     "composer.json": "the development root of the Composer packages of packages/, never published; it declares no version",
@@ -59,9 +66,6 @@
     "pyproject.toml": "the uv workspace of the Python packages (C14.29), never published; it declares no version",
     "examples/form-comparison/servers/php/native/composer.json": "the native PHP application and PHPUnit profile, never published; it declares no version",
     "legacy/packages/php-ext/composer.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
-    "legacy/packages/generator/ts/package.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
-    "legacy/packages/html/package.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
-    "legacy/packages/validator/ts/package.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
     "legacy/packages/generator/php/composer.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
     "legacy/packages/validator/php/composer.json": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
     "legacy/packages/generator/python/pyproject.toml": "a legacy language package of the transition to the Rust core (V-6), kept for its tests and never released",
@@ -69,10 +73,6 @@
     "legacy/packages/generator/go/go.mod": "a legacy Go module of the transition to the Rust core (V-6), kept for its tests and never tagged",
     "legacy/packages/validator/go/go.mod": "a legacy Go module of the transition to the Rust core (V-6), kept for its tests and never tagged",
     "Cargo.toml": "the root Cargo workspace; the crates are released by packages/validator/rust/Cargo.toml and packages/generator/rust/Cargo.toml",
-    "packages/form-binding/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; it stays unreleased, and the binding packages of packages/validator and packages/generator are the packages of the release (C19.71)",
-    "packages/react/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; it stays unreleased, and the binding packages of packages/validator and packages/generator are the packages of the release (C19.71)",
-    "packages/svelte/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; it stays unreleased, and the binding packages of packages/validator and packages/generator are the packages of the release (C19.71)",
-    "packages/vue/package.json": "a package of the TypeScript generator that depends on the legacy core packages, which are no release target; it stays unreleased, and the binding packages of packages/validator and packages/generator are the packages of the release (C19.71)",
     "packages/validator/go/go.mod": "the Go module of the bindings of validator, which make release-go-module-validator of packages/validator/release.mk releases with binding release-go-module: it tags a commit of its own that carries the generated files and the static libraries (binding GN-19f), so the tag of the release names no Go module",
     "packages/generator/go/go.mod": "the Go module of the bindings of generator, which make release-go-module-generator of packages/generator/release.mk releases with binding release-go-module: it tags a commit of its own that carries the generated files and the static libraries (binding GN-19f), so the tag of the release names no Go module"
   },
