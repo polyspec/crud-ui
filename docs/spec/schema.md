@@ -164,6 +164,38 @@ The editor offers what the rule of the field accepts and shows the value without
   the text; the value stays the data of the field, and `conditionTree` reports it when the form is
   validated.
 
+### Element fields
+
+An `element` field holds one text, and its control is a custom element that the field specification
+names in `options.tag`. The page defines the element; CRUDUI writes it, associates it with its form
+and reads its value back. The [form markup](form-markup.md#element-fields) defines the control.
+This kind is a draft: no renderer, validator or binding implements it yet
+([features](../features.md)).
+
+```yaml
+color:
+  type: element
+  label: Color
+  default: "#336699"
+  options: { tag: color-picker }
+  validate: { required: true, maxlength: 7 }
+```
+
+- **CUSC-098** An `element` field takes the keys of a `text` field and `options.tag`, the name of its
+  custom element. Its value is a string, and the validators check it with the rules of a `text` field:
+  `required`, the length rules and `regex` apply to that string, and an empty string is empty for
+  `required`. A value that is not a string fails as a non-string value of a `text` field fails.
+- **CUSC-099** `options.tag` is a valid custom element name: it starts with a lowercase ASCII letter,
+  contains a hyphen, has only lowercase ASCII letters, digits, `-`, `.` and `_`, does not start with
+  `crudui-`, and is none of `annotation-xml`, `color-profile`, `font-face`, `font-face-src`,
+  `font-face-uri`, `font-face-format`, `font-face-name` and `missing-glyph`.
+
+Compilation checks an element field after its `behavior` and fails with `INVALID_FORM_INPUT` and an
+empty location:
+
+- **CUSC-100** `options.tag` absent, not a string, or not a valid custom element name (CUSC-099): `Invalid options.tag at {path}: expected a custom element name`
+- **CUSC-101** `items` present on an element field: `Invalid items at {path}: unknown key`
+
 ## Conditions and appearance
 
 Conditions are values in the relevant setting. `design.show` controls visibility;

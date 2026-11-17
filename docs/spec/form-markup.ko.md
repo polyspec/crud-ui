@@ -360,6 +360,40 @@ JSON 텍스트임을 표시합니다([조건 값](form-runtime.ko.md#조건-값)
   type="button" class="crudui-action crudui-action--text" data-condition-action="add-group">Add group</button></fieldset></div></div>
 ```
 
+## 요소 필드
+
+`element` 필드([스키마](schema.ko.md#요소-필드))는 `crudui-widget crudui-widget--element` 위젯을
+렌더링합니다. 앞 affix, `options.tag`가 이름을 적은 사용자 정의 요소, 뒤 affix입니다. 이 마크업은
+초안이며 아직 어떤 renderer도 쓰지 않습니다.
+
+- **CUMK-076** 요소의 태그는 `options.tag`입니다(CUSC-099). 요소는 class
+  `valid-target crudui-input crudui-input--element`와 그 뒤의 `design.class` class를 가지고, 이어서
+  `data-crudui-value="text"`, `data-default`, `data-name`, `data-rule-name`, `id`, `name`, `value`,
+  style, `behavior`의 속성, 선언한 속성([선언한 속성](#선언한-속성))을 가집니다. `name`은 같은 경로의
+  text input의 컨트롤 이름이고, `value`와 `data-default`는 text input과 같이 씁니다. 문자열은 그대로,
+  숫자는 정규 텍스트(CUMK-069), 없거나 null인 값은 빈 값입니다. 모든 속성 값은 다른 속성과 같이
+  이스케이프하며, 요소는 끝 태그를 가지고 내용은 없습니다.
+- **CUMK-077** 요소는 폼 안에 놓이므로 폼 연결 사용자 정의 요소(`static formAssociated = true`)는 그
+  폼에 연결됩니다. CRUDUI는 `form` 속성을 쓰지 않습니다. 노드 header의 label은 input과 같이 `for`가
+  요소의 `id`인 `label`입니다. 폼 연결 사용자 정의 요소는 label을 붙일 수 있는 요소입니다. 요소가 폼
+  연결이 아닌 페이지도 렌더링되고 폼 바인딩도 그 요소를 읽지만(CUMK-078), 기본 제출은 그 요소에 대해
+  아무것도 보내지 않습니다.
+- **CUMK-078** 폼 바인딩은 `data-crudui-value="text"`로 표시되고 `name`이 비어 있지 않은 요소를 `input`과
+  같은 조건에서 컨트롤로 받고, 값을 `value` 속성으로 텍스트로 읽습니다. 문자열은 그대로, `undefined`와
+  `null`은 빈 문자열이며, 다른 값은 `FormInputError`(`INVALID_FORM_INPUT`)와 메시지
+  `Control value is not text: {name}`로 수집을 실패시킵니다. 줄바꿈은 text input과 같이 CRLF로 씁니다.
+  값의 검증은 CUSC-098입니다.
+
+위젯 모델은 layout `element`, tag `options.tag`, 속성 `attrs`를 가집니다. `default: "#336699"`와
+`options: { tag: color-picker }`인 필드 `color`는 다음을 씁니다.
+
+```html
+<div class="crudui-widget crudui-widget--element"><color-picker
+  class="valid-target crudui-input crudui-input--element" data-crudui-value="text"
+  data-default="#336699" data-name="color" data-rule-name="color" id="crudui:color" name="color"
+  value="#336699"></color-picker></div>
+```
+
 ## 스위치
 
 `switcher` 필드는 스위치를 렌더링합니다. 노드 모델은 체크박스 필드의 `checkbox` 모델에 `checked` 다음의

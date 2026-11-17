@@ -149,6 +149,36 @@ opens_when:
   씁니다(CUMK-068). 그래서 작성자는 텍스트를 고칩니다. 값은 필드의 데이터로 남고, 폼을 검증하면
   `conditionTree`가 알립니다.
 
+### 요소 필드
+
+`element` 필드는 텍스트 하나를 가지며, 컨트롤은 필드 명세가 `options.tag`에 이름을 적은 사용자 정의
+요소입니다. 요소는 페이지가 정의하고, CRUDUI는 요소를 쓰고 폼에 연결하며 값을 다시 읽습니다. 컨트롤은
+[폼 마크업](form-markup.ko.md#요소-필드)이 정의합니다. 이 종류는 초안이며 아직 어떤 renderer, validator,
+binding도 구현하지 않았습니다([기능](../features.ko.md)).
+
+```yaml
+color:
+  type: element
+  label: Color
+  default: "#336699"
+  options: { tag: color-picker }
+  validate: { required: true, maxlength: 7 }
+```
+
+- **CUSC-098** `element` 필드는 `text` 필드의 키와 사용자 정의 요소의 이름인 `options.tag`를 받습니다.
+  값은 문자열이며 validator는 `text` 필드의 규칙으로 검사합니다. `required`, 길이 규칙, `regex`가 그
+  문자열에 적용되고, 빈 문자열은 `required`에서 빈 값입니다. 문자열이 아닌 값은 `text` 필드의 문자열이
+  아닌 값과 같이 실패합니다.
+- **CUSC-099** `options.tag`는 올바른 사용자 정의 요소 이름입니다. 소문자 ASCII 글자로 시작하고, 하이픈을
+  포함하고, 소문자 ASCII 글자, 숫자, `-`, `.`, `_`만 가지며, `crudui-`로 시작하지 않고,
+  `annotation-xml`, `color-profile`, `font-face`, `font-face-src`, `font-face-uri`,
+  `font-face-format`, `font-face-name`, `missing-glyph`가 아닙니다.
+
+컴파일은 요소 필드를 `behavior` 다음에 검사하며, `INVALID_FORM_INPUT`과 빈 위치로 실패합니다.
+
+- **CUSC-100** `options.tag`가 없거나, 문자열이 아니거나, 올바른 사용자 정의 요소 이름이 아님(CUSC-099): `Invalid options.tag at {path}: expected a custom element name`
+- **CUSC-101** 요소 필드에 `items`가 있음: `Invalid items at {path}: unknown key`
+
 ## 조건과 외형
 
 조건은 해당 설정의 값으로 작성합니다. `design.show`는 표시 여부를 결정합니다.

@@ -391,6 +391,42 @@ English:
   type="button" class="crudui-action crudui-action--text" data-condition-action="add-group">Add group</button></fieldset></div></div>
 ```
 
+## Element fields
+
+An `element` field ([schema](schema.md#element-fields)) renders a `crudui-widget crudui-widget--element`
+widget: the prepend affix, the custom element named by `options.tag` and the append affix. This
+markup is a draft that no renderer writes yet.
+
+- **CUMK-076** The element's tag is `options.tag` (CUSC-099). It has the class
+  `valid-target crudui-input crudui-input--element` followed by the class of `design.class`, then
+  `data-crudui-value="text"`, `data-default`, `data-name`, `data-rule-name`, `id`, `name`, `value`,
+  the style, the attributes of `behavior` and the declared attributes ([declared attributes](#declared-attributes)).
+  `name` is the control name of a text input of the same path, and `value` and `data-default` are
+  written as those of a text input: a string is itself, a number its canonical text (CUMK-069), and
+  an absent or null value is empty. Every attribute value is escaped as the other attributes are, and
+  the element has an end tag and no content.
+- **CUMK-077** The element is placed inside the form, so a form-associated custom element (`static
+  formAssociated = true`) is associated with that form; CRUDUI writes no `form` attribute. The node
+  header's label is a `label` with `for` set to the element's `id`, as for an input: a form-associated
+  custom element is a labelable element. A page whose element is not form-associated still renders,
+  and the form binding still reads it (CUMK-078), but a native submission sends nothing for it.
+- **CUMK-078** The form binding takes an element marked `data-crudui-value="text"` with a non-empty
+  `name` as a control, under the conditions of an `input`, and reads its value through the `value`
+  property as a text: a string is itself, `undefined` and `null` are the empty string, and any other
+  value fails the collection with `FormInputError` (`INVALID_FORM_INPUT`) and the message
+  `Control value is not text: {name}`. Its line breaks are written as CRLF, as for a text input.
+  Validation of the value is CUSC-098.
+
+The widget model has the layout `element`, the tag `options.tag` and the attributes as `attrs`. A
+field `color` with `default: "#336699"` and `options: { tag: color-picker }` writes:
+
+```html
+<div class="crudui-widget crudui-widget--element"><color-picker
+  class="valid-target crudui-input crudui-input--element" data-crudui-value="text"
+  data-default="#336699" data-name="color" data-rule-name="color" id="crudui:color" name="color"
+  value="#336699"></color-picker></div>
+```
+
 ## Switches
 
 A `switcher` field renders a switch. Its node model has the `checkbox` model of a checkbox field
