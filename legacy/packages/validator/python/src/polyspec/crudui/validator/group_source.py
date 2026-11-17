@@ -14,11 +14,15 @@ from .values import canonical_text, trim
 
 __all__ = [
     "CHOICE_TYPES",
+    "is_selection_source",
     "group_choices",
     "group_source_failure",
     "group_source_repeat",
     "is_group_source",
 ]
+
+# The field types whose stored value is the list of the selected values of their literal items (CUSC-097).
+SELECTION_TYPES = ("multichoice", "checkboxes", "checkcontainer")
 
 CHOICE_TYPES = (
     "select",
@@ -128,6 +132,16 @@ def group_source_failure(
             return f"Invalid items.{key} at {path}: unknown key"
     if field.get("type") not in CHOICE_TYPES or _has_lang(field):
         return f"Invalid items.from at {path}: expected a choice field without lang"
+    if _selection_field(items["from"], properties) is not None:
+        # A source of selected values takes the labels of its field (CUSC-097).
+        if "label" in items:
+            return f"Invalid items.label at {path}: a source of selected values takes the labels of its field"
+        if "choices" in items and _literal_choices(items["choices"]) is None:
+            return (
+                f"Invalid items.choices at {path}: expected value and label pairs "
+                "with distinct string or number values"
+            )
+        return None
     group = _source_group(items["from"], properties)
     if group is None:
         return (
@@ -246,7 +260,65 @@ def _first_repeat(source: dict[str, Any], data: object, *, rows: bool) -> str | 
     return None
 
 
-def group_choices(source: dict[str, Any], data: object) -> list[dict[str, Any]]:
+def _selection_field(from_: object, properties: dict[str, Any]) -> dict[str, Any] | None:
+    """The root field that a `from` with no `.` names when it is a source of selected values (CUSC-097):
+    a field of a selection type whose items are literal, which is no group source."""
+    if not isinstance(from_, str) or "." in from_ or from_ not in properties:
+        return None
+    field = properties[from_]
+    if not _is_object(field) or field.get("type") not in SELECTION_TYPES:
+        return None
+    if is_group_source(field.get("items")):
+        return None
+    items = field.get("items")
+    return field if isinstance(items, list) or _is_object(items) else None
+
+
+def is_selection_source(items: object, properties: dict[str, Any]) -> bool:
+    """Whether a group source names a source of selected values under the root `properties` (CUSC-097)."""
+    return _is_object(items) and _selection_field(items.get("from"), properties) is not None
+
+
+def _selection_choices(
+    source: dict[str, Any], field: dict[str, Any], data: object
+) -> list[dict[str, Any]]:
+    """The choices of a source of selected values (CUSC-097): its literal choices in written order, then
+    each item of the source field, in the order of its items, that the field selects in the data, with
+    the label of that item."""
+    choices = list(_source_literal(source))
+    seen = {choice["value"] for choice in choices}
+    selected_values = data.get(source["from"]) if _is_object(data) else None
+    if not isinstance(selected_values, list):
+        return choices
+    selected = {
+        text
+        for member in selected_values
+        if (text := _choice_text(member)) is not None
+    }
+    items: list[tuple[str, object]] = []
+    field_items = field["items"]
+    if isinstance(field_items, list):
+        for item in field_items:
+            if _is_object(item):
+                text = _choice_text(item.get("value"))
+                if text is not None:
+                    items.append((text, item.get("label")))
+    else:
+        for key, label in field_items.items():
+            text = _choice_text(key)
+            if text is not None:
+                items.append((text, label))
+    for text, label in items:
+        if text not in selected or text in seen:
+            continue
+        seen.add(text)
+        choices.append({"value": text, "label": text if label is None else label})
+    return choices
+
+
+def group_choices(
+    source: dict[str, Any], data: object, properties: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
     """The choices of a checked group source for the root `data`, as `{value, label}` pairs.
 
     The literal choices come first in written order (CUSC-089), then one choice per row of
@@ -254,6 +326,10 @@ def group_choices(source: dict[str, Any], data: object) -> list[dict[str, Any]]:
     of a row is the text of its `label` field, or else the value. A row whose value is a
     literal choice raises FormInputError with the row path and the value.
     """
+    if properties is not None:
+        selected = _selection_field(source["from"], properties)
+        if selected is not None:
+            return _selection_choices(source, selected, data)
     literal_repeat = _first_repeat(source, data, rows=False)
     if literal_repeat is not None:
         raise FormInputError(literal_repeat)
