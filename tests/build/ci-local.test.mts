@@ -404,8 +404,11 @@ export function makeCommands(makefile: string): string[] {
 }
 
 test('the runtime recipe passes native Node sharding only when requested (C18.9)', () => {
+  // A shard job of CI exports CRUDUI_TEST_SHARD to every recipe, so the environment of this test drops it: the plain
+  // dry run must show no shard whatever the job that runs the test set.
+  const { CRUDUI_TEST_SHARD: _inheritedShard, ...inherited } = process.env;
   const args = (shard?: string): string[] => {
-    const result = makeDryRun(ROOT, 'crudui-test-runtimes', { variables: shard === undefined ? [] : [`CRUDUI_TEST_SHARD=${shard}`] });
+    const result = makeDryRun(ROOT, 'crudui-test-runtimes', { env: inherited, variables: shard === undefined ? [] : [`CRUDUI_TEST_SHARD=${shard}`] });
     assert.equal(result.status, 0, result.stderr);
     const line = result.stdout.split('\n').find(entry => entry.includes('scripts/run-tests.mts'));
     assert.ok(line, `make -n crudui-test-runtimes prints the test command:\n${result.stdout}`);
