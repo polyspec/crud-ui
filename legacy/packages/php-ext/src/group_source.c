@@ -98,6 +98,19 @@ static const ps_value *selection_field(const ps_value *items, const ps_value *ro
     return field;
 }
 
+/* The literal choices of a source: 0 with the failure message when they are invalid, -1 on an allocation failure. */
+static int choices_failure(const ps_value *items, ps_text path, ps_chars *message)
+{
+    ps_value *literal = NULL;
+    int state = literal_choices(ps_get(items, "choices"), &literal);
+    ps_value_free(literal);
+    if (state < 0) return -1;
+    if (!state)
+        return failure(message, PS_CONCAT(PS_TEXT("Invalid items.choices at "), path,
+            PS_TEXT(": expected value and label pairs with distinct string or number values")));
+    return 0;
+}
+
 int ps_group_source_failure(const ps_value *field, ps_text path, const ps_value *root, ps_chars *message)
 {
     *message = (ps_chars){NULL, 0};
@@ -117,15 +130,7 @@ int ps_group_source_failure(const ps_value *field, ps_text path, const ps_value 
         if (ps_has(items, "label"))
             return failure(message, PS_CONCAT(PS_TEXT("Invalid items.label at "), path,
                 PS_TEXT(": a source of selected values takes the labels of its field")));
-        if (ps_has(items, "choices")) {
-            ps_value *literal = NULL;
-            int state = literal_choices(ps_get(items, "choices"), &literal);
-            ps_value_free(literal);
-            if (state < 0) return -1;
-            if (!state)
-                return failure(message, PS_CONCAT(PS_TEXT("Invalid items.choices at "), path,
-                    PS_TEXT(": expected value and label pairs with distinct string or number values")));
-        }
+        if (ps_has(items, "choices")) return choices_failure(items, path, message);
         return 0;
     }
     const ps_value *from = ps_get(items, "from");
@@ -160,15 +165,7 @@ int ps_group_source_failure(const ps_value *field, ps_text path, const ps_value 
             return failure(message, PS_CONCAT(PS_TEXT("Invalid items.label at "), path, PS_TEXT(": "), group_path,
                 PS_TEXT("."), ps_string(label), PS_TEXT(" holds a boolean, expected a field whose values are strings or numbers")));
     }
-    if (ps_has(items, "choices")) {
-        ps_value *literal = NULL;
-        int state = literal_choices(ps_get(items, "choices"), &literal);
-        ps_value_free(literal);
-        if (state < 0) return -1;
-        if (!state)
-            return failure(message, PS_CONCAT(PS_TEXT("Invalid items.choices at "), path,
-                PS_TEXT(": expected value and label pairs with distinct string or number values")));
-    }
+    if (ps_has(items, "choices")) return choices_failure(items, path, message);
     return 0;
 }
 
