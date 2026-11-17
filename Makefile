@@ -95,6 +95,9 @@ install-packages: hooks ## Install package-lock.json with the npm of var/tools, 
 	$(ONLINE) $(NPM) ci
 	$(MAKE) --no-print-directory crudui-install-svelte-tools
 
+crudui-lock-update: ## Write package-lock.json again from package.json with the npm of var/tools, the one target that rewrites the lock; ONLINE
+	$(ONLINE) $(NPM) install --package-lock-only --ignore-scripts --no-audit --no-fund
+
 install-link: ## Link the packages to the checkouts of .links after every install of make install; PROJECT and RUNTIME select
 	$(NODE) $(KIT)/link.$(KIT_EXT) link$(if $(PROJECT), --project $(PROJECT))$(if $(RUNTIME), --runtime $(RUNTIME))
 
@@ -472,7 +475,7 @@ $(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-
 CI_SHARDS := 4
 ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
 ci-docs-web: export DOCS_BASE_PATH := /crudui/
-.PHONY: ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-assets-platform ci-assets-php ci-assets-npm ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+.PHONY: crudui-lock-update ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-assets-platform ci-assets-php ci-assets-npm ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
 
 ci-shared: ## The job shared of ci-pipeline.yml: kit's job shared, its tools, its setup, then the static gates in the shared context
 	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --job shared
