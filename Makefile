@@ -809,9 +809,8 @@ release-assets: ## Build the archive of every package of TAG and packages.json i
 	@test -n "$$TAG" || { echo "release-assets: TAG is required, for example make release-assets TAG=v0.0.1"; exit 1; }
 	RELEASE_ASSETS=var/release/assets $(ONLINE) $(NODE) $(KIT)/release.$(KIT_EXT) assets "$$TAG"
 
-release-candidate-assets: ## Build the archive of every package from committed HEAD for VERSION into var/release/assets; ONLINE
-	@test -n "$$VERSION" || { echo "release-candidate-assets: VERSION is required, for example make release-candidate-assets VERSION=0.0.1"; exit 1; }
-	RELEASE_ASSETS=var/release/assets $(ONLINE) $(NODE) $(KIT)/release.$(KIT_EXT) candidate-assets "$$VERSION"
+release-candidate-assets: ## Build the archive of every package from committed HEAD into var/release/assets, for VERSION or the newest version of the change log; ONLINE
+	RELEASE_ASSETS=var/release/assets $(ONLINE) $(NODE) $(KIT)/release.$(KIT_EXT) candidate-assets $${VERSION:+"$$VERSION"}
 
 release-publish: ## Create the GitHub Release of TAG as a draft with the notes and the files of release-assets
 	@test -n "$$TAG" || { echo "release-publish: TAG is required, for example make release-publish TAG=v0.0.1"; exit 1; }
