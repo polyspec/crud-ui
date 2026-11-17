@@ -754,6 +754,7 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) release-recipes
 	$(foreach component,$(BINDING_COMPONENTS),$(CI_ACTOR) $(CI_MAKE) release-go-module-$(component)$(CI_NEWLINE))
+	$(CI_MAKE) release-go-module-push
 	$(CI_MAKE) release-publish
 	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) release-platform-assets-$(component)$(CI_NEWLINE))
 	$(CI_MAKE) release-undraft
