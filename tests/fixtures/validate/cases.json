@@ -56508,7 +56508,7 @@
     {
       "id": "group_source_repeated_value",
       "name": "group-source-repeated-value",
-      "note": "A row whose id repeats the id of an earlier row is an input error that names the canonical text and the data path of the repeating row; two blank ids repeat nothing.",
+      "note": "A row whose id repeats the id of an earlier row fails at its path with `unique`, though no field declares it (CUVR-096); the implicit `in` check of the reading field is skipped, and two blank ids repeat nothing.",
       "spec": {
         "kind": "map",
         "value": [
@@ -56699,12 +56699,241 @@
           ]
         ]
       },
-      "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "Group source value repeats an earlier row: hero at characters.c4.id",
-        "at": ""
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "characters.c4.id",
+            "field": "id",
+            "rule": "unique",
+            "message": "Values must be unique.",
+            "value": "hero"
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
+      "id": "group_source_repeat_refused_by_unique",
+      "name": "group-source-repeat-refused-by-unique",
+      "note": "A repeat of a group source that `unique` on the value field refuses is no input error (CUVR-096): validation returns the failure of `unique` at the repeating row, and the implicit `in` check of the reading field is skipped.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "characters",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "id",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ],
+                                  [
+                                    "validate",
+                                    {
+                                      "kind": "map",
+                                      "value": [
+                                        [
+                                          "unique",
+                                          {
+                                            "kind": "bool",
+                                            "value": true
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                ]
+                              }
+                            ],
+                            [
+                              "name",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "lead",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "characters.*.id"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "characters",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "c1",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": "hero"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "c2",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": " "
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "c3",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": " "
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "c4",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": "hero"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "lead",
+            {
+              "kind": "text",
+              "value": "hero"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "characters.c4.id",
+            "field": "id",
+            "rule": "unique",
+            "message": "Values must be unique.",
+            "value": "hero"
+          }
+        ],
+        "hidden": []
       }
     },
     {
@@ -56871,12 +57100,18 @@
           ]
         ]
       },
-      "raises": {
-        "kind": "invalid_form_input",
-        "status": null,
-        "category": "value",
-        "message": "Group source value repeats an earlier row: 7 at characters.c2.id",
-        "at": ""
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "characters.c2.id",
+            "field": "id",
+            "rule": "unique",
+            "message": "Values must be unique.",
+            "value": "7"
+          }
+        ],
+        "hidden": []
       }
     },
     {

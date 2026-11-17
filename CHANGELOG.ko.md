@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 그룹 소스의 반복된 값이 필드 오류다(C19.68). 입력: 그룹 소스의 행이 값을 반복하는 데이터의 `validate`. 이전 동작: 검증이 `INVALID_FORM_INPUT`과 빈 위치로 멈춰 어떤 필드도 오류를 보이지 않았다. 현재: 반복하는 각 행이 그 경로에서 `messages.unique`가 바꿀 수 있는 `unique`로 실패하고, 읽는 필드는 암묵적 `in` 검사를 건너뛰며, 검증은 필드 오류를 반환한다.
 - validator 패키지가 CUVR-019의 trim을 `trimText`(PHP, TypeScript), `trim_text`(Python), `TrimText`(Go)로 제공한다(C19.61). 입력: 양 끝에 공백이 있는 text. 이전 동작: trim이 validator 내부에 있었다. 현재: Rust core의 함수 하나가 양 끝의 White_Space code point를 제거하고, `contracts/validator-cases.json`의 group `trim_text`가 그 case를 담는다.
 - Go binding 패키지가 `binding go-link`로 링크한다(C19.60). 입력: `make test-binding-go-generator`. 이전 동작: 시험 binary가 CoreFoundation의 `Undefined symbols`로 링크되지 않았다. 현재: rustc가 출력하는 native 라이브러리가 링크되고 생성된 Go 시험이 실행된다.
 - binding 0.0.17, json 0.0.34, kit 0.0.117의 pin을 한 행으로 계획한다(C19.59). 입력: 계획. 이전 동작: 없음. 현재: 행이 pin 전의 각 검사의 Red를 적는다.

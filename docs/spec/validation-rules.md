@@ -257,13 +257,18 @@ whitespace, emptiness or text.
   binding validates the data of its controls, whose choices are the ones it shows.
 - **CUVR-087** **A repeated value of a group source.** When the implicit check of CUVR-060 reads the
   choices of a group source, before it compares the value, it reads the rows of the group in data
-  order, and a row whose choice value has the canonical text of an earlier row's value is an input
-  error with code `INVALID_FORM_INPUT`, an empty location and the message
-  `Group source value repeats an earlier row: {value} at {path}`, where `{value}` is the canonical
-  text and `{path}` is the data path of the repeating row's `{value}` field, row key included, such
-  as `characters.c4.id` ([schema](schema.md#choices-from-a-repeated-group), CUSC-090). The first
-  repeat fails. Only rows that give a choice (CUSC-063) are compared, so a blank or non-scalar value
-  repeats nothing. A hidden field is not validated, so it reads no choices and runs no such check.
+  order, and a row whose choice value has the canonical text of an earlier row's value repeats it.
+  Only rows that give a choice (CUSC-063) are compared, so a blank or non-scalar value repeats
+  nothing. A hidden field is not validated, so it reads no choices and runs no such check. A repeat
+  is a value that a person can type, so it is refused as a field error (CUVR-096), not as an input
+  failure.
+- **CUVR-096** **The field error of a repeat.** Each repeating row of CUVR-087 fails at the data path
+  of its value field, row key included, such as `characters.c4.id`, with the rule `unique` and its
+  message, which `messages.unique` of that field overrides; the failure is reported once at that
+  path, whether or not the field declares `unique` (CUVR-015). Validation goes on and returns the
+  field errors; a failure that a declared rule did not already give at that path follows the
+  errors of the walk, in data order. The implicit `in` check of each field that reads the source is skipped, so that
+  field reports no failure of its choices; its other rules run as declared.
 - **CUVR-085** **Literal choices of a group source.** The members of the implicit `in` check of a
   group source with `choices` (CUSC-089) are the values of its literal choices followed by the values
   of the choices of its rows, one set, and a value passes when it matches one of them as for `in`.

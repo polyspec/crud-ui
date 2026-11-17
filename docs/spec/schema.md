@@ -474,11 +474,11 @@ roles:
   [choice list](#choice-lists) of the same pairs.
 - **CUSC-090** The values of the choices are distinct, as those of a choice list are. Rendering
   lists a repeated value once, as the choice of its first row, and validation refuses data in
-  which the rows of the group repeat a value: an input error with `INVALID_FORM_INPUT`, an empty
-  location and the message `Group source value repeats an earlier row: {value} at {path}`
-  ([choices from a repeated group](validation-rules.md#values), CUVR-087). The rows of a group come
-  from the data that a form submits, so a repeated value is data that the choices cannot express
-  and validation reports it instead of choosing one of the rows.
+  which the rows of the group repeat a value: each repeating row fails at the path of its value
+  field with the rule `unique` ([choices from a repeated group](validation-rules.md#values),
+  CUVR-087, CUVR-096). The rows of a group come from the data that a form submits, so a repeated
+  value is a value that a person typed, which validation reports on its field instead of choosing
+  one of the rows.
 - **CUSC-089** `choices` is a list of literal choices that join the choices of the rows, such as the
   audience `player` beside the ids of the characters: `{ "value": …, "label": … }` pairs as in a
   [choice list](#choice-lists), each with only these two members, a `value` that is a string or a

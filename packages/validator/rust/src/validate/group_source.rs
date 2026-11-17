@@ -271,7 +271,7 @@ pub fn group_choices(
     };
     let literal = literal_choices(members.get("choices"))
         .ok_or_else(|| declaration(choices_message(path)))?;
-    if let Some(repeat) = first_repeat(items, data, false) {
+    if let Some(repeat) = first_repeat(items, data, false).map(|repeat| repeat.message) {
         return Err(GroupChoicesError::Repeated(repeat));
     }
     let value_name = segments[count - 1];
@@ -315,16 +315,57 @@ fn source_rows<'a>(segments: &[&str], data: &'a Value) -> Option<&'a Map<String,
     rows.as_object()
 }
 
-/// The input failure message of the first row of a checked group source, in data order, whose
-/// choice value repeats a literal choice (CUSC-089) or that of an earlier row (CUVR-087), or
-/// `None`. A source whose `from` is not of the declared shape has no rows.
-pub fn group_source_repeat(items: &Value, data: &Value) -> Option<String> {
+/// The first row of a group source, in data order, whose choice value repeats a literal choice
+/// (CUSC-089) or that of an earlier row (CUVR-087).
+pub struct SourceRepeat {
+    /// The message of the input failure.
+    pub message: String,
+    /// For the repeat of an earlier row, the data path of the repeating row's value field, which a
+    /// field rule of the group can refuse (CUVR-096); `None` for a literal choice.
+    pub row_path: Option<String>,
+}
+
+/// The first repeat of a checked group source, or `None`. A source whose `from` is not of the
+/// declared shape has no rows.
+pub fn group_source_repeat(items: &Value, data: &Value) -> Option<SourceRepeat> {
     first_repeat(items, data, true)
 }
 
-/// The message of the first row whose choice value is a literal choice or, with `rows`, the value
-/// of an earlier row.
-fn first_repeat(items: &Value, data: &Value, rows: bool) -> Option<String> {
+/// Each row of a group source, in data order, whose choice value repeats that of an earlier row
+/// (CUVR-087): the data path of its value field and the value. A source whose `from` is not of the
+/// declared shape has no rows.
+pub fn row_repeats<'a>(items: &Value, data: &'a Value) -> Vec<(String, &'a Value)> {
+    let Some(from) = items.get("from").and_then(Value::as_str) else {
+        return Vec::new();
+    };
+    let segments: Vec<&str> = from.split('.').collect();
+    if segments.len() < 3 {
+        return Vec::new();
+    }
+    let group_path = segments[..segments.len() - 2].join(".");
+    let value_name = segments[segments.len() - 1];
+    let Some(rows) = source_rows(&segments, data) else {
+        return Vec::new();
+    };
+    let mut seen = HashSet::new();
+    let mut repeats = Vec::new();
+    for (key, row) in rows {
+        let Some(field) = row.as_object().and_then(|row| row.get(value_name)) else {
+            continue;
+        };
+        let Some(value) = choice_text(Some(field)) else {
+            continue;
+        };
+        if !seen.insert(value) {
+            repeats.push((format!("{group_path}.{key}.{value_name}"), field));
+        }
+    }
+    repeats
+}
+
+/// The first row whose choice value is a literal choice or, with `rows`, the value of an earlier
+/// row.
+fn first_repeat(items: &Value, data: &Value, rows: bool) -> Option<SourceRepeat> {
     let from = items.get("from").and_then(Value::as_str)?;
     #[allow(
         clippy::disallowed_methods,
@@ -343,14 +384,19 @@ fn first_repeat(items: &Value, data: &Value, rows: bool) -> Option<String> {
             continue;
         };
         if literal.iter().any(|choice| choice.value == value) {
-            return Some(format!(
-                "Group source value repeats a literal choice at {group_path}.{key}.{value_name}: {value}"
-            ));
+            return Some(SourceRepeat {
+                message: format!(
+                    "Group source value repeats a literal choice at {group_path}.{key}.{value_name}: {value}"
+                ),
+                row_path: None,
+            });
         }
         if !seen.insert(value.clone()) && rows {
-            return Some(format!(
-                "Group source value repeats an earlier row: {value} at {group_path}.{key}.{value_name}"
-            ));
+            let path = format!("{group_path}.{key}.{value_name}");
+            return Some(SourceRepeat {
+                message: format!("Group source value repeats an earlier row: {value} at {path}"),
+                row_path: Some(path),
+            });
         }
     }
     None

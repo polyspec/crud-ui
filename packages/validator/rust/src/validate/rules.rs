@@ -106,6 +106,11 @@ fn message_override<'a>(messages: Option<&'a Value>, key: &str) -> Option<&'a st
 
 /// The message of a failed rule: the field's `messages` member under the rule name (CUSC-003),
 /// or the default message of the rule when the field declares none.
+/// The message of `unique` with the `messages` of a field (CUVR-015, CUVR-096).
+pub(crate) fn unique_message(messages: Option<&Value>) -> String {
+    rule_message(messages, "unique", "Values must be unique.")
+}
+
 fn rule_message(messages: Option<&Value>, rule: &str, default: &str) -> String {
     match message_override(messages, rule) {
         Some(custom) => custom.to_owned(),

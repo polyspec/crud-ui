@@ -22,11 +22,13 @@ use crate::expr::{Evaluator, Expression, Node};
 
 use super::choice_data::{check_single_choice_data, is_single_choice};
 use super::errors::{FormInputError, ValidateError};
-use super::group_source::{group_choices, group_source_repeat, is_group_source, GroupChoicesError};
+use super::group_source::{
+    group_choices, group_source_repeat, is_group_source, row_repeats, GroupChoicesError,
+};
 use super::keyed_maps::check_keyed_map_keys;
 use super::membership::Comparable;
 use super::parameters::{check, check_declared, Patterns};
-use super::rules::{get_rule, is_condition_expression, RuleContext};
+use super::rules::{get_rule, is_condition_expression, unique_message, RuleContext};
 use super::visibility::is_visible;
 
 /// A single validation error (JS `ValidationError`: path/field/rule/message/value).
@@ -114,6 +116,10 @@ pub(crate) struct Run<'a> {
     pub(crate) properties: &'a Map<String, Value>,
     /// For each declaration path that `reference` names, its ids in the data, collected once.
     pub(crate) reference_ids: RefCell<HashMap<String, Vec<Comparable>>>,
+    /// The group sources whose rows repeat a value (CUVR-087), by their `items`, in the order of the
+    /// walk; after the walk each repeating row fails with `unique` at its path unless a field error
+    /// is already there (CUVR-096).
+    pub(crate) source_repeats: RefCell<Vec<Value>>,
 }
 
 /// The CRUDUI validator over a composed spec.
@@ -148,6 +154,7 @@ impl Validator {
             unique_duplicates: RefCell::new(HashMap::new()),
             properties: &self.properties,
             reference_ids: RefCell::new(HashMap::new()),
+            source_repeats: RefCell::new(Vec::new()),
         };
         self.validate_properties(
             &self.properties,
@@ -159,6 +166,10 @@ impl Validator {
             false,
             &mut errors,
         )?;
+        // Each repeating row of a group source fails once at its path with `unique` (CUVR-096).
+        for items in run.source_repeats.take() {
+            self.source_repeat_errors(&items, data, &mut errors);
+        }
         let mut hidden = Vec::new();
         collect_hidden(&self.properties, data, &[], &[], data, &mut hidden);
         Ok(ValidationResult {
@@ -502,6 +513,42 @@ impl Validator {
         Ok(None)
     }
 
+    /// The failures of the rows of the group source `items` that repeat an earlier row's value
+    /// (CUVR-096): rule `unique` at the path of the value field, with its `messages.unique`, once
+    /// per path, after the field errors of the walk, in data order.
+    fn source_repeat_errors(&self, items: &Value, data: &Value, errors: &mut Vec<ValidationError>) {
+        let Some(from) = items.get("from").and_then(Value::as_str) else {
+            return;
+        };
+        // The declaration of the value field: the `properties` of each named group, rows skipped.
+        let mut field = None;
+        let mut properties = &self.properties;
+        for segment in from.split('.').filter(|segment| *segment != "*") {
+            field = properties.get(segment);
+            match field
+                .and_then(|field| field.get("properties"))
+                .and_then(Value::as_object)
+            {
+                Some(next) => properties = next,
+                None => continue,
+            }
+        }
+        let message = unique_message(field.and_then(|field| field.get("messages")));
+        for (path, value) in row_repeats(items, data) {
+            if errors.iter().any(|error| error.path == path) {
+                continue;
+            }
+            let segments: Vec<String> = path.split('.').map(str::to_owned).collect();
+            errors.push(ValidationError {
+                field: field_name(&segments),
+                path,
+                rule: "unique".to_string(),
+                message: message.clone(),
+                value: value.clone(),
+            });
+        }
+    }
+
     /// A field whose `items` is a group source runs an implicit `in` check against the choices
     /// that the source gives for the root data, before its declared rules (validation-rules.md,
     /// "Values"). Returns the error of the check when it fails.
@@ -522,9 +569,18 @@ impl Validator {
         let Some(items) = field.get("items").filter(|items| is_group_source(items)) else {
             return Ok(None);
         };
-        // A repeated value among the source rows is data that the choices cannot express (CUVR-087).
+        // A repeated value among the source rows is data that the choices cannot express (CUVR-087). A
+        // repeat of an earlier row waits for the end of the walk, where a field error at its path
+        // refuses it (CUVR-096), and the implicit check of this field is skipped.
         if let Some(repeat) = group_source_repeat(items, run.data) {
-            return Err(FormInputError::new(repeat).into());
+            if repeat.row_path.is_none() {
+                return Err(FormInputError::new(repeat.message).into());
+            }
+            let mut repeats = run.source_repeats.borrow_mut();
+            if !repeats.contains(items) {
+                repeats.push(items.clone());
+            }
+            return Ok(None);
         }
         let choices =
             group_choices(items, run.data, &declaration.join(".")).map_err(
