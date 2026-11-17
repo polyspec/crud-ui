@@ -62,6 +62,7 @@ final class RuleParameters
                 'equalTo', 'containedIn', 'typeFrom', 'minFrom', 'maxFrom', 'enddate', 'notEqual', 'unique', 'reference'
                     => self::reference($rule, $parameter),
                 'conditionTree' => ConditionTree::judges($parameter),
+                'accept' => self::accept($parameter),
                 default => null,
             };
         } catch (InvalidRuleParameter $error) {
@@ -72,6 +73,41 @@ final class RuleParameters
                 previous: $error,
             );
         }
+    }
+
+    /** A non-empty list of non-empty strings: the field names of a unique list (CUVR-097). */
+    private static function isNameList(mixed $parameter): bool
+    {
+        if (!\is_array($parameter) || $parameter === [] || !array_is_list($parameter)) {
+            return false;
+        }
+        foreach ($parameter as $name) {
+            if (!\is_string($name) || $name === '') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * The accept parameter is a string or a list of strings (CUVR-016).
+     *
+     * @throws InvalidRuleParameter
+     */
+    private static function accept(mixed $parameter): void
+    {
+        if (\is_string($parameter)) {
+            return;
+        }
+        if (\is_array($parameter) && array_is_list($parameter)) {
+            foreach ($parameter as $item) {
+                if (!\is_string($item)) {
+                    throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, 'Invalid accept parameter: expected a string or a list of strings');
+                }
+            }
+            return;
+        }
+        throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, 'Invalid accept parameter: expected a string or a list of strings');
     }
 
     /**
@@ -91,8 +127,8 @@ final class RuleParameters
             'notEqual' => \is_string($parameter) || \is_bool($parameter) || \is_int($parameter)
                 || (\is_float($parameter) && is_finite($parameter))
                 ? null : 'Invalid notEqual parameter: expected a string, number or boolean',
-            default => \is_string($parameter) || $parameter === true
-                ? null : 'Invalid unique parameter: expected true, false or a string',
+            default => \is_string($parameter) || $parameter === true || self::isNameList($parameter)
+                ? null : 'Invalid unique parameter: expected true, false, a string or a list of field names',
         };
         if ($message !== null) {
             throw new InvalidRuleParameter(InvalidRuleParameter::PARAMETER, $message);
