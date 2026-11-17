@@ -747,8 +747,10 @@ static bool append_error(validation_context *context, const ps_text *path, size_
  * A repeated group source value as a unique field error at its data path (CUVR-096): one error per path, and an error
  * already recorded at that path stays. The default message of unique is the message.
  */
-static bool repeat_error(validation_context *context, const ps_value *repeat)
+static bool repeat_error(validation_context *context, const ps_value *repeat, const ps_value *messages)
 {
+    const ps_value *custom = messages ? ps_get_text(messages, PS_TEXT("unique")) : NULL;
+    ps_text message = custom && custom->kind == PS_STRING ? ps_string(custom) : PS_TEXT("Values must be unique.");
     ps_text at = ps_string(ps_get_text(repeat, PS_TEXT("at")));
     for (size_t i = 0; i < ps_size(context->errors); ++i) {
         const ps_value *known = ps_get_text(ps_at(context->errors, i), PS_TEXT("path"));
@@ -759,7 +761,7 @@ static bool repeat_error(validation_context *context, const ps_value *repeat)
         ps_set(error, "path", ps_text_value(at)) &&
         ps_set(error, "field", ps_text_value(ps_string(ps_get_text(repeat, PS_TEXT("field"))))) &&
         ps_set(error, "rule", ps_text_value(PS_TEXT("unique"))) &&
-        ps_set(error, "message", ps_text_value(PS_TEXT("Values must be unique."))) &&
+        ps_set(error, "message", ps_text_value(message)) &&
         ps_set(error, "value", ps_value_clone(ps_get_text(repeat, PS_TEXT("value"))));
     ok = ok && ps_append(context->errors, error);
     if (!ok) ps_value_free(error);
@@ -836,7 +838,8 @@ static bool validate_rules(const ps_value *field, const ps_value *value,
         ps_value *repeats = ps_group_source_repeats(items, context->data);
         if (!repeats) return allocation_failure(context);
         bool recorded = true;
-        for (size_t i = 0; recorded && i < ps_size(repeats); ++i) recorded = repeat_error(context, ps_at(repeats, i));
+        const ps_value *value_messages = ps_group_source_value_messages(items, context->properties);
+        for (size_t i = 0; recorded && i < ps_size(repeats); ++i) recorded = repeat_error(context, ps_at(repeats, i), value_messages);
         ps_value_free(repeats);
         if (!recorded) return allocation_failure(context);
         ps_chars repeated = {NULL, 0};

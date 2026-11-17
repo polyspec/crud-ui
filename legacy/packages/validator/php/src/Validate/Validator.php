@@ -619,6 +619,7 @@ final class Validator
             throw new FormInputError($repeat);
         }
         // A value that repeats an earlier row is a field error with rule `unique` at its data path (CUVR-096).
+        $valueMessages = $selection ? null : GroupSource::valueMessages((array) $field['items'], $this->properties);
         foreach ($selection ? [] : GroupSource::repeats((array) $field['items'], $allData) as $found) {
             if (!isset($errors[$found['at']])) {
                 $parts = explode('.', $found['at']);
@@ -626,7 +627,7 @@ final class Validator
                     'path' => $found['at'],
                     'field' => (string) end($parts),
                     'rule' => 'unique',
-                    'message' => (string) ($messages['unique'] ?? 'Values must be unique.'),
+                    'message' => is_string($valueMessages['unique'] ?? null) ? $valueMessages['unique'] : 'Values must be unique.',
                     'value' => $found['value'],
                 ];
             }

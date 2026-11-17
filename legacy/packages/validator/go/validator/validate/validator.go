@@ -410,8 +410,9 @@ func (v *Validator) runGroupSource(run fieldRun, value any, errors *[]Validation
 			return false, &FormInputError{Message: repeat}
 		}
 		// A value that repeats an earlier row is a field error with rule unique at its data path (CUVR-096).
+		// The message is the one of unique of the value field that the source names (CUVR-096).
 		message := "Values must be unique."
-		if override, ok := fieldMessages(run.field)["unique"]; ok {
+		if override, ok := valueFieldMessages(source, v.properties)["unique"]; ok {
 			message = override
 		}
 		for _, found := range groupSourceRepeats(source, run.allData) {

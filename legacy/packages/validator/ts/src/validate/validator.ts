@@ -45,7 +45,7 @@ import { isRecord } from '../record';
 import { compareCodePoints } from '../text/index';
 import { assertRuleParameter, assertRuleName } from './parameters';
 import { ComposeLoadError } from '../compose/errors';
-import { groupChoices, groupSourceFailure, groupSourceLiteralRepeat, groupSourceRepeats, isGroupSource, isSelectionSource } from '../group-source';
+import { groupChoices, groupSourceFailure, groupSourceLiteralRepeat, groupSourceRepeats, isGroupSource, isSelectionSource, valueFieldMessages } from '../group-source';
 import { assertKeyedMapKeys, assertKeyedMapReference } from './keyed-maps';
 import { isMultipleField } from './fields';
 import { isReferenceTarget, referenceIds, type ReferenceId } from './references';
@@ -784,12 +784,13 @@ export class Validator {
     const literal = selection ? undefined : groupSourceLiteralRepeat(field.items, context.formData);
     if (literal !== undefined) throw new FormInputError(literal);
     // A value that repeats an earlier row is a field error with rule `unique` at its data path (CUVR-096).
+    const valueMessages = selection ? undefined : valueFieldMessages(field.items, this.properties);
     for (const repeat of selection ? [] : groupSourceRepeats(field.items, context.formData)) {
       errors.push({
         path: repeat.path,
         field: repeat.path.split('.').pop() ?? '',
         rule: 'unique',
-        message: messages?.unique ?? 'Values must be unique.',
+        message: typeof valueMessages?.unique === 'string' ? valueMessages.unique : 'Values must be unique.',
         value: repeat.value,
       });
     }

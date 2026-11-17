@@ -50,6 +50,7 @@ from .group_source import (
     group_source_repeats,
     is_group_source,
     is_selection_source,
+    value_field_messages,
 )
 from .loader import DocumentLoader
 from .text import check_input_text, check_option_text, checked_composition
@@ -718,7 +719,8 @@ class Validator:
                 raise FormInputError(literal)
             # A value that repeats an earlier row is a field error with rule `unique` at its
             # data path (CUVR-096); the first error of a path is kept.
-            custom = messages.get("unique") if messages else None
+            value_messages = None if selection else value_field_messages(source, self.properties)
+            custom = value_messages.get("unique") if value_messages else None
             repeats = [] if selection else group_source_repeats(source, context["formData"])
             for at, repeated in repeats:
                 if any(error["path"] == at for error in errors):

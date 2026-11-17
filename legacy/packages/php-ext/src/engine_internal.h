@@ -427,6 +427,8 @@ int ps_group_source_repeat(const ps_value *items, const ps_value *data, ps_chars
  * value; an empty array when none repeats, NULL on allocation failure.
  */
 ps_value *ps_group_source_repeats(const ps_value *items, const ps_value *data);
+/* ps_group_source_value_messages: the messages object of the value field a checked group source names, or NULL. */
+const ps_value *ps_group_source_value_messages(const ps_value *items, const ps_value *root);
 
 /* Membership (rule_in.c). ps_in_passes: 1, 0, or -1 on allocation failure; the parameter is valid. */
 ps_parameter_problem ps_in_parameter(const ps_value *parameter);

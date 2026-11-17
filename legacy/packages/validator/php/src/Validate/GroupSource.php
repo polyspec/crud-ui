@@ -283,6 +283,29 @@ final class GroupSource
     }
 
     /**
+     * The `messages` of the value field that a group source names (the last segment of `from`), or null: the message of
+     * `unique` at a repeated row is the one of that field (CUVR-096).
+     *
+     * @param array<array-key, mixed> $source
+     * @param array<array-key, mixed> $root
+     * @return array<array-key, mixed>|null
+     */
+    public static function valueMessages(array $source, array $root): ?array
+    {
+        $group = self::sourceGroup($source['from'] ?? null, $root);
+        if ($group === null) {
+            return null;
+        }
+        $parts = explode('.', (string) $source['from']);
+        $field = $group[(string) end($parts)] ?? null;
+        if (!JsonValue::isObject($field)) {
+            return null;
+        }
+        $messages = ((array) $field)['messages'] ?? null;
+        return JsonValue::isObject($messages) ? (array) $messages : null;
+    }
+
+    /**
      * The rows whose choice value repeats the value of an earlier row, in data order, as the data path of the
      * value field and its canonical text (CUVR-087, CUVR-096). Each is a field error with rule `unique`.
      *

@@ -399,6 +399,29 @@ int ps_group_source_repeat(const ps_value *items, const ps_value *data, ps_chars
  * value (at), the value field name (field) and the canonical text (value) (CUVR-096). An array, empty when none
  * repeats; NULL on allocation failure.
  */
+/*
+ * The messages object of the value field that the source names (the last segment of from), or NULL when the source
+ * names no such field: the message of unique at a repeated row is the one of that field (CUVR-096).
+ */
+const ps_value *ps_group_source_value_messages(const ps_value *items, const ps_value *root)
+{
+    const ps_value *from = ps_get(items, "from");
+    ps_text *parts = NULL;
+    size_t count = 0;
+    if (!root || !from || from->kind != PS_STRING || !split_dots(ps_string(from), &parts, &count)) return NULL;
+    const ps_value *messages = NULL;
+    if (count >= 3 && ps_text_is(parts[count - 2], "*")) {
+        const ps_value *group = source_scope(root, parts, count - 2);
+        const ps_value *field = group ? ps_get_text(group, parts[count - 1]) : NULL;
+        if (field && field->kind == PS_OBJECT) {
+            const ps_value *found = ps_get(field, "messages");
+            if (found && found->kind == PS_OBJECT) messages = found;
+        }
+    }
+    free(parts);
+    return messages;
+}
+
 ps_value *ps_group_source_repeats(const ps_value *items, const ps_value *data)
 {
     ps_value *found = ps_array_value();

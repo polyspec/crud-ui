@@ -525,3 +525,21 @@ func validLiteralChoices(choices any) bool {
 	_, ok := literalChoices(choices)
 	return ok
 }
+
+// valueFieldMessages returns the messages of the value field that a group source names (the last segment of from), or nil
+// when the source names no such field: the message of unique at a repeated row is the one of that field (CUVR-096).
+func valueFieldMessages(source *compose.OMap, root *compose.OMap) map[string]string {
+	from, _ := source.Get("from")
+	group := sourceGroup(from, root)
+	if group == nil {
+		return nil
+	}
+	text, _ := from.(string)
+	segments := strings.Split(text, ".")
+	raw, ok := group.Get(segments[len(segments)-1])
+	field, isField := raw.(*compose.OMap)
+	if !ok || !isField {
+		return nil
+	}
+	return fieldMessages(field)
+}

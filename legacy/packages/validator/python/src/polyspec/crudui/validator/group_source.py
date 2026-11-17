@@ -86,6 +86,20 @@ def _boolean_failure(member: str, path: str, field: str) -> str:
     )
 
 
+def value_field_messages(source: dict[str, Any], properties: dict[str, Any]) -> dict[str, Any] | None:
+    """The `messages` of the value field that a group source names (the last segment of `from`), or None.
+
+    The message of `unique` at a repeated row is the one of that field (CUVR-096).
+    """
+    group = _source_group(source.get("from"), properties)
+    if group is None:
+        return None
+    field = group.get(str(source["from"]).split(".")[-1])
+    if not _is_object(field) or not _is_object(field.get("messages")):
+        return None
+    return field["messages"]
+
+
 def _source_group(from_: object, properties: dict[str, Any]) -> dict[str, Any] | None:
     """The child fields of the repeated group that `from_` names, or None when it breaks the rules.
 

@@ -67,6 +67,17 @@ function sourceGroup(from: unknown, properties: Record<string, unknown>): Record
   return scalarChild(current, segments[segments.length - 1]) ? current : undefined;
 }
 
+/**
+ * The `messages` of the value field that a group source names (the last segment of `from`), or `undefined`: the message of
+ * `unique` at a repeated row is the one of that field (CUVR-096).
+ */
+export function valueFieldMessages(items: Record<string, unknown>, properties: Record<string, unknown>): Record<string, unknown> | undefined {
+  const group = sourceGroup(items.from, properties);
+  if (!group) return undefined;
+  const field = group[String(items.from).split('.').pop() ?? ''];
+  return isRecord(field) && isRecord(field.messages) ? field.messages : undefined;
+}
+
 /** The field types whose stored value is the list of the selected values of their literal items (CUSC-097). */
 const SELECTION_TYPES: readonly unknown[] = ['multichoice', 'checkboxes', 'checkcontainer'];
 
