@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 선택 필드의 선택지가 `multichoice`, `checkboxes`, `checkcontainer` 필드가 선택한 값일 수 있다(C19.65). 입력: 그런 필드를 이름하는 `items: { from: channels }`. 이전 동작: 검증과 렌더링이 `Invalid items.from at {path}`로 실패했다. 현재: 선택지는 그 필드의 라벨을 가진 선택된 값이고, 더 이상 선택되지 않은 값은 필드 오류다(CUSC-097).
 - `unique`가 반복 그룹의 여러 필드에 함께 성립한다(C19.66). 입력: `items.*.name`의 `unique: [kind]` 같은 필드 이름 목록의 `unique`. 이전 동작: 검증이 `Invalid unique parameter: expected true, false or a string`로 실패했다. 현재: 앞선 행이 그 필드와 이름 붙은 각 필드의 값을 같게 가지면 행이 실패한다(CUVR-097).
 - 빈 `badge` 값이 element를 쓰지 않는다(C19.67). 입력: 값이 `null`, 없음, `false`, 빈 문자열인 `badge` format의 list나 detail 셀. 이전 동작: 셀이 빈 `<span class="crudui-badge">`를 담았다. 현재: `map`이 무엇을 담든 셀이 빈다(CUDF-093).
 - 그룹 소스의 반복된 값이 필드 오류다(C19.68). 입력: 그룹 소스의 행이 값을 반복하는 데이터의 `validate`. 이전 동작: 검증이 `INVALID_FORM_INPUT`과 빈 위치로 멈춰 어떤 필드도 오류를 보이지 않았다. 현재: 반복하는 각 행이 그 경로에서 `messages.unique`가 바꿀 수 있는 `unique`로 실패하고, 읽는 필드는 암묵적 `in` 검사를 건너뛰며, 검증은 필드 오류를 반환한다.

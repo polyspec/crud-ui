@@ -4,6 +4,7 @@ use crate::template::check_declared_attributes;
 use crate::util::OrNoList;
 use crate::util::OrNoText;
 use crate::util::{scalar, style};
+use crate::FieldTemplate;
 use crate::{FormError, FormResult};
 use polyspec_crud_ui_validator::validate::group_source::{group_choices, GroupChoicesError};
 use serde_json::{json, Map, Value};
@@ -160,12 +161,24 @@ pub(crate) fn choice_appearances(items: &Value) -> Vec<Map<String, Value>> {
 
 /// The spec of a field whose `items` is a group source, with the items replaced by the choice
 /// list of the group's rows in the root `data` (schema.md, "Choices from a repeated group").
-pub(crate) fn with_group_choices(spec: &Value, data: &Value, path: &str) -> FormResult<Value> {
-    let choices = group_choices(&spec["items"], data, path).map_err(|error| match error {
-        GroupChoicesError::Declaration(message) | GroupChoicesError::Repeated(message) => {
-            FormError::input(message)
-        }
-    })?;
+pub(crate) fn with_group_choices(
+    spec: &Value,
+    data: &Value,
+    path: &str,
+    fields: &[FieldTemplate],
+) -> FormResult<Value> {
+    // A source of selected values lists the choices of the field it names (CUSC-097).
+    let selection = spec["items"]
+        .get("from")
+        .and_then(Value::as_str)
+        .and_then(|from| template_field(fields, from))
+        .and_then(|field| field.spec.get("items"));
+    let choices =
+        group_choices(&spec["items"], data, path, selection).map_err(|error| match error {
+            GroupChoicesError::Declaration(message) | GroupChoicesError::Repeated(message) => {
+                FormError::input(message)
+            }
+        })?;
     let items: Vec<Value> = choices
         .into_iter()
         .map(|choice| json!({"value": choice.value, "label": choice.label}))
@@ -173,4 +186,16 @@ pub(crate) fn with_group_choices(spec: &Value, data: &Value, path: &str) -> Form
     let mut grouped = spec.clone();
     grouped["items"] = Value::Array(items);
     Ok(grouped)
+}
+
+/// The field of the template at the declaration path `path`, its names joined with `.`.
+fn template_field<'a>(fields: &'a [FieldTemplate], path: &str) -> Option<&'a FieldTemplate> {
+    let mut found: Option<&FieldTemplate> = None;
+    let mut current = fields;
+    for name in path.split('.') {
+        let field = current.iter().find(|field| field.name == name)?;
+        current = &field.children;
+        found = Some(field);
+    }
+    found
 }

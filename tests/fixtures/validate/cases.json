@@ -58074,6 +58074,1275 @@
       }
     },
     {
+      "id": "selection_source_selected_value",
+      "name": "selection-source-selected-value",
+      "note": "a select whose items name a multichoice field takes the selected values of that field as its choices (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "multichoice"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "email"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Email"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "sms"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "SMS"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "push"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Push"
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "sms"
+                },
+                {
+                  "kind": "text",
+                  "value": "email"
+                }
+              ]
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "email"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "errors": [],
+        "hidden": []
+      }
+    },
+    {
+      "id": "selection_source_unselected_value",
+      "name": "selection-source-unselected-value",
+      "note": "a value that the source field does not select fails the implicit in check as a field error (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "multichoice"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "email"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Email"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "sms"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "SMS"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "push"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Push"
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "sms"
+                }
+              ]
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "push"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "primary",
+            "field": "primary",
+            "rule": "in",
+            "message": "Please select a valid option.",
+            "value": "push"
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
+      "id": "selection_source_no_selection",
+      "name": "selection-source-no-selection",
+      "note": "a source field without a selection gives no choices (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "multichoice"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "email"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Email"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "sms"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "SMS"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "push"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Push"
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "sms"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "primary",
+            "field": "primary",
+            "rule": "in",
+            "message": "Please select a valid option.",
+            "value": "sms"
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
+      "id": "selection_source_literal_choice",
+      "name": "selection-source-literal-choice",
+      "note": "the literal choices of the source join the selected values (CUSC-089, CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "multichoice"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "email"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Email"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "sms"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "SMS"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "push"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Push"
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ],
+                            [
+                              "choices",
+                              {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "map",
+                                    "value": [
+                                      [
+                                        "value",
+                                        {
+                                          "kind": "text",
+                                          "value": "none"
+                                        }
+                                      ],
+                                      [
+                                        "label",
+                                        {
+                                          "kind": "text",
+                                          "value": "None"
+                                        }
+                                      ]
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "sms"
+                }
+              ]
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "none"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "errors": [],
+        "hidden": []
+      }
+    },
+    {
+      "id": "selection_source_value_map",
+      "name": "selection-source-value-map",
+      "note": "a source field with a value-to-label map gives its selected keys (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "checkboxes"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "email",
+                              {
+                                "kind": "text",
+                                "value": "Email"
+                              }
+                            ],
+                            [
+                              "sms",
+                              {
+                                "kind": "text",
+                                "value": "SMS"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "sms"
+                }
+              ]
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "sms"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "errors": [],
+        "hidden": []
+      }
+    },
+    {
+      "id": "selection_source_label_refused",
+      "name": "selection-source-label-refused",
+      "note": "a source of selected values takes the labels of its field, so it declares no label (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "multichoice"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "email"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Email"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "sms"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "SMS"
+                                  }
+                                ]
+                              ]
+                            },
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "push"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "Push"
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ],
+                            [
+                              "label",
+                              {
+                                "kind": "text",
+                                "value": "name"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "sms"
+                }
+              ]
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "sms"
+            }
+          ]
+        ]
+      },
+      "raises": {
+        "kind": "invalid_rule_parameter",
+        "status": null,
+        "category": "value",
+        "message": "Invalid items.label at primary: a source of selected values takes the labels of its field",
+        "at": "primary"
+      }
+    },
+    {
+      "id": "selection_source_not_selection_type",
+      "name": "selection-source-not-selection-type",
+      "note": "a source of selected values names a multichoice, checkboxes or checkcontainer field (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "list",
+                          "value": [
+                            {
+                              "kind": "map",
+                              "value": [
+                                [
+                                  "value",
+                                  {
+                                    "kind": "text",
+                                    "value": "sms"
+                                  }
+                                ],
+                                [
+                                  "label",
+                                  {
+                                    "kind": "text",
+                                    "value": "SMS"
+                                  }
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "text",
+              "value": "sms"
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "sms"
+            }
+          ]
+        ]
+      },
+      "raises": {
+        "kind": "invalid_rule_parameter",
+        "status": null,
+        "category": "value",
+        "message": "Invalid items.from at primary: expected {group}.*.{field} for a field of a repeated group outside repeated groups",
+        "at": "primary"
+      }
+    },
+    {
+      "id": "selection_source_items_not_literal",
+      "name": "selection-source-items-not-literal",
+      "note": "the source field has literal items; a field whose choices come from a repeated group is no source of selected values (CUSC-097).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "characters",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "id",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "channels",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "multichoice"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "characters.*.id"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "primary",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "channels"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "channels",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "sms"
+                }
+              ]
+            }
+          ],
+          [
+            "primary",
+            {
+              "kind": "text",
+              "value": "sms"
+            }
+          ]
+        ]
+      },
+      "raises": {
+        "kind": "invalid_rule_parameter",
+        "status": null,
+        "category": "value",
+        "message": "Invalid items.from at primary: expected {group}.*.{field} for a field of a repeated group outside repeated groups",
+        "at": "primary"
+      }
+    },
+    {
       "id": "combined_items_one_set",
       "name": "combined-items-one-set",
       "note": "The literal choice player and the character ids are one set: a value passes when it is either, and fails when it is neither.",

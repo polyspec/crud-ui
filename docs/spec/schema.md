@@ -505,6 +505,19 @@ roles:
   or of its `label` field changes the choices that the next view of the instance lists. Listing
   the choices changes no value: a value that no choice matches any more stays in the data, and
   validation reports it ([choices from a repeated group](validation-rules.md#values)).
+- **CUSC-097** **Choices from selected values.** `from` may instead name a field that is not inside a
+  repeated group, written as its path without `*`, such as `from: channels`: a field of the type
+  `multichoice`, `checkboxes` or `checkcontainer` that is not repeated, has no `lang` and has literal
+  items, a choice list or a value-to-label map. The choices are the values that the data of that
+  field selects, in the order of that field's choices and with its labels, after the literal
+  `choices` (CUSC-089); a selected value that is a literal choice is listed once. Such a source
+  declares no `label`, and a `label` fails with `Invalid items.label at {path}: a source of selected
+  values takes the labels of its field`; a `from` that names no such field fails with the message
+  of CUSC-066. The choices follow the data as CUSC-071 states, so a change of the selection changes
+  the choices of the next view, and a value that is no longer selected fails the implicit `in`
+  check as a field error. A browser binding and the components update these choices live as they
+  update those of a repeated group; in the form binding and the React, Vue and Svelte components
+  that update is not implemented yet ([feature status](../features.md)).
 
 A browser binding keeps the choices that the page shows equal to those of the data it holds. The
 React, Vue and Svelte `Form` components and a page of the HTML renderer render every view of the

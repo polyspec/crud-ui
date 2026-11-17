@@ -130,6 +130,84 @@ fn source_group<'a>(from: &str, root: &'a Map<String, Value>) -> Option<&'a Map<
         .map(|_| current)
 }
 
+/// The field types whose selected values a group source can read (CUSC-097).
+const SELECTION_TYPES: [&str; 3] = ["multichoice", "checkboxes", "checkcontainer"];
+
+/// Whether `from` names a source of selected values: a path with no `*` segment (CUSC-097).
+pub fn is_selection_source(items: &Value) -> bool {
+    items
+        .get("from")
+        .and_then(Value::as_str)
+        .is_some_and(|from| !from.split('.').any(|segment| segment == "*"))
+}
+
+/// The field that the `from` path of a source of selected values names under the root
+/// `properties`: a field of a selection type that is not repeated, has no `lang` and has literal
+/// items, reached through groups with properties of which none is repeated (CUSC-097).
+pub fn selection_field<'a>(from: &str, root: &'a Map<String, Value>) -> Option<&'a Value> {
+    let segments: Vec<&str> = from.split('.').collect();
+    let (last, groups) = segments.split_last()?;
+    let mut current = root;
+    for name in groups {
+        let field = current.get(*name)?;
+        if field.get("type").and_then(Value::as_str) != Some("group") || repeated(field) {
+            return None;
+        }
+        current = field.get("properties").and_then(Value::as_object)?;
+    }
+    let field = current.get(*last)?;
+    let selection = field
+        .get("type")
+        .and_then(Value::as_str)
+        .is_some_and(|kind| SELECTION_TYPES.contains(&kind));
+    (selection
+        && !repeated(field)
+        && !has_lang(field)
+        && field.get("properties").is_none()
+        && selection_pairs(&field["items"]).is_some())
+    .then_some(field)
+}
+
+/// The choices of the literal items of a selection field in written order, as pairs of the
+/// canonical text of a value and its label: a choice list, its groups in place, or a
+/// value-to-label map; `None` for other items.
+fn selection_pairs(items: &Value) -> Option<Vec<(String, Value)>> {
+    let mut pairs: Vec<(String, Value)> = Vec::new();
+    match items {
+        Value::Array(elements) => {
+            for element in elements {
+                let object = element.as_object()?;
+                let choices: Vec<&Value> = match object.get("choices") {
+                    Some(Value::Array(choices)) => choices.iter().collect(),
+                    Some(_) => return None,
+                    None => vec![element],
+                };
+                for choice in choices {
+                    let choice = choice.as_object()?;
+                    pairs.push((
+                        choice_text(choice.get("value"))?,
+                        choice.get("label")?.clone(),
+                    ));
+                }
+            }
+        }
+        Value::Object(map) if !map.contains_key("from") => {
+            for (value, label) in map {
+                pairs.push((value.clone(), label.clone()));
+            }
+        }
+        _ => return None,
+    }
+    Some(pairs)
+}
+
+/// The message of a source of selected values that declares `label` (CUSC-097).
+fn selection_label_message(path: &str) -> String {
+    format!(
+        "Invalid items.label at {path}: a source of selected values takes the labels of its field"
+    )
+}
+
 /// The message of the expected `from` of a group source, the same for every rule it breaks.
 fn from_message(path: &str) -> String {
     format!(
@@ -191,6 +269,17 @@ pub fn group_source_failure(
         ));
     }
     let from = members.get("from").and_then(Value::as_str);
+    if is_selection_source(items) {
+        if from.and_then(|from| selection_field(from, root)).is_none() {
+            return Some(from_message(path));
+        }
+        if members.contains_key("label") {
+            return Some(selection_label_message(path));
+        }
+        return literal_choices(members.get("choices"))
+            .is_none()
+            .then(|| choices_message(path));
+    }
     let Some((from, group)) =
         from.and_then(|from| source_group(from, root).map(|group| (from, group)))
     else {
@@ -246,11 +335,17 @@ fn choice_text(value: Option<&Value>) -> Option<String> {
 ///
 /// `items` must have passed [`group_source_failure`]; a source whose `from` or `label` is not
 /// of the declared shape gives the message of its declaration failure, located at `path`.
+/// `selection` is the `items` of the field that a source of selected values names
+/// ([`selection_field`]), whose choices that the data selects are the choices (CUSC-097).
 pub fn group_choices(
     items: &Value,
     data: &Value,
     path: &str,
+    selection: Option<&Value>,
 ) -> Result<Vec<GroupChoice>, GroupChoicesError> {
+    if is_selection_source(items) {
+        return selected_choices(items, data, path, selection);
+    }
     let declaration = |message: String| GroupChoicesError::Declaration(message);
     let members = items
         .as_object()
@@ -305,6 +400,47 @@ pub fn group_choices(
     Ok(choices)
 }
 
+/// The choices of a source of selected values: its literal choices, then each choice of the
+/// selection field, in the order of that field, whose value the data at `from` holds, labelled as
+/// that field labels it; a selected value that is a literal choice is listed once (CUSC-097).
+fn selected_choices(
+    items: &Value,
+    data: &Value,
+    path: &str,
+    selection: Option<&Value>,
+) -> Result<Vec<GroupChoice>, GroupChoicesError> {
+    let declaration = |message: String| GroupChoicesError::Declaration(message);
+    let from = items
+        .get("from")
+        .and_then(Value::as_str)
+        .ok_or_else(|| declaration(from_message(path)))?;
+    let pairs = selection
+        .and_then(selection_pairs)
+        .ok_or_else(|| declaration(from_message(path)))?;
+    let mut choices =
+        literal_choices(items.get("choices")).ok_or_else(|| declaration(choices_message(path)))?;
+    let mut selected = data;
+    for name in from.split('.') {
+        match selected.as_object().and_then(|object| object.get(name)) {
+            Some(value) => selected = value,
+            None => return Ok(choices),
+        }
+    }
+    let Some(selected) = selected.as_array() else {
+        return Ok(choices);
+    };
+    let held: HashSet<String> = selected
+        .iter()
+        .filter_map(|value| choice_text(Some(value)))
+        .collect();
+    for (value, label) in pairs {
+        if held.contains(&value) && !choices.iter().any(|known| known.value == value) {
+            choices.push(GroupChoice { value, label });
+        }
+    }
+    Ok(choices)
+}
+
 /// The rows of the group that the `from` path `segments` name in the root `data`, by row key in
 /// data order, when the group has object data.
 fn source_rows<'a>(segments: &[&str], data: &'a Value) -> Option<&'a Map<String, Value>> {
@@ -339,7 +475,7 @@ pub fn row_repeats<'a>(items: &Value, data: &'a Value) -> Vec<(String, &'a Value
         return Vec::new();
     };
     let segments: Vec<&str> = from.split('.').collect();
-    if segments.len() < 3 {
+    if segments.len() < 3 || segments[segments.len() - 2] != "*" {
         return Vec::new();
     }
     let group_path = segments[..segments.len() - 2].join(".");
@@ -373,7 +509,7 @@ fn first_repeat(items: &Value, data: &Value, rows: bool) -> Option<SourceRepeat>
     )]
     let literal = literal_choices(items.get("choices")).unwrap_or_default();
     let segments: Vec<&str> = from.split('.').collect();
-    if segments.len() < 3 {
+    if segments.len() < 3 || segments[segments.len() - 2] != "*" {
         return None;
     }
     let group_path = segments[..segments.len() - 2].join(".");

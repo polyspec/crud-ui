@@ -23,7 +23,8 @@ use crate::expr::{Evaluator, Expression, Node};
 use super::choice_data::{check_single_choice_data, is_single_choice};
 use super::errors::{FormInputError, ValidateError};
 use super::group_source::{
-    group_choices, group_source_repeat, is_group_source, row_repeats, GroupChoicesError,
+    group_choices, group_source_repeat, is_group_source, row_repeats, selection_field,
+    GroupChoicesError,
 };
 use super::keyed_maps::check_keyed_map_keys;
 use super::membership::Comparable;
@@ -582,21 +583,28 @@ impl Validator {
             }
             return Ok(None);
         }
-        let choices =
-            group_choices(items, run.data, &declaration.join(".")).map_err(
-                |error| match error {
-                    GroupChoicesError::Declaration(message) => {
-                        ValidateError::Load(ComposeLoadError::with_trace(
-                            ComposeErrorCode::InvalidRuleParameter,
-                            message,
-                            declaration.to_vec(),
-                        ))
-                    }
-                    GroupChoicesError::Repeated(message) => {
-                        ValidateError::InvalidFormInput(FormInputError::new(message))
-                    }
-                },
-            )?;
+        let choices = group_choices(
+            items,
+            run.data,
+            &declaration.join("."),
+            items
+                .get("from")
+                .and_then(Value::as_str)
+                .and_then(|from| selection_field(from, run.properties))
+                .map(|field| &field["items"]),
+        )
+        .map_err(|error| match error {
+            GroupChoicesError::Declaration(message) => {
+                ValidateError::Load(ComposeLoadError::with_trace(
+                    ComposeErrorCode::InvalidRuleParameter,
+                    message,
+                    declaration.to_vec(),
+                ))
+            }
+            GroupChoicesError::Repeated(message) => {
+                ValidateError::InvalidFormInput(FormInputError::new(message))
+            }
+        })?;
         let members = Value::Array(
             choices
                 .into_iter()

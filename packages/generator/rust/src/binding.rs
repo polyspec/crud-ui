@@ -54,6 +54,8 @@ fn string_option<'a>(value: &'a Value, error: &str) -> FormResult<Option<&'a str
 
 struct Binding<'a> {
     data: &'a Value,
+    /// The fields of the template, where a source of selected values finds its field (CUSC-097).
+    fields: &'a [FieldTemplate],
     /// The row paths rendered collapsed.
     collapsed: Vec<&'a str>,
     id_prefix: &'a str,
@@ -187,6 +189,7 @@ pub(crate) fn bind_ordered(
     let messages = form_messages(language)?;
     let state = Binding {
         data,
+        fields: &template.fields,
         collapsed,
         id_prefix: match id_prefix {
             Some(prefix) => prefix,
@@ -409,7 +412,7 @@ impl Binding<'_> {
     ) -> FormResult<Value> {
         // A group source lists the rows of its group in the data as its choice list.
         let grouped = is_group_source(&declared["items"])
-            .then(|| with_group_choices(declared, self.data, path))
+            .then(|| with_group_choices(declared, self.data, path, self.fields))
             .transpose()?;
         let spec = match grouped.as_ref() {
             Some(grouped) => grouped,
