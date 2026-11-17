@@ -17,6 +17,7 @@ permissions:
 # The toolchains of the checkout at their recorded versions (docs/operations/package-build.md): rustup installs nothing on the
 # first cargo, and go never downloads the toolchain of a go.mod.
 env:
+  GITHUB_TOKEN: ${{ github.token }}
   RUSTUP_AUTO_INSTALL: '0'
   GOTOOLCHAIN: local
 
@@ -27,7 +28,7 @@ jobs:
     outputs:
       runtimes: ${{ steps.plan.outputs.runtimes }}
       has_runtimes: ${{ steps.plan.outputs.has_runtimes }}
-      common_tools: ${{ steps.plan.outputs.common_tools }}
+      shared_php: ${{ steps.plan.outputs.shared_php }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # The bootstrap of kit (K992): the Node.js of mise.toml, the locked kit package, the npm of var/tools and the packages.
@@ -45,7 +46,7 @@ jobs:
       # The bootstrap of kit (K992): the Node.js of mise.toml, the locked kit package, the npm of var/tools and the packages.
       - uses: ./.github/actions/kit-bootstrap
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
-        if: ${{ contains(needs.plan.outputs.common_tools, 'php') }}
+        if: ${{ needs.plan.outputs.shared_php == 'true' }}
         with:
           php-version-file: .php-version
           tools: none

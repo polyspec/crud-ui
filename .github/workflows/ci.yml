@@ -22,6 +22,7 @@ permissions:
 # The toolchains of the checkout at their recorded versions (docs/operations/package-build.md): rustup installs nothing on the
 # first cargo, and go never downloads the toolchain of a go.mod.
 env:
+  GITHUB_TOKEN: ${{ github.token }}
   RUSTUP_AUTO_INSTALL: '0'
   GOTOOLCHAIN: local
 

@@ -303,7 +303,7 @@ crudui-install-bindings: crudui-install-json-php
 crudui-install-json-php: install-pie ## Download with PIE the polyspec_json extension that the PHP tests and servers load; ONLINE
 	rm -rf $(BINDING_PIE)
 	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) repository:add composer https://github.com/polyspec/json/releases/download/v$(BINDING_JSON_PHP)/packages.json --no-interaction
-	$(ONLINE) env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) download polyspec/json:$(BINDING_JSON_PHP) --no-interaction
+	$(ONLINE) sh -c 'if [ -n "$$GITHUB_TOKEN" ]; then COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$$GITHUB_TOKEN\"}}"; export COMPOSER_AUTH; fi; exec env PIE_WORKING_DIRECTORY=$(BINDING_PIE) $(PIE) download polyspec/json:$(BINDING_JSON_PHP) --no-interaction'
 
 define binding_package_rules
 # The wheel that the maturin of mise.toml builds with the test features through the link script of kit, which passes the
@@ -432,6 +432,8 @@ PHP_JSON_SCAN := $(CURDIR)/var/php-ext/json-scan
 php-json-scan: ## Write the ini file that loads the polyspec_json module into the PHP tests of test-php-ext; needs crudui-install-json-php
 	@test -f "$(POLYSPEC_JSON_MODULE)" || { echo 'php-json-scan: POLYSPEC_JSON_MODULE is not a file; run make crudui-install-json-php first' >&2; exit 1; }
 	mkdir -p $(PHP_JSON_SCAN)
+	# PHP reads one scan directory from PHP_INI_SCAN_DIR, so the ini files of PHP's own scan directory are copied here with the json ini (C19.129).
+	for f in $$(php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')/*.ini; do if [ -f "$$f" ]; then cp "$$f" $(PHP_JSON_SCAN)/; fi; done
 	printf 'extension=%s\n' '$(POLYSPEC_JSON_MODULE)' > $(PHP_JSON_SCAN)/polyspec_json.ini
 
 test-php-ext: build-php-ext php-json-scan ## Compare the declarations of the built extension with the PHP library, then run its unit tests with CASES=<pattern>; offline
@@ -591,6 +593,7 @@ ci-form-runtime: ## The job form-runtime of ci.yml
 ci-form-comparison: ## The job form-comparison of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node php composer"
 	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-json-php
 	$(CI_MAKE) crudui-install-browsers BROWSERS="chrome"
 	$(CI_MAKE) check-ci-browser
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-form-comparison"

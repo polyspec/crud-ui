@@ -12,7 +12,7 @@ const workflow = readFileSync(`${ROOT}/.github/workflows/ci-pipeline.yml`, 'utf8
 const KIT_PLAN_OUTPUTS = ['runtimes', 'runner', 'has_runtimes', 'shared_php'];
 
 test('ci-pipeline.yml reads only the plan outputs that kit-ci-plan writes', () => {
-  const referenced = [...workflow.matchAll(/needs\.plan\.outputs\.([A-Za-z_]+)/g)].map(match => match[1]);
+  const referenced = [...workflow.matchAll(/needs\.plan\.outputs\.([A-Za-z_]+)/g)].map(match => match[1] ?? '');
   assert.ok(referenced.length > 0);
   for (const name of referenced) {
     assert.ok(KIT_PLAN_OUTPUTS.includes(name), `needs.plan.outputs.${name} is not written by kit-ci-plan`);
@@ -20,7 +20,7 @@ test('ci-pipeline.yml reads only the plan outputs that kit-ci-plan writes', () =
 });
 
 test('the plan job declares only outputs that kit-ci-plan writes', () => {
-  const declared = [...workflow.matchAll(/^\s{6}([a-z_]+): \$\{\{ steps\.plan\.outputs\.\1 \}\}$/gm)].map(match => match[1]);
+  const declared = [...workflow.matchAll(/^\s{6}([a-z_]+): \$\{\{ steps\.plan\.outputs\.\1 \}\}$/gm)].map(match => match[1] ?? '');
   assert.ok(declared.length > 0, 'the plan job declares no outputs, so the check would pass vacuously');
   for (const name of declared) {
     assert.ok(KIT_PLAN_OUTPUTS.includes(name), `the plan job declares ${name}, which kit-ci-plan does not write`);
