@@ -409,7 +409,8 @@ test('npm installs only registry packages, linked directories and the kit and Or
     const spec = root_.dependencies?.[name] ?? root_.devDependencies?.[name] ?? root_.optionalDependencies?.[name] ?? '';
     const declared = /-(\d+\.\d+\.\d+)\.tgz$/.exec(spec)?.[1];
     assert.ok(declared, `${name} in package.json names no release version`);
-    assert.equal(lock.packages?.[`node_modules/${name}`]?.version, declared, `${name} in the lock`);
+    const locked = (lock.packages?.[`node_modules/${name}`] as { version?: string } | undefined)?.version;
+    assert.equal(locked, declared, `${name} in the lock`);
   }
 
   const configFile = path.join(root, '.npmrc');

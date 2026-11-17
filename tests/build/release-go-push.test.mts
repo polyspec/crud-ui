@@ -15,5 +15,7 @@ test('ci-release-publish pushes the Go module tags once, after the module recipe
   const pushes = lines.map((line, index) => ({ line, index })).filter(({ line }) => /release-go-module-push\b/.test(line));
   assert.equal(modules.length, 2, dry.stdout);
   assert.equal(pushes.length, 1, dry.stdout);
-  assert.ok(pushes[0].index > modules[modules.length - 1].index, 'the push comes before a module recipe');
+  const [push] = pushes;
+  const lastModule = modules.at(-1);
+  assert.ok(push && lastModule && push.index > lastModule.index, 'the push comes before a module recipe');
 });

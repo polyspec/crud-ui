@@ -16,6 +16,6 @@ for (const component of ['validator', 'generator']) {
     assert.deepEqual(lines.filter(line => /\buv\b.* build\b/.test(line)), []);
     const builds = lines.filter(line => line.includes(`packages/${component}/python`) && /\bmaturin\b/.test(line));
     assert.equal(builds.length, 1, dry.stdout);
-    assert.match(builds[0], /link\.m[jt]s maturin \S*packages\/[a-z]+\/python build --locked/);
+    assert.match(builds[0] ?? '', /link\.m[jt]s maturin \S*packages\/[a-z]+\/python build --locked/);
   });
 }
