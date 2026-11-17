@@ -51,7 +51,7 @@
     "test:runtimes": "make crudui-test-runtimes",
     "test:docs": "node scripts/run-tests.mts node -- --test-concurrency=1 tests/docs/*.test.mts",
     "test:inspector": "node scripts/run-tests.mts node -- --test-concurrency=1 tests/form-inspector/form-snapshot.test.mts tests/form-inspector/browser.test.mts",
-    "test:build": "node scripts/require-current-build.mts && node scripts/run-tests.mts node -- --test-concurrency=1 tests/build/public-packages.test.mts tests/build/vite-config.test.mts tests/build/ci-browser.test.mts tests/build/package-install-pack.test.mts tests/build/lint-coverage.test.mts",
+    "test:build": "node scripts/require-current-build.mts && node scripts/run-tests.mts node -- --test-concurrency=1 tests/build/public-packages.test.mts tests/build/vite-config.test.mts tests/build/ci-browser.test.mts tests/build/package-install-pack.test.mts tests/build/lint-coverage.test.mts tests/build/ci-bindings-tools.test.mts",
     "test:bench": "node scripts/require-current-build.mts && node benchmarks/validators/build-drivers.mjs && node scripts/run-tests.mts node -- --test-concurrency=1 tests/build/bench-drivers.test.mts",
     "test:build:repeat": "status=0; node scripts/repeat-build.mts || status=1; node scripts/run-tests.mts node -- --test-concurrency=1 tests/build/reproducible-build.test.mts || status=1; exit $status",
     "test:php-scope": "node scripts/run-tests.mts node -- --test-concurrency=1 tests/build/php-test-scope.test.mts"
