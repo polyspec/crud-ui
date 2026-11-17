@@ -5,6 +5,7 @@
 
 ## 0.0.21
 
+- `validate.GroupChoicesIn` (Go) takes the root properties and returns the choices of a source of selected values (CUSC-097, C19.93). Input: a Go caller with a `from` that names a root selection field. Behaviour before: none; `GroupChoices` keeps its signature. Now: `GroupChoicesIn` reads the root.
 - The PHP `Validator::validate` takes its specification as `mixed` (C19.92, a public API change). Input: a specification that is a string, a number, a list, or an object without `properties` or a `$ref`. Behaviour before: a `TypeError` from the typed parameter, or the composition fails differently. Now: a `FormInputError` with the shared message "Form specification must be an object" or "A form spec must be a group with properties", as the other languages give.
 - The PHP side reads JSON through the json extension `polyspec_json` 0.0.34 (C19.62). Input: the PHP tests and the PHP form comparison servers. Behaviour before: they required the pure PHP package `polyspec/ordered-json` 0.0.25. Now: no Composer manifest or lock names it, and `make crudui-install-json-php` installs the extension with PIE.
 - The choices of a choice field can be the values that a `multichoice`, `checkboxes` or `checkcontainer` field selects (C19.65). Input: `items: { from: channels }` naming such a field. Behaviour before: validation and rendering failed with `Invalid items.from at {path}`. Now: the choices are the selected values with that field's labels, and a value that is no longer selected is a field error (CUSC-097).

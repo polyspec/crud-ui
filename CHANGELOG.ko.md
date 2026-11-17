@@ -6,6 +6,7 @@
 
 ## 0.0.21
 
+- Go `validate.GroupChoicesIn`이 root properties를 받아 선택된 값의 source 선택지를 돌려준다(CUSC-097, C19.93). 입력: `from`이 root 선택 field를 가리키는 Go 호출자. 전의 동작: 없음. `GroupChoices`는 시그니처를 유지한다. 지금: `GroupChoicesIn`이 root를 읽는다.
 - PHP `Validator::validate`은 명세를 `mixed`로 받는다(C19.92, 공개 API 변경). 입력: 문자열, 숫자, 목록이거나 `properties`도 `$ref`도 없는 객체인 명세. 전의 동작: 타입이 붙은 매개변수에서 `TypeError`가 나거나 compose가 다르게 실패했다. 지금: 공유 메시지 "Form specification must be an object" 또는 "A form spec must be a group with properties"의 `FormInputError`로 거부하며, 다른 언어와 같다.
 - PHP 쪽이 json extension `polyspec_json` 0.0.34로 JSON을 읽는다(C19.62). 입력: PHP 시험과 PHP form comparison server. 이전 동작: 순수 PHP 패키지 `polyspec/ordered-json` 0.0.25를 요구했다. 현재: 어떤 Composer manifest나 lock도 그것을 이름하지 않고, `make crudui-install-json-php`가 PIE로 extension을 설치한다.
 - 선택 필드의 선택지가 `multichoice`, `checkboxes`, `checkcontainer` 필드가 선택한 값일 수 있다(C19.65). 입력: 그런 필드를 이름하는 `items: { from: channels }`. 이전 동작: 검증과 렌더링이 `Invalid items.from at {path}`로 실패했다. 현재: 선택지는 그 필드의 라벨을 가진 선택된 값이고, 더 이상 선택되지 않은 값은 필드 오류다(CUSC-097).
