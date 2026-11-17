@@ -79,6 +79,25 @@ static int failure(ps_chars *message, ps_chars text)
     return text.bytes ? 1 : -1;
 }
 
+/*
+ * The root field that a from with no dot names as a source of selected values (CUSC-097): a multichoice, checkboxes or
+ * checkcontainer field whose items are literal and which is no group source; NULL otherwise.
+ */
+static const ps_value *selection_field(const ps_value *items, const ps_value *root)
+{
+    const ps_value *from = ps_get(items, "from");
+    if (!root || !from || from->kind != PS_STRING || ps_text_find_byte(ps_string(from), '.', 0) != SIZE_MAX) return NULL;
+    const ps_value *field = ps_get_text(root, ps_string(from));
+    if (!field || field->kind != PS_OBJECT) return NULL;
+    const ps_value *type = ps_get(field, "type");
+    if (!ps_is_string(type, "multichoice") && !ps_is_string(type, "checkboxes") && !ps_is_string(type, "checkcontainer"))
+        return NULL;
+    const ps_value *field_items = ps_get(field, "items");
+    if (!field_items || (field_items->kind != PS_OBJECT && field_items->kind != PS_ARRAY) || ps_is_group_source(field_items))
+        return NULL;
+    return field;
+}
+
 int ps_group_source_failure(const ps_value *field, ps_text path, const ps_value *root, ps_chars *message)
 {
     *message = (ps_chars){NULL, 0};
@@ -93,6 +112,22 @@ int ps_group_source_failure(const ps_value *field, ps_text path, const ps_value 
     if (!choice_type(ps_get(field, "type")) || enabled_declaration(ps_get(field, "lang")))
         return failure(message, PS_CONCAT(PS_TEXT("Invalid items.from at "), path,
                                           PS_TEXT(": expected a choice field without lang")));
+    if (selection_field(items, root)) {
+        /* A source of selected values takes the labels of its field and no rows (CUSC-097). */
+        if (ps_has(items, "label"))
+            return failure(message, PS_CONCAT(PS_TEXT("Invalid items.label at "), path,
+                PS_TEXT(": a source of selected values takes the labels of its field")));
+        if (ps_has(items, "choices")) {
+            ps_value *literal = NULL;
+            int state = literal_choices(ps_get(items, "choices"), &literal);
+            ps_value_free(literal);
+            if (state < 0) return -1;
+            if (!state)
+                return failure(message, PS_CONCAT(PS_TEXT("Invalid items.choices at "), path,
+                    PS_TEXT(": expected value and label pairs with distinct string or number values")));
+        }
+        return 0;
+    }
     const ps_value *from = ps_get(items, "from");
     const ps_value *group = NULL;
     bool valid = false;
@@ -211,11 +246,57 @@ static int literal_choices(const ps_value *choices, ps_value **literal)
     return 1;
 }
 
-ps_value *ps_group_source_choices(const ps_value *items, const ps_value *data, ps_chars *repeated)
+/*
+ * The choices of a source of selected values (CUSC-097): its literal choices, then each item of the selection field in
+ * the order of its items that the field selects in the data, with its label (the value when there is none).
+ */
+static ps_value *selected_choices(const ps_value *items, const ps_value *field, const ps_value *data)
+{
+    ps_value *choices = NULL;
+    if (literal_choices(ps_get(items, "choices"), &choices) <= 0) { ps_value_free(choices); return NULL; }
+    const ps_value *members = data && data->kind == PS_OBJECT ? ps_get_text(data, ps_string(ps_get(items, "from"))) : NULL;
+    if (!members || members->kind != PS_ARRAY) return choices;
+    ps_value *selected = ps_object_value();
+    bool ok = selected != NULL;
+    for (size_t i = 0; ok && i < ps_size(members); ++i) {
+        ps_chars text = {NULL, 0};
+        int state = choice_text(ps_at(members, i), &text);
+        if (state < 0) ok = false;
+        else if (state && !ps_set_text(selected, ps_view(text), ps_bool_value(true))) ok = false;
+        free(text.bytes);
+    }
+    const ps_value *entries = ps_get(field, "items");
+    for (size_t i = 0; ok && i < ps_size(entries); ++i) {
+        const ps_value *item = ps_at(entries, i);
+        bool keyed = entries->kind == PS_OBJECT;
+        ps_value *text_node = NULL;
+        if (keyed) text_node = ps_text_value(ps_key(entries, i));
+        else if (item && item->kind == PS_OBJECT && ps_get(item, "value")) text_node = ps_value_clone(ps_get(item, "value"));
+        ps_chars text = {NULL, 0};
+        int state = text_node ? choice_text(text_node, &text) : 0;
+        ps_value_free(text_node);
+        if (state < 0) { ok = false; break; }
+        if (!state || !ps_get_text(selected, ps_view(text)) || choice_seen(choices, ps_view(text))) { free(text.bytes); continue; }
+        ps_value *label = NULL;
+        if (keyed) label = ps_value_clone(item);
+        else if (ps_has(item, "label")) label = ps_value_clone(ps_get(item, "label"));
+        else label = ps_text_value(ps_view(text));
+        if (!label) { free(text.bytes); ok = false; break; }
+        /* append_pair consumes the value text and the label. */
+        ok = append_pair(choices, text, label);
+    }
+    ps_value_free(selected);
+    if (!ok) { ps_value_free(choices); return NULL; }
+    return choices;
+}
+
+ps_value *ps_group_source_choices(const ps_value *items, const ps_value *data, const ps_value *root, ps_chars *repeated)
 {
     ps_value *choices = NULL;
     ps_text *parts = NULL;
     size_t count = 0;
+    const ps_value *field = selection_field(items, root);
+    if (field) return selected_choices(items, field, data);
     if (first_repeat(items, data, false, repeated) != 0) return NULL;
     if (literal_choices(ps_get(items, "choices"), &choices) <= 0) goto fail;
     const ps_value *from = ps_get(items, "from");

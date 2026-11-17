@@ -415,7 +415,7 @@ const ps_value *ps_choice_label(const ps_value *items, ps_text key, bool *failed
  */
 bool ps_is_group_source(const ps_value *items);
 int ps_group_source_failure(const ps_value *field, ps_text path, const ps_value *root, ps_chars *message);
-ps_value *ps_group_source_choices(const ps_value *items, const ps_value *data, ps_chars *repeated);
+ps_value *ps_group_source_choices(const ps_value *items, const ps_value *data, const ps_value *root, ps_chars *repeated);
 /*
  * ps_group_source_repeat: the input failure message of the first row of a checked group source, in
  * data order, whose choice value repeats a literal choice (CUSC-089) or that of an earlier row
