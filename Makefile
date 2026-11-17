@@ -559,6 +559,7 @@ ci-bindings: ## The job bindings of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer maturin wasmBindgen"
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-go-modules
 	$(CI_MAKE) crudui-install-bindings
 	$(CI_MAKE) ci-targets TARGETS="bindings-check test-bindings test-binding-packages"
 
