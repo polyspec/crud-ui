@@ -32,6 +32,8 @@ export interface BuildState {
   data: Record<string, unknown>;
   /** Optional name/id prefix. */
   keyPrefix?: string;
+  /** The root fields by name, which a source of selected values reads (CUSC-097). */
+  rootFields?: Readonly<Record<string, Record<string, unknown>>>;
   /** Content translator (active language). */
   t: Translate;
   /** Interface text (active language). */
@@ -317,7 +319,7 @@ function buildWidget(
   // A group source lists the rows of its group in the data as a choice list (docs/spec/schema.md,
   // Choices from a repeated group); compilation has checked the source.
   const spec = isGroupSource(declared.items)
-    ? { ...declared, items: groupChoices(declared.items, state.data) }
+    ? { ...declared, items: groupChoices(declared.items, state.data, state.rootFields ?? {}) }
     : declared;
   const type = jsString(spec.type ?? '');
   if (isChoiceList(spec.items)) {

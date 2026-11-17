@@ -45,7 +45,7 @@ import { isRecord } from '../record';
 import { compareCodePoints } from '../text/index';
 import { assertRuleParameter, assertRuleName } from './parameters';
 import { ComposeLoadError } from '../compose/errors';
-import { groupChoices, groupSourceFailure, groupSourceLiteralRepeat, groupSourceRepeats, isGroupSource } from '../group-source';
+import { groupChoices, groupSourceFailure, groupSourceLiteralRepeat, groupSourceRepeats, isGroupSource, isSelectionSource } from '../group-source';
 import { assertKeyedMapKeys, assertKeyedMapReference } from './keyed-maps';
 import { isMultipleField } from './fields';
 import { isReferenceTarget, referenceIds, type ReferenceId } from './references';
@@ -778,11 +778,13 @@ export class Validator {
     if (!isGroupSource(field.items)) {
       return false;
     }
+    // A source of selected values has no rows to repeat (CUSC-097).
+    const selection = isSelectionSource(field.items, this.properties);
     // A literal choice repeated among the source rows is an input failure (CUVR-087).
-    const literal = groupSourceLiteralRepeat(field.items, context.formData);
+    const literal = selection ? undefined : groupSourceLiteralRepeat(field.items, context.formData);
     if (literal !== undefined) throw new FormInputError(literal);
     // A value that repeats an earlier row is a field error with rule `unique` at its data path (CUVR-096).
-    for (const repeat of groupSourceRepeats(field.items, context.formData)) {
+    for (const repeat of selection ? [] : groupSourceRepeats(field.items, context.formData)) {
       errors.push({
         path: repeat.path,
         field: repeat.path.split('.').pop() ?? '',
@@ -791,7 +793,7 @@ export class Validator {
         value: repeat.value,
       });
     }
-    const members = groupChoices(field.items, context.formData).map((choice) => choice.value);
+    const members = groupChoices(field.items, context.formData, this.properties).map((choice) => choice.value);
     const error = this.runRule('in', members, value, context, declarationPath, field, messages);
     if (error) {
       errors.push({

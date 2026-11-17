@@ -422,6 +422,7 @@ export function bindForm(
     t: makeTranslate(language),
     messages: formMessages(language),
     keyPrefix: options.keyPrefix ?? template.keyPrefix,
+    rootFields: Object.fromEntries(template.fields.map(field => [field.name, field.spec])),
     unsupported: options.unsupported ?? 'throw',
     ...(options.collapsed ? { collapsed: options.collapsed } : {}),
   };

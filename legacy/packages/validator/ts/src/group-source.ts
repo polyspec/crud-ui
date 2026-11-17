@@ -67,6 +67,25 @@ function sourceGroup(from: unknown, properties: Record<string, unknown>): Record
   return scalarChild(current, segments[segments.length - 1]) ? current : undefined;
 }
 
+/** The field types whose stored value is the list of the selected values of their literal items (CUSC-097). */
+const SELECTION_TYPES: readonly unknown[] = ['multichoice', 'checkboxes', 'checkcontainer'];
+
+/**
+ * The root field that a `from` with no `.` names when it is a source of selected values (CUSC-097): a field of a selection
+ * type whose items are literal, which is no group source. Its selected values are the choices.
+ */
+function selectionField(from: unknown, properties: Record<string, unknown>): Record<string, unknown> | undefined {
+  if (typeof from !== 'string' || from.includes('.') || !has(properties, from)) return undefined;
+  const field = properties[from];
+  if (!isRecord(field) || !SELECTION_TYPES.includes(field.type) || isGroupSource(field.items)) return undefined;
+  return Array.isArray(field.items) || isRecord(field.items) ? field : undefined;
+}
+
+/** Whether a group source names a source of selected values under the root `properties` (CUSC-097). */
+export function isSelectionSource(items: Record<string, unknown>, properties: Record<string, unknown>): boolean {
+  return selectionField(items.from, properties) !== undefined;
+}
+
 /** Whether the child `name` of the group `properties`, a scalar child, is of a type that stores a boolean. */
 function holdsBoolean(properties: Record<string, unknown>, name: unknown): boolean {
   const child = typeof name === 'string' ? properties[name] : undefined;
@@ -90,6 +109,13 @@ export function groupSourceFailure(field: Record<string, unknown>, path: string,
     if (key !== 'from' && key !== 'label' && key !== 'choices') return `Invalid items.${key} at ${path}: unknown key`;
   }
   if (!CHOICE_TYPES.includes(field.type) || hasLang(field)) return `Invalid items.from at ${path}: expected a choice field without lang`;
+  if (selectionField(items.from, properties) !== undefined) {
+    if (has(items, 'label')) return `Invalid items.label at ${path}: a source of selected values takes the labels of its field`;
+    if (has(items, 'choices') && literalChoices(items.choices) === undefined) {
+      return `Invalid items.choices at ${path}: expected value and label pairs with distinct string or number values`;
+    }
+    return undefined;
+  }
   const group = sourceGroup(items.from, properties);
   if (group === undefined) {
     return `Invalid items.from at ${path}: expected {group}.*.{field} for a field of a repeated group outside repeated groups`;
@@ -157,7 +183,9 @@ function valueField(source: Record<string, unknown>): string {
  *
  * @throws {FormInputError} when a row's value has the canonical text of a literal choice.
  */
-export function groupChoices(source: Record<string, unknown>, data: unknown): GroupChoice[] {
+export function groupChoices(source: Record<string, unknown>, data: unknown, properties: Record<string, unknown> = {}): GroupChoice[] {
+  const selected = selectionField(source.from, properties);
+  if (selected !== undefined) return selectionChoices(source, selected, data);
   const literalRepeat = firstRepeat(source, data, false);
   if (literalRepeat !== undefined) throw new FormInputError(literalRepeat);
   const valueName = valueField(source);
@@ -171,6 +199,40 @@ export function groupChoices(source: Record<string, unknown>, data: unknown): Gr
     seen.add(value);
     const label = typeof source.label === 'string' ? choiceText(row[source.label]) : undefined;
     choices.push({ value, label: label ?? value });
+  }
+  return choices;
+}
+
+/**
+ * The choices of a source of selected values (CUSC-097): its literal choices in written order, then each item of the source
+ * field, in the order of its items, that the field selects in the data, with the label of that item.
+ */
+function selectionChoices(source: Record<string, unknown>, field: Record<string, unknown>, data: unknown): GroupChoice[] {
+  const literal = literalChoices(source.choices) ?? [];
+  const choices: GroupChoice[] = [...literal];
+  const seen = new Set<string>(literal.map((choice) => choice.value));
+  const from = String(source.from);
+  const selectedValues = isRecord(data) ? data[from] : undefined;
+  if (!Array.isArray(selectedValues)) return choices;
+  const selected = new Set(selectedValues.map((member) => choiceText(member)).filter((text): text is string => text !== undefined));
+  const items: Array<{ value: string; label: unknown }> = [];
+  if (Array.isArray(field.items)) {
+    for (const item of field.items) {
+      if (isRecord(item)) {
+        const text = choiceText(item.value);
+        if (text !== undefined) items.push({ value: text, label: item.label });
+      }
+    }
+  } else if (isRecord(field.items)) {
+    for (const [key, label] of Object.entries(field.items)) {
+      const text = choiceText(key);
+      if (text !== undefined) items.push({ value: text, label });
+    }
+  }
+  for (const item of items) {
+    if (!selected.has(item.value) || seen.has(item.value)) continue;
+    seen.add(item.value);
+    choices.push({ value: item.value, label: item.label ?? item.value });
   }
   return choices;
 }

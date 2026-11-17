@@ -123,6 +123,7 @@ export interface BuildState {
     keyPrefix?: string;
     layout?: 'inline';
     messages: FormMessages;
+    rootFields?: Readonly<Record<string, Record<string, unknown>>>;
     rowNumbers?: readonly number[];
     rowSegments?: readonly number[];
     stickyDepth?: number;
