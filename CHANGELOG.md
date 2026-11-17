@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+## 0.0.21
+
 - The PHP side reads JSON through the json extension `polyspec_json` 0.0.34 (C19.62). Input: the PHP tests and the PHP form comparison servers. Behaviour before: they required the pure PHP package `polyspec/ordered-json` 0.0.25. Now: no Composer manifest or lock names it, and `make crudui-install-json-php` installs the extension with PIE.
 - The choices of a choice field can be the values that a `multichoice`, `checkboxes` or `checkcontainer` field selects (C19.65). Input: `items: { from: channels }` naming such a field. Behaviour before: validation and rendering failed with `Invalid items.from at {path}`. Now: the choices are the selected values with that field's labels, and a value that is no longer selected is a field error (CUSC-097).
 - `unique` holds over several fields of a repeated group (C19.66). Input: `unique` with a list of field names, such as `unique: [kind]` on `items.*.name`. Behaviour before: validation failed with `Invalid unique parameter: expected true, false or a string`. Now: a row fails when an earlier row holds the same value of the field and of each named field (CUVR-097).

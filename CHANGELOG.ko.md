@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+## 0.0.21
+
 - PHP 쪽이 json extension `polyspec_json` 0.0.34로 JSON을 읽는다(C19.62). 입력: PHP 시험과 PHP form comparison server. 이전 동작: 순수 PHP 패키지 `polyspec/ordered-json` 0.0.25를 요구했다. 현재: 어떤 Composer manifest나 lock도 그것을 이름하지 않고, `make crudui-install-json-php`가 PIE로 extension을 설치한다.
 - 선택 필드의 선택지가 `multichoice`, `checkboxes`, `checkcontainer` 필드가 선택한 값일 수 있다(C19.65). 입력: 그런 필드를 이름하는 `items: { from: channels }`. 이전 동작: 검증과 렌더링이 `Invalid items.from at {path}`로 실패했다. 현재: 선택지는 그 필드의 라벨을 가진 선택된 값이고, 더 이상 선택되지 않은 값은 필드 오류다(CUSC-097).
 - `unique`가 반복 그룹의 여러 필드에 함께 성립한다(C19.66). 입력: `items.*.name`의 `unique: [kind]` 같은 필드 이름 목록의 `unique`. 이전 동작: 검증이 `Invalid unique parameter: expected true, false or a string`로 실패했다. 현재: 앞선 행이 그 필드와 이름 붙은 각 필드의 값을 같게 가지면 행이 실패한다(CUVR-097).
