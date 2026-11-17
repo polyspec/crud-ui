@@ -107,11 +107,6 @@ kit-install-symbols: ## Install the symbol extractors of EXTRACTORS="go php"; th
 kit-install-declared: ## Install the symbol extractors that config/toolchain.json declares; ONLINE
 	$(COMPOSER_TOOL_ENV) $(ONLINE) $(NODE) $(KIT)/install-symbols.$(KIT_EXT) --declared
 
-# crudui-install-wasm-bindgen installs the wasm-bindgen CLI of mise.lock. kit's install-tools selectors do not name it, so the
-# CI job of the bindings installs it here, with the mise of var/tools/bin (C19.89).
-.PHONY: crudui-install-wasm-bindgen
-crudui-install-wasm-bindgen: ## Install the wasm-bindgen CLI of mise.lock; ONLINE
-	$(ONLINE) $(TOOLS_DIR)/bin/mise install --locked github:wasm-bindgen/wasm-bindgen
 
 # mise lock with the mise of var/tools/bin: uv and python first, whose Python then locks the pypi: tools (UV_PYTHON).
 TOOLCHAIN_LOCK_PLATFORMS := linux-x64,linux-arm64,macos-arm64,macos-x64,windows-x64,windows-arm64
@@ -532,6 +527,7 @@ ci-validator-js: ## The job validator-js of ci.yml
 ci-validator-php: ## The job validator-php of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node php composer"
 	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-json-php
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-validator-php crudui-test-php-source"
 
 ci-validator-go: ## The job validator-go of ci.yml
@@ -549,8 +545,7 @@ ci-validator-rust: ## The job validator-rust of ci.yml
 # are the generated tests (binding GN-13, CK-22). The tools are those of the five runners, PHPUnit of composer.lock and
 # the wheels of json that crudui-install-bindings downloads.
 ci-bindings: ## The job bindings of ci.yml
-	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer"
-	$(CI_MAKE) crudui-install-wasm-bindgen
+	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer wasmBindgen"
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) crudui-install-composer
 	$(CI_MAKE) crudui-install-bindings
