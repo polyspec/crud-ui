@@ -107,6 +107,12 @@ kit-install-symbols: ## Install the symbol extractors of EXTRACTORS="go php"; th
 kit-install-declared: ## Install the symbol extractors that config/toolchain.json declares; ONLINE
 	$(COMPOSER_TOOL_ENV) $(ONLINE) $(NODE) $(KIT)/install-symbols.$(KIT_EXT) --declared
 
+# crudui-install-wasm-bindgen installs the wasm-bindgen CLI of mise.lock. kit's install-tools selectors do not name it, so the
+# CI job of the bindings installs it here, with the mise of var/tools/bin (C19.89).
+.PHONY: crudui-install-wasm-bindgen
+crudui-install-wasm-bindgen: ## Install the wasm-bindgen CLI of mise.lock; ONLINE
+	$(ONLINE) $(TOOLS_DIR)/bin/mise install --locked github:wasm-bindgen/wasm-bindgen
+
 # mise lock with the mise of var/tools/bin: uv and python first, whose Python then locks the pypi: tools (UV_PYTHON).
 TOOLCHAIN_LOCK_PLATFORMS := linux-x64,linux-arm64,macos-arm64,macos-x64,windows-x64,windows-arm64
 toolchain-lock: ## Write mise.lock with mise lock for each platform of TOOLCHAIN_LOCK_PLATFORMS; ONLINE
@@ -543,7 +549,8 @@ ci-validator-rust: ## The job validator-rust of ci.yml
 # are the generated tests (binding GN-13, CK-22). The tools are those of the five runners, PHPUnit of composer.lock and
 # the wheels of json that crudui-install-bindings downloads.
 ci-bindings: ## The job bindings of ci.yml
-	$(CI_MAKE) install-tools TOOLS="node rust python uv go github:wasm-bindgen/wasm-bindgen http:composer"
+	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer"
+	$(CI_MAKE) crudui-install-wasm-bindgen
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) crudui-install-composer
 	$(CI_MAKE) crudui-install-bindings
@@ -1007,7 +1014,8 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/rust-generators.test.mts \
 	tests/build/release-build-scope.test.mts \
 	tests/build/binding-python-link.test.mts \
-	tests/build/release-go-push.test.mts
+	tests/build/release-go-push.test.mts \
+	tests/build/ci-install-selectors.test.mts
 crudui-test-runtimes: ## Exact runtime versions and test standards
 	$(NODE) scripts/run-tests.mts node -- --test-concurrency=1 $(if $(CRUDUI_TEST_SHARD),--test-shard=$(CRUDUI_TEST_SHARD)) $(CRUDUI_RUNTIME_TESTS)
 # The TypeScript tables are untracked build output of contracts/ (P34): the build script of legacy/packages/validator/ts writes
