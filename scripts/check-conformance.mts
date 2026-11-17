@@ -127,7 +127,9 @@ export function checkConformance(
   const key = (feature: string, fixture: string, runtime: string, name: string): string => JSON.stringify([feature, fixture, runtime, name]);
   // A legacy runtime proves the copy of a fixture under legacy/, which is the shared fixture of its declaration.
   const legacy = (runtime: string): boolean => legacyCases !== undefined && runtime !== CORE_RUNTIME;
-  const evidence = recordedEvidence.map(item => legacy(item.runtime) && item.fixture.startsWith(LEGACY)
+  // A fixture declared under legacy/ is its own path (C19.137); only a copy of a shared fixture is stripped to its declared path.
+  const declaredPaths = new Set(registry.map(fixture => fixture.path));
+  const evidence = recordedEvidence.map(item => legacy(item.runtime) && item.fixture.startsWith(LEGACY) && !declaredPaths.has(item.fixture)
     ? { ...item, fixture: item.fixture.slice(LEGACY.length) } : item);
   const caseNames = (fixture: string, runtime: string): readonly string[] | undefined =>
     legacy(runtime) ? legacyCases?.[`${LEGACY}${fixture}`] : cases[fixture];

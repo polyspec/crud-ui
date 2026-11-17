@@ -313,3 +313,18 @@ test('a legacy runtime is checked against the copy of the fixture under legacy/'
   });
   assert.deepEqual([problems.missing, problems.failed, problems.undeclaredEvidence], [[], [], []]);
 });
+
+// C19.137: a fixture declared under legacy/ keeps that path. The checker strips legacy/ from the records of a legacy runtime
+// only to reach the copy of a shared fixture; stripping the declared path of native-generators left its records unmatched.
+test('a legacy runtime keeps the path of a fixture that is declared under legacy/ (C19.137)', () => {
+  const declared = 'legacy/tests/native-generators/cases.mts';
+  const problems = checkConformance({
+    features: [{ id: 'createForm', support: { go: 'pass' }, fixtures: [declared] }],
+    registry: [{ path: declared, kind: 'cases' }],
+    cases: { [declared]: ['a'] },
+    legacyCases: { [`legacy/${declared}`]: ['a'] },
+    families: ['legacy/tests/native-generators'],
+    evidence: [{ feature: 'createForm', fixture: declared, runtime: 'go', case: 'a', passed: true }],
+  });
+  assert.deepEqual([problems.missing, problems.failed, problems.undeclaredEvidence], [[], [], []]);
+});
