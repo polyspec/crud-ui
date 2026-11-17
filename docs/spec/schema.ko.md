@@ -153,8 +153,8 @@ opens_when:
 
 `element` 필드는 텍스트 하나를 가지며, 컨트롤은 필드 명세가 `options.tag`에 이름을 적은 사용자 정의
 요소입니다. 요소는 페이지가 정의하고, CRUDUI는 요소를 쓰고 폼에 연결하며 값을 다시 읽습니다. 컨트롤은
-[폼 마크업](form-markup.ko.md#요소-필드)이 정의합니다. 이 종류는 초안이며 아직 어떤 renderer, validator,
-binding도 구현하지 않았습니다([기능](../features.ko.md)).
+[폼 마크업](form-markup.ko.md#요소-필드)이 정의합니다. 이 종류는 Rust generator와 validator
+코어가 구현하며, 폼 바인딩은 아직 읽지 않습니다([기능](../features.ko.md)).
 
 ```yaml
 color:

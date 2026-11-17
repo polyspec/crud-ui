@@ -104,6 +104,7 @@ pub(crate) fn widget_kind(name: &str) -> Option<&str> {
         "button" | "action" => "button",
         "range" => "range",
         "condition" => "condition",
+        "element" => "element",
         "email" | "password" | "textarea" | "hidden" | "date" | "dummy-input" | "image"
         | "file" | "image-viewer" | "summernote" | "editorjs" | "tui" | "tagify" | "tagify2" => {
             name
@@ -675,6 +676,38 @@ fn condition(ctx: &WidgetContext<'_>) -> Value {
     model
 }
 
+/// An element field: the custom element of `options.tag`, which compilation has checked (CUSC-099), holding its
+/// text in `value`, with its attributes in the order of the form markup (CUMK-076). It has no placeholder.
+fn element(ctx: &WidgetContext<'_>) -> Value {
+    let mut attrs = Map::new();
+    put_string(
+        &mut attrs,
+        "class",
+        ctx.class("valid-target crudui-input crudui-input--element"),
+    );
+    put_string(&mut attrs, "data-crudui-value", "text");
+    put_string(&mut attrs, "data-default", scalar(ctx.spec.get("default")));
+    put_string(
+        &mut attrs,
+        "data-name",
+        leaf_name(ctx.path, ctx.row_segments),
+    );
+    put_string(
+        &mut attrs,
+        "data-rule-name",
+        rule_name(ctx.path, ctx.row_segments),
+    );
+    put_string(&mut attrs, "id", ctx.id);
+    put_string(&mut attrs, "name", ctx.name());
+    put_string(&mut attrs, "value", ctx.value());
+    put_nonempty(&mut attrs, "style", ctx.style());
+    ctx.behavior(&mut attrs);
+    let tag = ctx.spec["options"]["tag"].as_str().or_no_text();
+    let mut model = json!({"kind":"element","layout":"element","tag":tag,"attrs":attrs});
+    ctx.affixes(&mut model, true);
+    model
+}
+
 /// A button element with the content text; behavior scripts are its event attributes.
 fn button(ctx: &WidgetContext<'_>) -> Value {
     let mut attrs = Map::new();
@@ -708,6 +741,7 @@ pub(crate) fn evaluate_widget(field_type: &str, ctx: &WidgetContext<'_>) -> Opti
         "button" => button(ctx),
         "range" => range(ctx),
         "condition" => condition(ctx),
+        "element" => element(ctx),
         _ => text_control(kind, ctx),
     };
     let id = ctx.id.to_owned();

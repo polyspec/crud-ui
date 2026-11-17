@@ -364,7 +364,7 @@ JSON 텍스트임을 표시합니다([조건 값](form-runtime.ko.md#조건-값)
 
 `element` 필드([스키마](schema.ko.md#요소-필드))는 `crudui-widget crudui-widget--element` 위젯을
 렌더링합니다. 앞 affix, `options.tag`가 이름을 적은 사용자 정의 요소, 뒤 affix입니다. 이 마크업은
-초안이며 아직 어떤 renderer도 쓰지 않습니다.
+Rust generator 코어가 쓰며, 폼 바인딩은 아직 읽지 않습니다(CUMK-078).
 
 - **CUMK-076** 요소의 태그는 `options.tag`입니다(CUSC-099). 요소는 class
   `valid-target crudui-input crudui-input--element`와 그 뒤의 `design.class` class를 가지고, 이어서

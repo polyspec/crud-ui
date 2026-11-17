@@ -169,7 +169,7 @@ The editor offers what the rule of the field accepts and shows the value without
 An `element` field holds one text, and its control is a custom element that the field specification
 names in `options.tag`. The page defines the element; CRUDUI writes it, associates it with its form
 and reads its value back. The [form markup](form-markup.md#element-fields) defines the control.
-This kind is a draft: no renderer, validator or binding implements it yet
+The Rust generator and validator cores implement this kind; the form binding does not read it yet
 ([features](../features.md)).
 
 ```yaml

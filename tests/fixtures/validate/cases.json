@@ -82918,6 +82918,900 @@
         ],
         "hidden": []
       }
+    },
+    {
+      "id": "element_text_rules",
+      "name": "element-text-rules",
+      "note": "an element field holds a string checked with the rules of a text field (CUSC-098): required with an empty string, the length rules and pattern.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "color",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "color-picker"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "required",
+                              {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            ],
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "7"
+                              }
+                            ],
+                            [
+                              "pattern",
+                              {
+                                "kind": "text",
+                                "value": "^#[0-9a-f]{6}$"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "empty",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-empty"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "required",
+                              {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "long",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-long"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "3"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "short",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-short"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "minlength",
+                              {
+                                "kind": "number",
+                                "value": "2"
+                              }
+                            ],
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "3"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "ok",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-ok"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "required",
+                              {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            ],
+                            [
+                              "rangelength",
+                              {
+                                "kind": "list",
+                                "value": [
+                                  {
+                                    "kind": "number",
+                                    "value": "1"
+                                  },
+                                  {
+                                    "kind": "number",
+                                    "value": "3"
+                                  }
+                                ]
+                              }
+                            ],
+                            [
+                              "pattern",
+                              {
+                                "kind": "text",
+                                "value": "^[a-z]+$"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "color",
+            {
+              "kind": "text",
+              "value": "#33669z"
+            }
+          ],
+          [
+            "empty",
+            {
+              "kind": "text",
+              "value": ""
+            }
+          ],
+          [
+            "long",
+            {
+              "kind": "text",
+              "value": "abcd"
+            }
+          ],
+          [
+            "short",
+            {
+              "kind": "text",
+              "value": "a"
+            }
+          ],
+          [
+            "ok",
+            {
+              "kind": "text",
+              "value": "abc"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "color",
+            "field": "color",
+            "rule": "pattern",
+            "message": "Please enter a valid format.",
+            "value": "#33669z"
+          },
+          {
+            "path": "empty",
+            "field": "empty",
+            "rule": "required",
+            "message": "This field is required.",
+            "value": ""
+          },
+          {
+            "path": "long",
+            "field": "long",
+            "rule": "maxlength",
+            "message": "Please enter no more than 3 characters.",
+            "value": "abcd"
+          },
+          {
+            "path": "short",
+            "field": "short",
+            "rule": "minlength",
+            "message": "Please enter at least 2 characters.",
+            "value": "a"
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
+      "id": "element_non_string_as_text",
+      "name": "element-non-string-as-text",
+      "note": "a value of an element field that is not a string fails as a non-string value of a text field fails (CUSC-098): each element field gives the error of its text twin.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "number",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-number"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "number_text",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "list",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-list"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "5"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "list_text",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "5"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "map",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "x-map"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "minlength",
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "map_text",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "text"
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "minlength",
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "number",
+            {
+              "kind": "number",
+              "value": "12"
+            }
+          ],
+          [
+            "number_text",
+            {
+              "kind": "number",
+              "value": "12"
+            }
+          ],
+          [
+            "list",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "a"
+                }
+              ]
+            }
+          ],
+          [
+            "list_text",
+            {
+              "kind": "list",
+              "value": [
+                {
+                  "kind": "text",
+                  "value": "a"
+                }
+              ]
+            }
+          ],
+          [
+            "map",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "map_text",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "a",
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "number",
+            "field": "number",
+            "rule": "maxlength",
+            "message": "Please enter no more than 1 characters.",
+            "value": 12
+          },
+          {
+            "path": "number_text",
+            "field": "number_text",
+            "rule": "maxlength",
+            "message": "Please enter no more than 1 characters.",
+            "value": 12
+          },
+          {
+            "path": "list",
+            "field": "list",
+            "rule": "maxlength",
+            "message": "Please enter no more than 5 characters.",
+            "value": [
+              "a"
+            ]
+          },
+          {
+            "path": "list_text",
+            "field": "list_text",
+            "rule": "maxlength",
+            "message": "Please enter no more than 5 characters.",
+            "value": [
+              "a"
+            ]
+          },
+          {
+            "path": "map",
+            "field": "map",
+            "rule": "minlength",
+            "message": "Please enter at least 0 characters.",
+            "value": {
+              "a": 1
+            }
+          },
+          {
+            "path": "map_text",
+            "field": "map_text",
+            "rule": "minlength",
+            "message": "Please enter at least 0 characters.",
+            "value": {
+              "a": 1
+            }
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
+      "id": "element_missing_required",
+      "name": "element-missing-required",
+      "note": "an element field without a value fails required, and a valid string passes (CUSC-098).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "color",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "color-picker"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "required",
+                              {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "tone",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "element"
+                        }
+                      ],
+                      [
+                        "options",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "tag",
+                              {
+                                "kind": "text",
+                                "value": "tone-dial"
+                              }
+                            ]
+                          ]
+                        }
+                      ],
+                      [
+                        "validate",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "required",
+                              {
+                                "kind": "bool",
+                                "value": true
+                              }
+                            ],
+                            [
+                              "maxlength",
+                              {
+                                "kind": "number",
+                                "value": "4"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "tone",
+            {
+              "kind": "text",
+              "value": "warm"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "color",
+            "field": "color",
+            "rule": "required",
+            "message": "This field is required.",
+            "value": null
+          }
+        ],
+        "hidden": []
+      }
     }
   ]
 }

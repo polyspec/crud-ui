@@ -277,6 +277,18 @@ fn widget(model: &Value) -> String {
                     + &affix(&model["append"], raw)),
             )
         }
+        // CUMK-076: the custom element has an end tag and no content.
+        "element" => {
+            let raw = has_events(&model["attrs"]);
+            let render = if raw { raw_element } else { element };
+            element(
+                "div",
+                &json!({"class":"crudui-widget crudui-widget--element"}),
+                &(affix(&model["prepend"], raw)
+                    + &render(str_at(model, "tag"), &model["attrs"], "")
+                    + &affix(&model["append"], raw)),
+            )
+        }
         "host-script" => control(model, false) + &script(str_at(model, "script")),
         "choices" => {
             let radio = model["kind"] == "choice";

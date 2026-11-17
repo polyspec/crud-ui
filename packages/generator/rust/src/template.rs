@@ -500,6 +500,14 @@ fn check_declarations(spec: &Map<String, Value>, path: &str, field: bool) -> For
         && spec
             .get("type")
             .and_then(Value::as_str)
+            .is_some_and(|t| t.to_lowercase() == "element")
+    {
+        check_element_declaration(spec, path)?;
+    }
+    if field
+        && spec
+            .get("type")
+            .and_then(Value::as_str)
             .is_some_and(|t| t.to_lowercase() == "range")
     {
         check_range_declaration(spec, path)?;
@@ -514,6 +522,49 @@ fn check_declarations(spec: &Map<String, Value>, path: &str, field: bool) -> For
             .is_some_and(|options| options.contains_key("fields"))
     {
         return Err(fields_error(path));
+    }
+    Ok(())
+}
+
+/// The hyphenated names that are no custom element names (CUSC-099).
+const RESERVED_ELEMENT_NAMES: &[&str] = &[
+    "annotation-xml",
+    "color-profile",
+    "font-face",
+    "font-face-src",
+    "font-face-uri",
+    "font-face-format",
+    "font-face-name",
+    "missing-glyph",
+];
+
+/// Whether `name` is a valid custom element name that CRUDUI does not reserve (CUSC-099).
+fn custom_element_name(name: &str) -> bool {
+    name.bytes().next().is_some_and(|b| b.is_ascii_lowercase())
+        && name.contains('-')
+        && name.bytes().all(|b| {
+            b.is_ascii_lowercase() || b.is_ascii_digit() || matches!(b, b'-' | b'.' | b'_')
+        })
+        && !name.starts_with("crudui-")
+        && !RESERVED_ELEMENT_NAMES.contains(&name)
+}
+
+/// Reject an element field without a custom element name in `options.tag` (CUSC-100) or with
+/// `items` (CUSC-101).
+fn check_element_declaration(spec: &Map<String, Value>, path: &str) -> FormResult<()> {
+    let tag = spec
+        .get("options")
+        .and_then(|options| options.get("tag"))
+        .and_then(Value::as_str);
+    if !tag.is_some_and(custom_element_name) {
+        return Err(FormError::input(format!(
+            "Invalid options.tag at {path}: expected a custom element name"
+        )));
+    }
+    if spec.contains_key("items") {
+        return Err(FormError::input(format!(
+            "Invalid items at {path}: unknown key"
+        )));
     }
     Ok(())
 }

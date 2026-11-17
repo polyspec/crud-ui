@@ -31,7 +31,8 @@ id, id가 없는 form, 매개변수 오류를 확인합니다.
 숨겨진 그룹의 행, 그룹 소스의 로드 실패를 다룹니다. combined items 사례는 리터럴 선택지가 있는 그룹 소스를 확인합니다:
 리터럴 값과 행 값의 한 집합, 리터럴 선택지를 반복하는 행의 경로와 값으로의 거부, `choices`의 로드 실패입니다. multiple 형태 사례는 불리언, `only`, 객체가 아닌 `multiple`이
 필드의 선언 경로에서, 그 규칙보다 먼저 로드에 실패하는지 확인합니다. placeholder 사례는 option이 없는 select나 search 필드의 placeholder option이 주는 빈 값이
-`required`에서 실패하고 다른 모든 규칙을 통과하는지 확인합니다. 실패 사례는 `REF_FILE_NOT_FOUND`, `INVALID_RULE_PARAMETER`, `INVALID_RULE_PATTERN`,
+`required`에서 실패하고 다른 모든 규칙을 통과하는지 확인합니다. element 사례는 `element` 필드가 문자열이 아닌 값을
+포함해 `text` 필드의 규칙으로 검사되는지 확인합니다. 실패 사례는 `REF_FILE_NOT_FOUND`, `INVALID_RULE_PARAMETER`, `INVALID_RULE_PATTERN`,
 `UNKNOWN_RULE`, `INVALID_FORM_INPUT`을 사용합니다. [테스트 고정 데이터 계약](../../../docs/operations/test-fixtures.ko.md)이
 형식을 설명합니다.
 

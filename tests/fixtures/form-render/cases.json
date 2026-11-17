@@ -7417,5 +7417,459 @@
       "code": "INVALID_FORM_INPUT",
       "message": "Invalid options.fields at pass: expected distinct field names of a structured condition editor"
     }
+  },
+  {
+    "name": "element-default",
+    "note": "element (CUSC-098, CUMK-076, CUMK-077) → the custom element of options.tag with the value marker, the text control name, the default as value and data-default, an end tag and no content; the label targets its id.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "default": "#336699",
+          "options": {
+            "tag": "color-picker"
+          },
+          "validate": {
+            "required": true,
+            "maxlength": 7
+          }
+        }
+      }
+    },
+    "data": {},
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"color\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:color\">Color</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><color-picker class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"#336699\" data-name=\"color\" data-rule-name=\"color\" id=\"crudui:color\" name=\"color\" value=\"#336699\"></color-picker></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"Form actions\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">Save</button></div></div></div>"
+  },
+  {
+    "name": "element-values",
+    "note": "element values (CUMK-076): a string is itself and escaped, a number is its canonical text, a null value is empty; a tag may hold digits, '.', '_' and '-'.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "quote": {
+          "type": "element",
+          "options": {
+            "tag": "x-quote"
+          }
+        },
+        "ratio": {
+          "type": "element",
+          "default": 7,
+          "options": {
+            "tag": "x-ratio.v2_b"
+          }
+        },
+        "none": {
+          "type": "element",
+          "options": {
+            "tag": "x-none"
+          }
+        }
+      }
+    },
+    "data": {
+      "quote": "<b>\"a\" & 'b'</b>",
+      "ratio": 0.30000000000000004,
+      "none": null
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"quote\"><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-quote class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"quote\" data-rule-name=\"quote\" id=\"crudui:quote\" name=\"quote\" value=\"&lt;b&gt;&quot;a&quot; &amp; &#x27;b&#x27;&lt;/b&gt;\"></x-quote></div></div></div><div class=\"crudui-node crudui-node--field\" data-field-path=\"ratio\"><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-ratio.v2_b class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"7\" data-name=\"ratio\" data-rule-name=\"ratio\" id=\"crudui:ratio\" name=\"ratio\" value=\"0.30000000000000004\"></x-ratio.v2_b></div></div></div><div class=\"crudui-node crudui-node--field\" data-field-path=\"none\"><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-none class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"none\" data-rule-name=\"none\" id=\"crudui:none\" name=\"none\" value=\"\"></x-none></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"Form actions\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">Save</button></div></div></div>"
+  },
+  {
+    "name": "element-design-behavior",
+    "note": "element with design.class, design.style, a behavior attribute, declared attributes and both affixes; a placeholder is not written (CUMK-076).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "tone": {
+          "type": "element",
+          "label": "Tone",
+          "placeholder": "Pick",
+          "prepend": "#",
+          "append": "hex",
+          "options": {
+            "tag": "tone-dial"
+          },
+          "behavior": {
+            "onchange": "save(this)"
+          },
+          "design": {
+            "class": "wide",
+            "style": "width: 8rem",
+            "attributes": {
+              "data-setting": "tone"
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "tone": "warm"
+    },
+    "options": {
+      "language": "en"
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--field\" data-field-path=\"tone\"><div class=\"crudui-node__header\"><label class=\"crudui-node__label\" for=\"crudui:tone\">Tone</label></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><span class=\"crudui-widget__affix\">#</span><tone-dial class=\"valid-target crudui-input crudui-input--element wide\" data-crudui-value=\"text\" data-default=\"\" data-name=\"tone\" data-rule-name=\"tone\" data-setting=\"tone\" id=\"crudui:tone\" name=\"tone\" onchange=\"save(this)\" style=\"width: 8rem\" value=\"warm\"></tone-dial><span class=\"crudui-widget__affix\">hex</span></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"Form actions\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">Save</button></div></div></div>"
+  },
+  {
+    "name": "element-multiple",
+    "note": "an element field accepts multiple: each row writes the element with the row control name.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "tags": {
+          "type": "element",
+          "label": {
+            "ko": "태그"
+          },
+          "multiple": true,
+          "options": {
+            "tag": "x-tag"
+          }
+        }
+      }
+    },
+    "data": {
+      "tags": {
+        "tag_a": "a",
+        "tag_b": "b"
+      }
+    },
+    "options": {
+      "language": "ko"
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--collection\" data-field-path=\"tags\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">태그</span><span class=\"crudui-node__count\">2개</span></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"tag_a\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">태그</span><span class=\"crudui-node__number\">1</span><div aria-label=\"행 컨트롤\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"추가\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"제거\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-tag class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"tags[]\" data-rule-name=\"tags[]\" id=\"crudui:tags.tag_a\" name=\"tags[tag_a]\" value=\"a\"></x-tag></div></div></div><div class=\"crudui-node crudui-node--row\" data-crudui-row-key=\"tag_b\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">태그</span><span class=\"crudui-node__number\">2</span><div aria-label=\"행 컨트롤\" class=\"crudui-controls\" role=\"group\"><button aria-label=\"추가\" class=\"crudui-action\" data-crudui-action=\"add-row\" type=\"button\"></button><button aria-label=\"제거\" class=\"crudui-action\" data-crudui-action=\"remove-row\" type=\"button\"></button></div></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-tag class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"tags[]\" data-rule-name=\"tags[]\" id=\"crudui:tags.tag_b\" name=\"tags[tag_b]\" value=\"b\"></x-tag></div></div></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
+  },
+  {
+    "name": "element-lang",
+    "note": "an element field accepts lang: each language item writes the element with the language control name.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "title": {
+          "type": "element",
+          "label": {
+            "ko": "제목"
+          },
+          "lang": true,
+          "options": {
+            "tag": "x-title"
+          }
+        }
+      }
+    },
+    "data": {
+      "title": {
+        "ko": "가",
+        "en": "A"
+      }
+    },
+    "options": {
+      "language": "ko"
+    },
+    "expected_html": "<div class=\"crudui-form\"><div class=\"crudui-form__body\"><div class=\"crudui-node crudui-node--lang crudui-node--framed\" data-field-path=\"title\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">제목</span></div><div class=\"crudui-node__body\"><div class=\"crudui-node crudui-node--lang-item\" data-lang=\"ko\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">ko</span></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-title class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"ko\" data-rule-name=\"title[ko]\" id=\"crudui:title.ko\" name=\"title[ko]\" value=\"가\"></x-title></div></div></div><div class=\"crudui-node crudui-node--lang-item\" data-lang=\"en\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">en</span></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-title class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"en\" data-rule-name=\"title[en]\" id=\"crudui:title.en\" name=\"title[en]\" value=\"A\"></x-title></div></div></div><div class=\"crudui-node crudui-node--lang-item\" data-lang=\"ja\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">ja</span></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-title class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"ja\" data-rule-name=\"title[ja]\" id=\"crudui:title.ja\" name=\"title[ja]\" value=\"\"></x-title></div></div></div><div class=\"crudui-node crudui-node--lang-item\" data-lang=\"zh\"><div class=\"crudui-node__header\"><span class=\"crudui-node__label\">zh</span></div><div class=\"crudui-node__body\"><div class=\"crudui-widget crudui-widget--element\"><x-title class=\"valid-target crudui-input crudui-input--element\" data-crudui-value=\"text\" data-default=\"\" data-name=\"zh\" data-rule-name=\"title[zh]\" id=\"crudui:title.zh\" name=\"title[zh]\" value=\"\"></x-title></div></div></div></div></div></div><div class=\"crudui-form__footer\"><div aria-label=\"폼 작업\" class=\"crudui-controls\" role=\"group\"><button class=\"crudui-action crudui-action--text\" type=\"submit\">저장</button></div></div></div>"
+  },
+  {
+    "name": "element-tag-missing",
+    "note": "options.tag absent (CUSC-100).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {}
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-no-options",
+    "note": "an element field without options has no tag (CUSC-100).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color"
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-not-string",
+    "note": "options.tag not a string (CUSC-100).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": 5
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-empty",
+    "note": "an empty options.tag is no custom element name (CUSC-100).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": ""
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-without-hyphen",
+    "note": "a custom element name contains a hyphen (CUSC-099).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "colorpicker"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-uppercase",
+    "note": "a custom element name has lowercase ASCII letters only (CUSC-099).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "Color-picker"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-leading-digit",
+    "note": "a custom element name starts with a lowercase ASCII letter (CUSC-099).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "1-picker"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-other-character",
+    "note": "a custom element name has only lowercase ASCII letters, digits, '-', '.' and '_' (CUSC-099).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "color-pické"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-crudui-prefix",
+    "note": "the crudui- prefix is reserved (CUSC-099).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "crudui-picker"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-tag-reserved-name",
+    "note": "a reserved hyphenated name is no custom element name (CUSC-099).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "font-face"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-items",
+    "note": "an element field refuses items (CUSC-101).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "options": {
+            "tag": "color-picker"
+          },
+          "items": {
+            "a": "A"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid items at color: unknown key"
+    }
+  },
+  {
+    "name": "element-tag-before-items",
+    "note": "options.tag is checked before items (CUSC-100, CUSC-101).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "items": {
+            "a": "A"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid options.tag at color: expected a custom element name"
+    }
+  },
+  {
+    "name": "element-behavior-first",
+    "note": "an element field is checked after its behavior (CUSC-100).",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "color": {
+          "type": "element",
+          "label": "Color",
+          "behavior": {
+            "oninput": "x()"
+          }
+        }
+      }
+    },
+    "options": {
+      "language": "en"
+    },
+    "expectError": {
+      "code": "INVALID_FORM_INPUT",
+      "message": "Invalid behavior.oninput at color: unknown key"
+    }
   }
 ]

@@ -39,7 +39,8 @@ source with literal choices: one set of literal and row values, a row that repea
 value, and the load failures of `choices`. The multiple shape cases check that a
 `multiple` that is not a boolean, `only` or an object fails the load at the declaration path of its field, before its rules. The placeholder case checks
 that the empty value of the placeholder option of a select or search field with no option fails
-`required` and passes every other rule. Failure cases use `REF_FILE_NOT_FOUND`, `INVALID_RULE_PARAMETER`, `INVALID_RULE_PATTERN`,
+`required` and passes every other rule. The element cases check that an `element` field is checked with the rules of
+a `text` field, a non-string value included. Failure cases use `REF_FILE_NOT_FOUND`, `INVALID_RULE_PARAMETER`, `INVALID_RULE_PATTERN`,
 `UNKNOWN_RULE` and `INVALID_FORM_INPUT`. The
 [test fixture contract](../../../docs/operations/test-fixtures.md) describes the format.
 

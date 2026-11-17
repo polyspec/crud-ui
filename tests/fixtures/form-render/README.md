@@ -19,7 +19,8 @@ multichoice field takes from the rows of a repeated group with the compilation f
 source, the literal choices of a group source listed before its rows and the binding failure of a row that repeats
 one, the placeholder option of a select or search field with no option, the structured condition editor with the
 named error of a value that it does not show and the compilation failures of `design.editor` and `options.fields`,
-and the translated root description
+the custom element of an `element` field with its values, rows and language items and the compilation failures of
+`options.tag` and `items`, and the translated root description
 as the first child of the `crudui-form` block. Repeated fixture data uses keyed
 collections as defined in the [form runtime](../../../docs/spec/form-runtime.md).
 

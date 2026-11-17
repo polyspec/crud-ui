@@ -1882,3 +1882,34 @@ fn a_failure_of_the_random_source_is_random_unavailable() {
     assert_eq!(form.get_data(), record());
     assert!(create_row_key().is_ok());
 }
+
+#[test]
+fn element_widget_model_has_the_element_layout() {
+    // CUMK-076: the widget model has the layout element, the tag options.tag and the attributes as attrs.
+    let template = compile_form(
+        &json!({"type":"group","properties":{"color":{"type":"element","default":"#336699","options":{"tag":"color-picker"}}}}),
+        &CompileOptions::default(),
+    )
+    .unwrap();
+    let fields = bind_form(&template, &json!({}), &BindOptions::default()).unwrap();
+    let widget = &fields[0]["widget"];
+    assert_eq!(widget["kind"], "element");
+    assert_eq!(widget["layout"], "element");
+    assert_eq!(widget["tag"], "color-picker");
+    let keys: Vec<&String> = widget["attrs"].as_object().unwrap().keys().collect();
+    assert_eq!(
+        keys,
+        [
+            "class",
+            "data-crudui-value",
+            "data-default",
+            "data-name",
+            "data-rule-name",
+            "id",
+            "name",
+            "value"
+        ]
+    );
+    assert_eq!(widget["attrs"]["data-crudui-value"], "text");
+    assert_eq!(widget["attrs"]["value"], "#336699");
+}

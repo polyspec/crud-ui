@@ -394,8 +394,8 @@ English:
 ## Element fields
 
 An `element` field ([schema](schema.md#element-fields)) renders a `crudui-widget crudui-widget--element`
-widget: the prepend affix, the custom element named by `options.tag` and the append affix. This
-markup is a draft that no renderer writes yet.
+widget: the prepend affix, the custom element named by `options.tag` and the append affix. The
+Rust generator core writes this markup; the form binding does not read it yet (CUMK-078).
 
 - **CUMK-076** The element's tag is `options.tag` (CUSC-099). It has the class
   `valid-target crudui-input crudui-input--element` followed by the class of `design.class`, then
