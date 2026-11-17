@@ -132,7 +132,10 @@ export const uniqueRule: RuleDefinition = {
 
     const errorMessage = messages?.unique ?? 'Values must be unique.';
     // A list of field names holds the field together with the named fields (CUVR-097).
-    const together: string[] | null = Array.isArray(ruleParam) ? (ruleParam as string[]) : null;
+    // The parameter is a list of non-empty field names (checked when the rule is loaded), so the filter keeps every name.
+    const together: string[] | null = Array.isArray(ruleParam)
+      ? ruleParam.filter((name): name is string => typeof name === 'string')
+      : null;
 
     if (Array.isArray(value) || (value !== null && typeof value === 'object')) {
       // A list makes no failure on a field that holds an array, as true makes none.
@@ -228,7 +231,7 @@ export const uniqueRule: RuleDefinition = {
         let itemValue: unknown;
         if (together) {
           // The row's value is the list of the field and the named fields; an empty member takes no part.
-          const members = [fieldName, ...together].map(name => Reflect.get(item, name));
+          const members = [fieldName, ...together].map((name): unknown => Reflect.get(item, name));
           if (members.some(member => isEmpty(member))) {
             continue;
           }

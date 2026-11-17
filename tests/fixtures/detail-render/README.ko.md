@@ -23,7 +23,7 @@ legacy 렌더러의 suite는 `legacy/tests/fixtures` 아래 사본을 읽습니�
 
 프레임워크 적합성 검사는 [폼 HTML 정규화기](../form-render/README.ko.md#정규화)로 정규화한 상세 본문을
 `expected_html`과 비교합니다. 문자열 렌더러(React 서버 렌더링과 HTML 렌더러)는 상세 앞에 이미지
-preload 링크를 쓰며, [`preload-links.mjs`](../preload-links.mts)가 이를 제거하므로 본문 기대값은 상세
+preload 링크를 쓰며, [`preload-links.mjs`](../../../legacy/tests/fixtures/preload-links.mts)가 이를 제거하므로 본문 기대값은 상세
 본문만 다룹니다. 오류 사례는 기록된 메시지를 확인합니다.
 
 [네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)는 모든 사례를 모든 런타임에 두 수준으로

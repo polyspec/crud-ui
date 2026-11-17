@@ -25,7 +25,7 @@ the renderer does not query a database.
 The framework layout tests compare normalized list bodies with `expected_html`.
 They use the [form HTML normalizer](../form-render/README.md#normalization).
 The string renderers (React's server rendering and the HTML renderer) write image preload
-links before the list; [`preload-links.mjs`](../preload-links.mts) removes them, so these body
+links before the list; [`preload-links.mjs`](../../../legacy/tests/fixtures/preload-links.mts) removes them, so these body
 expectations cover the list body only. This comparison does not establish equality of
 complete original HTML.
 

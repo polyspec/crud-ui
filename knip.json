@@ -64,7 +64,9 @@
     // the PHP of the machine (config/toolchain.json): the cross-check console tests run the PHP validator processes with it, and scripts/install-phpdocumentor.mts checks the phpDocumentor phar with it
     "php",
     // GNU Make: tests/build/make-dry-run.mts and tests/build/tool-path.test.mts run the recipes of the Makefile with it
-    "make"
+    "make",
+    // GNU Make under its name gmake: tests/build/ci-bindings-tools.test.mts runs the dry run of ci-bindings with it
+    "gmake"
   ],
   "ignoreDependencies": [
     // make bindings, bindings-check and test-bindings run the cli of the package by its path (BINDING of the Makefile); no import names the package
@@ -92,9 +94,7 @@
         // the build script of packages/svelte runs its svelte-package with `npm exec --prefix tools`
         "@sveltejs/package",
         // the typecheck script of packages/svelte runs it with `npm exec --prefix tools`
-        "svelte-check",
-        // the lint script of packages/svelte runs it with `npm exec --prefix tools`
-        "eslint"
+        "svelte-check"
       ]
     },
     // an npm workspace whose test script runs a second vitest configuration by path, which knip reads only from vitest.config.ts; its entries replace the default entries of knip, so they name src/index.ts too

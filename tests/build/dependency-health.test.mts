@@ -409,7 +409,10 @@ test('npm installs only registry packages, linked directories and the kit and Or
     const spec = root_.dependencies?.[name] ?? root_.devDependencies?.[name] ?? root_.optionalDependencies?.[name] ?? '';
     const declared = /-(\d+\.\d+\.\d+)\.tgz$/.exec(spec)?.[1];
     assert.ok(declared, `${name} in package.json names no release version`);
-    const locked = (lock.packages?.[`node_modules/${name}`] as { version?: string } | undefined)?.version;
+    const entry: unknown = lock.packages?.[`node_modules/${name}`];
+    const locked = typeof entry === 'object' && entry !== null && 'version' in entry && typeof entry.version === 'string'
+      ? entry.version
+      : undefined;
     assert.equal(locked, declared, `${name} in the lock`);
   }
 

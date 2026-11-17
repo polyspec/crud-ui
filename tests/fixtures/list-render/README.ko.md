@@ -23,7 +23,7 @@ group `row_shapes`는 `rows`가 목록이 아니어서 `rows`의 타입으로 �
 프레임워크 레이아웃 검사는 정규화한 목록 본문을 `expected_html`과 비교합니다.
 [폼 HTML 정규화기](../form-render/README.ko.md#정규화)를 사용합니다. 문자열
 렌더러(React 서버 렌더링과 HTML 렌더러)는 목록 앞에 이미지 preload 링크를 쓰며,
-[`preload-links.mjs`](../preload-links.mts)가 이를 제거하므로 본문 기대값은 목록 본문만 다룹니다.
+[`preload-links.mjs`](../../../legacy/tests/fixtures/preload-links.mts)가 이를 제거하므로 본문 기대값은 목록 본문만 다룹니다.
 이 비교로 전체 원본 HTML의 동일성을 확인할 수는 없습니다.
 
 [네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)는 같은 입력으로 모든 문자열

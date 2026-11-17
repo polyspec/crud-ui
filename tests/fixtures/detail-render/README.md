@@ -26,7 +26,7 @@ empty text ([specification structure](../../../docs/spec/schema.md)).
 The framework conformance tests compare the normalized detail body with `expected_html`, using
 the [form HTML normalizer](../form-render/README.md#normalization). The string renderers
 (React's server rendering and the HTML renderer) write image preload links before the detail;
-[`preload-links.mjs`](../preload-links.mts) removes them, so the body expectations cover the
+[`preload-links.mjs`](../../../legacy/tests/fixtures/preload-links.mts) removes them, so the body expectations cover the
 detail body only. Error cases require the recorded message.
 
 The [native generator suite](../../../legacy/tests/native-generators/README.md) sends every case to every
