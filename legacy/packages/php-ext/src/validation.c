@@ -1202,6 +1202,9 @@ static ps_result validate_detail(const ps_value *spec, const ps_value *options);
  */
 ps_result ps_validate(const ps_value *spec, const ps_value *data, const ps_value *options)
 {
+    /* A specification is an object before anything reads it (CUSC-001). */
+    if (!spec || spec->kind != PS_OBJECT)
+        return ps_fail("input", "INVALID_FORM_INPUT", "Form specification must be an object", "");
     ps_value *ordered_spec = NULL, *ordered_options = NULL;
     if (!ps_order_specification(spec, options, &ordered_spec, &ordered_options))
         return ps_fail("internal", "INTERNAL_ERROR", "Validation failed", "");
