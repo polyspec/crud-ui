@@ -124,6 +124,11 @@ fn layout_cases() -> Vec<Value> {
 fn main() {
     let cases = support::case_groups("list-render", &["cases", "row_shapes"]);
     assert_eq!(cases.len(), 160, "list-render holds 160 cases");
+    // The contract names the group `cases` only; a case of row_shapes runs with no evidence (tests/fixtures/list-render/README.md).
+    let contract_names: std::collections::HashSet<String> = support::case_groups("list-render", &["cases"])
+        .iter()
+        .map(|case| case["name"].as_str().unwrap().to_string())
+        .collect();
     let (refused, cases): (Vec<Value>, Vec<Value>) =
         cases.into_iter().partition(support::boundary_refusal);
     assert_eq!(
@@ -133,7 +138,10 @@ fn main() {
     );
     let layouts = layout_cases();
     assert_eq!(layouts.len(), 6, "render_list holds 6 list layout cases");
-    let cases = cases
+    let (recorded, shapes): (Vec<Value>, Vec<Value>) = cases
+        .into_iter()
+        .partition(|case| contract_names.contains(case["name"].as_str().unwrap()));
+    let recorded = recorded
         .into_iter()
         .map(|case| ("tests/fixtures/list-render/cases.json", case))
         .chain(
@@ -141,7 +149,7 @@ fn main() {
                 .into_iter()
                 .map(|case| ("contracts/generator-cases.json", case)),
         );
-    let trials = cases.map(|(fixture, case)| {
+    let recorded_trials = recorded.map(|(fixture, case)| {
         let name = case["name"].as_str().unwrap().to_string();
         Trial::test(
             format!("list_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
@@ -153,5 +161,15 @@ fn main() {
             },
         )
     });
-    libtest_mimic::run(&Arguments::from_args(), trials.collect()).exit();
+    let shape_trials = shapes.into_iter().map(|case| {
+        let name = case["name"].as_str().unwrap().to_string();
+        Trial::test(
+            format!("list_render_row_shapes_reproduce_the_normalized_layout_or_the_failure::{name}"),
+            move || {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| check_case(&case)))
+                    .map_err(|_| libtest_mimic::Failed::from(format!("row shape {name} failed")))
+            },
+        )
+    });
+    libtest_mimic::run(&Arguments::from_args(), recorded_trials.chain(shape_trials).collect()).exit();
 }

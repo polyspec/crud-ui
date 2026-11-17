@@ -358,10 +358,12 @@
       "kind": "outline-html",
       "featureRuntimes": {
         "compileForm": [
-          "python"
+          "python",
+          "rust"
         ],
         "bindForm": [
-          "python"
+          "python",
+          "rust"
         ]
       }
     },

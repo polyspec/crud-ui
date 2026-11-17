@@ -328,3 +328,26 @@ test('a legacy runtime keeps the path of a fixture that is declared under legacy
   });
   assert.deepEqual([problems.missing, problems.failed, problems.undeclaredEvidence], [[], [], []]);
 });
+
+// C19.145: the rust outline suite runs compile_form and bind_form for every case of form-outline, so its evidence for those
+// features is real; the registry must name rust for them, or the checker reports the record as not applicable (branch run 44192640029).
+test('form-outline declares rust for compileForm and bindForm, which the rust suite runs (C19.145)', async () => {
+  const registry = JSON.parse(await readFile(path.join(import.meta.dirname, '../../contracts/features.json'), 'utf8'));
+  const entry = registry.fixtures.find((item: { path: string }) => item.path === 'tests/fixtures/form-outline/cases.json');
+  assert.ok(entry, 'the registry has no form-outline entry');
+  const source = await readFile(path.join(import.meta.dirname, '../../packages/generator/rust/tests/form_outline.rs'), 'utf8');
+  for (const feature of ['compileForm', 'bindForm']) {
+    assert.match(source, new RegExp(`compile_form\\(|bind_form\\(`));
+    assert.ok(entry.featureRuntimes?.[feature]?.includes('rust'), `form-outline ${feature} does not declare rust`);
+  }
+});
+
+// C19.146: the rows of row_shapes are not contract cases (tests/fixtures/list-render/README.md), so the rust suite runs them without
+// recording them; the branch run reported two of them as not in the fixture (C19.146).
+test('the rust list-render suite records only the cases group (C19.146)', async () => {
+  const source = await readFile(path.join(import.meta.dirname, '../../packages/generator/rust/tests/list_render.rs'), 'utf8');
+  const shapes = source.slice(source.indexOf('let shape_trials'), source.indexOf('libtest_mimic::run'));
+  assert.ok(shapes.length > 0, 'list_render.rs has no shape trials');
+  assert.doesNotMatch(shapes, /prove_all/);
+  assert.match(source, /contract_names\.contains/);
+});
