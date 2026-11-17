@@ -291,25 +291,40 @@ final class GroupSource
      */
     public static function repeats(array $source, mixed $data): array
     {
+        $seen = [];
+        $repeats = [];
+        foreach (self::valueEntries($source, $data) as $entry) {
+            if (isset($seen[$entry['value']])) {
+                $repeats[] = $entry;
+            }
+            $seen[$entry['value']] = true;
+        }
+        return $repeats;
+    }
+
+    /**
+     * The value of each row of the group in data order, with the declaration path of the value; a row without a
+     * choice value has none.
+     *
+     * @param array<array-key, mixed> $source
+     * @return list<array{at: string, value: string}>
+     */
+    private static function valueEntries(array $source, mixed $data): array
+    {
         $segments = explode('.', (string) $source['from']);
         $valueName = (string) end($segments);
         $groupPath = implode('.', array_slice($segments, 0, -2));
-        $seen = [];
-        $repeats = [];
+        $entries = [];
         foreach (self::rows($source, $data) as $key => $row) {
             if (!JsonValue::isObject($row)) {
                 continue;
             }
             $value = self::choiceText(((array) $row)[$valueName] ?? null);
-            if ($value === null) {
-                continue;
+            if ($value !== null) {
+                $entries[] = ['at' => $groupPath . '.' . (string) $key . '.' . $valueName, 'value' => $value];
             }
-            if (isset($seen[$value])) {
-                $repeats[] = ['at' => $groupPath . '.' . (string) $key . '.' . $valueName, 'value' => $value];
-            }
-            $seen[$value] = true;
         }
-        return $repeats;
+        return $entries;
     }
 
     /**
@@ -320,20 +335,11 @@ final class GroupSource
      */
     private static function firstRepeat(array $source, mixed $data, bool $rows): ?string
     {
-        $segments = explode('.', (string) $source['from']);
-        $valueName = (string) end($segments);
-        $groupPath = implode('.', array_slice($segments, 0, -2));
         $literal = array_column(self::sourceLiteral($source), 0);
         $seen = [];
-        foreach (self::rows($source, $data) as $key => $row) {
-            if (!JsonValue::isObject($row)) {
-                continue;
-            }
-            $value = self::choiceText(((array) $row)[$valueName] ?? null);
-            if ($value === null) {
-                continue;
-            }
-            $at = $groupPath . '.' . (string) $key . '.' . $valueName;
+        foreach (self::valueEntries($source, $data) as $entry) {
+            $value = $entry['value'];
+            $at = $entry['at'];
             if (\in_array($value, $literal, true)) {
                 return sprintf('Group source value repeats a literal choice at %s: %s', $at, $value);
             }
