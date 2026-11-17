@@ -1,7 +1,9 @@
 // The jobs whose targets load the polyspec_json extension that POLYSPEC_JSON_MODULE names install it before those targets:
 // the validator-php job runs crudui-test-php-source, the runtime-tests job runs crudui-test-runtimes (PHPUnit with the
 // extension of the generator), and the cross-check-console job runs the manifest test of ButtonsConformanceTest, which passes
-// --php-extension "$POLYSPEC_JSON_MODULE". A job that runs such a target without the install gets an empty module path.
+// --php-extension "$POLYSPEC_JSON_MODULE", and the form-comparison job runs the PHP servers, which refuse to load without the
+// extension (`The JSON extension polyspec_json is not loaded`, C19.126). A job that runs such a target without the install gets
+// an empty module path.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +11,7 @@ import { makeDryRun } from './make-dry-run.mts';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 
-for (const job of ['ci-validator-php', 'ci-runtime-tests', 'ci-cross-check-console']) {
+for (const job of ['ci-validator-php', 'ci-runtime-tests', 'ci-cross-check-console', 'ci-form-comparison']) {
   test(`${job} installs the polyspec_json extension before its targets run`, () => {
     const dry = makeDryRun(ROOT, job);
     assert.equal(dry.status, 0, dry.stderr);
