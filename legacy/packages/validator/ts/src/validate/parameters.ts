@@ -95,9 +95,11 @@ function ruleParameterFailure(ruleName: string, param: unknown): ParameterFailur
         ? null
         : invalid('Invalid notEqual parameter: expected a string, number or boolean');
     case 'unique':
-      return typeof param === 'string' || param === true
+      // CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).
+      return typeof param === 'string' || param === true || param === false
+        || (Array.isArray(param) && param.length > 0 && param.every(name => typeof name === 'string' && name !== ''))
         ? null
-        : invalid('Invalid unique parameter: expected true, false or a string');
+        : invalid('Invalid unique parameter: expected true, false, a string or a list of field names');
     case 'conditionTree':
       return isConditionTreeParameter(param) ? null : invalid(CONDITION_TREE_PARAMETER_ERROR);
     case 'reference':
