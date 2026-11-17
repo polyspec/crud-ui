@@ -168,7 +168,11 @@ whitespace, emptiness or text.
 - **CUVR-019** **Whitespace** is exactly the code points with the Unicode `White_Space` property:
   U+0009–U+000D, U+0020, U+0085, U+00A0, U+1680, U+2000–U+200A, U+2028, U+2029,
   U+202F, U+205F and U+3000. U+0000, U+180E, U+200B and U+FEFF are not whitespace.
-  **Trimming** removes leading and trailing whitespace and nothing else.
+  **Trimming** removes leading and trailing whitespace and nothing else. The validator packages give trimming
+  as one function of the Rust core, `trim_text` (`polyspec_crud_ui_validator::boundary::trim_text`), which the
+  bindings give as `trimText` in PHP (`Polyspec\CrudUi\Validator\trimText`) and TypeScript
+  (`@polyspec/crud-ui-validator`), `trim_text` in Python (`polyspec.crud_ui.validator`) and `TrimText` in Go; the
+  group `trim_text` of `contracts/validator-cases.json` holds its cases for every binding.
 
 - **CUVR-020** **Empty values** are a missing value, `null`, a string that is empty after
   trimming, an empty array and an empty object. `0` and `false` are supplied values.

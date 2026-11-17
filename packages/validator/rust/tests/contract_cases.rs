@@ -15,7 +15,7 @@ use binding_core::OrderedMap;
 use binding_core::{Failure, Kinds};
 use libtest_mimic::{Arguments, Failed, Trial};
 use polyspec_crud_ui_validator::boundary::{
-    hidden_paths, validate, validate_detail, validate_detail_with_loader, validate_list,
+    hidden_paths, trim_text, validate, validate_detail, validate_detail_with_loader, validate_list,
     validate_list_with_loader, validate_with_loader, FileLoader, ValidateOptions,
 };
 use polyspec_crud_ui_validator::compose::{ComposeErrorCode, ComposeLoadError};
@@ -302,6 +302,17 @@ fn check(member: &str, case: &Value) -> Result<(), Failed> {
     }
 }
 
+/// A case of `trim_text` gives the text that it names as `result` (CUVR-019).
+fn check_trim(case: &Value) -> Result<(), Failed> {
+    let got = trim_text(&text(argument(case, "text")));
+    let want = text(argument(case, "result"));
+    if got == want {
+        Ok(())
+    } else {
+        Err(Failed::from(format!("gave {got:?}, want {want:?}")))
+    }
+}
+
 fn main() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../../contracts/validator-cases.json");
@@ -316,6 +327,7 @@ fn main() {
         "validate_with_loader",
         "validate_list_with_loader",
         "validate_detail_with_loader",
+        "trim_text",
     ] {
         let cases = file
             .get(member)
@@ -326,6 +338,13 @@ fn main() {
             .to_vec();
         assert!(!cases.is_empty(), "the group {member} holds no case");
         for case in cases {
+            if member == "trim_text" {
+                let id = text(argument(&case, "id"));
+                trials.push(Trial::test(format!("{member}::{id}"), move || {
+                    check_trim(&case)
+                }));
+                continue;
+            }
             let id = text(argument(&case, "id"));
             trials.push(Trial::test(format!("{member}::{id}"), move || {
                 check(member, &case)

@@ -31,7 +31,7 @@ pub mod rules;
 mod unicode;
 pub mod validator;
 pub mod visibility;
-mod whitespace;
+pub(crate) mod whitespace;
 
 pub use errors::{FormInputError, ValidateError, ValidateErrorCode};
 pub use validator::{ValidationError, ValidationResult, Validator};

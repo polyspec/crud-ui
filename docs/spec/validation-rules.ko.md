@@ -141,7 +141,11 @@ display:
 
 - **CUVR-019** **공백**은 Unicode `White_Space` 속성을 가진 코드 포인트뿐입니다. U+0009–U+000D, U+0020,
   U+0085, U+00A0, U+1680, U+2000–U+200A, U+2028, U+2029, U+202F, U+205F, U+3000입니다.
-  U+0000, U+180E, U+200B, U+FEFF는 공백이 아닙니다. **다듬기**는 앞뒤 공백만 제거합니다.
+  U+0000, U+180E, U+200B, U+FEFF는 공백이 아닙니다. **다듬기**는 앞뒤 공백만 제거합니다. validator 패키지는
+  다듬기를 Rust core의 함수 하나 `trim_text`(`polyspec_crud_ui_validator::boundary::trim_text`)로 제공하고, binding은
+  이를 PHP(`Polyspec\CrudUi\Validator\trimText`)와 TypeScript(`@polyspec/crud-ui-validator`)에서 `trimText`,
+  Python(`polyspec.crud_ui.validator`)에서 `trim_text`, Go에서 `TrimText`로 제공합니다.
+  `contracts/validator-cases.json`의 group `trim_text`가 모든 binding의 case를 담습니다.
 
 - **CUVR-020** **빈 값**은 값 없음, `null`, 다듬은 뒤 비는 문자열, 빈 배열, 빈 객체입니다. `0`과 `false`는
   입력된 값입니다. `required`는 빈 값에서 실패합니다. `mincount`와 `maxcount`를 제외한 다른

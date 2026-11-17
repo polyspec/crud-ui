@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- The validator packages give the CUVR-019 trim as `trimText` (PHP, TypeScript), `trim_text` (Python) and `TrimText` (Go) (C19.61). Input: a text with whitespace at its ends. Behaviour before: the trim was internal to the validator. Now: one function of the Rust core removes the White_Space code points at both ends, with the cases of the group `trim_text` of `contracts/validator-cases.json`.
 - The Go binding packages link through `binding go-link` (C19.60). Input: `make test-binding-go-generator`. Behaviour before: the test binary failed to link with `Undefined symbols` of CoreFoundation. Now: the native libraries that rustc prints are linked, and the generated Go tests run.
 - The pin of binding 0.0.17, json 0.0.34 and kit 0.0.117 is planned as one row (C19.59). Input: the plan. Behaviour before: none. Now: the row states the Red of each check before the pin.
 - The cargo of the Makefile recipes follows `.links` (C19.58). Input: `make build-rust`, `make lint-bindings`, the binding builds. Behaviour before: cargo ran as given, so a linked checkout was not built. Now: kit's `link.mjs cargo` patches the linked crates, and runs cargo as given with no `.links`.

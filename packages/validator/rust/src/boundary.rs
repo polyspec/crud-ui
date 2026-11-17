@@ -402,6 +402,13 @@ pub fn validate_detail_with_loader(
     with_spec_files(spec, loader, options, crate::validate_detail)
 }
 
+/// The text without its leading and trailing whitespace, the Unicode `White_Space` code points (CUVR-019), as
+/// `required` and the empty values (CUVR-020) trim it.
+#[must_use]
+pub fn trim_text(text: &str) -> String {
+    crate::validate::whitespace::trim(text).to_owned()
+}
+
 /// [`crate::hidden_paths`] at the boundary.
 pub fn hidden_paths(spec: &JsonValue, data: &JsonValue) -> Result<Vec<String>, ValidateError> {
     let spec = specification(spec)?;

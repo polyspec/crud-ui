@@ -5631,5 +5631,67 @@
         "basepath": "specs"
       }
     }
+  ],
+  "trim_text": [
+    {
+      "id": "removes_space",
+      "note": "U+0020 at both ends is removed.",
+      "text": " a ",
+      "result": "a"
+    },
+    {
+      "id": "removes_next_line",
+      "note": "U+0085 NEXT LINE is White_Space and removed.",
+      "text": "\u0085a\u0085",
+      "result": "a"
+    },
+    {
+      "id": "removes_ideographic_space",
+      "note": "U+3000 IDEOGRAPHIC SPACE is White_Space and removed.",
+      "text": "\u3000a\u3000",
+      "result": "a"
+    },
+    {
+      "id": "keeps_byte_order_mark",
+      "note": "U+FEFF is not White_Space and stays.",
+      "text": "\ufeffa\ufeff",
+      "result": "\ufeffa\ufeff"
+    },
+    {
+      "id": "keeps_file_separator",
+      "note": "U+001C is not White_Space and stays.",
+      "text": "\u001ca\u001c",
+      "result": "\u001ca\u001c"
+    },
+    {
+      "id": "keeps_others_of_cuvr_019",
+      "note": "U+0000, U+180E and U+200B, which CUVR-019 names as no whitespace, stay.",
+      "text": "\u0000\u180e\u200ba\u200b\u180e\u0000",
+      "result": "\u0000\u180e\u200ba\u200b\u180e\u0000"
+    },
+    {
+      "id": "removes_every_white_space",
+      "note": "every White_Space code point of CUVR-019 at both ends is removed.",
+      "text": "\t\n\u000b\f\r \u0085\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000a\u3000\u205f\u202f\u2029\u2028\u200a\u2009\u2008\u2007\u2006\u2005\u2004\u2003\u2002\u2001\u2000\u1680\u00a0\u0085 \r\f\u000b\n\t",
+      "result": "a"
+    },
+    {
+      "id": "keeps_inner_white_space",
+      "note": "trimming removes only the ends.",
+      "text": " a \u3000 b ",
+      "result": "a \u3000 b"
+    },
+    {
+      "id": "whitespace_only_is_empty",
+      "note": "a text of whitespace alone trims to the empty text, the empty value of CUVR-020.",
+      "text": " \u0085\u3000\t",
+      "result": ""
+    },
+    {
+      "id": "empty_stays_empty",
+      "note": "the empty text stays empty.",
+      "text": "",
+      "result": ""
+    }
   ]
 }

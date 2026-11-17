@@ -598,6 +598,28 @@
           "core": "polyspec_crud_ui_validator::boundary::hidden_paths"
         },
         {
+          "id": "validator.trim_text",
+          "name": [
+            "trim",
+            "text"
+          ],
+          "kind": "function",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": [
+                "text"
+              ],
+              "type": "text",
+              "required": true
+            }
+          ],
+          "returns": "text",
+          "raises": [],
+          "wait": "none",
+          "core": "polyspec_crud_ui_validator::boundary::trim_text"
+        },
+        {
           "id": "validator.validate_detail",
           "name": [
             "validate",
@@ -921,6 +943,11 @@
       "member": "validator.hidden_paths",
       "file": "contracts/validator-cases.json",
       "group": "hidden_paths"
+    },
+    {
+      "member": "validator.trim_text",
+      "file": "contracts/validator-cases.json",
+      "group": "trim_text"
     },
     {
       "member": "validator.validate",
