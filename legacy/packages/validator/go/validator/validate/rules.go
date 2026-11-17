@@ -292,9 +292,15 @@ func ruleUnique(value any, ruleParam any, ctx ruleContext) (string, bool) {
 	paramStr, paramIsStr := ruleParam.(string)
 	isFilter := paramIsStr && isConditionExpression(paramStr)
 	errMsg := ctx.msg("unique", "Values must be unique.")
+	// A list of field names holds the field together with the named fields (CUVR-097).
+	together, isList := uniqueNames(ruleParam)
 
 	// Array-level.
 	if isArray(value) || isObject(value) {
+		// A list makes no failure on a field that holds an array, as true makes none.
+		if isList {
+			return "", false
+		}
 		var arr []any
 		var keys []string
 		switch rows := value.(type) {
@@ -372,7 +378,7 @@ func ruleUnique(value any, ruleParam any, ctx ruleContext) (string, bool) {
 	if isFilter {
 		filterParam = paramStr
 	}
-	cacheKey := strings.Join(containerPath, "\x00") + "\x00" + fieldName + "\x00" + filterParam
+	cacheKey := strings.Join(containerPath, "\x00") + "\x00" + fieldName + "\x00" + filterParam + "\x00" + strings.Join(together, "\x00")
 	duplicateSet, cached := ctx.call.uniqueDuplicates[cacheKey]
 	if !cached {
 		type entry struct {
@@ -397,9 +403,28 @@ func ruleUnique(value any, ruleParam any, ctx ruleContext) (string, bool) {
 			if !ok {
 				continue
 			}
-			itemValue, ok := itemMap[fieldName]
-			if !ok || isEmpty(itemValue) {
-				continue
+			var itemValue any
+			if isList {
+				// The row's value is the list of the field and the named fields; an empty member takes no part.
+				members := []any{}
+				for _, name := range append([]string{fieldName}, together...) {
+					member, ok := itemMap[name]
+					if !ok || isEmpty(member) {
+						members = nil
+						break
+					}
+					members = append(members, member)
+				}
+				if members == nil {
+					continue
+				}
+				itemValue = members
+			} else {
+				var ok bool
+				itemValue, ok = itemMap[fieldName]
+				if !ok || isEmpty(itemValue) {
+					continue
+				}
 			}
 			if isFilter {
 				siblingPath := append(append([]string{}, containerPath...), e.key, fieldName)
@@ -792,14 +817,17 @@ func ruleAccept(value any, ruleParam any, ctx ruleContext) (string, bool) {
 		return "", false
 	case []any:
 		for _, file := range v {
-			if m, ok := file.(map[string]any); ok {
-				mime := firstString(m, "type", "mimeType")
-				name := firstString(m, "name", "filename")
-				valid := (mime != "" && matchesMimeType(mime, acceptList)) ||
-					(name != "" && matchesExtension(name, acceptList))
-				if !valid {
-					return ctx.msg("accept", "Please upload files with valid formats."), true
-				}
+			// A member that is no file object fails the rule (CUVR-016).
+			m, ok := file.(map[string]any)
+			if !ok {
+				return failMsg, true
+			}
+			mime := firstString(m, "type", "mimeType")
+			name := firstString(m, "name", "filename")
+			valid := (mime != "" && matchesMimeType(mime, acceptList)) ||
+				(name != "" && matchesExtension(name, acceptList))
+			if !valid {
+				return ctx.msg("accept", "Please upload files with valid formats."), true
 			}
 		}
 		return "", false
@@ -813,7 +841,8 @@ func ruleAccept(value any, ruleParam any, ctx ruleContext) (string, bool) {
 		}
 		return "", false
 	default:
-		return "", false
+		// A value that is no string, list or object names no file (CUVR-016).
+		return failMsg, true
 	}
 }
 
@@ -858,4 +887,22 @@ func ruleStep(value any, ruleParam any, ctx ruleContext) (string, bool) {
 		return withParameters(ctx.msg("step", "Please enter a value that is a multiple of {0}."), step), true
 	}
 	return "", false
+}
+
+// uniqueNames returns the field names of a unique list parameter (CUVR-097) and whether the parameter is such a list:
+// a non-empty list of non-empty strings.
+func uniqueNames(param any) ([]string, bool) {
+	members, ok := param.([]any)
+	if !ok || len(members) == 0 {
+		return nil, false
+	}
+	names := make([]string, 0, len(members))
+	for _, member := range members {
+		name, isString := member.(string)
+		if !isString || name == "" {
+			return nil, false
+		}
+		names = append(names, name)
+	}
+	return names, true
 }

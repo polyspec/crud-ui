@@ -167,7 +167,13 @@ func ValidateJSON(specJSON []byte, dataJSON []byte, filesJSON map[string][]byte,
 	}
 	spec, ok := specAny.(*compose.OMap)
 	if !ok {
-		return ValidationResult{}, fmt.Errorf("validate: spec is not an object")
+		return ValidationResult{}, &FormInputError{Message: "Form specification must be an object"}
+	}
+	// A root that is no composition is a group with properties (CUSC-001).
+	if !spec.Has("$ref") && !spec.Has("$patch") {
+		if properties, _ := spec.Get("properties"); !isOMap(properties) {
+			return ValidationResult{}, &FormInputError{Message: "A form spec must be a group with properties"}
+		}
 	}
 
 	var data any = map[string]any{}
@@ -185,12 +191,16 @@ func ValidateJSON(specJSON []byte, dataJSON []byte, filesJSON map[string][]byte,
 		if err != nil {
 			return ValidationResult{}, fmt.Errorf("validate: file %q decode: %w", k, err)
 		}
-		doc, ok := docAny.(*compose.OMap)
-		if !ok {
-			return ValidationResult{}, fmt.Errorf("validate: file %q is not an object", k)
-		}
+		// A file that is no object is kept as nil: its reference fails the load (CUSC-092).
+		doc, _ := docAny.(*compose.OMap)
 		files[k] = doc
 	}
 
 	return Validate(spec, data, Options{Files: files, Basepath: basepath})
+}
+
+// isOMap reports whether a decoded value is an object in specification member order.
+func isOMap(value any) bool {
+	_, ok := value.(*compose.OMap)
+	return ok
 }

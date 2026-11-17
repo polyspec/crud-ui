@@ -54,7 +54,7 @@ func (v *Validator) checkParameter(rule string, param any) *parameterError {
 		return checkNumericParameter(rule, param)
 	case "in":
 		return checkIn(param)
-	case "equalTo", "containedIn", "typeFrom", "minFrom", "maxFrom", "enddate", "notEqual", "unique", "reference":
+	case "equalTo", "containedIn", "typeFrom", "minFrom", "maxFrom", "enddate", "notEqual", "unique", "reference", "accept":
 		return checkReferenceParameter(rule, param)
 	case "conditionTree":
 		return checkConditionTreeParameter(param)
@@ -94,8 +94,13 @@ func checkReferenceParameter(rule string, param any) *parameterError {
 			return ruleParameterError("Invalid notEqual parameter: expected a string, number or boolean")
 		}
 	case "unique":
-		if !isString && !isBool {
-			return ruleParameterError("Invalid unique parameter: expected true, false or a string")
+		// CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).
+		if !isString && !isBool && !isNameList(param) {
+			return ruleParameterError("Invalid unique parameter: expected true, false, a string or a list of field names")
+		}
+	case "accept":
+		if !isString && !isStringList(param) {
+			return ruleParameterError("Invalid accept parameter: expected a string or a list of strings")
 		}
 	case "reference":
 		if !isString {
@@ -124,6 +129,23 @@ func (v *Validator) checkDeclarations(properties *compose.OMap, declaration []st
 		// The shape of multiple is checked before the field's group source and rules (schema.md, CUSC-081).
 		if multiple, declared := field.Get("multiple"); declared && !isMultipleShape(multiple) {
 			return ruleParameterError("Invalid multiple at " + pathToString(path) + ": expected a boolean, only or an object").loadError(path)
+		}
+		// The shapes of validate and messages are checked before the rules they hold (CUVR-056, CURP-018).
+		if rules, declared := field.Get("validate"); declared && rules != nil && !isBoolValue(rules) {
+			if _, isObject := rules.(*compose.OMap); !isObject {
+				return ruleParameterError("Invalid validate at " + pathToString(path) + ": expected an object").loadError(path)
+			}
+		}
+		if messages, declared := field.Get("messages"); declared {
+			object, isObject := messages.(*compose.OMap)
+			if !isObject {
+				return ruleParameterError("Invalid messages at " + pathToString(path) + ": expected an object").loadError(path)
+			}
+			for _, key := range object.Keys() {
+				if value, _ := object.Get(key); !isStringValue(value) {
+					return ruleParameterError("Invalid messages." + key + " at " + pathToString(path) + ": expected a string").loadError(path)
+				}
+			}
 		}
 		// A group source is checked before the field's rules (validation-rules.md, Parameter errors).
 		if message := GroupSourceFailure(field, pathToString(path), v.properties); message != "" {
@@ -219,4 +241,44 @@ func isMultipleShape(multiple any) bool {
 		return value == "only"
 	}
 	return false
+}
+
+// isStringList reports whether param is a list whose members are all strings.
+func isStringList(param any) bool {
+	members, ok := param.([]any)
+	if !ok {
+		return false
+	}
+	for _, member := range members {
+		if _, isString := member.(string); !isString {
+			return false
+		}
+	}
+	return true
+}
+
+// isNameList reports whether param is a non-empty list of non-empty strings: the field names of a unique list (CUVR-097).
+func isNameList(param any) bool {
+	members, ok := param.([]any)
+	if !ok || len(members) == 0 {
+		return false
+	}
+	for _, member := range members {
+		if name, isString := member.(string); !isString || name == "" {
+			return false
+		}
+	}
+	return true
+}
+
+// isBoolValue reports whether a decoded JSON value is a boolean.
+func isBoolValue(value any) bool {
+	_, ok := value.(bool)
+	return ok
+}
+
+// isStringValue reports whether a decoded JSON value is a string.
+func isStringValue(value any) bool {
+	_, ok := value.(string)
+	return ok
 }

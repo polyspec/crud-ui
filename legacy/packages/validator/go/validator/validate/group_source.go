@@ -189,9 +189,37 @@ func sourceRows(source *compose.OMap, data any) (groupRows, bool) {
 }
 
 // groupSourceRepeat returns the input failure message of the first row of a checked group source, in data order, whose
-// choice value repeats a literal choice (CUSC-089) or that of an earlier row (CUVR-087), or "" when no row repeats one.
+// choice value repeats a literal choice (CUSC-089), or "" when none does.
 func groupSourceRepeat(source *compose.OMap, data any) string {
-	return firstRepeat(source, data, true)
+	return firstRepeat(source, data, false)
+}
+
+// repeatedRow is a row whose choice value repeats the value of an earlier row: the data path of its value field and
+// the canonical text of the value (CUVR-087, CUVR-096).
+type repeatedRow struct {
+	at    string
+	value string
+}
+
+// groupSourceRepeats returns the rows whose choice value repeats the value of an earlier row, in data order.
+func groupSourceRepeats(source *compose.OMap, data any) []repeatedRow {
+	group, ok := sourceRows(source, data)
+	if !ok {
+		return nil
+	}
+	var repeats []repeatedRow
+	seen := map[string]bool{}
+	for index, row := range group.values {
+		value, ok := choiceText(objectMemberValue(row, group.valueName))
+		if !ok {
+			continue
+		}
+		if seen[value] {
+			repeats = append(repeats, repeatedRow{at: group.groupPath + "." + group.keys[index] + "." + group.valueName, value: value})
+		}
+		seen[value] = true
+	}
+	return repeats
 }
 
 // firstRepeat returns the message of the first row of a checked group source, in data order, whose choice value is a

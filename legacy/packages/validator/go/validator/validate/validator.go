@@ -15,6 +15,8 @@ package validate
 // kept for conditions and references elsewhere (validation-rules.md, Evaluation).
 
 import (
+	"strings"
+
 	"github.com/polyspec/crudui/packages/validator/go/validator/compose"
 	"github.com/polyspec/crudui/packages/validator/go/validator/expr"
 )
@@ -88,7 +90,25 @@ func (v *Validator) Validate(data any) (ValidationResult, error) {
 	if err := v.collectHidden(v.properties, root, nil, nil, root, &hidden); err != nil {
 		return ValidationResult{}, err
 	}
+	errors = onePerPath(errors)
 	return ValidationResult{Valid: len(errors) == 0, Errors: errors, Hidden: hidden}, nil
+}
+
+// onePerPath keeps the first unique error of each path: a repeated group value is reported by its source and by the
+// rule of its value field, and both name the same path.
+func onePerPath(errors []ValidationError) []ValidationError {
+	seen := map[string]bool{}
+	var kept []ValidationError
+	for _, e := range errors {
+		if e.Rule == "unique" {
+			if seen[e.Path] {
+				continue
+			}
+			seen[e.Path] = true
+		}
+		kept = append(kept, e)
+	}
+	return kept
 }
 
 // collectHidden appends the data paths of the fields whose design.show resolves
@@ -382,9 +402,20 @@ func (v *Validator) runGroupSource(run fieldRun, value any, errors *[]Validation
 	if !ok {
 		return false, nil
 	}
-	// A repeated value among the source rows is data that the choices cannot express (CUVR-087).
+	// A literal choice repeated among the source rows is an input failure (CUVR-087).
 	if repeat := groupSourceRepeat(source, run.allData); repeat != "" {
 		return false, &FormInputError{Message: repeat}
+	}
+	// A value that repeats an earlier row is a field error with rule unique at its data path (CUVR-096).
+	message := "Values must be unique."
+	if override, ok := fieldMessages(run.field)["unique"]; ok {
+		message = override
+	}
+	for _, found := range groupSourceRepeats(source, run.allData) {
+		parts := strings.Split(found.at, ".")
+		*errors = append(*errors, ValidationError{
+			Path: found.at, Field: parts[len(parts)-1], Rule: "unique", Message: message, Value: found.value,
+		})
 	}
 	members, err := groupSourceMembers(source, run.allData)
 	if err != nil {

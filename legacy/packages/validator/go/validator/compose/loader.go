@@ -64,5 +64,9 @@ func (l *MemoryLoader) Load(key string) (*OMap, error) {
 	if !ok {
 		return nil, newLoadError(RefFileNotFound, "$ref file not found: "+key, key)
 	}
+	// A document that is no object fails the load, never as a missing file (CUSC-092).
+	if doc == nil {
+		return nil, newLoadError(RefFormatError, "$ref file is not an object: "+key, key)
+	}
 	return orderedOMap(doc), nil
 }
