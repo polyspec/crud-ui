@@ -131,8 +131,12 @@ export const uniqueRule: RuleDefinition = {
       typeof ruleParam === 'string' && isConditionExpression(ruleParam);
 
     const errorMessage = messages?.unique ?? 'Values must be unique.';
+    // A list of field names holds the field together with the named fields (CUVR-097).
+    const together: string[] | null = Array.isArray(ruleParam) ? (ruleParam as string[]) : null;
 
     if (Array.isArray(value) || (value !== null && typeof value === 'object')) {
+      // A list makes no failure on a field that holds an array, as true makes none.
+      if (together) return null;
       // Array-level validation: the field value is the array itself
       const entries: [string, unknown][] = Object.entries(value);
       const elements = entries.map(([, element]) => element);
@@ -207,7 +211,7 @@ export const uniqueRule: RuleDefinition = {
 
     // The rows of this collection field are walked once per validation: the filter is
     // evaluated once per row and each row whose value an earlier row holds is recorded.
-    const cacheKey = [...containerPath, fieldName, isFilterCondition ? ruleParam : ''].join('\0');
+    const cacheKey = [...containerPath, fieldName, isFilterCondition ? ruleParam : '', together ? JSON.stringify(together) : ''].join('\0');
     let duplicates = run.uniqueDuplicates.get(cacheKey);
     if (!duplicates) {
       duplicates = new Set();
@@ -221,9 +225,19 @@ export const uniqueRule: RuleDefinition = {
           continue;
         }
         // A property read, as `item[fieldName]` reads it, of a row that is an object or a list.
-        const itemValue: unknown = Reflect.get(item, fieldName);
-        if (isEmpty(itemValue)) {
-          continue;
+        let itemValue: unknown;
+        if (together) {
+          // The row's value is the list of the field and the named fields; an empty member takes no part.
+          const members = [fieldName, ...together].map(name => Reflect.get(item, name));
+          if (members.some(member => isEmpty(member))) {
+            continue;
+          }
+          itemValue = members;
+        } else {
+          itemValue = Reflect.get(item, fieldName);
+          if (isEmpty(itemValue)) {
+            continue;
+          }
         }
         if (
           isFilterCondition &&
