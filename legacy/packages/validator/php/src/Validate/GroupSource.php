@@ -56,6 +56,19 @@ final class GroupSource
         if (!in_array($field['type'] ?? null, self::CHOICE_TYPES, true) || self::hasLang($field)) {
             return sprintf('Invalid items.from at %s: expected a choice field without lang', $path);
         }
+        // A source of selected values names a root selection field with literal items (CUSC-097).
+        if (self::selectionField($source['from'], $root) !== null) {
+            if (array_key_exists('label', $source)) {
+                return sprintf('Invalid items.label at %s: a source of selected values takes the labels of its field', $path);
+            }
+            if (array_key_exists('choices', $source) && self::literalChoices($source['choices']) === null) {
+                return sprintf(
+                    'Invalid items.choices at %s: expected value and label pairs with distinct string or number values',
+                    $path
+                );
+            }
+            return null;
+        }
         $group = self::sourceGroup($source['from'], $root);
         if ($group === null) {
             return sprintf(
@@ -139,8 +152,12 @@ final class GroupSource
      * @param array<array-key, mixed> $source the group source `{ from, label? }`
      * @return list<array{0: string, 1: mixed}>
      */
-    public static function choices(array $source, mixed $data): array
+    public static function choices(array $source, mixed $data, array $root = []): array
     {
+        $selected = self::selectionField($source['from'] ?? null, $root);
+        if ($selected !== null) {
+            return self::selectionChoices($source, $selected, $data);
+        }
         $literalRepeat = self::firstRepeat($source, $data, false);
         if ($literalRepeat !== null) {
             throw new FormInputError($literalRepeat);
@@ -175,6 +192,91 @@ final class GroupSource
     public static function repeat(array $source, mixed $data): ?string
     {
         return self::firstRepeat($source, $data, false);
+    }
+
+    /** Whether a group source names a source of selected values under the root properties (CUSC-097). */
+    public static function isSelectionSource(mixed $items, array $root): bool
+    {
+        return self::isSource($items) && self::selectionField(((array) $items)['from'] ?? null, $root) !== null;
+    }
+
+    /**
+     * The root field that a `from` with no `.` names when it is a source of selected values (CUSC-097): a field of
+     * a selection type whose items are literal, which is no group source; null otherwise.
+     *
+     * @param array<array-key, mixed> $root
+     * @return array<array-key, mixed>|null
+     */
+    private static function selectionField(mixed $from, array $root): ?array
+    {
+        if (!\is_string($from) || str_contains($from, '.') || !array_key_exists($from, $root)) {
+            return null;
+        }
+        $field = $root[$from];
+        if (!\is_array($field) && !$field instanceof \stdClass) {
+            return null;
+        }
+        $field = (array) $field;
+        if (!in_array($field['type'] ?? null, ['multichoice', 'checkboxes', 'checkcontainer'], true)) {
+            return null;
+        }
+        $items = $field['items'] ?? null;
+        if (self::isSource($items) || (!\is_array($items) && !$items instanceof \stdClass)) {
+            return null;
+        }
+        return $field;
+    }
+
+    /**
+     * The choices of a source of selected values (CUSC-097): its literal choices in written order, then each item of
+     * the source field in the order of its items that the field selects in the data, with the label of that item.
+     *
+     * @param array<array-key, mixed> $source
+     * @param array<array-key, mixed> $field the selection field
+     * @return list<array{0: string, 1: mixed}>
+     */
+    private static function selectionChoices(array $source, array $field, mixed $data): array
+    {
+        $choices = self::sourceLiteral($source);
+        $seen = array_column($choices, 0);
+        $from = (string) $source['from'];
+        $members = \is_array($data) ? ($data[$from] ?? null) : null;
+        if (!\is_array($members) || !array_is_list($members)) {
+            return $choices;
+        }
+        $selected = [];
+        foreach ($members as $member) {
+            $text = self::choiceText($member);
+            if ($text !== null) {
+                $selected[$text] = true;
+            }
+        }
+        $items = $field['items'];
+        $entries = [];
+        if (\is_array($items) && array_is_list($items)) {
+            foreach ($items as $item) {
+                $item = (array) $item;
+                $text = self::choiceText($item['value'] ?? null);
+                if ($text !== null) {
+                    $entries[] = [$text, $item['label'] ?? $text];
+                }
+            }
+        } else {
+            foreach ((array) $items as $key => $label) {
+                $text = self::choiceText((string) $key);
+                if ($text !== null) {
+                    $entries[] = [$text, $label];
+                }
+            }
+        }
+        foreach ($entries as [$text, $label]) {
+            if (!isset($selected[$text]) || \in_array($text, $seen, true)) {
+                continue;
+            }
+            $seen[] = $text;
+            $choices[] = [$text, $label];
+        }
+        return $choices;
     }
 
     /**

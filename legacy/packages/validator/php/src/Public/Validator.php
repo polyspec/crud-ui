@@ -30,12 +30,12 @@ final class Validator
      */
     public static function validate(mixed $spec, array|stdClass $data, array $options = []): stdClass
     {
+        // Input text is checked first: the specification and files, the data, then the options.
+        self::checkText($spec, $options, [['data', $data]]);
         // A specification is an object before anything reads it (CUSC-001).
         if (!$spec instanceof stdClass && !(\is_array($spec) && !array_is_list($spec) && $spec !== [])) {
             throw new FormInputError('Form specification must be an object');
         }
-        // Input text is checked first: the specification and files, the data, then the options.
-        self::checkText($spec, $options, [['data', $data]]);
         if (is_array($data) && $data !== [] && array_is_list($data)) {
             throw new FormInputError('Form data must be an object');
         }
@@ -163,7 +163,7 @@ final class Validator
      *
      * @param list<array{0: string, 1: mixed}> $inputs
      */
-    private static function checkText(array|stdClass $spec, array $options, array $inputs): void
+    private static function checkText(mixed $spec, array $options, array $inputs): void
     {
         $failure = Text::specificationFailure($spec, $options['files'] ?? null)
             ?? Text::inputFailure([...$inputs, ...Text::options($options, ['basepath'])]);

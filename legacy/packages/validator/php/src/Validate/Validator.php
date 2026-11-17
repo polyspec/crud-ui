@@ -611,13 +611,15 @@ final class Validator
         if (!GroupSource::isSource($field['items'] ?? null)) {
             return false;
         }
+        // A source of selected values has no rows to repeat (CUSC-097).
+        $selection = GroupSource::isSelectionSource($field['items'], $this->properties);
         // A literal choice repeated among the source rows is an input failure (CUVR-087).
-        $repeat = GroupSource::repeat((array) $field['items'], $allData);
+        $repeat = $selection ? null : GroupSource::repeat((array) $field['items'], $allData);
         if ($repeat !== null) {
             throw new FormInputError($repeat);
         }
         // A value that repeats an earlier row is a field error with rule `unique` at its data path (CUVR-096).
-        foreach (GroupSource::repeats((array) $field['items'], $allData) as $found) {
+        foreach ($selection ? [] : GroupSource::repeats((array) $field['items'], $allData) as $found) {
             if (!isset($errors[$found['at']])) {
                 $parts = explode('.', $found['at']);
                 $errors[$found['at']] = [
@@ -631,7 +633,7 @@ final class Validator
         }
         $members = array_map(
             static fn (array $choice): string => $choice[0],
-            GroupSource::choices((array) $field['items'], $allData)
+            GroupSource::choices((array) $field['items'], $allData, $this->properties)
         );
         return $this->applyRules(
             ['in' => $members],
