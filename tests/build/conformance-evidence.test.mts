@@ -19,6 +19,16 @@ const runSchema: JTDSchemaType<RunRecord> = {
   optionalProperties: { phpExtensions: { elements: { type: 'string' } } },
 };
 
+/** A property of a parsed JSON value, or undefined when the value is not an object (typed unknown, so no lint rule sees an any). */
+function field(value: unknown, key: string): unknown {
+  return typeof value === 'object' && value !== null ? Reflect.get(value, key) : undefined;
+}
+/** The entry of the registry for a fixture path, typed unknown. */
+function fixtureEntry(text: string, fixturePath: string): unknown {
+  const parsed: unknown = JSON.parse(text);
+  const fixtures = field(parsed, 'fixtures');
+  return Array.isArray(fixtures) ? fixtures.find(item => field(item, 'path') === fixturePath) : undefined;
+}
 const ROOT = path.resolve(import.meta.dirname, '../..');
 
 const fixture = 'tests/fixtures/list-render/cases.json';
@@ -332,13 +342,13 @@ test('a legacy runtime keeps the path of a fixture that is declared under legacy
 // C19.145: the rust outline suite runs compile_form and bind_form for every case of form-outline, so its evidence for those
 // features is real; the registry must name rust for them, or the checker reports the record as not applicable (branch run 44192640029).
 test('form-outline declares rust for compileForm and bindForm, which the rust suite runs (C19.145)', async () => {
-  const registry = JSON.parse(await readFile(path.join(import.meta.dirname, '../../contracts/features.json'), 'utf8'));
-  const entry = registry.fixtures.find((item: { path: string }) => item.path === 'tests/fixtures/form-outline/cases.json');
+  const entry = fixtureEntry(await readFile(path.join(import.meta.dirname, '../../contracts/features.json'), 'utf8'), 'tests/fixtures/form-outline/cases.json');
   assert.ok(entry, 'the registry has no form-outline entry');
   const source = await readFile(path.join(import.meta.dirname, '../../packages/generator/rust/tests/form_outline.rs'), 'utf8');
   for (const feature of ['compileForm', 'bindForm']) {
     assert.match(source, new RegExp(`compile_form\\(|bind_form\\(`));
-    assert.ok(entry.featureRuntimes?.[feature]?.includes('rust'), `form-outline ${feature} does not declare rust`);
+    const runtimes = field(field(entry, 'featureRuntimes'), feature);
+    assert.ok(Array.isArray(runtimes) && runtimes.includes('rust'), `form-outline ${feature} does not declare rust`);
   }
 });
 
@@ -360,7 +370,11 @@ test('the rust list-render suite records only the cases group (C19.146)', async 
 test('the legacy copy of form-choices follows the shared fixture (C19.149)', async () => {
   const shared = await readFile(path.join(ROOT, 'tests/fixtures/form-choices/cases.json'), 'utf8');
   const legacy = await readFile(path.join(ROOT, 'legacy/tests/fixtures/form-choices/cases.json'), 'utf8');
-  assert.equal(JSON.parse(legacy).map((c: { name: string }) => c.name).join('|'), JSON.parse(shared).map((c: { name: string }) => c.name).join('|'));
+  const names = (text: string): unknown => {
+    const parsed: unknown = JSON.parse(text);
+    return Array.isArray(parsed) ? parsed.map(item => String(field(item, 'name'))).join('|') : undefined;
+  };
+  assert.equal(names(legacy), names(shared));
 });
 
 // C19.144: the Rust recorder appends each record to a file that the threads of one test binary share. writeln! writes the line in
@@ -377,9 +391,8 @@ test('the Rust evidence recorder writes each record as one whole line under a lo
 // (page or total that is a string, a fraction, a negative or out of the safe range), which the host bindings refuse at the
 // boundary. The four dynamic runtimes record them (javascript, php, python, go). The registry declares the exclusion per case.
 test('the six boundary refusals of list-render are not applicable to rust (C19.148)', async () => {
-  const registry = JSON.parse(await readFile(path.join(ROOT, 'contracts/features.json'), 'utf8'));
-  const entry = registry.fixtures.find((item: { path: string }) => item.path === 'tests/fixtures/list-render/cases.json');
-  assert.deepEqual(entry.notApplicable?.rust, [
+  const entry = fixtureEntry(await readFile(path.join(ROOT, 'contracts/features.json'), 'utf8'), 'tests/fixtures/list-render/cases.json');
+  assert.deepEqual(field(field(entry, 'notApplicable'), 'rust'), [
     'reject-string-page', 'reject-fractional-page', 'reject-unsafe-page', 'reject-negative-total', 'reject-fractional-total', 'reject-boolean-total',
   ]);
 });

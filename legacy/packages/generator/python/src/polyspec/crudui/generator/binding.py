@@ -79,7 +79,13 @@ def bind(
     )
     # The root fields by name: a source of selected values reads the field it names (CUSC-097, C19.150).
     properties = {entry["name"]: entry["spec"] for entry in template["fields"]}
-    state = {"rowSegments": [], "rowNumbers": [], "stickyDepth": 0, "properties": properties, **options}
+    state = {
+        "rowSegments": [],
+        "rowNumbers": [],
+        "stickyDepth": 0,
+        "properties": properties,
+        **options,
+    }
     return [field(entry, entry["name"], data, state) for entry in template["fields"]]
 
 

@@ -168,8 +168,14 @@ fn main() {
             Trial::test(
                 format!("list_render_plain_reproduce_the_normalized_layout_or_the_failure::{name}"),
                 move || {
-                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| check_case(&case)))
-                        .map_err(|_| libtest_mimic::Failed::from(format!("case {name} failed")))
+                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| check_case(&case))).map_err(|error| {
+                        let text = error
+                            .downcast_ref::<String>()
+                            .cloned()
+                            .or_else(|| error.downcast_ref::<&str>().map(|text| text.to_string()))
+                            .unwrap_or_else(|| "a panic without a message".to_string());
+                        libtest_mimic::Failed::from(format!("case {name} failed: {text}"))
+                    })
                 },
             )
         });

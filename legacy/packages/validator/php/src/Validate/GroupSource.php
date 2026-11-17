@@ -243,7 +243,8 @@ final class GroupSource
         $choices = self::sourceLiteral($source);
         $seen = array_column($choices, 0);
         $from = (string) $source['from'];
-        // The data of a generator is an object, which the group rows already read as one; an array reads by key (C19.150).
+        // The data of a generator is an object, which the group rows already read as one;
+        // an array reads by key (C19.150).
         $members = match (true) {
             $data instanceof \stdClass => $data->{$from} ?? null,
             \is_array($data) => $data[$from] ?? null,
