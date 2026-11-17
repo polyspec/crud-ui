@@ -310,5 +310,53 @@ static int first_repeat(const ps_value *items, const ps_value *data, bool rows_t
 
 int ps_group_source_repeat(const ps_value *items, const ps_value *data, ps_chars *message)
 {
-    return first_repeat(items, data, true, message);
+    return first_repeat(items, data, false, message);
+}
+
+/*
+ * The rows whose choice value repeats the value of an earlier row, in data order, as objects with the data path of the
+ * value (at), the value field name (field) and the canonical text (value) (CUVR-096). An array, empty when none
+ * repeats; NULL on allocation failure.
+ */
+ps_value *ps_group_source_repeats(const ps_value *items, const ps_value *data)
+{
+    ps_value *found = ps_array_value();
+    const ps_value *from = ps_get(items, "from");
+    ps_text *parts = NULL;
+    size_t count = 0;
+    if (!found || !from || from->kind != PS_STRING) return found;
+    if (!split_dots(ps_string(from), &parts, &count)) { ps_value_free(found); return NULL; }
+    const ps_value *rows = data;
+    for (size_t i = 0; rows && i + 2 < count; ++i)
+        rows = rows->kind == PS_OBJECT ? ps_get_text(rows, parts[i]) : NULL;
+    if (count < 3 || !rows || rows->kind != PS_OBJECT) { free(parts); return found; }
+    ps_text value_name = parts[count - 1];
+    free(parts);
+    ps_text group_path = ps_text_slice(ps_string(from), 0, ps_string(from).length - value_name.length - 3);
+    ps_chars *seen = malloc((ps_size(rows) + 1) * sizeof(*seen));
+    if (!seen) { ps_value_free(found); return NULL; }
+    size_t seen_count = 0;
+    bool ok = true;
+    for (size_t r = 0; ok && r < ps_size(rows); ++r) {
+        const ps_value *row = ps_at(rows, r);
+        if (!row || row->kind != PS_OBJECT) continue;
+        ps_chars value = {NULL, 0};
+        int state = choice_text(ps_get_text(row, value_name), &value);
+        if (state < 0) { ok = false; break; }
+        if (!state) continue;
+        bool repeated = false;
+        for (size_t i = 0; !repeated && i < seen_count; ++i) repeated = ps_text_equal(ps_view(seen[i]), ps_view(value));
+        if (!repeated) { seen[seen_count++] = value; continue; }
+        ps_chars at = PS_CONCAT(group_path, PS_TEXT("."), ps_key(rows, r), PS_TEXT("."), value_name);
+        ps_value *entry = ps_object_value();
+        ok = at.bytes && entry && ps_set(entry, "at", ps_text_value(ps_view(at))) &&
+             ps_set(entry, "field", ps_text_value(value_name)) &&
+             ps_set(entry, "value", ps_text_value(ps_view(value))) && ps_append(found, entry);
+        if (!ok) ps_value_free(entry);
+        free(at.bytes); free(value.bytes);
+    }
+    for (size_t i = 0; i < seen_count; ++i) free(seen[i].bytes);
+    free(seen);
+    if (!ok) { ps_value_free(found); return NULL; }
+    return found;
 }

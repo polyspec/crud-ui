@@ -28,6 +28,17 @@ bool ps_registered_rule(ps_text rule)
     return false;
 }
 
+/* A non-empty list of non-empty strings: the field names of a unique list (CUVR-097). */
+static bool field_name_list(const ps_value *parameter)
+{
+    if (!parameter || parameter->kind != PS_ARRAY || !ps_size(parameter)) return false;
+    for (size_t i = 0; i < ps_size(parameter); ++i) {
+        const ps_value *name = ps_at(parameter, i);
+        if (!name || name->kind != PS_STRING || !ps_string(name).length) return false;
+    }
+    return true;
+}
+
 static bool pattern_rule(ps_text rule)
 {
     return ps_text_is(rule, "pattern") || ps_text_is(rule, "match");
@@ -35,7 +46,7 @@ static bool pattern_rule(ps_text rule)
 
 /*
  * The problem of a parameter of a rule that references a field: equalTo, containedIn, typeFrom, minFrom, maxFrom and enddate take a field
- * reference string, notEqual a string, number or boolean, unique true or a string, and reference a
+ * reference string, notEqual a string, number or boolean, unique true, false, a string or a list of field names, and reference a
  * string.
  */
 static bool reference_parameter(ps_text rule, const ps_value *parameter, ps_parameter_problem *problem)
@@ -59,9 +70,16 @@ static bool reference_parameter(ps_text rule, const ps_value *parameter, ps_para
         if (kind != PS_STRING && kind != PS_BOOL && !number)
             message = "Invalid notEqual parameter: expected a string, number or boolean";
     } else if (ps_text_is(rule, "unique")) {
-        if (kind != PS_STRING && kind != PS_BOOL) message = "Invalid unique parameter: expected true, false or a string";
+        if (kind != PS_STRING && kind != PS_BOOL && !field_name_list(parameter))
+            message = "Invalid unique parameter: expected true, false, a string or a list of field names";
     } else if (ps_text_is(rule, "reference")) {
         if (kind != PS_STRING) message = REFERENCE_MESSAGE;
+    } else if (ps_text_is(rule, "accept")) {
+        /* A string or a list of strings (CUVR-016). */
+        bool strings = kind == PS_ARRAY;
+        for (size_t i = 0; strings && kind == PS_ARRAY && i < ps_size(parameter); ++i)
+            strings = ps_at(parameter, i)->kind == PS_STRING;
+        if (kind != PS_STRING && !strings) message = "Invalid accept parameter: expected a string or a list of strings";
     } else {
         return false;
     }
@@ -251,6 +269,32 @@ static ps_value *check_group_source(const ps_value *field, const ps_text *path, 
 }
 
 /*
+ * The load failure of a field's validate or messages slot of the wrong shape, or of a messages member that is no string
+ * (CURP-018, CUVR-056), or NULL: INVALID_RULE_PARAMETER at the declaration path. An allocation failure is an internal error.
+ */
+static ps_value *check_slots(const ps_value *field, const ps_text *path, size_t length)
+{
+    const ps_value *rules = ps_get(field, "validate");
+    const ps_value *messages = ps_get(field, "messages");
+    ps_chars location = ps_dotted_path(path, length, (ps_text){NULL, 0});
+    ps_chars message = {NULL, 0};
+    ps_value *error = NULL;
+    if (!location.bytes) return internal_error();
+    if (rules && rules->kind != PS_NULL && rules->kind != PS_BOOL && rules->kind != PS_OBJECT)
+        message = PS_CONCAT(PS_TEXT("Invalid validate at "), ps_view(location), PS_TEXT(": expected an object"));
+    else if (messages && messages->kind != PS_OBJECT)
+        message = PS_CONCAT(PS_TEXT("Invalid messages at "), ps_view(location), PS_TEXT(": expected an object"));
+    for (size_t i = 0; !message.bytes && messages && i < ps_size(messages); ++i)
+        if (ps_at(messages, i)->kind != PS_STRING)
+            message = PS_CONCAT(PS_TEXT("Invalid messages."), ps_key(messages, i), PS_TEXT(" at "), ps_view(location),
+                                PS_TEXT(": expected a string"));
+    if (message.bytes) error = declaration_error(path, length, ps_view(location), ps_view(message));
+    free(message.bytes);
+    free(location.bytes);
+    return error ? error : (message.bytes ? internal_error() : NULL);
+}
+
+/*
  * The load failure of a field whose multiple is present and is not a boolean, only or an object (schema.md, CUSC-081), or
  * NULL: INVALID_RULE_PARAMETER at the declaration path. An allocation failure is an internal error.
  */
@@ -293,6 +337,8 @@ static ps_value *check_field(const ps_value *field, const ps_text *path, size_t 
     if (multiple_error) return multiple_error;
     ps_value *source_error = check_group_source(field, path, length, root);
     if (source_error) return source_error;
+    ps_value *slot_error = check_slots(field, path, length);
+    if (slot_error) return slot_error;
     const ps_value *rules = ps_get(field, "validate");
     for (size_t i = 0; rules && rules->kind == PS_OBJECT && i < ps_size(rules); ++i) {
         ps_text rule = ps_key(rules, i);

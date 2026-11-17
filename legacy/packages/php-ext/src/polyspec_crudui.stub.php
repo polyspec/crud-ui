@@ -32,7 +32,7 @@ namespace Polyspec\Crudui {
         public static function createRowKey(): string {}
     }
     final class Validator {
-        public static function validate(array|\stdClass $spec, array|\stdClass $data, array $options = []): \stdClass {}
+        public static function validate(mixed $spec, array|\stdClass $data, array $options = []): \stdClass {}
         public static function validateList(array|\stdClass $spec, array $options = []): \stdClass {}
         public static function validateDetail(array|\stdClass $spec, array $options = []): \stdClass {}
     }

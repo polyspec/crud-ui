@@ -211,19 +211,41 @@ static bool accept_one(ps_text value, ps_text item)
     return same_letters(value, item);
 }
 
-static bool accept_value(const ps_value *value, const ps_value *parameter)
+/* Whether value is accepted by one comma-separated accept list. */
+static bool accept_list(ps_text value, ps_text list)
 {
-    if (!parameter || parameter->kind != PS_STRING || !value || value->kind != PS_STRING) return true;
-    ps_text list = ps_string(parameter);
     size_t start = 0;
     for (;;) {
         size_t comma = ps_text_find_byte(list, ',', start);
         size_t end = comma == SIZE_MAX ? list.length : comma;
-        if (accept_one(ps_string(value), ps_text_slice(list, start, end))) return true;
+        if (accept_one(value, ps_text_slice(list, start, end))) return true;
         if (comma == SIZE_MAX) break;
         start = comma + 1;
     }
     return false;
+}
+
+/*
+ * The accept parameter is a string or a list of strings (CUVR-016). A string value is a file name or a MIME type; a list
+ * value fails on a member that is no file object, and a value that is no string, list or object fails (CUVR-016).
+ */
+static bool accept_value(const ps_value *value, const ps_value *parameter)
+{
+    if (!parameter || (parameter->kind != PS_STRING && parameter->kind != PS_ARRAY) || !value) return true;
+    if (value->kind == PS_STRING) {
+        if (parameter->kind == PS_STRING) return accept_list(ps_string(value), ps_string(parameter));
+        for (size_t i = 0; i < ps_size(parameter); ++i)
+            if (accept_list(ps_string(value), ps_string(ps_at(parameter, i)))) return true;
+        return false;
+    }
+    if (value->kind == PS_ARRAY) {
+        for (size_t i = 0; i < ps_size(value); ++i) {
+            const ps_value *file = ps_at(value, i);
+            if (!file || (file->kind != PS_OBJECT && file->kind != PS_ARRAY)) return false;
+        }
+        return true;
+    }
+    return value->kind == PS_OBJECT;
 }
 
 /* The member name of an array or object item at index, with index text in the buffer. */
@@ -393,12 +415,34 @@ static int compare_rows(const void *left, const void *right)
  * The duplicate rows of one collection field, found once per validation: the filter runs once for
  * each row and sorting brings equal values next to each other. NULL on allocation failure.
  */
-static const unique_rows *duplicate_rows(validation_context *context, const ps_value *container,
-                                         ps_text field, ps_text filter, const ps_text *path, size_t length)
+/*
+ * The tuple of a row under a list of field names: the field and each named field, in order. 1 with the tuple in
+ * tuple, 0 when one of the members is empty (the row takes no part, CUVR-097), -1 on allocation failure.
+ */
+static int unique_tuple(const ps_value *row, ps_text field, const ps_value *names, ps_value **tuple)
 {
-    /* The container path, the field name and the filter, each followed by a zero byte. */
+    *tuple = ps_value_new(PS_ARRAY);
+    if (!*tuple) return -1;
+    size_t count = ps_size(names);
+    for (size_t k = 0; k <= count; ++k) {
+        ps_text name = k ? ps_string(ps_at(names, k - 1)) : field;
+        const ps_value *member = row && row->kind == PS_OBJECT ? ps_get_text(row, name) : NULL;
+        if (ps_empty_value(member)) { ps_value_free(*tuple); *tuple = NULL; return 0; }
+        ps_value *copy = canonical_unique_copy(member);
+        if (!copy || !ps_append(*tuple, copy)) { ps_value_free(copy); ps_value_free(*tuple); *tuple = NULL; return -1; }
+    }
+    return 1;
+}
+
+static const unique_rows *duplicate_rows(validation_context *context, const ps_value *container,
+                                         ps_text field, ps_text filter, const ps_value *names,
+                                         const ps_text *path, size_t length)
+{
+    /* The container path, the field name, the filter and the named fields, each followed by a zero byte. */
     size_t key_length = field.length + filter.length + 2;
     for (size_t p = 0; p + 2 < length; ++p) key_length += path[p].length + 1;
+    size_t name_count = names ? ps_size(names) : 0;
+    for (size_t k = 0; k < name_count; ++k) key_length += ps_string(ps_at(names, k)).length + 1;
     char *key = malloc(key_length);
     if (!key) return NULL;
     size_t at = 0;
@@ -410,6 +454,11 @@ static const unique_rows *duplicate_rows(validation_context *context, const ps_v
     at += field.length; key[at++] = 0;
     if (filter.length) memcpy(key + at, filter.bytes, filter.length);
     at += filter.length; key[at++] = 0;
+    for (size_t k = 0; k < name_count; ++k) {
+        ps_text named = ps_string(ps_at(names, k));
+        if (named.length) memcpy(key + at, named.bytes, named.length);
+        at += named.length; key[at++] = 0;
+    }
     ps_text name = {key, key_length};
     const ps_value *known = ps_get_text(context->unique_positions, name);
     if (known) { free(key); return &context->unique_rows[known->data.integer]; }
@@ -429,14 +478,19 @@ static const unique_rows *duplicate_rows(validation_context *context, const ps_v
     for (size_t i = 0; i < count; ++i) {
         const ps_value *row = ps_at(container, i);
         const ps_value *value = row && row->kind == PS_OBJECT ? ps_get_text(row, field) : NULL;
-        if (ps_empty_value(value)) continue;
+        ps_value *tuple = NULL;
+        if (names) {
+            int state = unique_tuple(row, field, names, &tuple);
+            if (state < 0) { free(sibling); free_unique_items(items, kept); return NULL; }
+            if (!state) continue;
+        } else if (ps_empty_value(value)) continue;
         if (filter.length) {
             char index[32];
             sibling[length - 2] = item_key(container, i, index, sizeof(index));
             bool parsed = false, included = ps_expression_truth(filter, context->data, sibling, context->row_keys, length, &parsed);
-            if (!parsed || !included) continue;
+            if (!parsed || !included) { ps_value_free(tuple); continue; }
         }
-        items[kept] = (unique_item){canonical_unique_copy(value), i, row};
+        items[kept] = (unique_item){tuple ? tuple : canonical_unique_copy(value), i, row};
         if (!items[kept].value) { free(sibling); free_unique_items(items, kept); return NULL; }
         ++kept;
     }
@@ -603,14 +657,18 @@ static int rule_passes(ps_text rule, const ps_value *value, const ps_value *para
     if (ps_text_is(rule, "match") || ps_text_is(rule, "pattern")) return pattern_passes(context, value, parameter);
     if (ps_text_is(rule, "in")) return ps_in_passes(value, parameter);
     if (ps_text_is(rule, "unique")) {
-        if (value && (value->kind == PS_ARRAY || value->kind == PS_OBJECT)) return unique_values(value, parameter, context, path, length);
+        /* A list of field names makes no failure on a field that holds an array (CUVR-097). */
+        bool together = parameter->kind == PS_ARRAY;
+        if (value && (value->kind == PS_ARRAY || value->kind == PS_OBJECT))
+            return together ? 1 : unique_values(value, parameter, context, path, length);
         if (length < 2 || ps_empty_value(value)) return 1;
         const ps_value *container = ps_path_segments(context->data, path, length - 2);
         if (!container || (container->kind != PS_ARRAY && container->kind != PS_OBJECT)) return 1;
         bool condition = parameter->kind == PS_STRING && ps_condition_expression(ps_string(parameter));
         if (condition) { bool parsed = false; if (!ps_expression_truth(ps_string(parameter), context->data, path, context->row_keys, length, &parsed) || !parsed) return 1; }
         const unique_rows *rows = duplicate_rows(context, container, path[length - 1],
-                                                 condition ? ps_string(parameter) : (ps_text){NULL, 0}, path, length);
+                                                 condition ? ps_string(parameter) : (ps_text){NULL, 0},
+                                                 together ? parameter : NULL, path, length);
         if (!rows) return -1;
         const ps_value *row = ps_path_segments(context->data, path, length - 1);
         if (rows->count && bsearch(&row, rows->duplicates, rows->count, sizeof(*rows->duplicates), compare_rows)) return 0;
@@ -685,6 +743,29 @@ static bool append_error(validation_context *context, const ps_text *path, size_
     free(full.bytes); return ok;
 }
 
+/*
+ * A repeated group source value as a unique field error at its data path (CUVR-096): one error per path, and an error
+ * already recorded at that path stays. The default message of unique is the message.
+ */
+static bool repeat_error(validation_context *context, const ps_value *repeat)
+{
+    ps_text at = ps_string(ps_get_text(repeat, PS_TEXT("at")));
+    for (size_t i = 0; i < ps_size(context->errors); ++i) {
+        const ps_value *known = ps_get_text(ps_at(context->errors, i), PS_TEXT("path"));
+        if (known && ps_text_equal(ps_string(known), at)) return true;
+    }
+    ps_value *error = ps_object_value();
+    bool ok = error &&
+        ps_set(error, "path", ps_text_value(at)) &&
+        ps_set(error, "field", ps_text_value(ps_string(ps_get_text(repeat, PS_TEXT("field"))))) &&
+        ps_set(error, "rule", ps_text_value(PS_TEXT("unique"))) &&
+        ps_set(error, "message", ps_text_value(PS_TEXT("Values must be unique."))) &&
+        ps_set(error, "value", ps_value_clone(ps_get_text(repeat, PS_TEXT("value"))));
+    ok = ok && ps_append(context->errors, error);
+    if (!ok) ps_value_free(error);
+    return ok;
+}
+
 /* Record a failed rule; false when the error cannot be recorded. */
 static bool rule_error(validation_context *context, const ps_text *path, size_t length,
                        const ps_value *field, ps_text rule, const ps_value *parameter,
@@ -742,7 +823,7 @@ static bool validate_rules(const ps_value *field, const ps_value *value,
     /* A group source checks the value against the choices of its rows before the declared rules (validation-rules.md, "Values"). */
     const ps_value *items = ps_get(field, "items");
     if (!array_level && ps_is_group_source(items)) {
-        /* A repeated value among the source rows is data that the choices cannot express (CUVR-087). */
+        /* A literal choice repeated among the source rows is data that the choices cannot express (CUVR-087). */
         ps_chars repeat = {NULL, 0};
         int repeat_state = ps_group_source_repeat(items, context->data, &repeat);
         if (repeat_state < 0) return allocation_failure(context);
@@ -751,6 +832,13 @@ static bool validate_rules(const ps_value *field, const ps_value *value,
             free(repeat.bytes);
             return false;
         }
+        /* A value that repeats an earlier row is a field error with rule unique at its data path (CUVR-096). */
+        ps_value *repeats = ps_group_source_repeats(items, context->data);
+        if (!repeats) return allocation_failure(context);
+        bool recorded = true;
+        for (size_t i = 0; recorded && i < ps_size(repeats); ++i) recorded = repeat_error(context, ps_at(repeats, i));
+        ps_value_free(repeats);
+        if (!recorded) return allocation_failure(context);
         ps_chars repeated = {NULL, 0};
         ps_value *members = group_members(items, context->data, &repeated);
         if (!members) {
@@ -1194,6 +1282,12 @@ static ps_result validate_form(const ps_value *spec, const ps_value *data, const
     /* Root data is a request precondition, checked before composition. */
     if (!data || data->kind != PS_OBJECT)
         return ps_fail("input", "INVALID_FORM_INPUT", "Form data must be an object", "");
+    /* A root that is no composition is a group with properties (CUSC-001). */
+    bool composition = spec && spec->kind == PS_OBJECT && (ps_has(spec, "$ref") || ps_has(spec, "$patch"));
+    bool has_properties = spec && spec->kind == PS_OBJECT && ps_get(spec, "properties") &&
+        ps_get(spec, "properties")->kind == PS_OBJECT;
+    if (!composition && !has_properties)
+        return ps_fail("input", "INVALID_FORM_INPUT", "A form spec must be a group with properties", "");
     const ps_value *files = option_files(options); ps_value *error = NULL, *properties = NULL;
     if (spec && spec->kind == PS_OBJECT && (ps_has(spec, "$ref") || ps_has(spec, "$patch")) &&
         (!ps_get(spec, "properties") || ps_get(spec, "properties")->kind != PS_OBJECT))
