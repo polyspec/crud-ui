@@ -845,7 +845,7 @@
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --filter ButtonsConformanceTest"
+          "command": "node scripts/run-tests.mts phpunit --php-extension \"$POLYSPEC_JSON_MODULE\" --cwd legacy/packages/generator/php -- --filter ButtonsConformanceTest"
         },
         {
           "id": "test-6",
@@ -906,7 +906,7 @@
         },
         {
           "id": "test-5",
-          "command": "node scripts/run-tests.mts phpunit --cwd legacy/packages/generator/php -- --filter ButtonsConformanceTest"
+          "command": "node scripts/run-tests.mts phpunit --php-extension \"$POLYSPEC_JSON_MODULE\" --cwd legacy/packages/generator/php -- --filter ButtonsConformanceTest"
         }
       ]
     },
