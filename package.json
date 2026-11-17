@@ -119,7 +119,7 @@
     "@polyspec/crudui-generator-core": "0.0.20",
     "@polyspec/crudui-generator-html": "0.0.20",
     "@polyspec/crudui-validator": "0.0.20",
-    "@polyspec/json": "https://github.com/polyspec/json/releases/download/v0.0.37/polyspec-json-0.0.37.tgz",
+    "@polyspec/json": "https://github.com/polyspec/json/releases/download/v0.0.38/polyspec-json-0.0.38.tgz",
     "@polyspec/kit": "https://github.com/polyspec/kit/releases/download/v0.0.121/polyspec-kit-0.0.121.tgz",
     "@polyspec/ordered-json": "https://github.com/polyspec/ordered-json/releases/download/v0.0.25/polyspec-ordered-json-0.0.25.tgz",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
@@ -150,9 +150,9 @@
     "yaml": "^2.9.1"
   },
   "optionalDependencies": {
-    "@polyspec/json-darwin-arm64": "https://github.com/polyspec/json/releases/download/v0.0.37/polyspec-json-darwin-arm64-0.0.37.tgz",
-    "@polyspec/json-linux-arm64-gnu": "https://github.com/polyspec/json/releases/download/v0.0.37/polyspec-json-linux-arm64-gnu-0.0.37.tgz",
-    "@polyspec/json-linux-x64-gnu": "https://github.com/polyspec/json/releases/download/v0.0.37/polyspec-json-linux-x64-gnu-0.0.37.tgz"
+    "@polyspec/json-darwin-arm64": "https://github.com/polyspec/json/releases/download/v0.0.38/polyspec-json-darwin-arm64-0.0.38.tgz",
+    "@polyspec/json-linux-arm64-gnu": "https://github.com/polyspec/json/releases/download/v0.0.38/polyspec-json-linux-arm64-gnu-0.0.38.tgz",
+    "@polyspec/json-linux-x64-gnu": "https://github.com/polyspec/json/releases/download/v0.0.38/polyspec-json-linux-x64-gnu-0.0.38.tgz"
   },
   "allowScripts": {
     "fsevents@2.3.3": true,
