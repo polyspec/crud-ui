@@ -200,9 +200,28 @@ def _source_rows(source: dict[str, Any], data: object) -> dict[str, Any]:
 
 def group_source_repeat(source: dict[str, Any], data: object) -> str | None:
     """The input failure message of the first row of a checked group source, in data order,
-    whose choice value repeats a literal choice (CUSC-089) or that of an earlier row
-    (CUVR-087), or None."""
-    return _first_repeat(source, data, rows=True)
+    whose choice value repeats a literal choice (CUSC-089), or None."""
+    return _first_repeat(source, data, rows=False)
+
+
+def group_source_repeats(source: dict[str, Any], data: object) -> list[tuple[str, str]]:
+    """The rows whose choice value repeats the value of an earlier row, in data order, as the data path
+    of the value field and its canonical text (CUVR-087, CUVR-096). Each is a field error with rule `unique`."""
+    segments = str(source["from"]).split(".")
+    group_path = ".".join(segments[:-2])
+    value_name = segments[-1]
+    seen: set[str] = set()
+    repeats: list[tuple[str, str]] = []
+    for key, row in _source_rows(source, data).items():
+        if not _is_object(row):
+            continue
+        value = _choice_text(row.get(value_name))
+        if value is None:
+            continue
+        if value in seen:
+            repeats.append((f"{group_path}.{key}.{value_name}", value))
+        seen.add(value)
+    return repeats
 
 
 def _first_repeat(source: dict[str, Any], data: object, *, rows: bool) -> str | None:

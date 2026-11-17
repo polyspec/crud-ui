@@ -47,6 +47,7 @@ from .group_source import (
     group_choices,
     group_source_failure,
     group_source_repeat,
+    group_source_repeats,
     is_group_source,
 )
 from .loader import DocumentLoader
@@ -686,11 +687,26 @@ class Validator:
             implied.append(("number", True))
         source = field.get("items")
         if is_group_source(source):
-            # A repeated value among the source rows is data that the choices cannot
-            # express (CUVR-087).
-            repeat = group_source_repeat(source, context["formData"])
-            if repeat is not None:
-                raise FormInputError(repeat)
+            # A literal choice repeated among the source rows is data that the choices
+            # cannot express (CUSC-089).
+            literal = group_source_repeat(source, context["formData"])
+            if literal is not None:
+                raise FormInputError(literal)
+            # A value that repeats an earlier row is a field error with rule `unique` at its
+            # data path (CUVR-096); the first error of a path is kept.
+            custom = messages.get("unique") if messages else None
+            for at, repeated in group_source_repeats(source, context["formData"]):
+                if any(error["path"] == at for error in errors):
+                    continue
+                errors.append(
+                    {
+                        "path": at,
+                        "field": at.split(".")[-1],
+                        "rule": "unique",
+                        "message": custom if isinstance(custom, str) else "Values must be unique.",
+                        "value": repeated,
+                    }
+                )
             members: list[JsonValue] = [
                 choice["value"] for choice in group_choices(source, context["formData"])
             ]
