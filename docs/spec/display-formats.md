@@ -112,6 +112,10 @@ convert to a finite number is displayed unchanged.
 is the label. For a language map, the translated text is both the variant and the label. A value
 that `map` does not contain produces a badge without a variant, labelled with the value.
 
+- **CUDF-093** A value that reads as empty text (`null`, an absent value, `false`, an object, an
+  array or the empty string) writes no badge, whatever `map` holds: the cell is empty, and the
+  display model of the cell is the empty text.
+
 ### link
 
 - **CUDF-020** `href` is a string or a condition map resolved with the [expression rules](expressions.md).

@@ -123,7 +123,7 @@ fn layout_cases() -> Vec<Value> {
 
 fn main() {
     let cases = support::case_groups("list-render", &["cases", "row_shapes"]);
-    assert_eq!(cases.len(), 159, "list-render holds 159 cases");
+    assert_eq!(cases.len(), 160, "list-render holds 160 cases");
     let (refused, cases): (Vec<Value>, Vec<Value>) =
         cases.into_iter().partition(support::boundary_refusal);
     assert_eq!(

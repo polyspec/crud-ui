@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- An empty `badge` value writes no element (C19.67). Input: a list or detail cell of the `badge` format whose value is `null`, absent, `false` or the empty string. Behaviour before: the cell held an empty `<span class="crudui-badge">`. Now: the cell is empty, whatever `map` holds (CUDF-093).
 - A repeated value of a group source is a field error (C19.68). Input: `validate` of data whose rows of a group source repeat a value. Behaviour before: validation stopped with `INVALID_FORM_INPUT` and an empty location, so no field showed an error. Now: each repeating row fails at its path with `unique`, which `messages.unique` overrides, the reading field skips its implicit `in` check, and validation returns the field errors.
 - The validator packages give the CUVR-019 trim as `trimText` (PHP, TypeScript), `trim_text` (Python) and `TrimText` (Go) (C19.61). Input: a text with whitespace at its ends. Behaviour before: the trim was internal to the validator. Now: one function of the Rust core removes the White_Space code points at both ends, with the cases of the group `trim_text` of `contracts/validator-cases.json`.
 - The Go binding packages link through `binding go-link` (C19.60). Input: `make test-binding-go-generator`. Behaviour before: the test binary failed to link with `Undefined symbols` of CoreFoundation. Now: the native libraries that rustc prints are linked, and the generated Go tests run.

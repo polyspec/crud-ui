@@ -1002,6 +1002,103 @@
       "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Status</dt><dd class=\"crudui-detail__value crudui-value crudui-value--badge\"><span class=\"crudui-badge\" data-crudui-variant=\"success\">active</span></dd></div></dl>"
     },
     {
+      "id": "format_badge_empty_value",
+      "name": "format-badge-empty-value",
+      "note": "a badge value that reads as empty text writes no badge, though `map` holds the empty key (CUDF-093).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "fields",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "status",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "status"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "Status"
+                        }
+                      ],
+                      [
+                        "format",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "type",
+                              {
+                                "kind": "text",
+                                "value": "badge"
+                              }
+                            ],
+                            [
+                              "map",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "active",
+                                    {
+                                      "kind": "text",
+                                      "value": "success"
+                                    }
+                                  ],
+                                  [
+                                    "",
+                                    {
+                                      "kind": "text",
+                                      "value": "muted"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "record": {
+        "kind": "map",
+        "value": [
+          [
+            "status",
+            {
+              "kind": "null"
+            }
+          ]
+        ]
+      },
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "en",
+        "data": null,
+        "page": null,
+        "total": null
+      },
+      "expected_html": "<dl class=\"crudui-detail\"><div class=\"crudui-detail__field\"><dt class=\"crudui-detail__label\">Status</dt><dd class=\"crudui-detail__value crudui-value crudui-value--badge\"></dd></div></dl>"
+    },
+    {
       "id": "format_choice_label",
       "name": "format-choice-label",
       "note": "choice-label format looks the value up in the declared items.",

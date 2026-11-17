@@ -93,7 +93,7 @@ fn check_case(case: &Value) {
 
 fn main() {
     let cases = support::case_groups("detail-render", &["cases"]);
-    assert_eq!(cases.len(), 68, "detail-render holds 68 cases");
+    assert_eq!(cases.len(), 69, "detail-render holds 69 cases");
     let trials = cases.into_iter().map(|case| {
         let name = case["name"].as_str().unwrap().to_string();
         Trial::test(

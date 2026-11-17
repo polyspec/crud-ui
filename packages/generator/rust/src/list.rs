@@ -184,6 +184,8 @@ fn cell_display(
                 + &translate(options.get("suffix"), language))
                 .into()
         }
+        // A value that reads as empty text writes no badge, whatever the map holds (CUDF-093).
+        "badge" if text.is_empty() => Value::String(String::new()),
         "badge" => {
             let raw = options["map"].get(&text);
             if raw.is_some_and(|v| v.is_object() || v.is_array()) {

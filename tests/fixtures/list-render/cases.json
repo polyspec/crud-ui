@@ -1326,6 +1326,145 @@
       "expected_html": "<div class=\"crudui-list\"><table class=\"crudui-list__table\"><thead><tr><th class=\"crudui-list__heading\" data-field=\"status\"><span class=\"crudui-list__heading-label\">Status</span></th></tr></thead><tbody><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"><span class=\"crudui-badge\" data-crudui-variant=\"success\">active</span></td></tr><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"><span class=\"crudui-badge\" data-crudui-variant=\"danger\">blocked</span></td></tr></tbody></table></div>"
     },
     {
+      "id": "format_badge_empty_value",
+      "name": "format-badge-empty-value",
+      "note": "a badge value that reads as empty text (null, the empty string, false, absent) writes no badge, though `map` holds the empty key (CUDF-093).",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "columns",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "status",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "field",
+                        {
+                          "kind": "text",
+                          "value": "status"
+                        }
+                      ],
+                      [
+                        "label",
+                        {
+                          "kind": "text",
+                          "value": "Status"
+                        }
+                      ],
+                      [
+                        "format",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "type",
+                              {
+                                "kind": "text",
+                                "value": "badge"
+                              }
+                            ],
+                            [
+                              "map",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "active",
+                                    {
+                                      "kind": "text",
+                                      "value": "success"
+                                    }
+                                  ],
+                                  [
+                                    "",
+                                    {
+                                      "kind": "text",
+                                      "value": "muted"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "rows": [
+        {
+          "kind": "map",
+          "value": [
+            [
+              "status",
+              {
+                "kind": "text",
+                "value": "active"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "map",
+          "value": [
+            [
+              "status",
+              {
+                "kind": "null"
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "map",
+          "value": [
+            [
+              "status",
+              {
+                "kind": "text",
+                "value": ""
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "map",
+          "value": [
+            [
+              "status",
+              {
+                "kind": "bool",
+                "value": false
+              }
+            ]
+          ]
+        },
+        {
+          "kind": "map",
+          "value": []
+        }
+      ],
+      "options": {
+        "files": {},
+        "basepath": "",
+        "language": "ko",
+        "data": null,
+        "page": null,
+        "total": null
+      },
+      "expected_html": "<div class=\"crudui-list\"><table class=\"crudui-list__table\"><thead><tr><th class=\"crudui-list__heading\" data-field=\"status\"><span class=\"crudui-list__heading-label\">Status</span></th></tr></thead><tbody><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"><span class=\"crudui-badge\" data-crudui-variant=\"success\">active</span></td></tr><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"></td></tr><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"></td></tr><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"></td></tr><tr><td class=\"crudui-list__cell crudui-value crudui-value--badge\"></td></tr></tbody></table></div>"
+    },
+    {
       "id": "format_choice_label",
       "name": "format-choice-label",
       "note": "choice-label format → static code→label lookup (§9.2).",
