@@ -57687,6 +57687,229 @@
       }
     },
     {
+      "id": "unique_custom_message_repeated_value",
+      "name": "unique-custom-message-repeated-value",
+      "note": "A repeated group value that the rule `unique` refuses takes the message of `messages.unique` of its value field, the field that declares it (CUVR-096, validation-rules: the override of that field): the failure is reported at the repeating row, and the implicit `in` check of the reading field is skipped.",
+      "spec": {
+        "kind": "map",
+        "value": [
+          [
+            "type",
+            {
+              "kind": "text",
+              "value": "group"
+            }
+          ],
+          [
+            "properties",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "characters",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "group"
+                        }
+                      ],
+                      [
+                        "multiple",
+                        {
+                          "kind": "bool",
+                          "value": true
+                        }
+                      ],
+                      [
+                        "properties",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "id",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ],
+                                  [
+                                    "messages",
+                                    {
+                                      "kind": "map",
+                                      "value": [
+                                        [
+                                          "unique",
+                                          {
+                                            "kind": "text",
+                                            "value": "Custom id message."
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                ]
+                              }
+                            ],
+                            [
+                              "name",
+                              {
+                                "kind": "map",
+                                "value": [
+                                  [
+                                    "type",
+                                    {
+                                      "kind": "text",
+                                      "value": "text"
+                                    }
+                                  ]
+                                ]
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "lead",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "type",
+                        {
+                          "kind": "text",
+                          "value": "select"
+                        }
+                      ],
+                      [
+                        "items",
+                        {
+                          "kind": "map",
+                          "value": [
+                            [
+                              "from",
+                              {
+                                "kind": "text",
+                                "value": "characters.*.id"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "data": {
+        "kind": "map",
+        "value": [
+          [
+            "characters",
+            {
+              "kind": "map",
+              "value": [
+                [
+                  "c1",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": "hero"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "c2",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": " "
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "c3",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": " "
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "c4",
+                  {
+                    "kind": "map",
+                    "value": [
+                      [
+                        "id",
+                        {
+                          "kind": "text",
+                          "value": "hero"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "lead",
+            {
+              "kind": "text",
+              "value": "hero"
+            }
+          ]
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "errors": [
+          {
+            "path": "characters.c4.id",
+            "field": "id",
+            "rule": "unique",
+            "message": "Custom id message.",
+            "value": "hero"
+          }
+        ],
+        "hidden": []
+      }
+    },
+    {
       "id": "group_source_repeated_number",
       "name": "group-source-repeated-number",
       "note": "The number 7 and the text 7 have the same canonical text, so the second row repeats the first.",

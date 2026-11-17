@@ -18724,6 +18724,66 @@
     }
   },
   {
+    "name": "unique-custom-message-repeated-value",
+    "note": "A repeated group value that the rule `unique` refuses takes the message of `messages.unique` of its value field, the field that declares it (CUVR-096, validation-rules: the override of that field): the failure is reported at the repeating row, and the implicit `in` check of the reading field is skipped.",
+    "spec": {
+      "type": "group",
+      "properties": {
+        "characters": {
+          "type": "group",
+          "multiple": true,
+          "properties": {
+            "id": {
+              "type": "text",
+              "messages": {
+                "unique": "Custom id message."
+              }
+            },
+            "name": {
+              "type": "text"
+            }
+          }
+        },
+        "lead": {
+          "type": "select",
+          "items": {
+            "from": "characters.*.id"
+          }
+        }
+      }
+    },
+    "data": {
+      "characters": {
+        "c1": {
+          "id": "hero"
+        },
+        "c2": {
+          "id": " "
+        },
+        "c3": {
+          "id": " "
+        },
+        "c4": {
+          "id": "hero"
+        }
+      },
+      "lead": "hero"
+    },
+    "expected": {
+      "valid": false,
+      "errors": [
+        {
+          "path": "characters.c4.id",
+          "field": "id",
+          "rule": "unique",
+          "message": "Custom id message.",
+          "value": "hero"
+        }
+      ],
+      "hidden": []
+    }
+  },
+  {
     "name": "group-source-repeated-number",
     "note": "The number 7 and the text 7 have the same canonical text, so the second row repeats the first.",
     "requirements": [
