@@ -15,6 +15,8 @@ type boundOptions struct {
 }
 
 type bindState struct {
+	// root holds the root fields of the template by name.
+	root     *Object
 	data     *Object
 	lookup   map[string]any
 	options  boundOptions
@@ -106,7 +108,12 @@ func BindForm(template *FormTemplate, data *Object, options BindOptions) ([]*Obj
 	if e != nil {
 		return nil, e
 	}
-	s := bindState{data: data, lookup: plainObject(data), options: bound, language: language, messages: messages}
+	// The root fields by name: a source of selected values reads the field it names (CUSC-097).
+	root := NewObject()
+	for _, field := range template.Fields {
+		root.Set(field.Name, field.Spec)
+	}
+	s := bindState{data: data, lookup: plainObject(data), options: bound, language: language, messages: messages, root: root}
 	return buildChildren(template.Fields, "", s)
 }
 func buildChildren(fields []FieldTemplate, path string, s bindState) ([]*Object, error) {
@@ -187,7 +194,7 @@ func makeWidget(spec *Object, value any, path string, design *Object, s bindStat
 	// A group source lists the rows of its group in the data as a choice list; compilation has checked the source
 	// (docs/spec/schema.md, Choices from a repeated group).
 	if source, ok := validate.GroupSourceItems(read(spec, "items")); ok {
-		withChoices, err := withGroupChoices(spec, source, s.data)
+		withChoices, err := withGroupChoices(spec, source, s.data, s.root)
 		if err != nil {
 			return nil, err
 		}
@@ -219,8 +226,8 @@ func makeWidget(spec *Object, value any, path string, design *Object, s bindStat
 // withGroupChoices returns a copy of spec whose items are the choice list of the group source for the record data,
 // one {value, label} pair per choice, the literal choices first; the template keeps its group source. A row that repeats
 // a literal choice returns the input failure of the validator (CUSC-089).
-func withGroupChoices(spec *Object, source *Object, data *Object) (*Object, error) {
-	choices, err := validate.GroupChoices(source, data)
+func withGroupChoices(spec *Object, source *Object, data *Object, root *Object) (*Object, error) {
+	choices, err := validate.GroupChoicesIn(source, data, root)
 	if err != nil {
 		return nil, err
 	}

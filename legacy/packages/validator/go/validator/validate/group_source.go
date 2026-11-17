@@ -57,6 +57,15 @@ func GroupSourceFailure(field *compose.OMap, path string, root *compose.OMap) st
 	from, _ := source.Get("from")
 	// A from that is not a string has no group (sourceGroup), so both conditions give the from failure.
 	fromText, fromIsText := from.(string)
+	if _, ok := selectionField(source, root); ok {
+		if _, hasLabel := source.Get("label"); hasLabel {
+			return "Invalid items.label at " + path + ": a source of selected values takes the labels of its field"
+		}
+		if choices, declared := source.Get("choices"); declared && !validLiteralChoices(choices) {
+			return "Invalid items.choices at " + path + ": expected value and label pairs with distinct string or number values"
+		}
+		return ""
+	}
 	group := sourceGroup(from, root)
 	if !fromIsText || group == nil {
 		return "Invalid items.from at " + path + ": expected {group}.*.{field} for a field of a repeated group outside repeated groups"
@@ -126,6 +135,15 @@ func sourceLiteral(source *compose.OMap) []GroupChoice {
 // canonical text, each value once. Data is an ordered object or a plain map; a plain map has no member order, so its rows
 // are read in sorted key order. A row whose value is a literal choice returns a FormInputError with its path and value.
 func GroupChoices(source *compose.OMap, data any) ([]GroupChoice, error) {
+	return GroupChoicesIn(source, data, nil)
+}
+
+// GroupChoicesIn returns the choices of a checked group source for the root data under the root properties: a source of
+// selected values (CUSC-097) takes the values that its field selects, otherwise the rows of the group as GroupChoices.
+func GroupChoicesIn(source *compose.OMap, data any, root *compose.OMap) ([]GroupChoice, error) {
+	if field, ok := selectionField(source, root); ok {
+		return selectionChoices(source, field, data), nil
+	}
 	if repeat := firstRepeat(source, data, false); repeat != "" {
 		return nil, &FormInputError{Message: repeat}
 	}
@@ -252,8 +270,8 @@ func firstRepeat(source *compose.OMap, data any, rows bool) string {
 }
 
 // groupSourceMembers returns the choice values of a checked group source for the data, as the members of an in rule.
-func groupSourceMembers(source *compose.OMap, data map[string]any) ([]any, error) {
-	choices, err := GroupChoices(source, data)
+func groupSourceMembers(source *compose.OMap, data map[string]any, root *compose.OMap) ([]any, error) {
+	choices, err := GroupChoicesIn(source, data, root)
 	if err != nil {
 		return nil, err
 	}
@@ -406,4 +424,104 @@ func objectEntries(object any) ([]string, []any, bool) {
 		return keys, values, true
 	}
 	return nil, nil, false
+}
+
+// selectionField returns the root field that a source names when it is a source of selected values (CUSC-097): a `from`
+// with no `.` that names a multichoice, checkboxes or checkcontainer field whose items are literal.
+func selectionField(source *compose.OMap, root *compose.OMap) (*compose.OMap, bool) {
+	from, _ := source.Get("from")
+	text, isText := from.(string)
+	if !isText || strings.Contains(text, ".") || root == nil {
+		return nil, false
+	}
+	raw, ok := root.Get(text)
+	if !ok {
+		return nil, false
+	}
+	field, ok := raw.(*compose.OMap)
+	if !ok {
+		return nil, false
+	}
+	kind, _ := field.Get("type")
+	if name, _ := kind.(string); name != "multichoice" && name != "checkboxes" && name != "checkcontainer" {
+		return nil, false
+	}
+	items, _ := field.Get("items")
+	if _, isSource := GroupSourceItems(items); isSource {
+		return nil, false
+	}
+	switch items.(type) {
+	case *compose.OMap, []any:
+		return field, true
+	}
+	return nil, false
+}
+
+// selectionChoices returns the choices of a source of selected values (CUSC-097): its literal choices in written order,
+// then each item of the source field, in the order of its items, that the field selects in the data, with its label.
+func selectionChoices(source *compose.OMap, field *compose.OMap, data any) []GroupChoice {
+	choices := append([]GroupChoice{}, sourceLiteral(source)...)
+	seen := map[string]bool{}
+	for _, choice := range choices {
+		seen[choice.Value] = true
+	}
+	from, _ := source.Get("from")
+	text, _ := from.(string)
+	object, ok := data.(map[string]any)
+	if !ok {
+		return choices
+	}
+	members, ok := object[text].([]any)
+	if !ok {
+		return choices
+	}
+	selected := map[string]bool{}
+	for _, member := range members {
+		if value, ok := choiceText(member); ok {
+			selected[value] = true
+		}
+	}
+	items, _ := field.Get("items")
+	type entry struct {
+		value string
+		label any
+	}
+	var entries []entry
+	switch its := items.(type) {
+	case []any:
+		for _, item := range its {
+			value, ok := choiceText(objectMemberValue(item, "value"))
+			if !ok {
+				continue
+			}
+			label := objectMemberValue(item, "label")
+			if label == nil {
+				label = value
+			}
+			entries = append(entries, entry{value, label})
+		}
+	case *compose.OMap:
+		for _, key := range its.Keys() {
+			value, ok := choiceText(key)
+			if !ok {
+				continue
+			}
+			label, _ := its.Get(key)
+			entries = append(entries, entry{value, label})
+		}
+	}
+	for _, e := range entries {
+		if !selected[e.value] || seen[e.value] {
+			continue
+		}
+		seen[e.value] = true
+		choices = append(choices, GroupChoice{Value: e.value, Label: e.label})
+	}
+	return choices
+}
+
+// validLiteralChoices reports whether a `choices` declaration is a list of value and label pairs with distinct values.
+func validLiteralChoices(choices any) bool {
+	_, ok := literalChoices(choices)
+	return ok
 }

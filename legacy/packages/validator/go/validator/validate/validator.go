@@ -402,22 +402,26 @@ func (v *Validator) runGroupSource(run fieldRun, value any, errors *[]Validation
 	if !ok {
 		return false, nil
 	}
-	// A literal choice repeated among the source rows is an input failure (CUVR-087).
-	if repeat := groupSourceRepeat(source, run.allData); repeat != "" {
-		return false, &FormInputError{Message: repeat}
+	// A source of selected values has no rows to repeat (CUSC-097).
+	_, selection := selectionField(source, v.properties)
+	if !selection {
+		// A literal choice repeated among the source rows is an input failure (CUVR-087).
+		if repeat := groupSourceRepeat(source, run.allData); repeat != "" {
+			return false, &FormInputError{Message: repeat}
+		}
+		// A value that repeats an earlier row is a field error with rule unique at its data path (CUVR-096).
+		message := "Values must be unique."
+		if override, ok := fieldMessages(run.field)["unique"]; ok {
+			message = override
+		}
+		for _, found := range groupSourceRepeats(source, run.allData) {
+			parts := strings.Split(found.at, ".")
+			*errors = append(*errors, ValidationError{
+				Path: found.at, Field: parts[len(parts)-1], Rule: "unique", Message: message, Value: found.value,
+			})
+		}
 	}
-	// A value that repeats an earlier row is a field error with rule unique at its data path (CUVR-096).
-	message := "Values must be unique."
-	if override, ok := fieldMessages(run.field)["unique"]; ok {
-		message = override
-	}
-	for _, found := range groupSourceRepeats(source, run.allData) {
-		parts := strings.Split(found.at, ".")
-		*errors = append(*errors, ValidationError{
-			Path: found.at, Field: parts[len(parts)-1], Rule: "unique", Message: message, Value: found.value,
-		})
-	}
-	members, err := groupSourceMembers(source, run.allData)
+	members, err := groupSourceMembers(source, run.allData, v.properties)
 	if err != nil {
 		return false, err
 	}
