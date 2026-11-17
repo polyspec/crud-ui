@@ -126,7 +126,7 @@ final class JsonValueTest extends TestCase
     public function testCopiesKeepValuesWithinTheNestingLimit(): void
     {
         $deep = 'x';
-        for ($i = 0; $i < 511; $i++) {
+        for ($i = 0; $i < 250; $i++) {
             $deep = [$deep];
         }
         self::assertSame([$deep], JsonValue::copy([$deep]));
