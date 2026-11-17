@@ -644,6 +644,7 @@ ci-native-generators: ## The job native-generators of ci.yml
 ci-php-api: ## The job php-api of ci.yml
 	$(CI_MAKE) install-tools TOOLS="node php composer"
 	$(CI_MAKE) crudui-install-composer
+	$(CI_MAKE) crudui-install-json-php
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-php-api"
 
 ci-cross-language-equivalence: ## The job cross-language-equivalence of ci.yml

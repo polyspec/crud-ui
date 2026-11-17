@@ -68,6 +68,7 @@ for (const feature of features) {
   }
 }
 
+// Each declared command is one counted result, so the summary counts the commands (C19.114).
 // Each declared command prints its own tests; this runner prints the command around them.
 const lines = createProgress({ write: text => process.stdout.write(text) });
 // A selection without a command checks nothing, so it fails.
@@ -80,7 +81,7 @@ if (commands.size === 0) {
 const failed: string[] = [];
 for (const [command, owners] of commands) {
   const id = `${owners.join(', ')}: ${command}`;
-  lines.start(id, { group: true });
+  lines.start(id);
   const result = await runCommand({ command: '/bin/sh', args: ['-c', command], cwd: root });
   const failure = failureOf(result);
   if (failure) {
