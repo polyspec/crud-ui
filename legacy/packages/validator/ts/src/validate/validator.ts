@@ -45,7 +45,7 @@ import { isRecord } from '../record';
 import { compareCodePoints } from '../text/index';
 import { assertRuleParameter, assertRuleName } from './parameters';
 import { ComposeLoadError } from '../compose/errors';
-import { groupChoices, groupSourceFailure, groupSourceRepeat, isGroupSource } from '../group-source';
+import { groupChoices, groupSourceFailure, groupSourceLiteralRepeat, groupSourceRepeats, isGroupSource } from '../group-source';
 import { assertKeyedMapKeys, assertKeyedMapReference } from './keyed-maps';
 import { isMultipleField } from './fields';
 import { isReferenceTarget, referenceIds, type ReferenceId } from './references';
@@ -308,7 +308,15 @@ export class Validator {
     this.run = this.newRun(data);
     const errors: ValidationError[] = [];
     this.validateProperties(this.properties, data, [], [], [], data, errors);
-    return { valid: errors.length === 0, errors, hidden: this.hiddenPaths(data) };
+    // One `unique` error per path: a repeated group value reported by its source and by the value field's own rule.
+    const uniquePaths = new Set<string>();
+    const reported = errors.filter((error) => {
+      if (error.rule !== 'unique') return true;
+      if (uniquePaths.has(error.path)) return false;
+      uniquePaths.add(error.path);
+      return true;
+    });
+    return { valid: reported.length === 0, errors: reported, hidden: this.hiddenPaths(data) };
   }
 
   /** The state of one validation of `data`: the ids of each declaration path are collected once. */
@@ -754,9 +762,19 @@ export class Validator {
     if (!isGroupSource(field.items)) {
       return false;
     }
-    // A repeated value among the source rows is data that the choices cannot express (CUVR-087).
-    const repeat = groupSourceRepeat(field.items, context.formData);
-    if (repeat !== undefined) throw new FormInputError(repeat);
+    // A literal choice repeated among the source rows is an input failure (CUVR-087).
+    const literal = groupSourceLiteralRepeat(field.items, context.formData);
+    if (literal !== undefined) throw new FormInputError(literal);
+    // A value that repeats an earlier row is a field error with rule `unique` at its data path (CUVR-096).
+    for (const repeat of groupSourceRepeats(field.items, context.formData)) {
+      errors.push({
+        path: repeat.path,
+        field: repeat.path.split('.').pop() ?? '',
+        rule: 'unique',
+        message: messages?.unique ?? 'Values must be unique.',
+        value: repeat.value,
+      });
+    }
     const members = groupChoices(field.items, context.formData).map((choice) => choice.value);
     const error = this.runRule('in', members, value, context, declarationPath, field, messages);
     if (error) {

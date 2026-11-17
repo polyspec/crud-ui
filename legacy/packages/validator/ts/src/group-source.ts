@@ -180,8 +180,29 @@ export function groupChoices(source: Record<string, unknown>, data: unknown): Gr
  * choice value repeats a literal choice (CUSC-089) or that of an earlier row (CUVR-087), or
  * `undefined`.
  */
-export function groupSourceRepeat(source: Record<string, unknown>, data: unknown): string | undefined {
-  return firstRepeat(source, data, true);
+/** The message of the first row whose choice value is a literal choice, `undefined` when none is. */
+export function groupSourceLiteralRepeat(source: Record<string, unknown>, data: unknown): string | undefined {
+  return firstRepeat(source, data, false);
+}
+
+/**
+ * The rows whose choice value repeats the value of an earlier row, in data order: the data path of the
+ * value field and its canonical text (CUVR-087, CUVR-096). Each is a field error with rule `unique`.
+ */
+export function groupSourceRepeats(source: Record<string, unknown>, data: unknown): { path: string; value: string }[] {
+  const segments = String(source.from).split('.');
+  const groupPath = segments.slice(0, -2).join('.');
+  const valueName = valueField(source);
+  const seen = new Set<string>();
+  const repeats: { path: string; value: string }[] = [];
+  for (const [key, row] of sourceRows(source, data)) {
+    if (!isRecord(row)) continue;
+    const value = choiceText(row[valueName]);
+    if (value === undefined) continue;
+    if (seen.has(value)) repeats.push({ path: `${groupPath}.${key}.${valueName}`, value });
+    seen.add(value);
+  }
+  return repeats;
 }
 
 /**
