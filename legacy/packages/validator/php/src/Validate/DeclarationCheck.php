@@ -18,6 +18,12 @@ use Polyspec\Crudui\Validator\Support\JsonValue;
  */
 final class DeclarationCheck
 {
+    /** A JSON object: a stdClass or an associative array, never a list. */
+    private static function isObject(mixed $value): bool
+    {
+        return $value instanceof \stdClass || (\is_array($value) && $value !== [] && !array_is_list($value));
+    }
+
     /**
      * @param array<string, mixed> $properties a composed field map
      * @param list<string> $path the declaration path of the map's group
@@ -41,6 +47,32 @@ final class DeclarationCheck
                     sprintf('Invalid multiple at %s: expected a boolean, only or an object', implode('.', $fieldPath)),
                     $fieldPath
                 );
+            }
+            // The shapes of validate and messages are checked before the rules they hold (CUVR-056, CURP-018).
+            $validate = $field['validate'] ?? null;
+            if (array_key_exists('validate', $field) && $validate !== null && !\is_bool($validate)
+                && !self::isObject($validate)) {
+                throw new ComposeLoadError(
+                    'INVALID_RULE_PARAMETER',
+                    sprintf('Invalid validate at %s: expected an object', implode('.', $fieldPath)),
+                    $fieldPath
+                );
+            }
+            if (array_key_exists('messages', $field) && !self::isObject($field['messages'])) {
+                throw new ComposeLoadError(
+                    'INVALID_RULE_PARAMETER',
+                    sprintf('Invalid messages at %s: expected an object', implode('.', $fieldPath)),
+                    $fieldPath
+                );
+            }
+            foreach (self::isObject($field['messages'] ?? null) ? (array) $field['messages'] : [] as $ruleName => $message) {
+                if (!\is_string($message)) {
+                    throw new ComposeLoadError(
+                        'INVALID_RULE_PARAMETER',
+                        sprintf('Invalid messages.%s at %s: expected a string', (string) $ruleName, implode('.', $fieldPath)),
+                        $fieldPath
+                    );
+                }
             }
             // A group source is checked before the rules of its field (schema.md, "Choices from a repeated group").
             $sourceFailure = GroupSource::failure($field, implode('.', $fieldPath), $root);

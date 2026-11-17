@@ -28,8 +28,12 @@ final class Validator
      * ComposeLoadError; group or repeated data with the wrong shape raises
      * FormInputError.
      */
-    public static function validate(array|stdClass $spec, array|stdClass $data, array $options = []): stdClass
+    public static function validate(mixed $spec, array|stdClass $data, array $options = []): stdClass
     {
+        // A specification is an object before anything reads it (CUSC-001).
+        if (!$spec instanceof stdClass && !(\is_array($spec) && !array_is_list($spec) && $spec !== [])) {
+            throw new FormInputError('Form specification must be an object');
+        }
         // Input text is checked first: the specification and files, the data, then the options.
         self::checkText($spec, $options, [['data', $data]]);
         if (is_array($data) && $data !== [] && array_is_list($data)) {
@@ -41,6 +45,10 @@ final class Validator
         $basepath = $options['basepath'] ?? '';
         $hasProperties = ($spec['properties'] ?? null) instanceof stdClass;
         $composition = array_key_exists('$ref', $spec) || array_key_exists('$patch', $spec);
+        // A root that is no composition is a group with properties (CUSC-001).
+        if (!$composition && !$hasProperties) {
+            throw new FormInputError('A form spec must be a group with properties');
+        }
         if ($composition && !$hasProperties) {
             $properties = Compose::properties($spec, $loader, $basepath);
         } else {
@@ -169,10 +177,8 @@ final class Validator
         $files = JsonValue::object($options['files'] ?? []);
         $maps = [];
         foreach ($files as $key => $file) {
-            if (!$file instanceof stdClass) {
-                throw new \TypeError('Composition files must contain objects');
-            }
-            $maps[$key] = (array) JsonValue::ordered($file);
+            // A file that is no object is kept as it is: its reference fails the load (CUSC-092).
+            $maps[$key] = $file instanceof stdClass ? (array) JsonValue::ordered($file) : $file;
         }
         return new MemoryLoader($maps);
     }

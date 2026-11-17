@@ -133,6 +133,14 @@ final class Ref
 
         // throws REF_FILE_NOT_FOUND if absent; a loaded document uses specification member order.
         $doc = JsonValue::orderedMembers($loader->load($key));
+        // A document that is no object fails the load, never as a missing file (CUSC-092).
+        if (!Members::isPlainObject($doc)) {
+            throw new ComposeLoadError(
+                'REF_FORMAT_ERROR',
+                '$ref file is not an object: ' . $orgPath,
+                [...\array_keys($visiting), $key],
+            );
+        }
 
         // Descend detectKeys.
         $node = $doc;

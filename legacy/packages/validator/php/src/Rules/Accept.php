@@ -92,7 +92,11 @@ class Accept implements RuleInterface
         // Handle array of files
         if (is_array($value)) {
             foreach ($value as $file) {
-                if (is_array($file) && isset($file['tmp_name'])) {
+                // A member that is no file object fails the rule (CUVR-016).
+                if (!is_array($file)) {
+                    return false;
+                }
+                if (isset($file['tmp_name'])) {
                     $mimeType = $file['type'] ?? '';
                     $filename = $file['name'] ?? '';
 
@@ -118,7 +122,8 @@ class Accept implements RuleInterface
             }
         }
 
-        return true;
+        // A value that is no string, list or object names no file (CUVR-016).
+        return is_object($value);
     }
 
     /**
