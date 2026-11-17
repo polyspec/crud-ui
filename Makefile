@@ -1276,8 +1276,9 @@ records-check: ## Check the document pairs, links, changelog, writing and checkl
 
 # The release steps above run the release utilities of @polyspec/kit, in the order of .github/workflows/release.yml
 # (docs/operations/repository.md, "Releases"). The
-# archives of the npm packages hold their dist directories, so the packages are built before the archives are written.
-release-assets release-candidate-assets: crudui-prepare-release-build build
+# archives hold only the packages of config/release.json, none of them an npm workspace package, so the recipes build none
+# (C19.76).
+release-assets release-candidate-assets: crudui-prepare-release-build
 .PHONY: crudui-prepare-release-build
 crudui-prepare-release-build: crudui-install-crates crudui-install-go-modules
 
