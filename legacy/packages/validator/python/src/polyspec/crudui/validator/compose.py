@@ -135,7 +135,9 @@ def _resolve_single_ref(
     # A document that is no object fails the load, never as a missing file (CUSC-092).
     if not _is_object(loaded):
         raise ComposeLoadError(
-            "REF_FORMAT_ERROR", f"$ref file is not an object: {original}", [*visiting, key]
+            "REF_FORMAT_ERROR",
+            f"$ref file is not an object: {original}",
+            [*visiting, key],
         )
     document = ordered_members(loaded)
     # Descend the detect keys.

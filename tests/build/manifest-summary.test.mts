@@ -19,7 +19,7 @@ function runWith(commands: string[]): { output: string; status: number | null } 
     const verification = commands.map((command, index) => ({ id: `c${index + 1}`, command }));
     writeFileSync(file, JSON.stringify({ features: [{ id: 'summary', verification }] }));
     const run = spawnSync(process.execPath, ['scripts/run-contract-tests.mts', '--features', file], { cwd: ROOT, encoding: 'utf8' });
-    return { output: `${run.stdout}${run.stderr}`.replace(/\x1b\[[0-9;]*m/g, ''), status: run.status };
+    return { output: `${run.stdout}${run.stderr}`.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g'), ''), status: run.status };
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

@@ -86,7 +86,9 @@ def _boolean_failure(member: str, path: str, field: str) -> str:
     )
 
 
-def value_field_messages(source: dict[str, Any], properties: dict[str, Any]) -> dict[str, Any] | None:
+def value_field_messages(
+    source: dict[str, Any], properties: dict[str, Any]
+) -> dict[str, Any] | None:
     """The `messages` of the value field that a group source names (the last segment of `from`), or None.
 
     The message of `unique` at a repeated row is the one of that field (CUVR-096).
@@ -274,7 +276,9 @@ def _first_repeat(source: dict[str, Any], data: object, *, rows: bool) -> str | 
     return None
 
 
-def _selection_field(from_: object, properties: dict[str, Any]) -> dict[str, Any] | None:
+def _selection_field(
+    from_: object, properties: dict[str, Any]
+) -> dict[str, Any] | None:
     """The root field that a `from` with no `.` names when it is a source of selected values (CUSC-097):
     a field of a selection type whose items are literal, which is no group source."""
     if not isinstance(from_, str) or "." in from_ or from_ not in properties:
@@ -290,7 +294,10 @@ def _selection_field(from_: object, properties: dict[str, Any]) -> dict[str, Any
 
 def is_selection_source(items: object, properties: dict[str, Any]) -> bool:
     """Whether a group source names a source of selected values under the root `properties` (CUSC-097)."""
-    return _is_object(items) and _selection_field(items.get("from"), properties) is not None
+    return (
+        _is_object(items)
+        and _selection_field(items.get("from"), properties) is not None
+    )
 
 
 def _selection_choices(
@@ -305,9 +312,7 @@ def _selection_choices(
     if not isinstance(selected_values, list):
         return choices
     selected = {
-        text
-        for member in selected_values
-        if (text := _choice_text(member)) is not None
+        text for member in selected_values if (text := _choice_text(member)) is not None
     }
     items: list[tuple[str, object]] = []
     field_items = field["items"]

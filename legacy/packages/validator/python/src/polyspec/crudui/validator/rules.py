@@ -1205,8 +1205,12 @@ def rule_parameter_failure(rule_name: str, param: object) -> tuple[str, str] | N
         return (
             None
             if isinstance(param, str)
-            or (isinstance(param, list) and all(isinstance(item, str) for item in param))
-            else invalid("Invalid accept parameter: expected a string or a list of strings")
+            or (
+                isinstance(param, list) and all(isinstance(item, str) for item in param)
+            )
+            else invalid(
+                "Invalid accept parameter: expected a string or a list of strings"
+            )
         )
     if rule_name == "unique":
         # CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).

@@ -23,8 +23,8 @@ interface Rule {
   install: string;
   /** The targets that the Makefile makes depend on the install: a prerequisite prints no line of its own. */
   installers: Set<string>;
-  /** The lines that print the install itself, such as its download. */
-  download?: RegExp;
+  /** The lines that print the install itself, such as its download; undefined when the install prints none of its own. */
+  download: RegExp | undefined;
 }
 
 function rule(name: string, use: RegExp, install: string, download?: RegExp): Rule {
@@ -55,7 +55,7 @@ function jobTargets(): { target: string; variables: string[] }[] {
       const target = words[0] ?? '';
       if (SKIPPED.has(target) || target === '') continue;
       const variables = words.slice(1).filter(word => /^[A-Z_]+=/.test(word)).map(word => {
-        const [name, value = ''] = word.split('=', 2) as [string, string];
+        const [name = '', value = ''] = word.split('=', 2);
         return value.includes('${{') ? `${name}=${MATRIX[name] ?? 'x'}` : `${name}=${value}`;
       });
       if (variables.some(variable => variable.startsWith('RUNTIME='))) continue;
@@ -97,10 +97,19 @@ for (const { target, variables } of jobTargets()) {
 }
 
 /** The runtimes of config/ci.json, each with the setup targets of its gate (shared setup first). */
-const config = JSON.parse(readFileSync(`${ROOT}/config/ci.json`, 'utf8')) as {
+interface CiConfig {
   runtimes: string[];
   setup: { shared: string[]; runtimes: Record<string, string[]> };
-};
+}
+function isCiConfig(value: unknown): value is CiConfig {
+  if (typeof value !== 'object' || value === null || !('runtimes' in value) || !('setup' in value)) return false;
+  const setup = value.setup;
+  return Array.isArray(value.runtimes) && typeof setup === 'object' && setup !== null && 'shared' in setup
+    && Array.isArray(setup.shared) && 'runtimes' in setup && typeof setup.runtimes === 'object' && setup.runtimes !== null;
+}
+const parsedConfig: unknown = JSON.parse(readFileSync(`${ROOT}/config/ci.json`, 'utf8'));
+assert.ok(isCiConfig(parsedConfig), 'config/ci.json has no runtimes and setup of the expected shape');
+const config = parsedConfig;
 for (const runtime of config.runtimes) {
   test(`the ${runtime} runtime gate installs what its commands use in its setup`, () => {
     const gate = expand(`kit-gates-runtime-${runtime}`, [], new Set());

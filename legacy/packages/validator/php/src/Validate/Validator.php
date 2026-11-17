@@ -627,7 +627,9 @@ final class Validator
                     'path' => $found['at'],
                     'field' => (string) end($parts),
                     'rule' => 'unique',
-                    'message' => is_string($valueMessages['unique'] ?? null) ? $valueMessages['unique'] : 'Values must be unique.',
+                    'message' => is_string($valueMessages['unique'] ?? null)
+                        ? $valueMessages['unique']
+                        : 'Values must be unique.',
                     'value' => $found['value'],
                 ];
             }

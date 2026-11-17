@@ -192,7 +192,10 @@ func ValidateJSON(specJSON []byte, dataJSON []byte, filesJSON map[string][]byte,
 			return ValidationResult{}, fmt.Errorf("validate: file %q decode: %w", k, err)
 		}
 		// A file that is no object is kept as nil: its reference fails the load (CUSC-092).
-		doc, _ := docAny.(*compose.OMap)
+		doc, isDoc := docAny.(*compose.OMap)
+		if !isDoc {
+			doc = nil
+		}
 		files[k] = doc
 	}
 

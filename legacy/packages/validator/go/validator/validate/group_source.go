@@ -130,14 +130,6 @@ func sourceLiteral(source *compose.OMap) []GroupChoice {
 	return literal
 }
 
-// GroupChoices returns the choices of a checked group source for the root data: its literal choices in written order
-// (CUSC-089), then one per row of the group in data order whose value is a string or a finite number with a non-empty
-// canonical text, each value once. Data is an ordered object or a plain map; a plain map has no member order, so its rows
-// are read in sorted key order. A row whose value is a literal choice returns a FormInputError with its path and value.
-func GroupChoices(source *compose.OMap, data any) ([]GroupChoice, error) {
-	return GroupChoicesIn(source, data, nil)
-}
-
 // GroupChoicesIn returns the choices of a checked group source for the root data under the root properties: a source of
 // selected values (CUSC-097) takes the values that its field selects, otherwise the rows of the group as GroupChoices.
 func GroupChoicesIn(source *compose.OMap, data any, root *compose.OMap) ([]GroupChoice, error) {
@@ -443,7 +435,7 @@ func selectionField(source *compose.OMap, root *compose.OMap) (*compose.OMap, bo
 		return nil, false
 	}
 	kind, _ := field.Get("type")
-	if name, _ := kind.(string); name != "multichoice" && name != "checkboxes" && name != "checkcontainer" {
+	if name, isName := kind.(string); !isName || (name != "multichoice" && name != "checkboxes" && name != "checkcontainer") {
 		return nil, false
 	}
 	items, _ := field.Get("items")
@@ -466,7 +458,7 @@ func selectionChoices(source *compose.OMap, field *compose.OMap, data any) []Gro
 		seen[choice.Value] = true
 	}
 	from, _ := source.Get("from")
-	text, _ := from.(string)
+	text := stringOf(from)
 	object, ok := data.(map[string]any)
 	if !ok {
 		return choices
@@ -534,7 +526,7 @@ func valueFieldMessages(source *compose.OMap, root *compose.OMap) map[string]str
 	if group == nil {
 		return nil
 	}
-	text, _ := from.(string)
+	text := stringOf(from)
 	segments := strings.Split(text, ".")
 	raw, ok := group.Get(segments[len(segments)-1])
 	field, isField := raw.(*compose.OMap)
@@ -542,4 +534,13 @@ func valueFieldMessages(source *compose.OMap, root *compose.OMap) map[string]str
 		return nil
 	}
 	return fieldMessages(field)
+}
+
+// stringOf returns the string of a value, or the empty string when the value is no string.
+func stringOf(value any) string {
+	text, ok := value.(string)
+	if !ok {
+		return ""
+	}
+	return text
 }
