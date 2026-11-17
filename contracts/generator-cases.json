@@ -16978,7 +16978,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          {"member": "file_loader.normalize", "args": {"path": "base.yml", "basepath": "specs"}},
+          {"member": "file_loader.load", "args": {"key": "specs/base.yml"}}
+        ]
       },
       "options": {
         "files": {},
@@ -17227,7 +17231,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          {"member": "file_loader.normalize", "args": {"path": "columns.yml", "basepath": "specs"}},
+          {"member": "file_loader.load", "args": {"key": "specs/columns.yml"}}
+        ]
       },
       "options": {
         "files": {},
@@ -18120,7 +18128,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          {"member": "file_loader.normalize", "args": {"path": "columns.yml", "basepath": "specs"}},
+          {"member": "file_loader.load", "args": {"key": "specs/columns.yml"}}
+        ]
       },
       "options": {
         "files": {},
@@ -19016,7 +19028,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          {"member": "file_loader.normalize", "args": {"path": "columns.yml", "basepath": "specs"}},
+          {"member": "file_loader.load", "args": {"key": "specs/columns.yml"}}
+        ]
       },
       "options": {
         "files": {},
@@ -19945,7 +19961,11 @@
               }
             }
           ]
-        }
+        },
+        "calls": [
+          {"member": "file_loader.normalize", "args": {"path": "columns.yml", "basepath": "specs"}},
+          {"member": "file_loader.load", "args": {"key": "specs/columns.yml"}}
+        ]
       },
       "options": {
         "files": {},
