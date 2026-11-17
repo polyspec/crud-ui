@@ -47,7 +47,9 @@ from .group_source import (
     group_choices,
     group_source_failure,
     group_source_repeat,
+    group_source_repeats,
     is_group_source,
+    is_selection_source,
 )
 from .loader import DocumentLoader
 from .text import check_input_text, check_option_text, checked_composition
@@ -348,6 +350,27 @@ class Validator:
             if not _is_object(field):
                 continue
             path = [*declaration_path, property_key]
+            # The shapes of validate and messages are checked before the rules they hold (CUVR-056, CURP-018).
+            slot = field.get("validate")
+            if slot is not None and not isinstance(slot, bool) and not _is_object(slot):
+                raise ComposeLoadError(
+                    "INVALID_RULE_PARAMETER",
+                    f"Invalid validate at {'.'.join(path)}: expected an object",
+                    path,
+                )
+            if "messages" in field and not _is_object(field["messages"]):
+                raise ComposeLoadError(
+                    "INVALID_RULE_PARAMETER",
+                    f"Invalid messages at {'.'.join(path)}: expected an object",
+                    path,
+                )
+            for message_rule, message in (_field_messages(field) or {}).items():
+                if not isinstance(message, str):
+                    raise ComposeLoadError(
+                        "INVALID_RULE_PARAMETER",
+                        f"Invalid messages.{message_rule} at {'.'.join(path)}: expected a string",
+                        path,
+                    )
             # The shape of multiple is checked before the field's group source and rules (schema.md, CUSC-081).
             if "multiple" in field and not _is_multiple_shape(field["multiple"]):
                 raise ComposeLoadError(
@@ -686,13 +709,32 @@ class Validator:
             implied.append(("number", True))
         source = field.get("items")
         if is_group_source(source):
-            # A repeated value among the source rows is data that the choices cannot
-            # express (CUVR-087).
-            repeat = group_source_repeat(source, context["formData"])
-            if repeat is not None:
-                raise FormInputError(repeat)
+            # A literal choice repeated among the source rows is data that the choices
+            # cannot express (CUSC-089).
+            # A source of selected values has no rows to repeat (CUSC-097).
+            selection = is_selection_source(source, self.properties)
+            literal = None if selection else group_source_repeat(source, context["formData"])
+            if literal is not None:
+                raise FormInputError(literal)
+            # A value that repeats an earlier row is a field error with rule `unique` at its
+            # data path (CUVR-096); the first error of a path is kept.
+            custom = messages.get("unique") if messages else None
+            repeats = [] if selection else group_source_repeats(source, context["formData"])
+            for at, repeated in repeats:
+                if any(error["path"] == at for error in errors):
+                    continue
+                errors.append(
+                    {
+                        "path": at,
+                        "field": at.split(".")[-1],
+                        "rule": "unique",
+                        "message": custom if isinstance(custom, str) else "Values must be unique.",
+                        "value": repeated,
+                    }
+                )
             members: list[JsonValue] = [
-                choice["value"] for choice in group_choices(source, context["formData"])
+                choice["value"]
+                for choice in group_choices(source, context["formData"], self.properties)
             ]
             implied.append(("in", members))
         for rule_name, rule_value in implied:
@@ -827,7 +869,7 @@ def _files_loader(options: Mapping[str, Any]) -> MemoryLoader:
     """The memory loader of the `files` option, each document in specification member order."""
     files = options.get("files") or {}
     return MemoryLoader(
-        {key: _ordered_spec(document) for key, document in files.items()}
+        {key: ordered_value(document) for key, document in files.items()}
         if isinstance(files, dict)
         else files
     )
@@ -880,6 +922,12 @@ def validate(
     wrong shape.
     """
     options = options or {}
+    # A specification is an object before anything reads it (CUSC-001).
+    if not _is_object(spec):
+        raise FormInputError("Form specification must be an object")
+    # A root that is no reference is a group with properties (CUSC-001).
+    if "$ref" not in spec and not _is_object(spec.get("properties")):
+        raise FormInputError("A form spec must be a group with properties")
     checked = checked_composition(spec, options)
     check_input_text([("data", data)])
     check_option_text(options, ["basepath"])
@@ -887,6 +935,8 @@ def validate(
         raise FormInputError("Form data must be an object")
     ordered = _ordered_spec(spec)
     properties = _composed_properties(ordered, checked, options)
+    if not _is_object(properties):
+        raise FormInputError("A form spec must be a group with properties")
     # The data limits are checked after the forbidden-key scan and before the rule names.
     limits = data_limits(ordered)
     return Validator({"type": "group", "properties": properties}, limits).validate(data)

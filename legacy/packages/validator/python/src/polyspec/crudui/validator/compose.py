@@ -131,9 +131,13 @@ def _resolve_single_ref(
             f"$ref cycle detected: {' -> '.join([*visiting, key])}",
             [*visiting, key],
         )
-    document = ordered_members(
-        loader.load(key)
-    )  # raises REF_FILE_NOT_FOUND when absent
+    loaded = loader.load(key)  # raises REF_FILE_NOT_FOUND when absent
+    # A document that is no object fails the load, never as a missing file (CUSC-092).
+    if not _is_object(loaded):
+        raise ComposeLoadError(
+            "REF_FORMAT_ERROR", f"$ref file is not an object: {original}", [*visiting, key]
+        )
+    document = ordered_members(loaded)
     # Descend the detect keys.
     node: JsonValue = document
     for detect_key in detect_keys:

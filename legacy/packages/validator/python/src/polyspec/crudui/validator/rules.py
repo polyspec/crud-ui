@@ -792,8 +792,13 @@ def _rule_unique(context: RuleContext) -> str | None:
     if _disabled(rule_param):
         return None
     is_filter = isinstance(rule_param, str) and is_condition_expression(rule_param)
+    # A list of field names holds the field together with the named fields (CUVR-097).
+    together = rule_param if isinstance(rule_param, list) else None
     error = _message(context, "unique", "Values must be unique.")
     if isinstance(value, (list, dict)):
+        # A list makes no failure on a field that holds an array, as true makes none.
+        if together is not None:
+            return None
         entries = (
             list(value.items()) if isinstance(value, dict) else list(enumerate(value))
         )
@@ -840,7 +845,12 @@ def _rule_unique(context: RuleContext) -> str | None:
     # The rows of this collection field are walked once per validation: the filter is
     # evaluated once per row and each row whose value an earlier row holds is recorded.
     cache_key = "\0".join(
-        [*container_path, field_name, rule_param if is_filter else ""]
+        [
+            *container_path,
+            field_name,
+            rule_param if is_filter else "",
+            json.dumps(together) if together is not None else "",
+        ]
     )
     duplicates = context["run"].unique_duplicates.get(cache_key)
     if duplicates is None:
@@ -851,6 +861,7 @@ def _rule_unique(context: RuleContext) -> str | None:
             rule_param if is_filter else None,
             row_keys,
             all_data,
+            together,
         )
         context["run"].unique_duplicates[cache_key] = duplicates
     return error if item_key in duplicates else None
@@ -863,8 +874,13 @@ def _row_duplicates(
     filter_condition: str | None,
     row_keys: list[int],
     all_data: JsonValue,
+    together: list[JsonValue] | None = None,
 ) -> set[str]:
-    """The row keys whose `field_name` value an earlier row already holds."""
+    """The row keys whose `field_name` value an earlier row already holds.
+
+    With `together`, the value of a row is the list of the field and the named fields, and a row
+    whose member is empty takes no part (CUVR-097).
+    """
     duplicates: set[str] = set()
     seen = set()
     entries = (
@@ -875,9 +891,15 @@ def _row_duplicates(
     for key, item in entries:
         if not isinstance(item, dict):
             continue
-        item_value = item.get(field_name)
-        if is_empty_value(item_value):
-            continue
+        if together is not None:
+            members = [item.get(name) for name in [field_name, *together]]
+            if any(is_empty_value(member) for member in members):
+                continue
+            item_value: JsonValue = members
+        else:
+            item_value = item.get(field_name)
+            if is_empty_value(item_value):
+                continue
         if filter_condition is not None and not _item_passes(
             filter_condition, [*container_path, key, field_name], row_keys, all_data
         ):
@@ -973,6 +995,12 @@ def _rule_accept(context: RuleContext) -> str | None:
         return None
     if isinstance(value, list):
         for item in value:
+            # A member that is no file object fails the rule (CUVR-016).
+            if not isinstance(item, dict):
+                message = _message(
+                    context, "accept", "Please upload a file with a valid format."
+                )
+                return message
             if isinstance(item, dict):
                 mime = item.get("type") or item.get("mimeType") or ""
                 name = item.get("name") or item.get("filename") or ""
@@ -997,7 +1025,8 @@ def _rule_accept(context: RuleContext) -> str | None:
             )
             return message
         return None
-    return None
+    # A value that is no string, list or object names no file (CUVR-016).
+    return _message(context, "accept", "Please upload a file with a valid format.")
 
 
 def _rule_condition_tree(context: RuleContext) -> str | None:
@@ -1069,6 +1098,7 @@ _CHECKED_RULES = {
     "unique",
     "conditionTree",
     "reference",
+    "accept",
 }
 
 
@@ -1171,11 +1201,28 @@ def rule_parameter_failure(rule_name: str, param: object) -> tuple[str, str] | N
         )
     if rule_name == "reference":
         return None if isinstance(param, str) else invalid(REFERENCE_PARAMETER_MESSAGE)
-    if rule_name == "unique":
+    if rule_name == "accept":
         return (
             None
-            if isinstance(param, str) or param is True
-            else invalid("Invalid unique parameter: expected true, false or a string")
+            if isinstance(param, str)
+            or (isinstance(param, list) and all(isinstance(item, str) for item in param))
+            else invalid("Invalid accept parameter: expected a string or a list of strings")
+        )
+    if rule_name == "unique":
+        # CUVR-097: true, false, a string, or a non-empty list of non-empty strings (field names).
+        return (
+            None
+            if isinstance(param, str)
+            or param is True
+            or param is False
+            or (
+                isinstance(param, list)
+                and param
+                and all(isinstance(name, str) and name != "" for name in param)
+            )
+            else invalid(
+                "Invalid unique parameter: expected true, false, a string or a list of field names"
+            )
         )
     if not isinstance(param, str):
         return invalid(f"Invalid {rule_name} parameter: expected a pattern string")
