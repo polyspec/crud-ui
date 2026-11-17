@@ -44,11 +44,16 @@ pub fn record_conformance(feature: &str, fixture: &str, case: &str, passed: bool
     item.insert("case".into(), Value::from(case));
     item.insert("passed".into(), Value::Bool(passed));
     let file = Path::new(&directory).join(format!("{RUNTIME}-{}.jsonl", std::process::id()));
+    // The record is one whole line written by one write under a lock: the threads of a test binary share this file, and
+    // writeln! writes the line in pieces, so concurrent records interleaved into lines that are not JSON (C19.144).
+    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    let line = format!("{}\n", Value::Object(item));
+    let _guard = LOCK.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
     let mut out = match OpenOptions::new().create(true).append(true).open(&file) {
         Ok(out) => out,
         Err(e) => panic!("open evidence file {file:?}: {e}"),
     };
-    if let Err(e) = writeln!(out, "{}", Value::Object(item)) {
+    if let Err(e) = out.write_all(line.as_bytes()) {
         panic!("write evidence file {file:?}: {e}");
     }
 }

@@ -346,8 +346,29 @@ test('form-outline declares rust for compileForm and bindForm, which the rust su
 // recording them; the branch run reported two of them as not in the fixture (C19.146).
 test('the rust list-render suite records only the cases group (C19.146)', async () => {
   const source = await readFile(path.join(import.meta.dirname, '../../packages/generator/rust/tests/list_render.rs'), 'utf8');
-  const shapes = source.slice(source.indexOf('let shape_trials'), source.indexOf('libtest_mimic::run'));
-  assert.ok(shapes.length > 0, 'list_render.rs has no shape trials');
+  const shapes = source.slice(source.indexOf('let plain_trials'), source.indexOf('libtest_mimic::run'));
+  assert.ok(shapes.length > 0, 'list_render.rs has no plain trials');
   assert.doesNotMatch(shapes, /prove_all/);
   assert.match(source, /contract_names\.contains/);
+  // C19.147: the layout cases of the contract group are not a registered fixture (features.json registers cases.json families and
+  // module fixtures only), so the suite runs them without evidence.
+  assert.doesNotMatch(source, /"contracts\/generator-cases\.json", case\)/);
+});
+
+// C19.149: the legacy copy of a shared fixture follows the shared one (C19.49). The JavaScript suite of form-choices reads the shared
+// file and records all of its names, while the legacy copy held four, so the checker reported the fifth as not in the fixture.
+test('the legacy copy of form-choices follows the shared fixture (C19.149)', async () => {
+  const shared = await readFile(path.join(ROOT, 'tests/fixtures/form-choices/cases.json'), 'utf8');
+  const legacy = await readFile(path.join(ROOT, 'legacy/tests/fixtures/form-choices/cases.json'), 'utf8');
+  assert.equal(JSON.parse(legacy).map((c: { name: string }) => c.name).join('|'), JSON.parse(shared).map((c: { name: string }) => c.name).join('|'));
+});
+
+// C19.144: the Rust recorder appends each record to a file that the threads of one test binary share. writeln! writes the line in
+// pieces, so concurrent records interleaved into lines that are not JSON (run 44192640029 showed it locally: 281 of 296 lines).
+// A record is one whole line written by one write under a lock.
+test('the Rust evidence recorder writes each record as one whole line under a lock (C19.144)', async () => {
+  const source = await readFile(path.join(ROOT, 'packages/validator/rust/tests/common/mod.rs'), 'utf8');
+  assert.doesNotMatch(source, /writeln!\(out/);
+  assert.match(source, /out\.write_all\(line\.as_bytes\(\)\)/);
+  assert.match(source, /LOCK\.lock\(\)/);
 });

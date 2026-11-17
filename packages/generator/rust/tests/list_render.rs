@@ -141,35 +141,37 @@ fn main() {
     let (recorded, shapes): (Vec<Value>, Vec<Value>) = cases
         .into_iter()
         .partition(|case| contract_names.contains(case["name"].as_str().unwrap()));
-    let recorded = recorded
-        .into_iter()
-        .map(|case| ("tests/fixtures/list-render/cases.json", case))
-        .chain(
-            layouts
-                .into_iter()
-                .map(|case| ("contracts/generator-cases.json", case)),
-        );
-    let recorded_trials = recorded.map(|(fixture, case)| {
+    let recorded_trials = recorded.into_iter().map(|case| {
         let name = case["name"].as_str().unwrap().to_string();
         Trial::test(
             format!("list_render_cases_reproduce_the_normalized_layout_or_the_failure::{name}"),
             move || {
-                support::evidence::prove_all(&["buildList", "renderList"], fixture, &name, || {
-                    check_case(&case);
-                    Ok(())
-                })
+                support::evidence::prove_all(
+                    &["buildList", "renderList"],
+                    "tests/fixtures/list-render/cases.json",
+                    &name,
+                    || {
+                        check_case(&case);
+                        Ok(())
+                    },
+                )
             },
         )
     });
-    let shape_trials = shapes.into_iter().map(|case| {
-        let name = case["name"].as_str().unwrap().to_string();
-        Trial::test(
-            format!("list_render_row_shapes_reproduce_the_normalized_layout_or_the_failure::{name}"),
-            move || {
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| check_case(&case)))
-                    .map_err(|_| libtest_mimic::Failed::from(format!("row shape {name} failed")))
-            },
-        )
-    });
-    libtest_mimic::run(&Arguments::from_args(), recorded_trials.chain(shape_trials).collect()).exit();
+    // The layout cases of the contract group render_list and the row_shapes cases are not registered fixture cases
+    // (features.json registers cases.json families and module fixtures only), so they run without evidence (C19.147).
+    let plain_trials = shapes
+        .into_iter()
+        .chain(layouts)
+        .map(|case| {
+            let name = case["name"].as_str().unwrap().to_string();
+            Trial::test(
+                format!("list_render_plain_reproduce_the_normalized_layout_or_the_failure::{name}"),
+                move || {
+                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| check_case(&case)))
+                        .map_err(|_| libtest_mimic::Failed::from(format!("case {name} failed")))
+                },
+            )
+        });
+    libtest_mimic::run(&Arguments::from_args(), recorded_trials.chain(plain_trials).collect()).exit();
 }

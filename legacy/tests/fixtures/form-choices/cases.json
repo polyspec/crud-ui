@@ -1343,5 +1343,135 @@
         "collapsed": []
       }
     ]
+  },
+  {
+    "name": "choices-follow-selected-values",
+    "note": "A select whose items name a multichoice field lists the values that field selects, in the order of its choices with its labels; a change of the selection changes the choices of the next view and no value (CUSC-097).",
+    "requirements": [
+      "CUSC-097"
+    ],
+    "spec": {
+      "type": "group",
+      "properties": {
+        "channels": {
+          "type": "multichoice",
+          "label": "Channels",
+          "items": [
+            {
+              "value": "email",
+              "label": "Email"
+            },
+            {
+              "value": "sms",
+              "label": "SMS"
+            },
+            {
+              "value": "push",
+              "label": "Push"
+            }
+          ]
+        },
+        "primary": {
+          "type": "select",
+          "label": "Primary",
+          "items": {
+            "from": "channels"
+          }
+        }
+      }
+    },
+    "data": {
+      "channels": [
+        "sms"
+      ],
+      "primary": "sms"
+    },
+    "steps": [
+      {
+        "op": "choices",
+        "args": [
+          "primary"
+        ]
+      },
+      {
+        "op": "setValue",
+        "args": [
+          "channels",
+          [
+            "push",
+            "email",
+            "sms"
+          ]
+        ]
+      },
+      {
+        "op": "choices",
+        "args": [
+          "primary"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "result": [
+          {
+            "value": "sms",
+            "label": "SMS"
+          }
+        ],
+        "data": {
+          "channels": [
+            "sms"
+          ],
+          "primary": "sms"
+        },
+        "revision": 0,
+        "canUndo": false,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "data": {
+          "channels": [
+            "push",
+            "email",
+            "sms"
+          ],
+          "primary": "sms"
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      },
+      {
+        "result": [
+          {
+            "value": "email",
+            "label": "Email"
+          },
+          {
+            "value": "sms",
+            "label": "SMS"
+          },
+          {
+            "value": "push",
+            "label": "Push"
+          }
+        ],
+        "data": {
+          "channels": [
+            "push",
+            "email",
+            "sms"
+          ],
+          "primary": "sms"
+        },
+        "revision": 1,
+        "canUndo": true,
+        "canRedo": false,
+        "collapsed": []
+      }
+    ]
   }
 ]
