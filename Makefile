@@ -520,6 +520,7 @@ ci-runtime-tests: ## The job runtime-tests of ci.yml for SHARD of CI_SHARDS
 	$(CI_MAKE) crudui-install-composer
 	$(CI_MAKE) crudui-install-go-modules
 	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) crudui-install-json-php
 	$(CI_MAKE) ci-targets TARGETS="crudui-test-runtimes"
 
 ci-build-lint: ## The job build-lint of ci.yml
@@ -573,6 +574,7 @@ ci-cross-check-console: ## The job cross-check-console of ci.yml
 	$(CI_MAKE) crudui-install-go-modules
 	$(CI_MAKE) crudui-install-python
 	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) crudui-install-json-php
 	$(CI_MAKE) ci-targets TARGETS="build-php-ext crudui-test-cross-check manifest-test crudui-test-bench"
 
 ci-cli: ## The job cli of ci.yml
