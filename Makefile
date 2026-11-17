@@ -545,7 +545,7 @@ ci-validator-rust: ## The job validator-rust of ci.yml
 # are the generated tests (binding GN-13, CK-22). The tools are those of the five runners, PHPUnit of composer.lock and
 # the wheels of json that crudui-install-bindings downloads.
 ci-bindings: ## The job bindings of ci.yml
-	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer wasmBindgen"
+	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer maturin wasmBindgen"
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) crudui-install-composer
 	$(CI_MAKE) crudui-install-bindings
