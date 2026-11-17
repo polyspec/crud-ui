@@ -28,6 +28,17 @@ bool ps_registered_rule(ps_text rule)
     return false;
 }
 
+/* A non-empty list of non-empty strings: the field names of a unique list (CUVR-097). */
+static bool field_name_list(const ps_value *parameter)
+{
+    if (!parameter || parameter->kind != PS_ARRAY || !ps_size(parameter)) return false;
+    for (size_t i = 0; i < ps_size(parameter); ++i) {
+        const ps_value *name = ps_at(parameter, i);
+        if (!name || name->kind != PS_STRING || !ps_string(name).length) return false;
+    }
+    return true;
+}
+
 static bool pattern_rule(ps_text rule)
 {
     return ps_text_is(rule, "pattern") || ps_text_is(rule, "match");
@@ -35,7 +46,7 @@ static bool pattern_rule(ps_text rule)
 
 /*
  * The problem of a parameter of a rule that references a field: equalTo, containedIn, typeFrom, minFrom, maxFrom and enddate take a field
- * reference string, notEqual a string, number or boolean, unique true or a string, and reference a
+ * reference string, notEqual a string, number or boolean, unique true, false, a string or a list of field names, and reference a
  * string.
  */
 static bool reference_parameter(ps_text rule, const ps_value *parameter, ps_parameter_problem *problem)
@@ -59,7 +70,8 @@ static bool reference_parameter(ps_text rule, const ps_value *parameter, ps_para
         if (kind != PS_STRING && kind != PS_BOOL && !number)
             message = "Invalid notEqual parameter: expected a string, number or boolean";
     } else if (ps_text_is(rule, "unique")) {
-        if (kind != PS_STRING && kind != PS_BOOL) message = "Invalid unique parameter: expected true, false or a string";
+        if (kind != PS_STRING && kind != PS_BOOL && !field_name_list(parameter))
+            message = "Invalid unique parameter: expected true, false, a string or a list of field names";
     } else if (ps_text_is(rule, "reference")) {
         if (kind != PS_STRING) message = REFERENCE_MESSAGE;
     } else {
