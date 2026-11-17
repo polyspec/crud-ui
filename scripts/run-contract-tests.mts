@@ -49,8 +49,11 @@ function manifestFeatures(value: unknown): Feature[] {
     };
   });
 }
-const manifest = { features: manifestFeatures(JSON.parse(readFileSync(resolve(root, 'contracts/features.json'), 'utf8'))) };
-const requested = process.argv.slice(2);
+// `--features <file>` reads the features of another file (a test of this runner names its own); contracts/features.json is the default.
+const featuresOption = process.argv.indexOf('--features');
+const featuresFile = featuresOption === -1 ? 'contracts/features.json' : (process.argv[featuresOption + 1] ?? '');
+const manifest = { features: manifestFeatures(JSON.parse(readFileSync(resolve(root, featuresFile), 'utf8'))) };
+const requested = process.argv.slice(2).filter((argument, index, all) => argument !== '--features' && all[index - 1] !== '--features');
 const featureId = requested[0] === '--feature' ? requested[1] : undefined;
 const features = featureId ? manifest.features.filter((feature) => feature.id === featureId) : manifest.features;
 

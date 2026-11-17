@@ -199,6 +199,9 @@ test('Rust generator fixture validation uses one resolved toolchain', t => {
 
   assert.notEqual(result.status, 0, 'The fixture output mock intentionally omits its result');
   assert.doesNotMatch(result.stdout + result.stderr, /spawnSync cargo ENOENT/);
+  // The failure must come after the cargo test ran (it writes the command log, read below), that is, when the script reads the
+  // fixtures it did not get; a failure before it, such as an import, leaves no command log and must fail here with its message.
+  assert.match(result.stderr, /fixtures\.json/, result.stdout + result.stderr);
   assert.deepEqual(commands(tools.commandLog), [{
     args: [
       'test', '--locked', '--manifest-path',
