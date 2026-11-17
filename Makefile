@@ -187,6 +187,11 @@ lint: ## Run lint-<runtime> for every runtime of packages/; offline
 	$(MAKE) --no-print-directory lint-go lint-php lint-php-ext lint-python lint-rust lint-ts
 
 # The build of each package of a runtime with the build of its ecosystem; a PHP library has none (kit K1106).
+# crudui-generate-go writes the generated Go target of the generator, the zz_generated files of packages/generator/go, which Git ignores;
+# the go job of ci-pipeline.yml runs it before its gates, with the crates of cargo that binding generate runs (C19.128).
+crudui-generate-go: ## Write the generated Go target of packages/generator/go with binding generate; offline once the crates are installed
+	$(NODE) $(BINDING) generate --contract $(CURDIR)/packages/generator/rust/interface.json --target go --cargo "$(CARGO)"
+
 build-go: ## Build each Go package with go build; offline
 	$(NODE) $(KIT)/runtime-targets.$(KIT_EXT) build --roots legacy/packages/generator/go legacy/packages/validator/go -- $(GO) build ./...
 build-php: ## A PHP library has no build step; offline

@@ -12,6 +12,8 @@
     "runtimes": {
       "go": [
         "crudui-install-go-modules",
+        "crudui-install-crates",
+        "crudui-generate-go",
         "build-go"
       ],
       "php": [
