@@ -359,3 +359,14 @@ test('make format-check formats a manifest without a package with --all', () => 
   assert.match(recipe, /if grep -q '\^\\\[package\\\]' "\$\$manifest"; then all=; else all=--all; fi/);
   assert.match(recipe, /run-rust-command\.mts fmt --check \$\$all --manifest-path "\$\$manifest"/);
 });
+
+// C19.136: the guard of the test files runs in docs-check, which runs before every commit, so a test file that no project
+// command runs fails there rather than in CI (C19.117, C19.136).
+// Read from the recipe text: a dry run of docs-check would run this guard again (C19.136).
+test('docs-check runs the test-command guard before every commit (C19.136)', () => {
+  const makefile = readFileSync(path.join(ROOT, 'Makefile'), 'utf8');
+  const start = makefile.indexOf('\ncrudui-docs-check:');
+  assert.notEqual(start, -1, 'Makefile has no crudui-docs-check recipe');
+  const recipe = makefile.slice(start, makefile.indexOf('\n\n', start));
+  assert.match(recipe, /test-commands\.test\.mts/);
+});

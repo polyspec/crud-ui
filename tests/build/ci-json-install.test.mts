@@ -22,3 +22,26 @@ for (const job of ['ci-validator-php', 'ci-runtime-tests', 'ci-cross-check-conso
     assert.ok(install < run, dry.stdout);
   });
 }
+
+// C19.133: PIE installs the extension for the PHP that the job has on its PATH, so a job that downloads polyspec_json
+// installs PHP first (the bindings job got /usr/bin/php8.3 from the runner, C19.133).
+for (const job of ['ci-bindings', 'ci-validator-php', 'ci-runtime-tests', 'ci-cross-check-console', 'ci-form-comparison']) {
+  test(`${job} installs php with its tools before it downloads polyspec_json (C19.133)`, () => {
+    const lines = makeDryRun(ROOT, job).stdout.split('\n');
+    // crudui-install-bindings depends on crudui-install-json-php, so its make line is the download step of the bindings job.
+    const json = lines.findIndex(line => line.includes('crudui-install-json-php') || line.includes('crudui-install-bindings'));
+    const tools = lines.findIndex(line => line.includes('install-tools') && /(^|[\s"])php([\s"]|$)/.test(line));
+    assert.notEqual(json, -1, `${job} does not download polyspec_json`);
+    assert.ok(tools !== -1 && tools < json, `${job} downloads polyspec_json without installing php first:\n${lines.join('\n')}`);
+  });
+}
+
+// C19.134: the PHP servers of the form comparison load polyspec_json from the scan directory that php-json-scan writes,
+// so each target that runs them sets PHP_INI_SCAN_DIR to it (the form-comparison job failed without it).
+for (const target of ['crudui-test-form-comparison', 'crudui-test-form-comparison-checks', 'crudui-test-form-comparison-browser', 'crudui-test-form-comparison-summary']) {
+  test(`${target} runs PHP with the polyspec_json scan directory (C19.134)`, () => {
+    const dry = makeDryRun(ROOT, target);
+    assert.equal(dry.status, 0, dry.stderr);
+    assert.ok(dry.stdout.split('\n').some(line => line.includes('PHP_INI_SCAN_DIR=') && line.includes('var/php-ext/json-scan')), dry.stdout);
+  });
+}

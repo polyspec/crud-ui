@@ -41,6 +41,7 @@
       "rust",
       "php",
       "composer"
-    ]
+    ],
+    "go": ["rust"]
   }
 }

@@ -563,7 +563,7 @@ ci-validator-rust: ## The job validator-rust of ci.yml
 # are the generated tests (binding GN-13, CK-22). The tools are those of the five runners, PHPUnit of composer.lock and
 # the wheels of json that crudui-install-bindings downloads.
 ci-bindings: ## The job bindings of ci.yml
-	$(CI_MAKE) install-tools TOOLS="node rust python uv go composer maturin wasmBindgen"
+	$(CI_MAKE) install-tools TOOLS="node php rust python uv go composer maturin wasmBindgen"
 	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) crudui-install-composer
 	$(CI_MAKE) crudui-install-go-modules
@@ -1000,6 +1000,7 @@ crudui-install-go-modules: ## Download the modules that the Go workspace require
 # The targets that start the local form-comparison stack load the polyspec_json extension that make crudui-install-json-php
 # downloads, so a fresh checkout downloads it before them (C19.62).
 crudui-test-form-comparison-pipeline crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-form-comparison-checks: crudui-install-json-php
+crudui-test-form-comparison crudui-test-form-comparison-browser crudui-test-form-comparison-summary crudui-test-form-comparison-checks: php-json-scan
 
 # The checking commands of the CI workflow, one target each (CI_TARGETS).
 # The tests of crudui-test-runtimes; CRUDUI_TEST_SHARD, i/n, selects the native Node shard of them (C18.9).
@@ -1036,7 +1037,11 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/ci-validator-php-json.test.mts \
 	tests/build/ci-json-install.test.mts \
 	tests/build/ci-installs.test.mts \
-	tests/build/manifest-summary.test.mts
+	tests/build/manifest-summary.test.mts \
+	tests/build/ci-go-generate.test.mts \
+	tests/build/ci-json-auth.test.mts \
+	tests/build/ci-pipeline-outputs.test.mts \
+	tests/build/php-ext-scan.test.mts
 crudui-test-runtimes: ## Exact runtime versions and test standards
 	$(NODE) scripts/run-tests.mts node -- --test-concurrency=1 $(if $(CRUDUI_TEST_SHARD),--test-shard=$(CRUDUI_TEST_SHARD)) $(CRUDUI_RUNTIME_TESTS)
 # The TypeScript tables are untracked build output of contracts/ (P34): the build script of legacy/packages/validator/ts writes
@@ -1090,11 +1095,11 @@ manifest-docs-check: ## The generated feature contract documents
 crudui-test-forms: ## Form instances, renderers and the browser checks
 	$(NPM) run test:forms
 crudui-test-form-comparison: ## The form comparison runner regressions
-	$(NPM) run test:form-comparison
+	PHP_INI_SCAN_DIR=$(PHP_JSON_SCAN) $(NPM) run test:form-comparison
 crudui-test-form-comparison-pipeline: ## The record stores and the canonical flow
 	$(NPM) run test:form-comparison:pipeline
 crudui-test-form-comparison-checks: ## The PHP modes, generation, persistence, flow, browser and typing checks against a local stack
-	$(NPM) run test:form-comparison:checks
+	PHP_INI_SCAN_DIR=$(PHP_JSON_SCAN) $(NPM) run test:form-comparison:checks
 # The same checks in two parts, as CI runs them: crudui-test-form-comparison-browser runs the browser checks of the servers of
 # FORM_SERVERS against a local stack and keeps their reports in FORM_BROWSER_REPORTS; crudui-test-form-comparison-summary runs
 # every other check against a local stack of its own and summarizes those reports. Every public server takes a port of
@@ -1102,9 +1107,9 @@ crudui-test-form-comparison-checks: ## The PHP modes, generation, persistence, f
 FORM_SERVERS ?= php,php-ext,go,rust
 FORM_BROWSER_REPORTS ?= $(CURDIR)/var/form-comparison/browser
 crudui-test-form-comparison-browser: ## The browser checks of the servers of FORM_SERVERS against a local stack
-	$(NPM) run test:form-comparison:checks -- --servers $(FORM_SERVERS) --results $(FORM_BROWSER_REPORTS)
+	PHP_INI_SCAN_DIR=$(PHP_JSON_SCAN) $(NPM) run test:form-comparison:checks -- --servers $(FORM_SERVERS) --results $(FORM_BROWSER_REPORTS)
 crudui-test-form-comparison-summary: ## Every other check against a local stack, with the browser reports of FORM_BROWSER_REPORTS
-	$(NPM) run test:form-comparison:checks -- --browser-reports $(FORM_BROWSER_REPORTS)
+	PHP_INI_SCAN_DIR=$(PHP_JSON_SCAN) $(NPM) run test:form-comparison:checks -- --browser-reports $(FORM_BROWSER_REPORTS)
 crudui-test-packages: ## The package install check
 	$(NPM) run test:packages
 crudui-test-build: ## The public builds
@@ -1146,6 +1151,7 @@ crudui-docs-check: ## doc-coverage 게이트 (문서 + 라이브러리, 미문�
 	@status=0; \
 	$(MAKE) --no-print-directory docs-check-documents || status=1; \
 	$(MAKE) --no-print-directory docs-check-libs || status=1; \
+	$(NODE) $(KIT)/run-tests.$(KIT_EXT) node -- --test tests/build/test-commands.test.mts || status=1; \
 	if [ $$status -eq 0 ]; then echo "[make] docs-check: documents and libraries passed"; fi; \
 	exit $$status
 

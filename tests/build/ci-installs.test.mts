@@ -120,3 +120,12 @@ for (const runtime of config.runtimes) {
     }
   });
 }
+
+// C19.135: the go runtime's setup downloads the crates, and cargo needs the rust toolchain of rust-toolchain, which the go
+// job installs only when config/ci.json declares it (kit's runtimeTools of go lacks rust).
+test('the go runtime installs the rust toolchain before it downloads the crates (C19.135)', () => {
+  const parsed: unknown = JSON.parse(readFileSync(`${ROOT}/config/ci.json`, 'utf8'));
+  const tools: unknown = typeof parsed === 'object' && parsed !== null && 'tools' in parsed ? parsed.tools : undefined;
+  const goTools: unknown = typeof tools === 'object' && tools !== null ? Reflect.get(tools, 'go') : undefined;
+  assert.ok(Array.isArray(goTools) && goTools.includes('rust'), 'config/ci.json tools.go does not install rust for the go runtime');
+});
