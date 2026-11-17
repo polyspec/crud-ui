@@ -1260,6 +1260,12 @@ static ps_result validate_form(const ps_value *spec, const ps_value *data, const
     /* Root data is a request precondition, checked before composition. */
     if (!data || data->kind != PS_OBJECT)
         return ps_fail("input", "INVALID_FORM_INPUT", "Form data must be an object", "");
+    /* A root that is no composition is a group with properties (CUSC-001). */
+    bool composition = spec && spec->kind == PS_OBJECT && (ps_has(spec, "$ref") || ps_has(spec, "$patch"));
+    bool has_properties = spec && spec->kind == PS_OBJECT && ps_get(spec, "properties") &&
+        ps_get(spec, "properties")->kind == PS_OBJECT;
+    if (!composition && !has_properties)
+        return ps_fail("input", "INVALID_FORM_INPUT", "A form spec must be a group with properties", "");
     const ps_value *files = option_files(options); ps_value *error = NULL, *properties = NULL;
     if (spec && spec->kind == PS_OBJECT && (ps_has(spec, "$ref") || ps_has(spec, "$patch")) &&
         (!ps_get(spec, "properties") || ps_get(spec, "properties")->kind != PS_OBJECT))

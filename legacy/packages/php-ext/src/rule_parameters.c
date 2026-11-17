@@ -263,6 +263,32 @@ static ps_value *check_group_source(const ps_value *field, const ps_text *path, 
 }
 
 /*
+ * The load failure of a field's validate or messages slot of the wrong shape, or of a messages member that is no string
+ * (CURP-018, CUVR-056), or NULL: INVALID_RULE_PARAMETER at the declaration path. An allocation failure is an internal error.
+ */
+static ps_value *check_slots(const ps_value *field, const ps_text *path, size_t length)
+{
+    const ps_value *rules = ps_get(field, "validate");
+    const ps_value *messages = ps_get(field, "messages");
+    ps_chars location = ps_dotted_path(path, length, (ps_text){NULL, 0});
+    ps_chars message = {NULL, 0};
+    ps_value *error = NULL;
+    if (!location.bytes) return internal_error();
+    if (rules && rules->kind != PS_NULL && rules->kind != PS_BOOL && rules->kind != PS_OBJECT)
+        message = PS_CONCAT(PS_TEXT("Invalid validate at "), ps_view(location), PS_TEXT(": expected an object"));
+    else if (messages && messages->kind != PS_OBJECT)
+        message = PS_CONCAT(PS_TEXT("Invalid messages at "), ps_view(location), PS_TEXT(": expected an object"));
+    for (size_t i = 0; !message.bytes && messages && i < ps_size(messages); ++i)
+        if (ps_at(messages, i)->kind != PS_STRING)
+            message = PS_CONCAT(PS_TEXT("Invalid messages."), ps_key(messages, i), PS_TEXT(" at "), ps_view(location),
+                                PS_TEXT(": expected a string"));
+    if (message.bytes) error = declaration_error(path, length, ps_view(location), ps_view(message));
+    free(message.bytes);
+    free(location.bytes);
+    return error ? error : (message.bytes ? internal_error() : NULL);
+}
+
+/*
  * The load failure of a field whose multiple is present and is not a boolean, only or an object (schema.md, CUSC-081), or
  * NULL: INVALID_RULE_PARAMETER at the declaration path. An allocation failure is an internal error.
  */
@@ -305,6 +331,8 @@ static ps_value *check_field(const ps_value *field, const ps_text *path, size_t 
     if (multiple_error) return multiple_error;
     ps_value *source_error = check_group_source(field, path, length, root);
     if (source_error) return source_error;
+    ps_value *slot_error = check_slots(field, path, length);
+    if (slot_error) return slot_error;
     const ps_value *rules = ps_get(field, "validate");
     for (size_t i = 0; rules && rules->kind == PS_OBJECT && i < ps_size(rules); ++i) {
         ps_text rule = ps_key(rules, i);

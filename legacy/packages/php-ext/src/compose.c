@@ -219,8 +219,14 @@ static ps_value *resolve_single(ps_text raw, compose_context *context, ps_value 
         ps_value_free(trace); free(normalized.bytes); return NULL;
     }
     const ps_value *node = ps_get_text(context->files, ps_view(normalized));
-    if (!node || node->kind != PS_OBJECT) {
+    if (!node) {
         composition_error_with(error, "REF_FILE_NOT_FOUND", "$ref file not found: ",
+                               ps_view(normalized), "", trace);
+        ps_value_free(trace); free(normalized.bytes); return NULL;
+    }
+    /* A file that is no object fails the reference (CUSC-092). */
+    if (node->kind != PS_OBJECT) {
+        composition_error_with(error, "REF_FORMAT_ERROR", "$ref file is not an object: ",
                                ps_view(normalized), "", trace);
         ps_value_free(trace); free(normalized.bytes); return NULL;
     }
