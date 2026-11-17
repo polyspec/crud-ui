@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-workspace",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "private": true,
   "description": "YAML-based form generation and validation system (Multi-language, Multi-framework)",
   "workspaces": [

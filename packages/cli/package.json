@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crudui-cli",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "private": true,
   "description": "Specification catalog, static checking and descriptions for CRUDUI.",
   "type": "module",

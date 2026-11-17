@@ -1221,7 +1221,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "chrono",
  "getrandom",
@@ -1240,7 +1240,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator-go"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-crud-ui-generator",
@@ -1250,7 +1250,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator-node"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "napi",
  "napi-build",
@@ -1263,7 +1263,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator-php-ext"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "ext-php-rs",
  "polyspec-binding-core",
@@ -1274,7 +1274,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator-python"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-crud-ui-generator",
@@ -1285,7 +1285,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator-wasm"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "js-sys",
  "polyspec-binding-core",
@@ -1297,7 +1297,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "libtest-mimic",
  "polyspec-binding-core",
@@ -1308,7 +1308,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator-go"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-crud-ui-validator",
@@ -1317,7 +1317,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator-node"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "napi",
  "napi-build",
@@ -1329,7 +1329,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator-php-ext"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "ext-php-rs",
  "polyspec-binding-core",
@@ -1339,7 +1339,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator-python"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-crud-ui-validator",
@@ -1349,7 +1349,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator-wasm"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "js-sys",
  "polyspec-binding-core",
