@@ -211,19 +211,41 @@ static bool accept_one(ps_text value, ps_text item)
     return same_letters(value, item);
 }
 
-static bool accept_value(const ps_value *value, const ps_value *parameter)
+/* Whether value is accepted by one comma-separated accept list. */
+static bool accept_list(ps_text value, ps_text list)
 {
-    if (!parameter || parameter->kind != PS_STRING || !value || value->kind != PS_STRING) return true;
-    ps_text list = ps_string(parameter);
     size_t start = 0;
     for (;;) {
         size_t comma = ps_text_find_byte(list, ',', start);
         size_t end = comma == SIZE_MAX ? list.length : comma;
-        if (accept_one(ps_string(value), ps_text_slice(list, start, end))) return true;
+        if (accept_one(value, ps_text_slice(list, start, end))) return true;
         if (comma == SIZE_MAX) break;
         start = comma + 1;
     }
     return false;
+}
+
+/*
+ * The accept parameter is a string or a list of strings (CUVR-016). A string value is a file name or a MIME type; a list
+ * value fails on a member that is no file object, and a value that is no string, list or object fails (CUVR-016).
+ */
+static bool accept_value(const ps_value *value, const ps_value *parameter)
+{
+    if (!parameter || (parameter->kind != PS_STRING && parameter->kind != PS_ARRAY) || !value) return true;
+    if (value->kind == PS_STRING) {
+        if (parameter->kind == PS_STRING) return accept_list(ps_string(value), ps_string(parameter));
+        for (size_t i = 0; i < ps_size(parameter); ++i)
+            if (accept_list(ps_string(value), ps_string(ps_at(parameter, i)))) return true;
+        return false;
+    }
+    if (value->kind == PS_ARRAY) {
+        for (size_t i = 0; i < ps_size(value); ++i) {
+            const ps_value *file = ps_at(value, i);
+            if (!file || (file->kind != PS_OBJECT && file->kind != PS_ARRAY)) return false;
+        }
+        return true;
+    }
+    return value->kind == PS_OBJECT;
 }
 
 /* The member name of an array or object item at index, with index text in the buffer. */

@@ -74,6 +74,12 @@ static bool reference_parameter(ps_text rule, const ps_value *parameter, ps_para
             message = "Invalid unique parameter: expected true, false, a string or a list of field names";
     } else if (ps_text_is(rule, "reference")) {
         if (kind != PS_STRING) message = REFERENCE_MESSAGE;
+    } else if (ps_text_is(rule, "accept")) {
+        /* A string or a list of strings (CUVR-016). */
+        bool strings = kind == PS_ARRAY;
+        for (size_t i = 0; strings && kind == PS_ARRAY && i < ps_size(parameter); ++i)
+            strings = ps_at(parameter, i)->kind == PS_STRING;
+        if (kind != PS_STRING && !strings) message = "Invalid accept parameter: expected a string or a list of strings";
     } else {
         return false;
     }
