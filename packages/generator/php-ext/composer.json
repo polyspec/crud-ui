@@ -5,6 +5,7 @@
   "license": "MIT",
   "require": {
     "php": ">=8.4",
+    "ext-polyspec_crud_ui_validator": "*",
     "ext-polyspec_json": "*",
     "polyspec/json": "0.0.34"
   },

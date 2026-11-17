@@ -39,7 +39,7 @@
     ]
   },
   "dependencies": {
-    "@polyspec/crud-ui-validator": "*",
+    "@polyspec/crud-ui-validator": "0.0.20",
     "@polyspec/json": "0.0.34"
   }
 }
