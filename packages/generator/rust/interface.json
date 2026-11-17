@@ -492,7 +492,7 @@
             "optional": "text"
           },
           "default": {
-            "literal": null
+            "computed": "CURT-004"
           },
           "reason": "CURT-004"
         },
@@ -545,7 +545,7 @@
             "optional": "text"
           },
           "default": {
-            "literal": null
+            "computed": "CURT-005"
           },
           "reason": "CURT-005"
         },
