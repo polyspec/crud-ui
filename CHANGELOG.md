@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+- The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH`; the `var/tools/bin/php` it writes is kept by later installs, so a checkout first installed with another PHP keeps it until the wrapper is removed (`docs/operations/testing.md`).
+
 ## 0.0.22
 
 - v0.0.21 was tagged on the release commit, but its release run failed in the assets jobs before the release was published, so v0.0.21 stays a tag without a release and the next release is 0.0.22 (the release check of binding read the module cache with GOPROXY=off, C19.153).

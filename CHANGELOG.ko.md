@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- checkout의 첫 `make install-tools`는 PHP 8.4를 `PATH`의 맨 앞에 두고 실행하며, 거기서 쓴 `var/tools/bin/php`는 이후 install이 남기므로 다른 PHP로 처음 install한 checkout은 wrapper를 지울 때까지 그 PHP를 씁니다(`docs/operations/testing.ko.md`).
+
 ## 0.0.22
 
 - v0.0.21은 release commit에 tag가 만들어졌지만 release run이 assets job에서 실패해 release가 공개되지 않았다. 그래서 v0.0.21은 release 없는 tag로 남고 다음 release는 0.0.22다(binding의 release check가 GOPROXY=off에서 module cache를 읽었다, C19.153).
