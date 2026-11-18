@@ -752,7 +752,7 @@ uv-install: ## Install the Python sources of DIR with one uv sync --locked and c
 # release public. The legacy crudui-* packages are no package of config/release.json, so the release publishes none of them.
 CI_EVENT_RUN = $(NODE) -p 'JSON.parse(require("fs").readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")).workflow_run?.id ?? ""'
 ci-release-tag: ## The job tag of release.yml: tag the commit of the CI run RUN, or of the workflow_run event, and give the tag to the job publish
-	run='$(RUN)'; test -n "$$run" || run="$$($(CI_EVENT_RUN))"; RUN="$$run" $(CI_MAKE) release-tag $(if $(filter workflow_run,$(GITHUB_EVENT_NAME)),AUTO=1)
+	run='$(RUN)'; test -n "$$run" || run="$$($(CI_EVENT_RUN))"; $(CI_MAKE) release-tag RUN="$$run" $(if $(filter workflow_run,$(GITHUB_EVENT_NAME)),AUTO=1)
 	set -a; . "$$GITHUB_ENV"; set +a; $(CI_MAKE) release-tag-output
 
 release-tag-output: ## Write TAG and VERSION of the environment into GITHUB_OUTPUT for the later jobs of release.yml
@@ -1041,6 +1041,7 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/ci-json-install.test.mts \
 	tests/build/ci-installs.test.mts \
 	tests/build/manifest-summary.test.mts \
+	tests/build/release-tag-run.test.mts \
 	tests/build/ci-go-generate.test.mts \
 	tests/build/ci-json-auth.test.mts \
 	tests/build/ci-pipeline-outputs.test.mts \
