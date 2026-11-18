@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crud-ui-validator",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "The crud-ui-validator library of polyspec for Node and the browser",
   "license": "MIT",
   "type": "module",

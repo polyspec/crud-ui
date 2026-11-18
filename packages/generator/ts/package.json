@@ -1,6 +1,6 @@
 {
   "name": "@polyspec/crud-ui-generator",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "The crud-ui-generator library of polyspec for Node and the browser",
   "license": "MIT",
   "type": "module",
@@ -39,7 +39,7 @@
     ]
   },
   "dependencies": {
-    "@polyspec/crud-ui-validator": "0.0.21",
+    "@polyspec/crud-ui-validator": "0.0.22",
     "@polyspec/json": "0.0.38"
   }
 }

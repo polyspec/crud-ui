@@ -801,9 +801,11 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 # DYLD_LIBRARY_PATH and LD_LIBRARY_PATH with /usr/lib first to GITHUB_ENV, and the PHP of setup-php then loads the libsqlite3 of
 # the system and aborts, so that recipe and its sub-makes run with both empty.
 CI_RELEASE_CHECK = $(if $(filter true,$(RELEASE)),$(foreach component,$(BINDING_COMPONENTS),release-binding-check-$(component)))
+# The release check reads the Go module cache, so the modules are downloaded first when RELEASE is true (C19.153).
 ci-assets-platform: ## The job platform of assets.yml: the Go static library, the wheel and the npm platform package of each component
 	$(CI_MAKE) install-tools TOOLS="rust go uv python"
 	$(CI_MAKE) crudui-install-crates
+	$(if $(filter true,$(RELEASE)),$(CI_MAKE) crudui-install-go-modules)
 	$(CI_MAKE) release-recipes
 	$(CI_MAKE) ci-targets TARGETS="$(strip $(CI_RELEASE_CHECK) $(foreach component,$(BINDING_COMPONENTS),release-assets-platform-$(component)))"
 ci-assets-php: DYLD_LIBRARY_PATH :=
@@ -812,11 +814,13 @@ ci-assets-php: ## The job php of assets.yml: the PHP extension of each component
 	@test -n "$(PHP_MINOR)" || { echo 'ci-assets-php: PHP_MINOR is required, the PHP minor of the job, for example make ci-assets-php PHP_MINOR=8.4' >&2; exit 2; }
 	$(CI_MAKE) install-tools TOOLS="rust go"
 	$(CI_MAKE) crudui-install-crates
+	$(if $(filter true,$(RELEASE)),$(CI_MAKE) crudui-install-go-modules)
 	$(CI_MAKE) release-recipes
 	$(CI_MAKE) ci-targets TARGETS="$(strip $(CI_RELEASE_CHECK) $(foreach component,$(BINDING_COMPONENTS),release-assets-php-$(component)))" EXPECTED_PHP_MINOR=$(PHP_MINOR)$(if $(LLVM_PATH), LLVM_ROOT=$(LLVM_PATH))
 ci-assets-npm: ## The job npm of assets.yml: the npm package of each component
 	$(CI_MAKE) install-tools TOOLS="rust go"
 	$(CI_MAKE) crudui-install-crates
+	$(if $(filter true,$(RELEASE)),$(CI_MAKE) crudui-install-go-modules)
 	$(CI_MAKE) release-recipes
 	$(CI_MAKE) ci-targets TARGETS="$(strip $(CI_RELEASE_CHECK) $(foreach component,$(BINDING_COMPONENTS),release-assets-npm-$(component)))"
 
@@ -1042,6 +1046,8 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/ci-installs.test.mts \
 	tests/build/manifest-summary.test.mts \
 	tests/build/release-tag-run.test.mts \
+	tests/build/release-assets-install.test.mts \
+	tests/build/crud-ui-version.test.mts \
 	tests/build/ci-go-generate.test.mts \
 	tests/build/ci-json-auth.test.mts \
 	tests/build/ci-pipeline-outputs.test.mts \

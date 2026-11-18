@@ -4,7 +4,9 @@
 
 ## Unreleased
 
-## 0.0.21
+## 0.0.22
+
+- v0.0.21은 release commit에 tag가 만들어졌지만 release run이 assets job에서 실패해 release가 공개되지 않았다. 그래서 v0.0.21은 release 없는 tag로 남고 다음 release는 0.0.22다(binding의 release check가 GOPROXY=off에서 module cache를 읽었다, C19.153).
 
 - Go `validate.GroupChoicesIn`이 root properties를 받아 선택된 값의 source 선택지를 돌려준다(CUSC-097, C19.93). 입력: `from`이 root 선택 field를 가리키는 Go 호출자. 전의 동작: 없음. `GroupChoices`는 시그니처를 유지한다. 지금: `GroupChoicesIn`이 root를 읽는다.
 - PHP `Validator::validate`은 명세를 `mixed`로 받는다(C19.92, 공개 API 변경). 입력: 문자열, 숫자, 목록이거나 `properties`도 `$ref`도 없는 객체인 명세. 전의 동작: 타입이 붙은 매개변수에서 `TypeError`가 나거나 compose가 다르게 실패했다. 지금: 공유 메시지 "Form specification must be an object" 또는 "A form spec must be a group with properties"의 `FormInputError`로 거부하며, 다른 언어와 같다.

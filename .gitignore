@@ -143,3 +143,7 @@ go.work.sum
 # The conformance records of a CI job and the outputs that the legacy suites write under legacy/var
 /conformance-evidence/
 /legacy/var/
+
+# The napi build outputs of the TypeScript packages and their npm platform directories, which the release assets write (C19.157).
+/packages/*/ts/*.node
+/packages/*/ts/npm/

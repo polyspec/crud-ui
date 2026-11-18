@@ -3,7 +3,9 @@
 
 ## Unreleased
 
-## 0.0.21
+## 0.0.22
+
+- v0.0.21 was tagged on the release commit, but its release run failed in the assets jobs before the release was published, so v0.0.21 stays a tag without a release and the next release is 0.0.22 (the release check of binding read the module cache with GOPROXY=off, C19.153).
 
 - `validate.GroupChoicesIn` (Go) takes the root properties and returns the choices of a source of selected values (CUSC-097, C19.93). Input: a Go caller with a `from` that names a root selection field. Behaviour before: none; `GroupChoices` keeps its signature. Now: `GroupChoicesIn` reads the root.
 - The PHP `Validator::validate` takes its specification as `mixed` (C19.92, a public API change). Input: a specification that is a string, a number, a list, or an object without `properties` or a `$ref`. Behaviour before: a `TypeError` from the typed parameter, or the composition fails differently. Now: a `FormInputError` with the shared message "Form specification must be an object" or "A form spec must be a group with properties", as the other languages give.
