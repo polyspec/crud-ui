@@ -1,6 +1,6 @@
 # 표시 형식
 <!-- doc-id: docs-spec-display-formats -->
-<!-- source-sha256: 7acdc568ed4f7d14c8fd297936de8e19d77e0d63ed65e80c214e12ed889a83c4 -->
+<!-- source-sha256: 0c924428e0cd1477f69da2d25353c3f65169335ca23a8d8f6aeab2936cc88855 -->
 
 [English](display-formats.md).
 
@@ -48,7 +48,7 @@ columns:
 객체나 배열은 빈 문자열이며, 숫자는 가장 짧은 십진 표현을 사용합니다.
 
 콘텐츠를 받는 설정(`prefix`, `suffix`, `text`, `true`, `false`, `alt`, 뱃지와 선택 라벨)은 문자열이나
-`{ ko: 이름, en: Name }` 같은 언어 맵을 받으며, [콘텐츠 규칙](schema.ko.md)으로 표시 언어의 텍스트가 됩니다.
+`{ ko: 이름, en: Name }` 같은 언어 맵을 받으며, [콘텐츠 규칙](schema.ko.md#필드)으로 표시 언어의 텍스트가 됩니다.
 언어 맵은 표시 언어, `en`, `ko`, 첫 키 순서에서 처음으로 비어 있지 않은 문자열 항목을 쓰고, 숫자를 포함한 그 밖의
 값은 빈 텍스트입니다.
 
@@ -72,13 +72,14 @@ columns:
 
 ### date
 
-값은 [날짜 값 규칙](form-runtime.ko.md)으로 해석하고 UTC로 표시합니다. `pattern`의 `YYYY`(연), `MM`(월),
+값은 [날짜 값 규칙](form-runtime.ko.md#날짜-값)으로 해석하고 UTC로 표시합니다. `pattern`의 `YYYY`(연), `MM`(월),
 `DD`(일), `HH`(24시간제 시), `mm`(분), `ss`(초) 토큰을 바꾸고 나머지 문자는 유지합니다.
 
 - **CUDF-090** 비어 있지 않은 `pattern`이 없는 날짜 형식은 패턴 `YYYY-MM-DD`를 씁니다.
 - **CUDF-091** `validateList`와 `validateDetail`은 조합 전에 명세를 CUDF-024와 CUDF-032로 검사합니다. 객체가 아닌 목록이나 상세
   명세는 `INVALID_FORM_INPUT`와 그 규칙의 메시지로 실패하며, 멤버가 없는 선언으로 통과시키지 않습니다.
- 지원하는 날짜가 아닌 값은 그대로 표시합니다.
+
+지원하는 날짜가 아닌 값은 그대로 표시합니다.
 
 ### number
 
@@ -127,7 +128,7 @@ columns:
 
 값이 이미지 원본입니다. `alt`는 번역하고 링크와 같이 명시적 `{=path}` 토큰을 바꾸며, `alt`가 없으면 대체 텍스트는
 비어 있습니다. 선언한 `width`와 `height`는 텍스트로 쓰고, `null`로 선언하면 빈 속성을 씁니다. 원본이 비어 있지
-않고 `data:`로 시작하지 않는 이미지는 preload 링크도 추가합니다. 아래 마크업 절을 참고하세요.
+않고 `data:`로 시작하지 않는 이미지는 preload 링크도 추가합니다. 아래 [마크업](#마크업) 절을 참고하세요.
 
 ### html
 
@@ -189,14 +190,14 @@ columns:
 
 1. **CUDF-036** 루트 멤버를 멤버 순서대로 검사합니다.
 2. **CUDF-037** 자체 `design`을 경로 `list` 또는 `detail`로 검사합니다.
-3. **CUDF-038** 각 열이나 필드를 [멤버 순서](schema.ko.md)대로 검사합니다. 타입, 멤버 순서대로 알 수 없는 키, 그다음
+3. **CUDF-038** 각 열이나 필드를 [멤버 순서](schema.ko.md#멤버-순서)대로 검사합니다. 타입, 멤버 순서대로 알 수 없는 키, 그다음
    `field`, `label`, `format`, `design`, `sortable`을 경로 `columns.{이름}` 또는 `fields.{이름}`으로
    검사합니다.
 4. **CUDF-039** 목록은 `search`, `sort`, `actions`(각 동작을 멤버 순서대로, 경로 `actions.{이름}`), `empty`,
    `description`, `pagination`을 경로 `list`로 검사합니다. 상세는 `actions`(각 동작을 멤버
    순서대로, 경로 `actions.{이름}`)를 경로 `detail`로 검사합니다.
 
-`design`은 [폼 선언 규칙](schema.ko.md)을 그대로 따릅니다. 콘텐츠는 문자열, 언어 맵(멤버가 하나 이상이고 각
+`design`은 [폼 선언 규칙](schema.ko.md#필드)을 그대로 따릅니다. 콘텐츠는 문자열, 언어 맵(멤버가 하나 이상이고 각
 멤버가 문자열이나 `null`인 객체), `null` 중 하나입니다. 조건 맵은 멤버가 하나 이상인 객체입니다.
 
 - **CUDF-040** 목록 루트 멤버 — 허용 값: `columns`, `search`, `sort`, `pagination`, `actions`, `empty`, `description`, `design`; 실패 메시지: `Invalid {key} at list: unknown key`
@@ -241,7 +242,7 @@ columns:
 
 그 밖의 `format` 설정(`truncate`, `decimals`, `thousands`, `width`, `height`, 표에 없는 설정)은 어떤
 값이든 받습니다. 이 설정의 키에도 금지 키 스캔은 적용됩니다. `search` 객체의 멤버는 폼 선언입니다. 목록 모델은
-이를 사용하지 않으며, [폼 컴파일](schema.ko.md)과 메타 스키마가 검사합니다.
+이를 사용하지 않으며, [폼 컴파일](schema.ko.md#필드)과 메타 스키마가 검사합니다.
 
 `script`가 있는 동작은 스크립트 문자열과 같은 스크립트 동작입니다. 모델은
 `{ key, label, behavior: { onclick: script } }`이며, `label`은 번역한 값이고 `label`이 없으면 동작
@@ -262,12 +263,14 @@ columns:
 
 해석된 페이지네이션 모델의 멤버 순서는 `enabled`, 페이지네이션이 켜진 경우의 `perPage`·
 `mode`·`page`(CUDF-089), 제공된 `total`, 켜진 경우의 `pageCount`입니다. 꺼진 경우에는
-제공된 `page`와 `total`만 남습니다. 페이지 번호는 7페이지까지 모두 표시하고, 그보다 많으면 첫·이전·현재·다음·
-마지막 페이지를 표시합니다. 전체 수가 없으면 현재 페이지는 1이고, 마지막 페이지보다 큰 페이지는 마지막 페이지를
-선택합니다.
+제공된 `page`와 `total`만 남습니다.
 
 - **CUDF-089** 켜진 페이지네이션은 `per_page`가 없으면 `perPage` 20, `mode`가 없으면 `pages`, 제공된 페이지가 없으면 페이지 1을
   씁니다. 제공된 전체 수가 없으면 `pageCount`는 0입니다.
+
+페이지 번호는 7페이지까지 모두 표시하고, 그보다 많으면 첫·이전·현재·다음·
+마지막 페이지를 표시합니다. 전체 수가 없으면 현재 페이지는 1이고, 마지막 페이지보다 큰 페이지는 마지막 페이지를
+선택합니다.
 
 PHP에서는 [PHP API 계약](../operations/php-extension.ko.md)이 어떤 PHP 값이 객체인지 정합니다. 루트 객체 인수와 고정 객체
 옵션 `data`, `files`에는 빈 PHP 배열을 받고, 중첩 값은 타입을 유지합니다.

@@ -1,6 +1,6 @@
 # 상세 렌더링 고정 데이터
 <!-- doc-id: tests-fixtures-detail-render-readme -->
-<!-- source-sha256: e112fbaea9919de347d6d2453d912f0e9acceecfbdfa23bec18824794455e695 -->
+<!-- source-sha256: 2082ce49243fdb52afa081af448eef8ce129ea6f6152403eb8bf72752b46f675 -->
 
 [English](README.md).
 
@@ -16,7 +16,7 @@ legacy 렌더러의 suite는 `legacy/tests/fixtures` 아래 사본을 읽습니�
 레코드는 사례가 제공하며 렌더러는 데이터를 조회하지 않습니다.
 
 `content-values`는 선언 규칙이 열어 둔 `format.items`의 선택 라벨을 숫자, 숫자를 가진 언어 맵, 배열로
-선언하고, 모든 런타임이 이런 라벨을 빈 텍스트로 해석하는지 검사합니다
+선언하며, 모든 런타임은 이런 라벨을 각각 빈 텍스트로 해석합니다
 ([명세 구조](../../../docs/spec/schema.ko.md)).
 
 ## 비교
@@ -26,7 +26,7 @@ legacy 렌더러의 suite는 `legacy/tests/fixtures` 아래 사본을 읽습니�
 preload 링크를 쓰며, [`preload-links.mjs`](../../../legacy/tests/fixtures/preload-links.mts)가 이를 제거하므로 본문 기대값은 상세
 본문만 다룹니다. 오류 사례는 기록된 메시지를 확인합니다.
 
-[네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)는 모든 사례를 모든 런타임에 두 수준으로
+[네이티브 생성기 검사](../../../legacy/tests/native-generators/README.ko.md)는 모든 사례를 모든 런타임에, 런타임이 노출하는 두 수준 각각으로
 보냅니다. `buildDetail`은 멤버 순서까지 같은 모델을, `renderDetail`은 이미지 preload 링크를 포함해
 React와 같은 전체 원본 HTML을 반환해야 합니다. 필드의 `value`는 레코드의 해당 경로에 값이 없으면
 `null`입니다.

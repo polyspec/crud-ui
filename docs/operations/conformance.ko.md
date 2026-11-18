@@ -1,6 +1,6 @@
 # 적합성 증거
 <!-- doc-id: docs-operations-conformance -->
-<!-- source-sha256: 7a8bc5cbc843c8804bae253bef5fe30b7f6956ce854af827bf2f3c7d4297ff1f -->
+<!-- source-sha256: b3a1ebe980c68da7d4867c494328650e2a97cce20d8ec71b7af28981443b11de -->
 
 [English](conformance.md).
 
@@ -14,8 +14,7 @@ runtime을 나열하며, 이 값이 없으면 지원하는 모든 runtime을 계
 검사하는 family의 feature별 정확한 case 이름을 지정합니다. 모든 case는 feature에 속해야 하고, fixture를 소유하는
 모든 feature는 case를 선택해야 하며, 지원하는 feature runtime마다 적용 가능한 case가 있어야 합니다. Unknown runtime,
 unknown case와 empty selection은 실패합니다.
-
-`notApplicable`은 runtime별로, 타입이 있는 API가 입력을 담을 수 없어 실행하지 않는 fixture case를 지정합니다(문자열이거나 소수이거나 안전 범위 밖인 값은 core가 실행되기 전에 host binding이 거부한다). 그 runtime은 그 case의 증거를 요구받지 않으며, 소유 feature가 지원하는 다른 runtime은 여전히 요구받습니다.
+`notApplicable`은 runtime별로, 타입이 있는 API가 입력을 담을 수 없어 실행하지 않는 fixture case를 지정합니다(숫자가 아닌 값, 소수 또는 범위를 벗어난 정수는 core가 실행되기 전에 host binding이 거부한다). 그 runtime은 그 case의 증거를 요구받지 않으며, 소유 feature가 지원하는 다른 runtime은 여전히 요구받습니다.
 
 `featureRuntimes`는 fixture를 소유한 feature의 operation이 실제 실행되는 runtime으로 해당 feature의 적용 범위를
 제한합니다. Override가 없는 feature는 fixture의 기본 runtime 범위를 유지합니다. Override는 해당 feature가 지원하고

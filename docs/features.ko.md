@@ -1,6 +1,6 @@
 # 기능 상태
 <!-- doc-id: docs-features -->
-<!-- source-sha256: da97afeea29390d2147f06da83ba9cfdf54bbd80a2b7f09181c9a9596dcc3b3d -->
+<!-- source-sha256: 3c5ca0d8d7803a6e258e021298384afb75dd3a64fbfa3eb517157985f08d95cc -->
 
 [English](features.md). 계약은 [명세](spec/form-runtime.ko.md)에 정의합니다.
 테스트와 배포를 별도로 기록합니다. `pending`은 통과 결과가 아닙니다.
@@ -18,7 +18,7 @@
 | display-switching | 브라우저 바인딩이 부모 값에 따른 `design.show`로 필드와 그룹을 보이고 숨기며, 상대 경로는 반복 행을 한 단계로 다루고, 검증 결과는 숨은 경로를 담으며, 검증기 다섯 개가 조건부 필수 필드의 공유 사례를 통과한다 | implemented | pending | not-deployed | [표시](../packages/form-binding/README.ko.md#표시), [표시 여부](spec/validation-rules.ko.md#평가), [상대 경로](spec/expressions.ko.md#5-평가); [바인딩 사례](../packages/form-binding/tests/display.test.ts), [숨은 경로 사례](../legacy/packages/validator/ts/src/hidden-paths.test.ts), [공유 검증 사례](../tests/fixtures/validate/visibility.mts) `switch-*`, `visibility-row-parent-*`, `visibility-show-literal-identifier`, [공유 expression 사례](../legacy/packages/validator/ts/scripts/generate-expr-cases.mts) `path-row-*`, [공유 폼 사례](../tests/fixtures/form-render/cases.json) `design-show-row-parent-*`. native와 브라우저 비교는 CI에서 실행한다 |
 | choice-groups | `select` 필드의 선택 목록에 있는 그룹 항목을 여덟 렌더러가 옵션을 가진 `optgroup` 요소로 렌더링하고, 검증기 다섯 개의 `in`이 그룹 안의 값을 필드의 선택지로 받는다 | implemented | passed | not-deployed | [명세](spec/schema.ko.md#선택지-그룹), [폼 마크업](spec/form-markup.ko.md#선택지-그룹); `@polyspec/crudui-generator-core`([모델과 검사 사례](../legacy/packages/generator/ts/src/choice-groups.test.ts)), `@polyspec/crudui-generator-html`([바이트 사례](../legacy/packages/html/src/choice-groups.test.ts)), React([바이트와 컴포넌트 사례](../packages/react/src/tests/choice-groups.test.tsx)), Vue([사례](../packages/vue/tests/choice-groups.test.mjs)), Svelte([사례](../packages/svelte/tests/choice-groups.test.mjs)), TypeScript 검증기의 `in`([사례](../legacy/packages/validator/ts/src/choice-groups.test.ts)), 그 타입, JSON Schema에 구현됨; [공유 폼 사례](../tests/fixtures/form-render/cases.json) `choice-groups-*`, 목록 사례 `reject-format-items-choice-group`, [공유 검증 사례](../tests/fixtures/validate/value-rules.mts) `value-in-choice-groups*`가 구현을 비교함; [네이티브 검사](../legacy/tests/native-generators/README.ko.md)의 PHP, PHP 확장, Go, Rust 렌더러와 PHP, PHP 확장, Go, Rust 검증기를 포함함 |
 | selected-value-choices | `multichoice`, `checkboxes`, `checkcontainer` 필드가 선택한 값에서 오는 선택 필드의 선택지(CUSC-097): validator와 generator core와 그 binding이 읽고, 폼 바인딩과 React, Vue, Svelte 컴포넌트의 실시간 갱신은 구현되지 않았다(C19.74) | in-progress | pending | not-deployed | [명세](spec/schema.ko.md#반복-그룹의-선택지) |
-| inline-layout | 각 필드의 레이블과 컨트롤을 한 줄에 두는 폼 배치를 여덟 렌더러가 제공한다 | implemented | passed | not-deployed | [명세](spec/schema.ko.md#배치), [폼 마크업](spec/form-markup.ko.md#배치); `@polyspec/crudui-generator-core`([모델과 검사 사례](../legacy/packages/generator/ts/src/inline-layout.test.ts)), `@polyspec/crudui-generator-html`([바이트 사례](../legacy/packages/html/src/inline-layout.test.ts)), 스타일시트([브라우저 배치 검사](../tests/form-styles.test.mts)), JSON Schema에 구현됨; inline 배치의 헤더에 쓰는 체크박스와 스위처 필드의 레이블은 노드 모델과 React([서버와 컴포넌트 사례](../packages/react/src/tests/inline-layout.test.tsx)), Vue([사례](../packages/vue/tests/inline-layout.test.mjs)), Svelte([사례](../packages/svelte/tests/inline-layout.test.mjs))에 구현됨; [공유 폼 사례](../tests/fixtures/form-render/cases.json) `inline-layout-*`와 작성된 레이아웃 사례 여섯 개가 여덟 렌더러를 비교함; PHP, PHP 확장, Go, Rust는 [네이티브 검사](../legacy/tests/native-generators/README.ko.md)에서 통과함 |
+| inline-layout | 각 필드의 레이블과 컨트롤을 한 줄에 두는 폼 배치를 여덟 렌더러가 제공한다 | implemented | passed | not-deployed | [명세](spec/schema.ko.md#배치), [폼 마크업](spec/form-markup.ko.md#배치); `@polyspec/crudui-generator-core`([모델과 검사 사례](../legacy/packages/generator/ts/src/inline-layout.test.ts)), `@polyspec/crudui-generator-html`([바이트 사례](../legacy/packages/html/src/inline-layout.test.ts)), 스타일시트([브라우저 배치 검사](../tests/form-styles.test.mts)), JSON Schema에 구현됨; inline 배치의 헤더에 쓰는 체크박스와 스위처 필드의 레이블은 노드 모델과 React([서버와 컴포넌트 사례](../packages/react/src/tests/inline-layout.test.tsx)), Vue([사례](../packages/vue/tests/inline-layout.test.mjs)), Svelte([사례](../packages/svelte/tests/inline-layout.test.mjs))에 구현됨; [공유 폼 사례](../tests/fixtures/form-render/cases.json) `inline-layout-*`와 작성된 레이아웃 사례 여섯 개가 PHP, PHP 확장, Go, Rust를 포함한 여덟 렌더러를 [네이티브 검사](../legacy/tests/native-generators/README.ko.md)에서 비교함 |
 | collection-controls | 현재 행 계약 밖의 제안: 행 컨트롤의 선언된 글과 속성, 마지막 행 뒤의 추가 컨트롤을 여덟 렌더러가 렌더링한다 | not-started | pending | not-deployed | [폼 마크업](spec/form-markup.ko.md#행) |
 | validator-responses | 검증기 프로세스 상태와 완전한 응답 검사 | implemented | passed | not-deployed | [응답 검사](../legacy/examples/cross-check-console/server/validate-response.test.mjs), [검증기 프로세스 사례](../legacy/examples/cross-check-console/validators/README.ko.md) |
 | php-api | 동일한 메서드를 제공하는 PHP와 확장의 공통 클래스 | implemented | passed | not-deployed | [PHP API 계약](operations/php-extension.ko.md) |
@@ -50,18 +50,18 @@
 | declared-form-data | 모든 그룹 단계에서 선언되지 않은 제출 필드 거부 | implemented | passed | not-deployed | [검증 계약](operations/validation.ko.md), [공유 사례](../tests/fixtures/validate/cases.json) |
 | form-controls | 라벨, 복수 선택 배열과 필드 컨테이너 경로 | implemented | passed | not-deployed | [공유 입력 검사](../tests/fixtures/form-session/controls.mts) |
 | package-exports | 패키지 export, 분리된 React 컴포넌트·서버 진입점, 타입 선언과 설치 프로덕션 빌드 | implemented | passed | not-deployed | [설치 검사](../scripts/check-packages.mts), [React 진입점 검사](../packages/react/src/tests/entry-boundary.test.ts) |
-| package-install | 플랫폼 의존성 해석과 정상 설치 스크립트 | implemented | passed | not-deployed | [npm ci / test:packages](operations/package-build.ko.md) |
+| package-install | 해석된 의존성과 정상 설치 | implemented | passed | not-deployed | [npm ci / test:packages](operations/package-build.ko.md) |
 | package-build | 독립적인 공개 타입 선언 컴파일 | implemented | passed | not-deployed | [빌드 검사](../tests/build/README.ko.md), [공개 타입 검사](../tests/build/public-packages.test.mts) |
 | package-api | 초기 패키지 API와 버전 메타데이터 | implemented | passed | not-deployed | [API 계약](spec/schema.ko.md) |
 | form-template | 데이터와 독립된 폼 템플릿과 JSON 캐시 | implemented | passed | not-deployed | [코어 테스트](../legacy/packages/generator/ts/src/form.test.ts) |
 | form-initialization | 초기 데이터·반복 주입·레코드 복원 | implemented | passed | not-deployed | [런타임 계약](spec/form-runtime.ko.md) |
 | form-inspector | 파싱한 DOM·HTML 원문·CSS·상태 비교와 차이 보존 | implemented | passed | not-deployed | [검사기 테스트](../tests/form-inspector/form-snapshot.test.mts) |
-| form-rows | 중첩 행 작업 범위와 저장 후 seq 키 적용 | implemented | passed | not-deployed | [코어 테스트](../legacy/packages/generator/ts/src/form.test.ts) |
+| form-rows | 중첩 행 작업 범위와 저장된 순서 키 | implemented | passed | not-deployed | [코어 테스트](../legacy/packages/generator/ts/src/form.test.ts) |
 | form-empty-rendering | 병합 런타임의 명시적인 빈 컬렉션 출력 | implemented | passed | not-deployed | [빈 컬렉션 검사](../legacy/packages/generator/ts/src/empty-collections.test.ts) |
 | form-browser | 세 프레임워크의 데이터 주입과 행 작업 | implemented | passed | not-deployed | [공용 DOM 사례](../tests/fixtures/form-session/scenario.mts) |
 | form-typing | 안정적인 편집 컨트롤의 기본 입력 갱신, 포커스와 렌더러 완료 | implemented | passed | not-deployed | [로컬 검증](operations/form-comparison.ko.md#로컬-검증)(`make crudui-test-form-comparison-checks`, CI 작업 `form-comparison-checks`): [`check-typing.mjs`](../examples/form-comparison/check-typing.mjs) |
-| form-empty-focus | 빈 컬렉션의 첫 행 생성 후 포커스 | implemented | passed | not-deployed | [공통 DOM 사례](../tests/fixtures/form-session/scenario.mts) |
-| form-focus | 행 작업 후 대상 행으로 포커스 이동 | implemented | passed | not-deployed | [로컬 검증](operations/form-comparison.ko.md#로컬-검증)(`make crudui-test-form-comparison-checks`, CI 작업 `form-comparison-browser`): [`check-interaction.mjs`](../examples/form-comparison/check-interaction.mjs)의 상호작용 검사 |
+| form-empty-focus | 빈 컬렉션 뒤의 포커스가 첫 행을 생성한다 | implemented | passed | not-deployed | [공통 DOM 사례](../tests/fixtures/form-session/scenario.mts) |
+| form-focus | 행 작업 후 영향받은 행으로 포커스 이동 | implemented | passed | not-deployed | [로컬 검증](operations/form-comparison.ko.md#로컬-검증)(`make crudui-test-form-comparison-checks`, CI 작업 `form-comparison-browser`): [`check-interaction.mjs`](../examples/form-comparison/check-interaction.mjs)의 상호작용 검사 |
 | form-markup | 다섯 구현의 재귀 폼 노드, 목록·상세 표시 블록, 행 카드, 인터페이스 문구 | implemented | passed | not-deployed | [폼 마크업](spec/form-markup.ko.md), [표시 형식](spec/display-formats.ko.md) |
 | crudui-details | 읽기 전용 상세 명세, 모델, 프레임워크 독립 HTML 렌더링과 구조 검증 | implemented | passed | not-deployed | [명세](spec/schema.ko.md), [표시 형식](spec/display-formats.ko.md), [기능 계약](operations/feature-contracts.ko.md), [공용 상세 고정 데이터](../tests/fixtures/detail-render/README.ko.md), [네이티브 비교](../legacy/tests/native-generators/README.ko.md), [상세 검증 사례](../tests/fixtures/detail-validity/cases.json) |
 | form-view-state | 레코드 데이터와 분리된 행 접기, 병합 실행취소·실행복귀 이력 | implemented | passed | not-deployed | [노드 테스트](../legacy/packages/generator/ts/src/node.test.ts) |
@@ -99,7 +99,7 @@ Report는 `var/report/final-checklist/record.json`입니다. 실패의 수정과
 2026-10-26 검토는 기존 불가 checklist 10개 행을 현재 원인에 따라 분류합니다. Unicode data는 잠긴 Unicode package를
 사용합니다. HTTP forwarding adapter는 양방향 connection-specific header를 제거합니다. 검토한 VitePress distribution은
 영향받는 parser를 내장하므로 문서 renderer는 직접 관리하는 Markdown parser를 유지합니다.
-[문서](rebuild/documentation-web.ko.md)와 [HTTP forwarding](rebuild/http-forward.ko.md) 기록은 요구, 검토한 도구와 재검토
+[문서](rebuild/documentation-web.ko.md)와 [HTTP forwarding](rebuild/http-forward.ko.md) 기록은 요구, 검토한 도구와 재시도
 조건을 설명합니다.
 
 Native package manager는 로컬 준비에서 현재 sibling source를 선택합니다. Composer는 하나의 root 선언과 lock을 사용하고
@@ -107,7 +107,7 @@ Native package manager는 로컬 준비에서 현재 sibling source를 선택합
 script를 실행합니다. Server rendering과 hydration은 script element를 유지하며 React dependency-policy exception은 제거합니다.
 철회된 sprintf-js advisory는 package update를 요구하지 않습니다.
 
-갱신한 dependency review는 registry dependency 87개와 lock 13개를 검토하며 보안 advisory가 없습니다. npm lock은 수정된
+갱신한 dependency review는 registry dependency 88개와 lock 14개를 검토하며 보안 advisory가 없습니다. npm lock은 수정된
 Markdown, URI, HTTP client와 schema package를 선택하며 Rust comparison server lock은 Tokio 1.53.3을 선택합니다.
 Go 1.27.3은 linked module의 최소 버전을 충족하며 advisory scan을 실행할 수 있습니다.
 
@@ -172,7 +172,6 @@ Native PHP extension은 version-only release component입니다.
 보존 외부 `https://crudui.test/` 환경은 이전 라이브러리 트리를 사용하며
 PHP·네이티브 JSON 파싱을 사용하는 PHP·Go·Rust를 독립적인 HTTP 대상으로 실행합니다.
 HTTP 검사 240개와 PHP 처리 모드 검사가 모두 통과했습니다.
-
 두 PHP 대상은 모두 PHP 검증기를 사용합니다. 이 보존 결과는 현재 CRUDUI
 네이티브 폼 생성이나 검증 통합을 증명하지 않습니다.
 
@@ -205,8 +204,8 @@ Git에서 제거했습니다. 새 이미지는 같은 잠금 버전의 PHP 의�
 0.0.8의 release commit은 전체 CI와 push 검사를 통과했습니다.
 Release workflow는 공개 전에 checkout 밖에서 archive 11개를 모두 설치하고 검사했습니다.
 두 Go module tag도 같은 commit을 가리킵니다.
-표는 서버별로 완료된 최신 검사를 기록합니다.
-네 서버의 브라우저 검사가 완료되었습니다. 보존된 비교 구현의 실패는 보고서에 유지합니다.
+표는 네 서버 모두의 완료된 브라우저 검사를 기록합니다.
+보존된 비교 구현의 실패는 보고서에 유지합니다.
 
 TypeScript·Go·Rust·PHP API 생성과 엄격한 정적 웹 빌드가 통과했습니다.
 전체 문서를 두 번 생성한 API 문서·네이티브 HTML 자산·스키마 출력은 동일했습니다.

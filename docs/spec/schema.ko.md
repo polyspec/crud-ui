@@ -1,6 +1,6 @@
 # 명세 구조
 <!-- doc-id: docs-spec-schema -->
-<!-- source-sha256: e396a6159331540c835208e9a6c2adc28d13d9cf815689e500a2cce773277306 -->
+<!-- source-sha256: 9f61f578655342f6f2dc6ff5f61a94035f875f911c17e865870b200ba0b65866 -->
 
 [English](schema.md). 이 문서는 필드와 목록 선언을 정의합니다.
 폼 인스턴스, 반복 행 키, 캐싱은 [폼 런타임](form-runtime.ko.md)에 정의합니다.
@@ -136,7 +136,7 @@ opens_when:
 컴파일은 이 멤버들을 `validate.conditionTree` 다음에 검사하며 `INVALID_FORM_INPUT`와 빈 위치로 실패합니다.
 
 - **CUSC-083** 조건 필드가 아닌 필드의 `design.editor`: `Invalid design.editor at {path}: unknown key`, 그리고 조건 필드에서 `text`나 `structured`가 아닌 값: `Invalid design.editor at {path}: expected text or structured`
-- **CUSC-084** 구조 조건 필드가 아닌 필드의 `options.fields`, 또는 다듬은 뒤 비지 않고 서로 같지 않은 문자열의 목록이 아닌 `options.fields`: `Invalid options.fields at {path}: expected distinct field names of a structured condition editor`
+- **CUSC-084** 구조 조건 필드가 아닌 필드의 `options.fields`, 또는 다듬은 뒤 비지 않고 서로 같지 않은 문자열의 목록이 아닌 필드: `Invalid options.fields at {path}: expected distinct field names of a structured condition editor`
 
 편집기는 필드의 규칙이 받는 것을 제공하고 값을 잃지 않고 보여 줍니다.
 
@@ -283,7 +283,7 @@ second recording." }] } }`는 두 규칙을 모두 통과합니다. `opens_when`
 맵을 사용합니다. `lang`은 설정한 언어별 입력을 생성하며 `only`, `frame`, `title`,
 `group_class`를 설정합니다.
 
-- **CUSC-091** `lang.only`가 없거나 비어 있으면 언어는 `ko`, `en`, `ja`, `zh`입니다.
+- **CUSC-091** `lang.only`가 없거나 `lang.only`가 비어 있으면 언어는 `ko`, `en`, `ja`, `zh`입니다.
 
 `items`는 인덱스가 값인 정적 배열, 값과 라벨의 맵, [선택 목록](#선택-목록), `from`이 있는
 [그룹 소스](#반복-그룹의-선택지), `model`이 있는 동적 소스 설정을 사용합니다. 정적 라벨에는 언어 맵을 사용할 수 있습니다. 생성기는 동적 소스 설정을
@@ -542,7 +542,7 @@ TypeScript, PHP, Go, Rust 구현을 비교합니다. SSR 비교와 마운트한 
 텍스트입니다. 코어는 데이터베이스 조회, 레코드 필터링, 서버 페이지 처리를 수행하지
 않습니다. 현재 페이지와 전체 레코드 수는 호출자가 제공합니다. `pagination`이
 활성화되면 생략된 `perPage`는 20, `mode`는 `pages`, `page`는 1로 해석합니다.
-해석된 모델에는 `pageCount`가 포함됩니다. 전체 수가 없으면 0이고, 있으면 `total`이 0이어도 최소
+해석된 모델에는 `pageCount`가 포함됩니다. 전체 수가 없으면 0이고, 있으면 전체 수가 0이어도 최소
 1입니다. `per_page`는 1 이상의 정수이며, 선언 검사와 페이지 번호 범위는
 [표시 규칙](display-formats.ko.md)이 정합니다. 모든 렌더러는
 이전·페이지 번호·다음 버튼을 출력합니다. 현재 페이지에는 `aria-current="page"`를
@@ -580,7 +580,7 @@ must declare fields`, 객체가 아닌 레코드는 `Detail record must be an ob
 반복 필드는 행 개수 제한으로 숫자형 `multiple.min`과 `multiple.max`를,
 행 컨트롤로 `multiple.copy`와 `multiple.sortable`을, 각 행의 제목이 되는 자식 필드로
 `multiple.title`을, 컨트롤 위치로 `multiple.controls`(기본 `header`)를, 행 헤더
-고정 여부로 `multiple.header`(기본 `static`, 또는 `sticky`)를 받습니다. 렌더링은
+고정 여부로 `multiple.header`(기본 static, 또는 sticky)를 받습니다. 렌더링은
 [폼 마크업](form-markup.ko.md)에서 정의합니다. 인스턴스의 컬렉션 키가 행을 식별하며
 스키마는 숨김 식별자 필드를 정의하지 않습니다. 행 연산은 [폼 런타임](form-runtime.ko.md)에 정의합니다.
 `multiple.only: true`와 같은 `multiple: only`는 데이터에만 존재하는 행을 선언합니다. 데이터의 키가 곧

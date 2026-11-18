@@ -1,6 +1,6 @@
 # 검증 규칙
 <!-- doc-id: docs-spec-validation-rules -->
-<!-- source-sha256: c7d409717fbaad9b13561328c0055fe734aaadd2cd178f6f96f0026bdec416ec -->
+<!-- source-sha256: 34f6bd2b0ed9fdfff6459935966aa346de659d213d44ee86f746fa42a66ed33f -->
 
 [English](validation-rules.md).
 
@@ -418,7 +418,6 @@ properties:
 불리언 조건이 아니라 필드 참조입니다. 따라서 `equalTo`, `notEqual`, `unique`,
 `enddate`, `reference`에 준 객체나 목록은 조건맵이 아니라 [매개변수 오류](#매개변수-오류)입니다.
 포함 여부 검사 맵은 조건맵이 아닌 값 집합입니다.
-
 `enddate`의 `.start`는 형제 필드, `..start`는 한 그룹 위의 필드를 공통 필드 참조
 해석기로 조회합니다.
 
