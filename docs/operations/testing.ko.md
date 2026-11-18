@@ -14,7 +14,7 @@
 checkout에 설치하며, 이 명령은 machine의 도구를 바꾸지 않습니다. make는 `var/tools/bin`의 명령을
 `PATH`의 맨 앞에 두고, npm을 직접 실행하는 shell은 `export PATH="$PWD/var/tools/bin:$PATH"`로 그렇게
 합니다. `.npmrc`가 `strict-allow-scripts`를 설정하므로 `make install-packages`는 `package.json`의 `allowScripts`가 승인하지 않은
-install script에서 실패합니다. PHP 패키지의
+install script에서 실패합니다. checkout의 첫 `make install-tools`는 PHP 8.4를 `PATH`의 맨 앞에 두고 실행합니다(`php@8.4/bin`을 다른 PHP보다 앞에). 거기서 쓰는 `var/tools/bin/php`가 checkout의 PHP이고 이후 install은 그것을 남기므로, 다른 PHP로 처음 install한 checkout은 `var/tools/bin/php`를 지울 때까지 그 PHP를 씁니다. PHP 패키지의
 Composer 의존성을 설치하며 PHP·Go·Cargo를 `PATH`에서 실행할 수 있게 합니다. 비교 예제의 PHP 레코드
 서버에는 `php-fpm`과 `nginx`도 필요합니다(Debian·Ubuntu:
 `php8.x-fpm`과 `nginx`, 그리고 버전이 붙은 실행 파일을 가리키는 `php-fpm` 링크).

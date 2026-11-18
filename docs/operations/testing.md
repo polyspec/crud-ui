@@ -16,7 +16,7 @@ Composer with PHPCS and PHPStan, cargo-audit) into the checkout with `make insta
 (`node_modules/@polyspec/kit/dist/install-tools.mjs`; `TOOLS="go cargoAudit"` names the tools to install, and a workflow job installs only the ones it uses), which never changes the tools of the
 machine; make puts their commands in `var/tools/bin` first on `PATH`, and a shell that runs npm
 itself puts them there with `export PATH="$PWD/var/tools/bin:$PATH"`. `.npmrc` sets `strict-allow-scripts`, so
-`make install-packages` fails on an install script that `allowScripts` of `package.json` does not approve. Install the PHP package's Composer dependencies,
+`make install-packages` fails on an install script that `allowScripts` of `package.json` does not approve. The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH` (`php@8.4/bin` ahead of the other PHP): the `var/tools/bin/php` it writes is the PHP of the checkout, and a later install keeps it, so a checkout first installed with another PHP keeps that PHP until `var/tools/bin/php` is removed. Install the PHP package's Composer dependencies,
 and make PHP, Go and Cargo available on `PATH`, with `php-fpm` and `nginx` for the PHP record
 servers of the comparison example (Debian and Ubuntu:
 `php8.x-fpm` and `nginx`, with `php-fpm` linked to the versioned binary). Build JavaScript packages before
