@@ -795,17 +795,17 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 # which makes no commit, no tag and pushes nothing). The rehearsal tag is v of the version of package.json. The job downloads
 # the platform assets of the job assets into var/release/platform-assets first, as ci-release-publish does.
 RELEASE_REHEARSAL_VERSION = $(strip $(shell node -p "require('./package.json').version"))
+ci-release-rehearsal: export TAG = v$(RELEASE_REHEARSAL_VERSION)
 ci-release-rehearsal: ## The job release-rehearsal of ci.yml: the steps of ci-release-publish before its first GitHub write, and rehearse-go-module of each component, with no tag
-	$(CI_MAKE) release-zip
-	$(CI_MAKE) release-prepare
-	$(CI_MAKE) release-tools
-	$(CI_MAKE) release-assets
-	mkdir -p var/release/assets && cp -R var/release/platform-assets/. var/release/assets/
 	$(CI_MAKE) install-tools TOOLS="rust go"
-	$(CI_MAKE) crudui-install-crates
 	$(CI_MAKE) crudui-install-go-modules
-	$(CI_MAKE) release-recipes
-	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) rehearse-go-module-$(component) TAG=v$(RELEASE_REHEARSAL_VERSION)$(CI_NEWLINE))
+	$(CI_MAKE) ci-targets TARGETS="release-zip release-prepare release-tools release-assets release-merge-platform crudui-install-crates release-recipes $(foreach c,$(BINDING_COMPONENTS),rehearse-go-module-$(c))"
+
+# release-merge-platform copies the platform assets that the job assets built into var/release/assets, after release-assets
+# (ci-release-publish does the same copy).
+.PHONY: release-merge-platform
+release-merge-platform: ## Merge var/release/platform-assets into var/release/assets, after release-assets
+	mkdir -p var/release/assets && cp -R var/release/platform-assets/. var/release/assets/
 
 # The jobs of .github/workflows/assets.yml (C19.71), which the job assets of release.yml calls for the tree of the tag with
 # RELEASE=true, which runs the release check of binding on the contract of each component before the builds (make
@@ -1401,7 +1401,16 @@ CI_TARGETS = \
 	crudui-test-generator-js \
 	crudui-test-php-api \
 	crudui-test-cross-language-equivalence \
-	check-conformance
+	check-conformance \
+	release-zip \
+	release-prepare \
+	release-tools \
+	release-assets \
+	release-merge-platform \
+	crudui-install-crates \
+	release-recipes \
+	rehearse-go-module-validator \
+	rehearse-go-module-generator
 
 # PHP source runs include public and implementation units; extension defaults remain public. Named apart from test-php,
 # which runs the PHP tests of each PHP package with the runtime targets (C17.86).

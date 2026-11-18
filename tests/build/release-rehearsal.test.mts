@@ -27,14 +27,15 @@ test('each CI run rehearses the release job with read-only permissions, after th
   assert.match(job(workflow, 'ci-passed'), /\n    needs: \[[^\]]*\brelease-rehearsal\b[^\]]*\]/, 'ci-passed needs release-rehearsal');
 });
 
-test('ci-release-rehearsal runs the steps of ci-release-publish before its first GitHub write, and rehearses each module (C19.162)', () => {
+test('ci-release-rehearsal runs the steps of ci-release-publish before its first GitHub write, in one ci-targets call (C19.162)', () => {
   const makefile = text('Makefile');
   const recipe = makefile.match(/^ci-release-rehearsal:[^\n]*\n((?:\t.*\n)+)/m)?.[1] ?? '';
   assert.notEqual(recipe, '', 'the Makefile has a recipe ci-release-rehearsal');
-  for (const step of ['release-zip', 'release-prepare', 'release-tools', 'release-assets', 'crudui-install-crates', 'release-recipes'])
-    assert.match(recipe, new RegExp(`\\$\\(CI_MAKE\\) ${step}\\n`), `ci-release-rehearsal runs ${step}`);
-  assert.match(recipe, /release-go-module-\$\(component\)|rehearse-go-module-\$\(component\)/, 'ci-release-rehearsal rehearses each Go module');
-  assert.match(recipe, /rehearse-go-module-\$\(component\)[^\n]*TAG=/, 'ci-release-rehearsal names the rehearsal tag');
+  const targets = recipe.match(/ci-targets TARGETS="([^"]+)"/)?.[1]?.split(/\s+/) ?? [];
+  for (const step of ['release-zip', 'release-prepare', 'release-tools', 'release-assets', 'release-merge-platform', 'crudui-install-crates', 'release-recipes'])
+    assert.ok(targets.includes(step), `ci-release-rehearsal runs ${step} through ci-targets`);
+  assert.ok(recipe.includes('rehearse-go-module-$(c)'), 'ci-release-rehearsal rehearses each Go module of BINDING_COMPONENTS');
   for (const forbidden of ['release-go-module-push', 'release-publish', 'release-undraft', 'release-platform-assets', 'release-tag'])
-    assert.doesNotMatch(recipe, new RegExp(`\\b${forbidden}\\b`), `ci-release-rehearsal must not run ${forbidden}`);
+    assert.ok(!targets.includes(forbidden) && !recipe.includes(forbidden), `ci-release-rehearsal must not run ${forbidden}`);
+  assert.match(makefile, /^ci-release-rehearsal: export TAG = v\$\(RELEASE_REHEARSAL_VERSION\)$/m, 'the rehearsal exports the rehearsal tag');
 });
