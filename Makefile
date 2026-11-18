@@ -1051,6 +1051,7 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/release-assets-install.test.mts \
 	tests/build/crud-ui-version.test.mts \
 	tests/build/cargo-bin-path.test.mts \
+	tests/build/napi-devdependency.test.mts \
 	tests/build/ci-go-generate.test.mts \
 	tests/build/ci-json-auth.test.mts \
 	tests/build/ci-pipeline-outputs.test.mts \

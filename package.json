@@ -114,6 +114,7 @@
   "devDependencies": {
     "@microsoft/api-documenter": "7.30.18",
     "@microsoft/api-extractor": "7.59.4",
+    "@napi-rs/cli": "3.10.12",
     "@polyspec/binding": "https://github.com/polyspec/binding/releases/download/v0.0.21/polyspec-binding-0.0.21.tgz",
     "@polyspec/crudui-generator-core": "0.0.22",
     "@polyspec/crudui-generator-html": "0.0.22",
