@@ -9,10 +9,16 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 
+function field(value: unknown, key: string): unknown {
+  return typeof value === 'object' && value !== null && key in value ? Reflect.get(value, key) : undefined;
+}
+
 test('@napi-rs/cli is a pinned devDependency of the repository and locked (C19.159)', () => {
-  const pkg = JSON.parse(readFileSync(`${ROOT}/package.json`, 'utf8')) as { devDependencies?: Record<string, string> };
-  const version = pkg.devDependencies?.['@napi-rs/cli'];
-  assert.match(version ?? '', /^\d+\.\d+\.\d+$/, '@napi-rs/cli is not an exact devDependency of package.json');
-  const lock = JSON.parse(readFileSync(`${ROOT}/package-lock.json`, 'utf8')) as { packages: Record<string, { version?: string; dev?: boolean }> };
-  assert.equal(lock.packages['node_modules/@napi-rs/cli']?.version, version, 'package-lock.json does not lock @napi-rs/cli at the devDependency');
+  const pkg: unknown = JSON.parse(readFileSync(`${ROOT}/package.json`, 'utf8'));
+  const version = field(field(pkg, 'devDependencies'), '@napi-rs/cli');
+  assert.equal(typeof version, 'string', '@napi-rs/cli is not a devDependency of package.json');
+  assert.match(String(version), /^\d+\.\d+\.\d+$/, '@napi-rs/cli is not an exact devDependency of package.json');
+  const lock: unknown = JSON.parse(readFileSync(`${ROOT}/package-lock.json`, 'utf8'));
+  const locked = field(field(field(lock, 'packages'), 'node_modules/@napi-rs/cli'), 'version');
+  assert.equal(locked, version, 'package-lock.json does not lock @napi-rs/cli at the devDependency');
 });

@@ -50,6 +50,8 @@ test('red: a pin of the previous version in a pyproject is a mismatch (C19.156)'
 });
 
 test('every crud-ui package and pin of packages/ has the root version (C19.156)', () => {
-  const version = JSON.parse(readFileSync(`${ROOT}/package.json`, 'utf8')).version as string;
+  const parsed: unknown = JSON.parse(readFileSync(`${ROOT}/package.json`, 'utf8'));
+  const version = typeof parsed === 'object' && parsed !== null && 'version' in parsed && typeof parsed.version === 'string' ? parsed.version : '';
+  assert.notEqual(version, '', 'package.json has no version');
   assert.deepEqual(versionMismatches(version, manifests(`${ROOT}/packages`)), []);
 });

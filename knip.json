@@ -82,7 +82,9 @@
     // make docs-api (npm run docs:api) runs scripts/gen-api-docs.mts, which runs node_modules/.bin/api-documenter markdown on each API model; no import names the package
     "@microsoft/api-documenter",
     // tests/tailwind-styles.test.mts compiles '@import "tailwindcss/theme.css"' and '@import "tailwindcss/utilities.css"' with @tailwindcss/node, which resolves them from the root; knip reads no import in that CSS text
-    "tailwindcss"
+    "tailwindcss",
+    // make bindings release recipes (release.mk written by binding release-recipes) run the napi CLI of node_modules/.bin for the npm platform packages (C19.159); no import or script names the package
+    "@napi-rs/cli"
   ],
   "workspaces": {
     // the cross-check gateway, a project of its own outside the npm workspaces: make crudui-test-cross-check runs `npm test --prefix legacy/examples/cross-check-console/server`

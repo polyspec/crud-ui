@@ -82,5 +82,8 @@
   ],
   "ignore": [
     "**/dist/**"
+  ],
+  "ignoreDependencies": [
+    "@napi-rs/cli"
   ]
 }
