@@ -44,7 +44,7 @@ function manifests(dir: string, out: Record<string, string> = {}): Record<string
 
 test('red: a pin of the previous version in a pyproject is a mismatch (C19.156)', () => {
   const found = versionMismatches('0.0.22', {
-    'packages/generator/python/pyproject.toml': 'version = "0.0.22"\ndependencies = ["polyspec-crud-ui-validator==0.0.21", "polyspec-json==0.0.38"]\n',
+    'packages/generator/python/pyproject.toml': 'version = "0.0.22"\ndependencies = ["polyspec-crud-ui-validator==0.0.21", "polyspec-json==0.0.40"]\n',
   });
   assert.deepEqual(found, ['packages/generator/python/pyproject.toml: pins polyspec-crud-ui-validator at 0.0.21']);
 });
