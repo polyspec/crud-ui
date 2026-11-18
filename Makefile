@@ -32,6 +32,8 @@ build-go crudui-install-go-modules: export GOWORK := $(CURDIR)/go.work
 # and not in another. The targets that download, install-tools, crudui-install-crates
 # and the downloads of install run their commands with $(ONLINE); a missing crate fails cargo, which make
 # crudui-install-crates fetches.
+# rustup is the one tool that the machine provides, in $(HOME)/.cargo/bin; the recipes find it by name (C19.158).
+export PATH := $(HOME)/.cargo/bin:$(PATH)
 export CARGO_NET_OFFLINE := true
 export GOPROXY := off
 export npm_config_offline := true
@@ -1048,6 +1050,7 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/release-tag-run.test.mts \
 	tests/build/release-assets-install.test.mts \
 	tests/build/crud-ui-version.test.mts \
+	tests/build/cargo-bin-path.test.mts \
 	tests/build/ci-go-generate.test.mts \
 	tests/build/ci-json-auth.test.mts \
 	tests/build/ci-pipeline-outputs.test.mts \
