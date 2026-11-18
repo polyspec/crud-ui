@@ -510,7 +510,7 @@ $(CI_BROWSER_JOBS): export CHROME_DEVEL_SANDBOX := /usr/local/sbin/chrome-devel-
 CI_SHARDS := 4
 ci-runtime-tests: export CRUDUI_TEST_SHARD := $(if $(SHARD),$(SHARD)/$(CI_SHARDS))
 ci-docs-web: export DOCS_BASE_PATH := /crudui/
-.PHONY: crudui-lock-update ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-assets-platform ci-assets-php ci-assets-npm ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
+.PHONY: ci-release-rehearsal crudui-lock-update ci-shared ci-runtime crudui-install-nginx crudui-nginx-check ci-release-tag ci-release-publish ci-assets-platform ci-assets-php ci-assets-npm ci-runtime-tests ci-build-lint ci-validator-js ci-validator-php ci-validator-go ci-validator-rust ci-bindings ci-python ci-cross-check-console ci-cli ci-form-runtime ci-form-comparison ci-form-comparison-pipeline ci-form-comparison-browser ci-form-comparison-checks ci-package-browser ci-php-engine ci-native-generators ci-php-api ci-cross-language-equivalence ci-conformance ci-docs-web
 
 ci-shared: ## The job shared of ci-pipeline.yml: kit's job shared, its tools, its setup, then the static gates in the shared context
 	$(NODE) $(KIT)/ci-setup.$(KIT_EXT) --job shared
@@ -789,6 +789,24 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) release-platform-assets-$(component)$(CI_NEWLINE))
 	$(CI_MAKE) release-undraft
 
+# ci-release-rehearsal is the job release-rehearsal of ci.yml (C19.162, orm T628): with no tag and no write to GitHub, it runs
+# every step of ci-release-publish before its first write (the tag push of release-go-module-push and the draft of
+# release-publish), and rehearses each Go module with rehearse-go-module-<component> (binding release-go-module --rehearsal,
+# which makes no commit, no tag and pushes nothing). The rehearsal tag is v of the version of package.json. The job downloads
+# the platform assets of the job assets into var/release/platform-assets first, as ci-release-publish does.
+RELEASE_REHEARSAL_VERSION = $(strip $(shell node -p "require('./package.json').version"))
+ci-release-rehearsal: ## The job release-rehearsal of ci.yml: the steps of ci-release-publish before its first GitHub write, and rehearse-go-module of each component, with no tag
+	$(CI_MAKE) release-zip
+	$(CI_MAKE) release-prepare
+	$(CI_MAKE) release-tools
+	$(CI_MAKE) release-assets
+	mkdir -p var/release/assets && cp -R var/release/platform-assets/. var/release/assets/
+	$(CI_MAKE) install-tools TOOLS="rust go"
+	$(CI_MAKE) crudui-install-crates
+	$(CI_MAKE) crudui-install-go-modules
+	$(CI_MAKE) release-recipes
+	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) rehearse-go-module-$(component) TAG=v$(RELEASE_REHEARSAL_VERSION)$(CI_NEWLINE))
+
 # The jobs of .github/workflows/assets.yml (C19.71), which the job assets of release.yml calls for the tree of the tag with
 # RELEASE=true, which runs the release check of binding on the contract of each component before the builds (make
 # release-binding-check-<component>, binding GN-19g, CK-70). Each job installs Rust and the crates and Go first, because the
@@ -1053,6 +1071,7 @@ CRUDUI_RUNTIME_TESTS = \
 	tests/build/crud-ui-version.test.mts \
 	tests/build/cargo-bin-path.test.mts \
 	tests/build/napi-devdependency.test.mts \
+	tests/build/release-rehearsal.test.mts \
 	tests/build/ci-go-generate.test.mts \
 	tests/build/ci-json-auth.test.mts \
 	tests/build/ci-pipeline-outputs.test.mts \
