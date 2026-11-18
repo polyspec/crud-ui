@@ -15,6 +15,9 @@ TOOLS_DIR := $(CURDIR)/var/tools
 # kit 0.0.98's run-tests dropped NODE_TEST_CONTEXT, so a node --test that a recipe starts from inside a node test runs as
 # its own run, not as a child of that test (kit K1094); no recipe passes it on.
 unexport NODE_TEST_CONTEXT
+# rustup is the one tool that the machine provides, in $(HOME)/.cargo/bin; the recipes find it by name (C19.158).
+# It is set before the tools of the checkout, so that var/tools/bin stays first on PATH (each export prepends).
+export PATH := $(HOME)/.cargo/bin:$(PATH)
 export PATH := $(CURDIR)/var/tools/mise/shims:$(PATH)
 export PATH := $(CURDIR)/var/tools/bin:$(PATH)
 # GNU Make 3.81 looks up the program of a recipe line without shell syntax on the PATH that make started with, not on the
@@ -32,8 +35,6 @@ build-go crudui-install-go-modules: export GOWORK := $(CURDIR)/go.work
 # and not in another. The targets that download, install-tools, crudui-install-crates
 # and the downloads of install run their commands with $(ONLINE); a missing crate fails cargo, which make
 # crudui-install-crates fetches.
-# rustup is the one tool that the machine provides, in $(HOME)/.cargo/bin; the recipes find it by name (C19.158).
-export PATH := $(HOME)/.cargo/bin:$(PATH)
 export CARGO_NET_OFFLINE := true
 export GOPROXY := off
 export npm_config_offline := true
