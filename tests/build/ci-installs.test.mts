@@ -5,13 +5,21 @@
 // The jobs are read from the workflows, each target is dry-run with the targets that ci-targets names, and a job is checked
 // by the order of its lines. The jobs are computed; none is written out here.
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { makeDryRun } from './make-dry-run.mts';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const MAKEFILE = readFileSync(`${ROOT}/Makefile`, 'utf8');
+// The rehearse-go-module-<component> and release-binding-check-<component> rules are written into packages/<component>/release.mk
+// by release-recipes, which the Makefile includes; a dry run of them needs that file, so the test writes it first.
+const RELEASE_MK = ['validator', 'generator'].map(c => `${ROOT}/packages/${c}/release.mk`);
+if (RELEASE_MK.some(f => !existsSync(f))) {
+  const written = spawnSync('make', ['--no-print-directory', 'release-recipes'], { cwd: ROOT, encoding: 'utf8' });
+  assert.equal(written.status, 0, `release-recipes: ${written.stderr}`);
+}
 // Jobs that run no command of their own: the plan, and the ci-passed aggregates.
 const SKIPPED = new Set(['kit-ci-plan', 'ci-passed']);
 // The values that the workflows pass for their matrix, by make variable.

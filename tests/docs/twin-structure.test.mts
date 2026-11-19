@@ -19,7 +19,7 @@ export function structure(text: string): { headings: string[]; items: number; pa
   const headings: string[] = [];
   let items = 0;
   let previousBlank = true;
-  let previousItem = false;
+  let previousItem: boolean = false;
   const outside: string[] = [];
   let fenced = false;
   for (const line of text.split('\n')) {
@@ -30,7 +30,7 @@ export function structure(text: string): { headings: string[]; items: number; pa
     if (heading?.[1] !== undefined) headings.push(heading[1]);
     const item = LIST_ITEM.exec(line);
     const ordered = item?.[1] !== undefined ? Number(item[1]) : undefined;
-    const isItem = item !== null && (ordered === undefined || ordered === 1 || previousBlank || previousItem);
+    const isItem: boolean = item !== null && (ordered === undefined || ordered === 1 || previousBlank || previousItem);
     if (isItem) items += 1;
     previousBlank = line.trim() === '';
     previousItem = isItem;

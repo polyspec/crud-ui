@@ -3,8 +3,8 @@
 # crudui-install-bindings downloads them with pip --require-hashes.
 
 polyspec-json @ https://github.com/polyspec/json/releases/download/v0.0.41/polyspec_json-0.0.41-cp314-abi3-macosx_11_0_arm64.whl ; sys_platform == "darwin" and platform_machine == "arm64" \
-    --hash=sha256:222f9c2149c82bf7244aea81df4143454f343c0b75dd78cc1cdb5cfd8f6dc643
+    --hash=sha256:378088ff0e4ddb45f8d275f4ea9da4388c8355b16d0be2ef081579be4179f7c1
 polyspec-json @ https://github.com/polyspec/json/releases/download/v0.0.41/polyspec_json-0.0.41-cp314-abi3-manylinux_2_34_aarch64.whl ; sys_platform == "linux" and platform_machine == "aarch64" \
-    --hash=sha256:a6f74f4b0dc428882dd44cab8786d6d232daf4a8c0400bf386b64b435e398bd0
+    --hash=sha256:00c02a91473188f7a52330de713b8f9fb97641219ca8b6d30b29e6537e64006c
 polyspec-json @ https://github.com/polyspec/json/releases/download/v0.0.41/polyspec_json-0.0.41-cp314-abi3-manylinux_2_34_x86_64.whl ; sys_platform == "linux" and platform_machine == "x86_64" \
-    --hash=sha256:73f83cd0df85a9c2cec6285d7291cefa8439d4807d3208836ce79d584cdbc2c7
+    --hash=sha256:da0b4842cc14fc6ea9733c8af77b24e17fcaf0ae6fdc57e7ad97c31b89018212
