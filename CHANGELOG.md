@@ -3,11 +3,10 @@
 
 ## Unreleased
 
-- The release rehearsal of CI (C19.162) ran `release-assets` with the rehearsal tag, which kit reads from `refs/tags/<TAG>`; a rehearsal has no tag, so the job failed. It now runs `release-candidate-assets` with `VERSION` (kit's `candidate-assets`, K1286), which packs the committed HEAD and reads no tag.
-- The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH`; the `var/tools/bin/php` it writes is kept by later installs, so a checkout first installed with another PHP keeps it until the wrapper is removed (`docs/operations/testing.md`).
-
 ## 0.0.22
 
+- The release rehearsal of CI (C19.162) ran `release-assets` with the rehearsal tag, which kit reads from `refs/tags/<TAG>`; a rehearsal has no tag, so the job failed. It now runs `release-candidate-assets` with `VERSION` (kit's `candidate-assets`, K1286), which packs the committed HEAD and reads no tag.
+- The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH`; the `var/tools/bin/php` it writes is kept by later installs, so a checkout first installed with another PHP keeps it until the wrapper is removed (`docs/operations/testing.md`).
 - v0.0.21 was tagged on the release commit, but its release run failed in the assets jobs before the release was published, so v0.0.21 stays a tag without a release and the next release is 0.0.22 (the release check of binding read the module cache with GOPROXY=off, C19.153).
 
 - `validate.GroupChoicesIn` (Go) takes the root properties and returns the choices of a source of selected values (CUSC-097, C19.93). Input: a Go caller with a `from` that names a root selection field. Behaviour before: none; `GroupChoices` keeps its signature. Now: `GroupChoicesIn` reads the root.
