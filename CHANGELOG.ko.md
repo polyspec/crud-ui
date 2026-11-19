@@ -1,12 +1,13 @@
 # 변경 기록
 <!-- doc-id: changelog -->
-<!-- source-sha256: d3ad2cd36151a09990b0dbc66504ff117f1c4555e75c81b1ba59d3e2e633e5f2 -->
+<!-- source-sha256: 4e86cd6da007a745cbb0024282098e3cbd053d618cb5708901941e323608b7a9 -->
 
 ## Unreleased
 
 ## 0.0.22
 
-- CI의 릴리즈 리허설(C19.162)은 리허설 tag로 `release-assets`를 실행했는데, kit은 그 tag를 `refs/tags/<TAG>`에서 읽으므로 리허설에는 tag가 없어 job이 실패했습니다. 이제 `VERSION`과 함께 `release-candidate-assets`를 실행하며(kit의 `candidate-assets`, K1286), 이것은 커밋된 HEAD를 묶고 tag를 읽지 않습니다.
+- CI 검사 명령 목록(`CI_TARGETS`)은 리허설과 짝을 이루는 자리에 `release-candidate-assets`를 씁니다(`ci-local`이 검사). 전에는 리허설이 더 이상 실행하지 않는 `release-assets`를 적고 있었습니다.
+- CI의 릴리즈 리허설(C19.162)은 리허설 tag로 `release-assets`를 실행했는데, kit은 그 tag를 `refs/tags/<TAG>`에서 읽으므로 리허설에는 tag가 없어 job이 실패했습니다. 이제 `VERSION`과 함께 `release-candidate-assets`를 실행하며(kit의 `candidate-assets`, K1286), 이것은 커밋된 HEAD를 묶고 tag를 읽지 않습니다. CI 명령을 순서대로 적는 목록 `CI_TARGETS`도 같은 자리에 `release-candidate-assets`를 적는다.
 - checkout의 첫 `make install-tools`는 PHP 8.4를 `PATH`의 맨 앞에 두고 실행하며, 거기서 쓴 `var/tools/bin/php`는 이후 install이 남기므로 다른 PHP로 처음 install한 checkout은 wrapper를 지울 때까지 그 PHP를 씁니다(`docs/operations/testing.ko.md`).
 - v0.0.21은 release commit에 tag가 만들어졌지만 release run이 assets job에서 실패해 release가 공개되지 않았다. 그래서 v0.0.21은 release 없는 tag로 남고 다음 release는 0.0.22다(binding의 release check가 GOPROXY=off에서 module cache를 읽었다, C19.153).
 

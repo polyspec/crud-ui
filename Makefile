@@ -1406,7 +1406,7 @@ CI_TARGETS = \
 	release-zip \
 	release-prepare \
 	release-tools \
-	release-assets \
+	release-candidate-assets \
 	release-merge-platform \
 	crudui-install-crates \
 	release-recipes \
