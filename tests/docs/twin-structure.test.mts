@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
 // A Korean twin `X.ko.md` translates its English source `X.md` paragraph for paragraph, so it has the same sections, the same
@@ -43,7 +43,7 @@ const twins = execFileSync('git', ['ls-files', '*.ko.md'], { cwd: ROOT, encoding
   .split('\n')
   .filter((file) => file !== '')
   .map((file) => ({ twin: file, source: file.replace(/\.ko\.md$/, '.md') }))
-  .filter(({ source }) => { try { readFileSync(new URL(source, ROOT)); return true; } catch { return false; } });
+  .filter(({ source }) => existsSync(new URL(source, ROOT)));
 
 for (const { twin, source } of twins) {
   test(`${twin} has the sections and list items of ${source}`, () => {
