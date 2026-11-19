@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- CI의 릴리즈 리허설(C19.162)은 리허설 tag로 `release-assets`를 실행했는데, kit은 그 tag를 `refs/tags/<TAG>`에서 읽으므로 리허설에는 tag가 없어 job이 실패했습니다. 이제 `VERSION`과 함께 `release-candidate-assets`를 실행하며(kit의 `candidate-assets`, K1286), 이것은 커밋된 HEAD를 묶고 tag를 읽지 않습니다.
 - checkout의 첫 `make install-tools`는 PHP 8.4를 `PATH`의 맨 앞에 두고 실행하며, 거기서 쓴 `var/tools/bin/php`는 이후 install이 남기므로 다른 PHP로 처음 install한 checkout은 wrapper를 지울 때까지 그 PHP를 씁니다(`docs/operations/testing.ko.md`).
 
 ## 0.0.22

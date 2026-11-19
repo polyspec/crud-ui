@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- The release rehearsal of CI (C19.162) ran `release-assets` with the rehearsal tag, which kit reads from `refs/tags/<TAG>`; a rehearsal has no tag, so the job failed. It now runs `release-candidate-assets` with `VERSION` (kit's `candidate-assets`, K1286), which packs the committed HEAD and reads no tag.
 - The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH`; the `var/tools/bin/php` it writes is kept by later installs, so a checkout first installed with another PHP keeps it until the wrapper is removed (`docs/operations/testing.md`).
 
 ## 0.0.22

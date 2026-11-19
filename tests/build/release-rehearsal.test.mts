@@ -32,7 +32,7 @@ test('ci-release-rehearsal runs the steps of ci-release-publish before its first
   const recipe = makefile.match(/^ci-release-rehearsal:[^\n]*\n((?:\t.*\n)+)/m)?.[1] ?? '';
   assert.notEqual(recipe, '', 'the Makefile has a recipe ci-release-rehearsal');
   const targets = recipe.match(/ci-targets TARGETS="([^"]+)"/)?.[1]?.split(/\s+/) ?? [];
-  for (const step of ['release-zip', 'release-prepare', 'release-tools', 'release-assets', 'release-merge-platform', 'crudui-install-crates', 'release-recipes'])
+  for (const step of ['release-zip', 'release-prepare', 'release-tools', 'release-candidate-assets', 'release-merge-platform', 'crudui-install-crates', 'release-recipes'])
     assert.ok(targets.includes(step), `ci-release-rehearsal runs ${step} through ci-targets`);
   assert.ok(recipe.includes('rehearse-go-module-$(c)'), 'ci-release-rehearsal rehearses each Go module of BINDING_COMPONENTS');
   for (const forbidden of ['release-go-module-push', 'release-publish', 'release-undraft', 'release-platform-assets', 'release-tag'])

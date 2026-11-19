@@ -796,10 +796,11 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 # the platform assets of the job assets into var/release/platform-assets first, as ci-release-publish does.
 RELEASE_REHEARSAL_VERSION = $(strip $(shell node -p "require('./package.json').version"))
 ci-release-rehearsal: export TAG = v$(RELEASE_REHEARSAL_VERSION)
+ci-release-rehearsal: export VERSION = $(RELEASE_REHEARSAL_VERSION)
 ci-release-rehearsal: ## The job release-rehearsal of ci.yml: the steps of ci-release-publish before its first GitHub write, and rehearse-go-module of each component, with no tag
 	$(CI_MAKE) install-tools TOOLS="rust go"
 	$(CI_MAKE) crudui-install-go-modules
-	$(CI_MAKE) ci-targets TARGETS="release-zip release-prepare release-tools release-assets release-merge-platform crudui-install-crates release-recipes $(foreach c,$(BINDING_COMPONENTS),rehearse-go-module-$(c))"
+	$(CI_MAKE) ci-targets TARGETS="release-zip release-prepare release-tools release-candidate-assets release-merge-platform crudui-install-crates release-recipes $(foreach c,$(BINDING_COMPONENTS),rehearse-go-module-$(c))"
 
 # release-merge-platform copies the platform assets that the job assets built into var/release/assets, after release-assets
 # (ci-release-publish does the same copy).
