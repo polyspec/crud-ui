@@ -786,7 +786,7 @@ ci-release-publish: ## The job publish of release.yml: the tools, the assets, th
 	$(foreach component,$(BINDING_COMPONENTS),$(CI_ACTOR) $(CI_MAKE) release-go-module-$(component)$(CI_NEWLINE))
 	$(CI_MAKE) release-go-module-push
 	$(CI_MAKE) release-publish
-	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) release-platform-assets-$(component)$(CI_NEWLINE))
+	$(foreach component,$(BINDING_COMPONENTS),$(CI_MAKE) release-platform-stage-$(component) && $(CI_MAKE) release-platform-assets-$(component) RELEASE_ASSETS=var/release/platform-$(component)$(CI_NEWLINE))
 	$(CI_MAKE) release-undraft
 
 # ci-release-rehearsal is the job release-rehearsal of ci.yml (C19.162, orm T628): with no tag and no write to GitHub, it runs
@@ -807,6 +807,14 @@ ci-release-rehearsal: ## The job release-rehearsal of ci.yml: the steps of ci-re
 .PHONY: release-merge-platform
 release-merge-platform: ## Merge var/release/platform-assets into var/release/assets, after release-assets
 	mkdir -p var/release/assets && cp -R var/release/platform-assets/. var/release/assets/
+
+# release-platform-stage-<component> copies the files of one component from var/release/assets into var/release/platform-<component>,
+# so that release-platform-assets-<component> scans only that component's wheels, npm packages and PHP extensions: the generated
+# check of each component scans every file of the glob, and the components share var/release/assets (CI 44621970194).
+.PHONY: release-platform-stage-%
+release-platform-stage-%:
+	rm -rf var/release/platform-$*
+	for sub in wheel npm php-ext; do mkdir -p var/release/platform-$*/$$sub; for f in var/release/assets/$$sub/*; do [ -e "$$f" ] || continue; case "$$(basename "$$f")" in *crud[-_]ui[-_]$**) cp "$$f" var/release/platform-$*/$$sub/ ;; esac; done; done
 
 # The jobs of .github/workflows/assets.yml (C19.71), which the job assets of release.yml calls for the tree of the tag with
 # RELEASE=true, which runs the release check of binding on the contract of each component before the builds (make

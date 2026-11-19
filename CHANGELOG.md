@@ -5,6 +5,7 @@
 
 ## 0.0.22
 
+- The job publish of release.yml runs release-platform-assets once per component from its own staging directory (release-platform-stage-<component>), so the generated check of one component no longer sees the wheels and packages of the other in var/release/assets. The shared directory made the check of validator fail on the darwin-arm64 wheel of generator with "has the label ... of another asset" (CI 44621970194), after the tag was pushed.
 - The CI list of checking commands (`CI_TARGETS`) names `release-candidate-assets` where it mirrors the rehearsal, as `ci-local` checks; before, it still named `release-assets`, which the rehearsal no longer runs.
 - The release rehearsal of CI (C19.162) ran `release-assets` with the rehearsal tag, which kit reads from `refs/tags/<TAG>`; a rehearsal has no tag, so the job failed. It now runs `release-candidate-assets` with `VERSION` (kit's `candidate-assets`, K1286), which packs the committed HEAD and reads no tag. The list `CI_TARGETS`, which states the CI commands in their order, names `release-candidate-assets` in the same place.
 - The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH`; the `var/tools/bin/php` it writes is kept by later installs, so a checkout first installed with another PHP keeps it until the wrapper is removed (`docs/operations/testing.md`).
