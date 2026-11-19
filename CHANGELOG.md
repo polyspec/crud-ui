@@ -3,12 +3,16 @@
 
 ## Unreleased
 
-## 0.0.22
+## 0.0.23
 
+- v0.0.22 was tagged, but its release run failed at publish: the platform assets of validator and generator carried one label, because the generated check of each component scanned the darwin-arm64 wheels of both in one folder (CI 44621970194). The v0.0.22 tag has no release; 0.0.23 is the release of its changes.
 - The job publish of release.yml runs release-platform-assets once per component from its own staging directory (release-platform-stage-<component>), so the generated check of one component no longer sees the wheels and packages of the other in var/release/assets. The shared directory made the check of validator fail on the darwin-arm64 wheel of generator with "has the label ... of another asset" (CI 44621970194), after the tag was pushed.
 - The CI list of checking commands (`CI_TARGETS`) names `release-candidate-assets` where it mirrors the rehearsal, as `ci-local` checks; before, it still named `release-assets`, which the rehearsal no longer runs.
 - The release rehearsal of CI (C19.162) ran `release-assets` with the rehearsal tag, which kit reads from `refs/tags/<TAG>`; a rehearsal has no tag, so the job failed. It now runs `release-candidate-assets` with `VERSION` (kit's `candidate-assets`, K1286), which packs the committed HEAD and reads no tag. The list `CI_TARGETS`, which states the CI commands in their order, names `release-candidate-assets` in the same place.
 - The first `make install-tools` of a checkout runs with PHP 8.4 first on `PATH`; the `var/tools/bin/php` it writes is kept by later installs, so a checkout first installed with another PHP keeps it until the wrapper is removed (`docs/operations/testing.md`).
+
+## 0.0.22
+
 - v0.0.21 was tagged on the release commit, but its release run failed in the assets jobs before the release was published, so v0.0.21 stays a tag without a release and the next release is 0.0.22 (the release check of binding read the module cache with GOPROXY=off, C19.153).
 
 - `validate.GroupChoicesIn` (Go) takes the root properties and returns the choices of a source of selected values (CUSC-097, C19.93). Input: a Go caller with a `from` that names a root selection field. Behaviour before: none; `GroupChoices` keeps its signature. Now: `GroupChoicesIn` reads the root.

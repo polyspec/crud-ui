@@ -5,10 +5,10 @@ build-backend = "maturin"
 
 [project]
 name = "polyspec-crud-ui-generator"
-version = "0.0.22"
+version = "0.0.23"
 requires-python = ">=3.14"
 license = "MIT"
-dependencies = ["polyspec-crud-ui-validator==0.0.22", "polyspec-json==0.0.41"]
+dependencies = ["polyspec-crud-ui-validator==0.0.23", "polyspec-json==0.0.41"]
 
 [tool.maturin]
 module-name = "polyspec.crud_ui.generator._native"

@@ -540,7 +540,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-generator"
-version = "0.0.22"
+version = "0.0.23"
 dependencies = [
  "chrono",
  "getrandom",
@@ -557,7 +557,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crud-ui-validator"
-version = "0.0.22"
+version = "0.0.23"
 dependencies = [
  "polyspec-binding-core",
  "polyspec-json",
@@ -567,7 +567,7 @@ dependencies = [
 
 [[package]]
 name = "polyspec-crudui-form-comparison"
-version = "0.0.22"
+version = "0.0.23"
 dependencies = [
  "axum",
  "form_urlencoded",

@@ -16,4 +16,4 @@ replace github.com/polyspec/crudui/packages/validator/go v0.0.20 => ./legacy/pac
 
 replace github.com/polyspec/crudui/packages/generator/go v0.0.20 => ./legacy/packages/generator/go
 
-replace github.com/polyspec/crud-ui/packages/validator/go v0.0.22 => ./packages/validator/go
+replace github.com/polyspec/crud-ui/packages/validator/go v0.0.23 => ./packages/validator/go

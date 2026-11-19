@@ -4,6 +4,6 @@ module github.com/polyspec/crud-ui/packages/generator/go
 go 1.27.3
 
 require (
-	github.com/polyspec/crud-ui/packages/validator/go v0.0.22
+	github.com/polyspec/crud-ui/packages/validator/go v0.0.23
 	github.com/polyspec/json/packages/go v0.0.41
 )
