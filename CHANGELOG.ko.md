@@ -6,6 +6,7 @@
 
 ## 0.0.23
 
+- `uv.lock`은 0.0.23에 맞춰 `uv lock`이 씁니다. Python workspace member인 `legacy/packages/{validator,generator}/python`도 0.0.23이므로 `uv sync --locked`(`make crudui-install-python`)가 통과합니다. 0.0.23 bump는 lock을 낡은 채로 두었습니다.
 - v0.0.22는 tag가 만들어졌지만 release run이 publish에서 실패했습니다. validator와 generator의 platform asset이 한 label을 가졌기 때문입니다. 각 component의 생성된 검사가 두 component의 darwin-arm64 wheel을 한 폴더에서 보았습니다(CI 44621970194). v0.0.22 tag에는 release가 없고, 0.0.23이 그 변경의 release입니다.
 - release.yml의 job publish는 release-platform-assets를 component마다 그 component 전용 staging 디렉터리(release-platform-stage-<component>)에서 실행합니다. 그래서 한 component의 생성된 검사가 var/release/assets의 다른 component 파일(wheel과 package)을 보지 않습니다. 공유 디렉터리 때문에 validator 검사가 generator의 darwin-arm64 wheel을 "다른 asset의 label을 가짐"으로 실패했습니다(CI 44621970194). 그 실패는 tag가 push된 뒤에 났습니다.
 - CI 검사 명령 목록(`CI_TARGETS`)은 리허설과 짝을 이루는 자리에 `release-candidate-assets`를 씁니다(`ci-local`이 검사). 전에는 리허설이 더 이상 실행하지 않는 `release-assets`를 적고 있었습니다.

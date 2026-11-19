@@ -5,6 +5,7 @@
 
 ## 0.0.23
 
+- `uv.lock` is written by `uv lock` for 0.0.23, with the Python workspace members `legacy/packages/{validator,generator}/python` at 0.0.23, so `uv sync --locked` (`make crudui-install-python`) passes; the 0.0.23 bump had left the lock stale.
 - v0.0.22 was tagged, but its release run failed at publish: the platform assets of validator and generator carried one label, because the generated check of each component scanned the darwin-arm64 wheels of both in one folder (CI 44621970194). The v0.0.22 tag has no release; 0.0.23 is the release of its changes.
 - The job publish of release.yml runs release-platform-assets once per component from its own staging directory (release-platform-stage-<component>), so the generated check of one component no longer sees the wheels and packages of the other in var/release/assets. The shared directory made the check of validator fail on the darwin-arm64 wheel of generator with "has the label ... of another asset" (CI 44621970194), after the tag was pushed.
 - The CI list of checking commands (`CI_TARGETS`) names `release-candidate-assets` where it mirrors the rehearsal, as `ci-local` checks; before, it still named `release-assets`, which the rehearsal no longer runs.
